@@ -606,6 +606,7 @@
   * [Design](open-agri-stack/design/README.md)
     * [Registry Data Sync](open-agri-stack/design/registry-data-sync.md)
     * [Livestock Registry](open-agri-stack/design/livestock-registry.md)
+    * [Interoperability with OAN (Beckn)](open-agri-stack/design/oan-interoperability.md)
   * [Exchange](open-agri-stack/exchange.md)
     * [Composite](open-agri-stack/composite/README.md)
       * [Creating a Use Case](open-agri-stack/composite/creating-a-use-case.md)

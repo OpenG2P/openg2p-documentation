@@ -35,7 +35,7 @@ Standards for consent itself (consent receipts, data-subject rights, artefact se
 | Payload validation | RP (CSR activity types), Catalogue (MDS; list attribute schemas) | Activity types' payloads | [JSON Schema](https://json-schema.org/) | **Used** | Each activity type's payload is a JSON Schema; schema versions are kept per type. The Composite validates use-case files with strict pydantic models (`core/models.py`, unknown keys rejected), not JSON Schema. |
 | Plausibility rules | RP (activity registers; CSR's rules) | Each activity register's configuration file | [JSON Logic](https://jsonlogic.com/) | **Used** | Rules (warn or block) over the payload and the context's latest activities, run by a small built-in evaluator. Output records per format are Jinja templates (our own); DCI is one format. |
 | Field capture | RP (CSR), ODK Central | Crop sowing form | [ODK XForms](https://getodk.github.io/xforms-spec/) via ODK Central | **Used** | |
-| Network discovery | OAN network layer (not an OpenG2P component) | OAN network layer | [Beckn](https://becknprotocol.io/) | **Used** (outside the registries) | Only for discovering service providers and consumers; never for registry data. |
+| Network discovery | OAN network layer (not an OpenG2P component) | OAN network layer | [Beckn](https://becknprotocol.io/) | **Used** (outside the registries) | Only for discovering service providers and consumers; not for registry data today. Proposal: the Composite as a provider node ([Interoperability with OAN](../design/oan-interoperability.md)). |
 
 ## Security, identity and trust
 

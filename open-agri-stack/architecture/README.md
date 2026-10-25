@@ -33,7 +33,7 @@ description: >-
 **C — registry to registry (not in use today).** A registry that needs another's data is simply one of its partners: onboarded in its Partner Management with a scope policy there, no Composite involved. The reference design is crop activity from the Crop Sown Registry kept in the Farmer Registry, through the registries' outgestion and ingestion and a small relay (not built): [registry data sync](../design/registry-data-sync.md), including [how it would be set up](../design/registry-data-sync.md#how-it-would-be-set-up). Sharing of this kind usually rests on a mandate rather than each farmer's consent; the Consent Manager's rule for that (a standing permission for a purpose) is an [open item](../open-items/README.md).
 
 * The ingress (dashed grey: OpenG2P deployment infrastructure, not an Agri Stack service) routes requests but never reads data. The Composite runs only approved use cases and keeps nothing after it responds.
-* Beckn appears only at the OAN network layer, for discovering service providers and consumers. It isn't used to exchange registry data.
+* Beckn appears only at the OAN network layer, for discovering service providers and consumers. It isn't used to exchange registry data today; a proposal makes the Composite a provider on that network: [Interoperability with OAN (Beckn)](../design/oan-interoperability.md).
 
 ## Across departments
 
