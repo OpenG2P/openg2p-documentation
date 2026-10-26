@@ -2,7 +2,7 @@
 description: >-
   Proposal: the Composite as a provider node on the Open Agri Network (OAN),
   so partners already on the network reach Agri Stack use cases through the
-  Beckn discover-and-order flow, via a beckn-onix adapter. Not built.
+  Beckn order flow, via a beckn-onix adapter. Not built.
 ---
 
 # Interoperability with OAN (Beckn)
@@ -15,20 +15,22 @@ description: >-
 
 ## Why
 
-Agri Stack is foundational: layers above it, such as the Open Agri Network (OAN), are built on the [Beckn](https://becknprotocol.io/) protocol. Asking every partner to build a client specific to the Composite is a real barrier, while partners on OAN will implement Beckn anyway. If the Composite is a node on the network, a partner reaches Agri Stack with the same discover-and-order mechanism it uses for everything else on OAN.
+Agri Stack is foundational: layers above it, such as the Open Agri Network (OAN), are built on the [Beckn](https://becknprotocol.io/) protocol. Asking every partner to build a client specific to the Composite is a real barrier, while partners on OAN will implement Beckn anyway. If the Composite is a node on the network, a partner reaches Agri Stack with the same order mechanism it uses for everything else on OAN.
 
 ## The idea
 
-The Composite takes part in OAN as a **provider (BPP)**. Its catalogue is its published use cases. A partner, as a consumer app (BAP), discovers a use case, orders it for a farmer, and receives the result as the order's fulfilment.
+The Composite takes part in OAN as a **provider (BPP)**. A partner, as a consumer app (BAP), orders a use case for a farmer and receives the result as the order's fulfilment.
 
-<figure><img src="../../.gitbook/assets/open-agri-stack-oan-beckn.svg" alt="Agri Stack as a provider on the OAN Beckn network: the bank, a network participant, discovers the Composite's use cases through the gateway and orders one for a farmer (select, init, confirm) through Agri Stack's entry point, its provider platform; the Composite answers with on_confirm and on_status. Agri Stack's entry point is registered in the network registry, from which Partner Management can take participants' keys. Inside Agri Stack: the Exchange (Composite, Consent Manager, Partner Management, partner portal, national-ID login, Audit Manager), the departments' registries, each issuing verifiable credentials, and the catalogues. Path A is a plain API call to one registry; path C, one registry as a partner of another."><figcaption><p>Architecture: Agri Stack under OAN, in Beckn terms (proposal; the registries built today)</p></figcaption></figure>
+**It is not a marketplace.** A partner uses a use case only after it has been onboarded in Agri Stack's Partner Management and granted that use case, so it already knows Agri Stack's provider address and what it may order. It sends its order straight to Agri Stack's provider platform, starting at `select` or `init`; Beckn allows this without a network `search` when the consumer knows the provider. A participant without a grant gets a Beckn error, as the Composite's API answers 403 `partner_not_allowed` today. Onboarding and grants stay in Partner Management, outside Beckn.
 
-This fits because the Composite already works at the level of **use cases** (e.g. `loan-profile@1`), not individual data scopes: a use case is a natural catalogue item.
+<figure><img src="../../.gitbook/assets/open-agri-stack-oan-beckn.svg" alt="Agri Stack as a provider on the OAN Beckn network: the bank, a network participant, orders a use case for a farmer (it was onboarded and granted it beforehand; listing the use cases on the network is optional and for information only) (select, init, confirm) through Agri Stack's entry point, its provider platform; the Composite answers with on_confirm and on_status. Agri Stack's entry point is registered in the network registry, from which Partner Management can take participants' keys. Inside Agri Stack: the Exchange (Composite, Consent Manager, Partner Management, partner portal, national-ID login, Audit Manager), the departments' registries, each issuing verifiable credentials, and the catalogues. Path A is a plain API call to one registry; path C, one registry as a partner of another."><figcaption><p>Architecture: Agri Stack under OAN, in Beckn terms (proposal; the registries built today)</p></figcaption></figure>
+
+This fits because the Composite already works at the level of **use cases** (e.g. `loan-profile@1`), not individual data scopes: a use case is a natural item to order.
 
 | Beckn step | What it means for the Composite |
 | --- | --- |
-| `discover` / `search` | The catalogue: published use cases, each with its purpose and what it returns |
-| `select` / `init` | The partner picks a use case and names the farmer and the parameters (e.g. crop year, season). The Composite checks the partner's [policy for that use case](../architecture/data-sharing-policies.md). If the farmer has not consented yet, the provider's form step (Beckn XInput) sends the farmer to the Consent Manager's screen to log in with the national ID and approve |
+| `discover` / `search` | Optional, for information only: published use cases, each with its purpose and what it returns, for prospective partners to see what they could apply for. Not part of a request |
+| `select` / `init` | The onboarded partner names a use case it is granted, the farmer and the parameters (e.g. crop year, season). The Composite checks the partner's [policy for that use case](../architecture/data-sharing-policies.md). If the farmer has not consented yet, the provider's form step (Beckn XInput) sends the farmer to the Consent Manager's screen to log in with the national ID and approve |
 | `confirm` | The order: the query runs. The Exchange Consent Manager finds the consent and issues a [consent token](../../consent-management/design/exchange-consent-tokens.md) per registry; the registries answer |
 | `on_confirm` / `on_status` | The fulfilment: the signed result, with a status per source |
 
@@ -43,8 +45,8 @@ Consent through the XInput step would bring consent [scenarios 2 and 3](../archi
 
 * **Identity and keys.** A partner is a network participant (`subscriber_id`, its key in the network registry). Partner Management still holds it as a partner with its policy for each use case. Map `subscriber_id` to the Partner Management partner, and let Partner Management take the partner's key from the network registry, so an organisation is onboarded once.
 * **Asynchronous answers.** The result goes back through the partner's callback, so the Composite answers asynchronously. Natural in Beckn; new for the Composite.
-* **Farmer data in Beckn messages.** Discovery goes through the network gateway; `select` to `status` go directly between partner and provider, so farmer data never passes through the gateway, only within an order. How the result travels (inline, or a short-lived signed link) and whether it is encrypted to the partner are still to be decided.
-* **Catalogue visibility.** Use cases become discoverable on the network. They hold no data, but the catalogue should offer only what a partner can actually be granted.
+* **Farmer data in Beckn messages.** Orders (`select` to `status`) go directly between partner and provider, not through the network gateway, so farmer data never passes through the gateway, only within an order. How the result travels (inline, or a short-lived signed link) and whether it is encrypted to the partner are still to be decided.
+* **Listing use cases on the network (optional).** A shop window for prospective partners, not a way in: ordering still needs onboarding and a grant. Whether to list them at all is open.
 
 ## How it relates to the architecture
 
@@ -66,7 +68,7 @@ Consent through the XInput step would bring consent [scenarios 2 and 3](../archi
    * **Lenders and other providers pulling farmer data** (e.g. to underwrite a loan): the provider is an Agri Stack partner. It may call the Composite through its own API from behind its Beckn node, or Agri Stack is a node it orders from (this proposal).
    * **An OAN app showing the farmer their own data:** a farmer-facing (self-service) path, not the partner API.
    * **Agri Stack itself offering services on the network:** the Composite as a provider (this proposal).
-2. **Which OAN domain and specification version** partners will use, and which schema describes a use case as a catalogue item. This should come from OAN, not be invented by Agri Stack.
+2. **Which OAN domain and specification version** partners will use, and which schema describes a use case as an item to order. This should come from OAN, not be invented by Agri Stack.
 3. **How OAN collects consent:** through Beckn XInput forms, a consent artefact or reference carried in the order, or both.
 4. **How the result is delivered and protected:** inline in `on_confirm`/`on_status`, or a short-lived signed link; whether it is encrypted to the partner's key.
 5. **Onboarding:** whether a network participant's registry entry is enough for Partner Management, or a separate Partner Management approval is still required for each use case (today it is).

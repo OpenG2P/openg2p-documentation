@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1066" viewBox="0 0 1200 1066" role="img" aria-label="Agri Stack as a provider on the OAN Beckn network. OAN holds the domains (access to credit, access to market, grievance, access to payment), the farmer app (BAP), the bank as a network participant (a provider to the farmer, a consumer of Agri Stack), the network gateway and the network registry; Partner Management can take participants' keys from the network registry. Agri Stack has an entry point that is its provider platform (BPP, beckn-onix) registered in the network registry, the Exchange for consented data sharing, the departments' registries, each issuing verifiable credentials, and the catalogues. Path B: the bank discovers the Composite's use cases through the gateway and orders one for a farmer (select, init, confirm); the Composite answers with on_confirm and on_status. Path A: a plain API call to one registry. Path C: one registry is a partner of another."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1066" viewBox="0 0 1200 1066" role="img" aria-label="Agri Stack as a provider on the OAN Beckn network. OAN holds the domains (access to credit, access to market, grievance, access to payment), the farmer app (BAP), the bank as a network participant (a provider to the farmer, a consumer of Agri Stack), the network gateway and the network registry; Partner Management can take participants' keys from the network registry. Agri Stack has an entry point that is its provider platform (BPP, beckn-onix) registered in the network registry, the Exchange for consented data sharing, the departments' registries, each issuing verifiable credentials, and the catalogues. Path B: the bank, onboarded and granted the use case beforehand, orders it for a farmer (listing use cases on the network is optional) (select, init, confirm); the Composite answers with on_confirm and on_status. Path A: a plain API call to one registry. Path C: one registry is a partner of another."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .h1{font-size:26px;font-weight:700} .sub{font-size:14px;fill:#56625B}
 .t{font-size:15px;font-weight:600} .s{font-size:11.5px;fill:#56625B}
@@ -49,11 +49,11 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <line class="ar" x1="238" y1="238" x2="294" y2="238" marker-end="url(#a)" marker-start="url(#a)"/>
 <text class="lbl" x="266" y="230" text-anchor="middle">credit</text>
 <rect class="ing" x="760" y="196" width="180" height="84" rx="9"/>
-<text class="t" x="850" y="230" text-anchor="middle">Gateway</text><text class="s" x="850" y="249" text-anchor="middle">discovery (search)</text>
+<text class="t" x="850" y="230" text-anchor="middle">Gateway</text><text class="s" x="850" y="249" text-anchor="middle">discovery (optional)</text>
 <rect class="ing" x="960" y="196" width="194" height="84" rx="9"/>
 <text class="t" x="1057" y="230" text-anchor="middle">Network registry</text><text class="s" x="1057" y="249" text-anchor="middle">participants and keys</text>
-<line class="ar d2" x1="588" y1="230" x2="758" y2="230" marker-end="url(#a)"/>
-<text class="lbl" x="673" y="222" text-anchor="middle">search</text>
+<line class="ar d2" x1="588" y1="230" x2="758" y2="230" marker-end="url(#a)" style="stroke:#9AA39E"/>
+<text class="lbl" x="673" y="222" text-anchor="middle">search (optional)</text>
 
 <g transform="translate(0,128)">
 <!-- ── Agri Stack ── -->
@@ -109,8 +109,8 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 
 <!-- ── Paths ── -->
 <!-- discovery: gateway → Agri Stack's BPP (catalogue of use cases) -->
-<polyline class="ar d2" points="850,282 850,462 440,462 440,506" marker-end="url(#a)"/>
-<text class="lbl" x="858" y="332">use-case catalogue</text><text class="lbl" x="858" y="346">(the Composite's use cases)</text>
+<polyline class="ar d2" points="850,282 850,462 440,462 440,506" marker-end="url(#a)" style="stroke:#9AA39E"/>
+<text class="lbl" x="858" y="332">use-case listing</text><text class="lbl" x="858" y="346">(optional, information only)</text>
 <!-- registered in the network registry -->
 <line class="ar d2" x1="1010" y1="398" x2="1010" y2="282" marker-end="url(#a)"/>
 <text class="lbl" x="1018" y="332">registered</text>
@@ -118,7 +118,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <text class="lbl" x="1114" y="362" text-anchor="end">participants' keys</text>
 <!-- B: order to the Composite -->
 <line class="ar" x1="420" y1="282" x2="420" y2="506" marker-end="url(#a)" marker-start="url(#a)"/>
-<text class="n" x="428" y="318">B</text><text class="lbl" x="442" y="318">order: select / init / confirm — a use case, for a farmer</text>
+<text class="n" x="428" y="318">B</text><text class="lbl" x="442" y="318">order: select / init / confirm — a granted use case, for a farmer</text>
 <text class="lbl" x="442" y="332">← on_confirm / on_status: the signed result</text>
 <line class="ar" x1="300" y1="672" x2="300" y2="720" marker-end="url(#a)"/>
 <line class="ar" x1="600" y1="672" x2="600" y2="720" marker-end="url(#a)"/>
