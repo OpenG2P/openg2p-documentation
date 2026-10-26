@@ -30,11 +30,13 @@ This fits because the Composite already works at the level of **use cases** (e.g
 | Beckn step | What it means for the Composite |
 | --- | --- |
 | `discover` / `search` | Optional, for information only: published use cases, each with its purpose and what it returns, for prospective partners to see what they could apply for. Not part of a request |
-| `select` / `init` | The onboarded partner names a use case it is granted, the farmer and the parameters (e.g. crop year, season). The Composite checks the partner's [policy for that use case](../architecture/data-sharing-policies.md). If the farmer has not consented yet, the provider's form step (Beckn XInput) sends the farmer to the Consent Manager's screen to log in with the national ID and approve |
+| `select` / `init` | The onboarded partner names a use case it is granted, the farmer and the parameters (e.g. crop year, season). The Composite checks the partner's [policy for that use case](../architecture/data-sharing-policies.md). |
 | `confirm` | The order: the query runs. The Exchange Consent Manager finds the consent and issues a [consent token](../../consent-management/design/exchange-consent-tokens.md) per registry; the registries answer |
 | `on_confirm` / `on_status` | The fulfilment: the signed result, with a status per source |
 
-Consent through the XInput step would bring consent [scenarios 2 and 3](../architecture/consent.md) (the farmer approving on the Consent Manager's own screen) into the partner's own Beckn flow, with nothing consent-specific for the partner to build.
+**Consent is not part of the Beckn flow.** The farmer's consent is already held by the Exchange Consent Manager, collected through the partner portal or another Consent Manager channel ([consent](../architecture/consent.md)); the order carries no consent, and the Consent Manager looks it up. Beckn defines no consent mechanism of its own.
+
+**Optional, later: Beckn XInput.** XInput is Beckn's generic way for a provider to ask for more input through a form URL. If no consent exists yet, Agri Stack's provider could answer with an XInput pointing to the Consent Manager's own consent screen, where the farmer logs in with the national ID and approves. Beckn would only route the farmer there; the consent is still recorded and checked by the Consent Manager.
 
 ## How it would be built
 
@@ -53,9 +55,55 @@ Consent through the XInput step would bring consent [scenarios 2 and 3](../archi
 * Path B in the [architecture](../architecture/README.md#components-and-who-talks-to-whom) is unchanged behind the adapter: one consent, a consent token per registry, each department deciding with its own Consent Manager and ceiling.
 * Today Beckn appears only at the OAN layer, for discovering service providers and consumers; this proposal adds the Composite as a provider on that network.
 
+## What a partner needs beyond OAN
+
+**Verdict.** With the OAN adapter in place and consent collected through the partner portal, a partner (e.g. a bank) needs **no software beyond its Beckn node**. What it needs on top of OAN is organisational and operational: an agreement, onboarding, use-case grants and portal accounts. Code is needed only for options it chooses, or if the OAN adapter is not built.
+
+### One-time onboarding (no code)
+
+| What | How |
+| --- | --- |
+| An agreement with the Agri Stack operator | Legal and data-sharing terms: purposes, data retention. Outside any system |
+| Its partner record in the Exchange's Partner Management | Its key taken from its Beckn registry entry (if built; see [what would need to be built](#what-would-need-to-be-built-or-decided)), otherwise its public key supplied once |
+| A grant for each use case it may order | Approved in Partner Management ([creating and changing policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)). Without it, orders are refused |
+| Partner-portal accounts for its staff | Created by the operator ([after install](../deployment/after-install.md#partner-portal-realm-and-users)) |
+
+### Consent, by scenario
+
+| [Scenario](../architecture/consent.md) | What the partner does | Code beyond OAN? |
+| --- | --- | --- |
+| **1 · In person, with a form** (built) | Its staff use the **partner portal** (a web app): raise the request for a use case, the farmer logs in with the national ID on the partner's device, staff upload the signed form; Consent Manager staff approve | **No**: a browser |
+| **2 · In person, digital** (planned) | The same portal; the farmer approves on the Consent Manager's own screen | **No** |
+| **3 · Self-service** (planned) | The farmer approves in their own app or portal. The partner still raises the request: in the portal (no code), from its own system through the Consent Manager's API (code), or through Beckn XInput in the order flow (no extra code, if built) | Only if raised from its own system |
+| **Partner-signed consent** (only if its policy allows) | The partner collects consent in its own system and signs a consent object (JWS) for each order | **Yes**: the consent format and signing, outside OAN |
+
+### Each request (Beckn only)
+
+* The order goes through the partner's Beckn node; beckn-onix handles signing and callbacks.
+* The farmer's ID (national ID or Farmer ID) is one the partner already has from dealing with the farmer.
+* No consent ID: the Exchange Consent Manager looks the consent up.
+* Beckn checks the message signatures. Also verifying the Composite's own signature on the result is optional, and would need code.
+
+### Afterwards (no code)
+
+* The consent record (receipt, signed form, the Consent Manager's statement) is downloaded from the partner portal.
+* Revocation: the farmer asks the Consent Manager's operator; self-service revocation comes later.
+
+### Summary
+
+* **Always:** the agreement, onboarding, use-case grants and portal accounts. Process, not code.
+* **Only if the partner chooses:** an integration to raise consent requests from its own system, or signing its own consents. Each is code outside OAN.
+* **If the OAN adapter is not built:** a client for the Composite's own API and its signed request format: the barrier this proposal removes.
+
+### Gaps this shows in Agri Stack
+
+1. **Portal accounts** are created by an operator script; a partner cannot manage its own staff's accounts.
+2. **Raising consent requests from a partner's own system** has no partner-facing API documented as such.
+3. **Taking partners' keys from the Beckn network registry** is not built (part of this proposal).
+
 ## Catalogues and OAN
 
-**Not needed.** Agri Stack's catalogues (Master Data Service) are public data, and their public API already follows open standards: a W3C DCAT catalogue to find datasets, SKOS for code lists, CSV, JSON and GeoJSON downloads, HTTP caching to notice changes, and licence URIs ([MDS standards at a glance](../../platform/platform-services/master-data-service/standards.md#at-a-glance-what-a-public-consumer-uses)). Anyone in the country, on OAN or not, reads them with ordinary open-data tools. Only the staff API (editing and approval) is MDS's own, and it stays internal.
+**Beckn-compatible catalogue APIs are not needed.** Agri Stack's catalogues (Master Data Service) are public data, and their public API already follows open standards: a W3C DCAT catalogue to find datasets, SKOS for code lists, CSV, JSON and GeoJSON downloads, HTTP caching to notice changes, and licence URIs ([MDS standards at a glance](../../platform/platform-services/master-data-service/standards.md#at-a-glance-what-a-public-consumer-uses)). Anyone in the country, on OAN or not, reads them with ordinary open-data tools. Only the staff API (editing and approval) is MDS's own, and it stays internal.
 
 **If OAN does want them on the network**, the suggested approach:
 
@@ -69,7 +117,7 @@ Consent through the XInput step would bring consent [scenarios 2 and 3](../archi
    * **An OAN app showing the farmer their own data:** a farmer-facing (self-service) path, not the partner API.
    * **Agri Stack itself offering services on the network:** the Composite as a provider (this proposal).
 2. **Which OAN domain and specification version** partners will use, and which schema describes a use case as an item to order. This should come from OAN, not be invented by Agri Stack.
-3. **How OAN collects consent:** through Beckn XInput forms, a consent artefact or reference carried in the order, or both.
+3. **Consent inside the Beckn flow:** whether to offer the optional XInput route to the Consent Manager's consent screen, or keep consent entirely in the partner portal and other Consent Manager channels.
 4. **How the result is delivered and protected:** inline in `on_confirm`/`on_status`, or a short-lived signed link; whether it is encrypted to the partner's key.
 5. **Onboarding:** whether a network participant's registry entry is enough for Partner Management, or a separate Partner Management approval is still required for each use case (today it is).
 6. **Catalogues on the network:** whether OAN wants the catalogues discoverable through network `search`, and whether its domain messages will carry the catalogue codes.
