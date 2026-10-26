@@ -13,6 +13,10 @@ description: >-
 **Source code:** [github.com/openg2p/agri-stack](https://github.com/openg2p/agri-stack) (the Composite), [github.com/OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry), [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) and [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
 {% endhint %}
 
+## At a glance
+
+<figure><img src="../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use cases of value to the farmer, for example access to credit, access to market, grievance, access to payment, and more. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land). A use case for a farmer reaches the Exchange through Beckn or Agri Stack's own API; the Exchange searches each registry with its consent token."><figcaption><p>Concept: Agri Stack, with use cases above it (for example on OAN, the Open Agri Network)</p></figcaption></figure>
+
 ## What it is
 
 Agri Stack is the digital public infrastructure (DPI) for agriculture. It has four parts:

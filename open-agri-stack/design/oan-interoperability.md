@@ -9,6 +9,10 @@ description: >-
 
 **Status: proposal, not built.** Today partners call the [Composite](../composite/README.md) through its own API ([Composite API](../composite/api.md)).
 
+**Concept.** At a high level, OAN's use-case services sit on top of Agri Stack, which provides consented data sharing (the Exchange), the departments' registries and the public catalogues:
+
+<figure><img src="../../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use-case services of value to the farmer, for example access to credit, access to market, grievance, access to payment. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land). OAN asks for a use case for a farmer, through Beckn or Agri Stack's own API; the Exchange searches each registry with its consent token."><figcaption><p>Concept: OAN and Agri Stack at a high level (the registries a country may run)</p></figcaption></figure>
+
 ## Why
 
 Agri Stack is foundational: layers above it, such as the Open Agri Network (OAN), are built on the [Beckn](https://becknprotocol.io/) protocol. Asking every partner to build a client specific to the Composite is a real barrier, while partners on OAN will implement Beckn anyway. If the Composite is a node on the network, a partner reaches Agri Stack with the same discover-and-order mechanism it uses for everything else on OAN.
@@ -16,6 +20,8 @@ Agri Stack is foundational: layers above it, such as the Open Agri Network (OAN)
 ## The idea
 
 The Composite takes part in OAN as a **provider (BPP)**. Its catalogue is its published use cases. A partner, as a consumer app (BAP), discovers a use case, orders it for a farmer, and receives the result as the order's fulfilment.
+
+<figure><img src="../../.gitbook/assets/open-agri-stack-oan-beckn.svg" alt="Agri Stack as a provider on the OAN Beckn network: the bank, a network participant, discovers the Composite's use cases through the gateway and orders one for a farmer (select, init, confirm) through Agri Stack's entry point, its provider platform; the Composite answers with on_confirm and on_status. Agri Stack's entry point is registered in the network registry, from which Partner Management can take participants' keys. Inside Agri Stack: the Exchange (Composite, Consent Manager, Partner Management, partner portal, national-ID login, Audit Manager), the departments' registries, each issuing verifiable credentials, and the catalogues. Path A is a plain API call to one registry; path C, one registry as a partner of another."><figcaption><p>Architecture: Agri Stack under OAN, in Beckn terms (proposal; the registries built today)</p></figcaption></figure>
 
 This fits because the Composite already works at the level of **use cases** (e.g. `loan-profile@1`), not individual data scopes: a use case is a natural catalogue item.
 
@@ -45,6 +51,15 @@ Consent through the XInput step would bring consent [scenarios 2 and 3](../archi
 * Path B in the [architecture](../architecture/README.md#components-and-who-talks-to-whom) is unchanged behind the adapter: one consent, a consent token per registry, each department deciding with its own Consent Manager and ceiling.
 * Today Beckn appears only at the OAN layer, for discovering service providers and consumers; this proposal adds the Composite as a provider on that network.
 
+## Catalogues and OAN
+
+**Not needed.** Agri Stack's catalogues (Master Data Service) are public data, and their public API already follows open standards: a W3C DCAT catalogue to find datasets, SKOS for code lists, CSV, JSON and GeoJSON downloads, HTTP caching to notice changes, and licence URIs ([MDS standards at a glance](../../platform/platform-services/master-data-service/standards.md#at-a-glance-what-a-public-consumer-uses)). Anyone in the country, on OAN or not, reads them with ordinary open-data tools. Only the staff API (editing and approval) is MDS's own, and it stays internal.
+
+**If OAN does want them on the network**, the suggested approach:
+
+* **Make them findable, not orderable.** Reading public reference data needs no consent and no order. Agri Stack's provider platform can answer a network `search` with the catalogue as an item whose description links to the DCAT catalogue and the downloads; consumers then read them directly. Wrapping each read in `select` / `init` / `confirm` would add ceremony and nothing else.
+* **Use the codes as the network's vocabulary.** OAN has no taxonomy of its own. Domain messages on the network (crop, seed, inputs, livestock, location) can carry MDS codes, with the dataset version, as Beckn descriptor codes or tags, so every participant resolves them against the same catalogue.
+
 ## Open questions
 
 1. **Which OAN scenario comes first?** Each leads to a different integration point:
@@ -55,3 +70,4 @@ Consent through the XInput step would bring consent [scenarios 2 and 3](../archi
 3. **How OAN collects consent:** through Beckn XInput forms, a consent artefact or reference carried in the order, or both.
 4. **How the result is delivered and protected:** inline in `on_confirm`/`on_status`, or a short-lived signed link; whether it is encrypted to the partner's key.
 5. **Onboarding:** whether a network participant's registry entry is enough for Partner Management, or a separate Partner Management approval is still required for each use case (today it is).
+6. **Catalogues on the network:** whether OAN wants the catalogues discoverable through network `search`, and whether its domain messages will carry the catalogue codes.

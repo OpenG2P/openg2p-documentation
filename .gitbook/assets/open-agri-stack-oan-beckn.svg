@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1066" viewBox="0 0 1200 1066" role="img" aria-label="Agri Stack as a provider on the OAN Beckn network. OAN holds the domains (access to credit, access to market, grievance, access to payment), the farmer app (BAP), the bank as a network participant (a provider to the farmer, a consumer of Agri Stack), the network gateway and the network registry; Partner Management can take participants' keys from the network registry. Agri Stack has an entry point that is its provider platform (BPP, beckn-onix) registered in the network registry, the Exchange for consented data sharing, the departments' registries, each issuing verifiable credentials, and the catalogues. Path B: the bank discovers the Composite's use cases through the gateway and orders one for a farmer (select, init, confirm); the Composite answers with on_confirm and on_status. Path A: a plain API call to one registry. Path C: one registry is a partner of another."><style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.h1{font-size:26px;font-weight:700} .sub{font-size:14px;fill:#56625B}
+.t{font-size:15px;font-weight:600} .s{font-size:11.5px;fill:#56625B}
+.cap{font-size:11px;letter-spacing:.08em;fill:#3B4640;font-family:'JetBrains Mono',Menlo,monospace;font-weight:600}
+.lbl{font-size:11.5px;fill:#3B4640} .n{font-size:12px;font-weight:700;fill:#1B231F}
+.oanbox{fill:#F4F9F2;stroke:#4B8646;stroke-width:1.6}
+.oan{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.2}
+.prt{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.4}
+.stack{fill:#FAFBFA;stroke:#1F2A33;stroke-width:2}
+.ing{fill:#F3F4F3;stroke:#8A948E;stroke-width:1.3;stroke-dasharray:6 4}
+.ex{fill:#F2F8F9;stroke:#3C7C88;stroke-width:1.6}
+.dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.2}
+.cmp{fill:#E1EEF0;stroke:#2A6470;stroke-width:2.2}
+.reg{fill:#E8EEF7;stroke:#4A6FA5;stroke-width:1.3}
+.regp{fill:#F3F5F9;stroke:#8EA3C4;stroke-width:1.3;stroke-dasharray:5 4}
+.ref{fill:#F3E9CC;stroke:#A88A3D;stroke-width:1.2}
+.vc{fill:#FFFFFF;stroke:#4A6FA5;stroke-width:1}
+.vct{font-size:10.5px;font-weight:600;fill:#2F4F7F}
+.tag{font-size:10px;fill:#6B7A90;font-style:italic}
+.ar{stroke:#3B4640;stroke-width:1.6;fill:none}
+.arA{stroke:#2F6FA8;stroke-width:1.6;fill:none} .nA{font-size:12px;font-weight:700;fill:#2F6FA8}
+.arC{stroke:#9A5B12;stroke-width:1.6;fill:none} .nC{font-size:12px;font-weight:700;fill:#9A5B12}
+.d2{stroke-dasharray:5 4}
+</style>
+<defs>
+<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker>
+<marker id="aA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2F6FA8"/></marker>
+<marker id="aC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9A5B12"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+
+<text class="h1" x="30" y="42">Agri Stack under OAN (Beckn terms)</text>
+<text class="sub" x="30" y="66">Agri Stack as a provider platform (BPP) on the network · the bank orders a use case for a farmer</text>
+
+<!-- ── OAN ── -->
+<rect class="oanbox" x="30" y="84" width="1140" height="216" rx="12"/>
+<text class="cap" x="46" y="104">OAN · BECKN NETWORK</text>
+<text class="cap" x="1154" y="104" text-anchor="end">DOMAINS (OFFERED BY PROVIDERS)</text>
+<rect class="oan" x="46" y="114" width="268" height="58" rx="9"/><text class="t" x="180" y="139" text-anchor="middle">Access to Credit</text><text class="s" x="180" y="157" text-anchor="middle">farmer data → credit</text>
+<rect class="oan" x="326" y="114" width="268" height="58" rx="9"/><text class="t" x="460" y="139" text-anchor="middle">Access to Market</text><text class="s" x="460" y="157" text-anchor="middle">marketplace + registry</text>
+<rect class="oan" x="606" y="114" width="268" height="58" rx="9"/><text class="t" x="740" y="139" text-anchor="middle">Grievance</text><text class="s" x="740" y="157" text-anchor="middle">registration + routing</text>
+<rect class="oan" x="886" y="114" width="268" height="58" rx="9"/><text class="t" x="1020" y="139" text-anchor="middle">Access to Payment</text><text class="s" x="1020" y="157" text-anchor="middle">transaction services</text>
+<rect class="prt" x="46" y="196" width="190" height="84" rx="9"/>
+<text class="t" x="141" y="226" text-anchor="middle">Farmer app</text><text class="s" x="141" y="245" text-anchor="middle">BAP · mobile app, channels</text>
+<rect class="prt" x="296" y="196" width="290" height="84" rx="9"/>
+<text class="t" x="441" y="222" text-anchor="middle">Network participant</text><text class="s" x="441" y="241" text-anchor="middle">bank · MFI · agritech</text><text class="s" x="441" y="258" text-anchor="middle">BPP to the farmer · BAP to Agri Stack</text>
+<line class="ar" x1="238" y1="238" x2="294" y2="238" marker-end="url(#a)" marker-start="url(#a)"/>
+<text class="lbl" x="266" y="230" text-anchor="middle">credit</text>
+<rect class="ing" x="760" y="196" width="180" height="84" rx="9"/>
+<text class="t" x="850" y="230" text-anchor="middle">Gateway</text><text class="s" x="850" y="249" text-anchor="middle">discovery (search)</text>
+<rect class="ing" x="960" y="196" width="194" height="84" rx="9"/>
+<text class="t" x="1057" y="230" text-anchor="middle">Network registry</text><text class="s" x="1057" y="249" text-anchor="middle">participants and keys</text>
+<line class="ar d2" x1="588" y1="230" x2="758" y2="230" marker-end="url(#a)"/>
+<text class="lbl" x="673" y="222" text-anchor="middle">search</text>
+
+<g transform="translate(0,128)">
+<!-- ── Agri Stack ── -->
+<rect class="stack" x="30" y="236" width="1140" height="636" rx="14"/>
+<text class="cap" x="100" y="260">AGRI STACK</text>
+
+<!-- Entry Point -->
+<rect class="ing" x="46" y="272" width="1108" height="50" rx="8"/>
+<text class="t" x="635" y="294" text-anchor="middle">Entry Point</text>
+<text class="s" x="635" y="312" text-anchor="middle">Agri Stack's provider platform (BPP, beckn-onix) · API gateway · Istio, TLS</text>
+
+<!-- Exchange -->
+<rect class="ex" x="96" y="346" width="1058" height="196" rx="11"/>
+<text class="cap" x="112" y="368">EXCHANGE · CONSENTED DATA SHARING</text>
+<rect class="cmp" x="112" y="380" width="335" height="66" rx="8"/>
+<text class="t" x="279" y="407" text-anchor="middle">Composite</text><text class="s" x="279" y="427" text-anchor="middle">use cases · one query, many registries</text>
+<rect class="dpi" x="459" y="380" width="335" height="66" rx="8"/>
+<text class="t" x="626" y="407" text-anchor="middle">Consent Manager</text><text class="s" x="626" y="427" text-anchor="middle">farmers' consents · a consent token per registry</text>
+<rect class="dpi" x="806" y="380" width="335" height="66" rx="8"/>
+<text class="t" x="973" y="407" text-anchor="middle">Partner Management</text><text class="s" x="973" y="427" text-anchor="middle">partners · keys · policy per use case</text>
+<rect class="dpi" x="112" y="460" width="335" height="66" rx="8"/>
+<text class="t" x="279" y="487" text-anchor="middle">Partner portal</text><text class="s" x="279" y="507" text-anchor="middle">consent requests · evidence</text>
+<rect class="dpi" x="459" y="460" width="335" height="66" rx="8"/>
+<text class="t" x="626" y="487" text-anchor="middle">National-ID login</text><text class="s" x="626" y="507" text-anchor="middle">eSignet · the farmer proves who they are</text>
+<rect class="dpi" x="806" y="460" width="335" height="66" rx="8"/>
+<text class="t" x="973" y="487" text-anchor="middle">Audit Manager</text><text class="s" x="973" y="507" text-anchor="middle">every call and change</text>
+
+<!-- Registries -->
+<rect class="reg" x="46" y="594" width="361" height="130" rx="9"/>
+<text class="cap" x="62" y="616">DEPARTMENT A</text>
+<text class="t" x="62" y="640">Farmer Registry</text><text class="s" x="62" y="659">farmer identity · profile</text>
+<rect class="vc" x="62" y="688" width="96" height="22" rx="11"/><text class="vct" x="110" y="703" text-anchor="middle">issues VCs</text>
+<rect class="reg" x="419" y="594" width="361" height="130" rx="9"/>
+<text class="cap" x="435" y="616">DEPARTMENT B</text>
+<text class="t" x="435" y="640">Crop Sown Registry</text><text class="s" x="435" y="659">crop, plot, seasonal activity</text>
+<rect class="vc" x="435" y="688" width="96" height="22" rx="11"/><text class="vct" x="483" y="703" text-anchor="middle">issues VCs</text>
+<rect class="regp" x="792" y="594" width="362" height="130" rx="9"/>
+<text class="cap" x="808" y="616">DEPARTMENT C</text>
+<text class="t" x="808" y="640">Livestock Registry</text><text class="s" x="808" y="659">herd · animal lifecycle</text>
+<rect class="vc" x="808" y="688" width="96" height="22" rx="11"/><text class="vct" x="856" y="703" text-anchor="middle">issues VCs</text>
+<text class="tag" x="1140" y="703" text-anchor="end">planned</text>
+
+<!-- Catalogues -->
+<text class="cap" x="46" y="760">CATALOGUES · COMMON VOCABULARY</text>
+<rect class="ref" x="46" y="772" width="174" height="80" rx="8"/><text class="t" x="133" y="806" text-anchor="middle">Crop</text><text class="s" x="133" y="826" text-anchor="middle">classification</text>
+<rect class="ref" x="232" y="772" width="174" height="80" rx="8"/><text class="t" x="319" y="806" text-anchor="middle">Seed</text><text class="s" x="319" y="826" text-anchor="middle">varieties</text>
+<rect class="ref" x="418" y="772" width="174" height="80" rx="8"/><text class="t" x="505" y="806" text-anchor="middle">Inputs</text><text class="s" x="505" y="826" text-anchor="middle">reference</text>
+<rect class="ref" x="604" y="772" width="174" height="80" rx="8"/><text class="t" x="691" y="806" text-anchor="middle">Livestock</text><text class="s" x="691" y="826" text-anchor="middle">species · breeds</text>
+<rect class="ref" x="790" y="772" width="174" height="80" rx="8"/><text class="t" x="877" y="806" text-anchor="middle">Location</text><text class="s" x="877" y="826" text-anchor="middle">geography</text>
+<rect class="ref" x="976" y="772" width="178" height="80" rx="8"/><text class="t" x="1065" y="806" text-anchor="middle">Land</text><text class="s" x="1065" y="826" text-anchor="middle">land reference</text>
+
+</g>
+
+<!-- ── Paths ── -->
+<!-- discovery: gateway → Agri Stack's BPP (catalogue of use cases) -->
+<polyline class="ar d2" points="850,282 850,462 440,462 440,506" marker-end="url(#a)"/>
+<text class="lbl" x="858" y="332">use-case catalogue</text><text class="lbl" x="858" y="346">(the Composite's use cases)</text>
+<!-- registered in the network registry -->
+<line class="ar d2" x1="1010" y1="398" x2="1010" y2="282" marker-end="url(#a)"/>
+<text class="lbl" x="1018" y="332">registered</text>
+<line class="ar d2" x1="1120" y1="282" x2="1120" y2="506" marker-end="url(#a)"/>
+<text class="lbl" x="1114" y="362" text-anchor="end">participants' keys</text>
+<!-- B: order to the Composite -->
+<line class="ar" x1="420" y1="282" x2="420" y2="506" marker-end="url(#a)" marker-start="url(#a)"/>
+<text class="n" x="428" y="318">B</text><text class="lbl" x="442" y="318">order: select / init / confirm — a use case, for a farmer</text>
+<text class="lbl" x="442" y="332">← on_confirm / on_status: the signed result</text>
+<line class="ar" x1="300" y1="672" x2="300" y2="720" marker-end="url(#a)"/>
+<line class="ar" x1="600" y1="672" x2="600" y2="720" marker-end="url(#a)"/>
+<line class="ar" x1="972" y1="672" x2="972" y2="720" marker-end="url(#a)"/>
+<text class="n" x="612" y="693">B</text><text class="lbl" x="626" y="693">search + its consent token, per registry</text>
+<!-- A: plain API to one registry -->
+<polyline class="arA" points="316,282 316,346 66,346 66,720" marker-end="url(#aA)"/>
+<text class="nA" x="72" y="376">A</text>
+<text class="lbl" x="72" y="576" transform="rotate(-90 76 576)" text-anchor="middle">plain API · consent held by the registry's CM</text>
+<!-- C -->
+<line class="arC" x1="440" y1="800" x2="409" y2="800" marker-end="url(#aC)"/>
+<text class="nC" x="545" y="804">C</text><text class="lbl" x="559" y="804">reads the Farmer Registry, as its partner</text>
+
+<!-- legend -->
+<text class="nA" x="30" y="1026">A</text><text class="lbl" x="44" y="1026">a plain API call to one registry</text>
+<text class="n" x="260" y="1026">B</text><text class="lbl" x="274" y="1026">a Beckn order to Agri Stack: one consent, several registries</text>
+<text class="nC" x="680" y="1026">C</text><text class="lbl" x="694" y="1026">registry to registry: one registry is a partner of another</text>
+<text class="s" x="30" y="1048">Each department runs its own install, with its own Consent Manager, Partner Management, catalogue and entry point. Partner Management maps a network participant to its partner and use-case policies.</text>
+</svg>

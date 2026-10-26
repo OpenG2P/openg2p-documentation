@@ -14,6 +14,20 @@ pages link here instead of describing them.
 **Status:** **Used**: implemented and in use. **Partly**: used, with the limits
 given in the notes. **To explore**: not used yet.
 
+## At a glance: what a public consumer uses
+
+Anyone in the country can find and read the public catalogues with ordinary open-data tools; the endpoints are described in the DCAT catalogue, so harvesters find them without reading MDS documentation. Only the staff API (editing, approvals, behind a login) is MDS's own.
+
+| Need | Standard | Where |
+| --- | --- | --- |
+| Find what data exists | W3C DCAT 3, JSON-LD (DCAT-AP style) | `GET /public/catalog`: harvestable by CKAN and national open-data portals |
+| Read a code list | W3C SKOS concept scheme, JSON-LD | `GET /public/datasets/{code}/skos` |
+| Download | CSV, JSON; GeoJSON (RFC 7946) for boundaries | Per dataset version and per geography level ([downloads](public-catalogue.md#what-it-offers)) |
+| Notice changes | DCAT `modified` dates; HTTP caching (`ETag`, `Last-Modified`) | Every public response. The change feed and its WebSub notifications are for authenticated consumers only ([consumers](consumers.md)) |
+| Licence | Creative Commons / Open Data Commons URIs | `licence_uri` on each dataset and the geography |
+
+The sections below list every standard in detail.
+
 ## Catalogue metadata (public catalogue)
 
 These apply to the opt-in [public catalogue](public-catalogue.md)
