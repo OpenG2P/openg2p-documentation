@@ -13,7 +13,7 @@ description: >-
 
 ## At a glance
 
-<figure><img src="../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use cases of value to the farmer, for example access to credit, access to market, grievance, access to payment, and more. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land). A use case for a farmer reaches the Exchange through Beckn or Agri Stack's own API; the Exchange searches each registry with its consent token."><figcaption><p>Concept: Agri Stack, with use cases above it (for example on OAN, the Open Agri Network)</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/open-agri-stack-overview.svg" alt="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, with the farmer's consent; for example credit, insurance, subsidies, market access, advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><figcaption><p>Concept: Agri Stack makes farmer data available, with consent, to the farmer services offered in a country</p></figcaption></figure>
 
 ## What it is
 
@@ -52,6 +52,12 @@ All registries are keyed to the same national identifier (Fayda in the reference
 | [Approval Workflow Engine (AWE)](../platform/platform-services/approval-workflow-engine/README.md) | Approval of registers' changes |
 | [Audit Manager](../platform/platform-services/audit-manager/README.md) | Audit events from every hop, linked by the request ID. One per install |
 
+## Agri Stack and OAN
+
+Agri Stack stands on its own: any authorised partner uses it through its API. A country that also runs an agricultural services network such as the Open Agri Network (OAN), built on Beckn, can make Agri Stack one of that network's providers, so partners on the network reach it with the same order mechanism they use for everything else. That is a proposal, described in [Interoperability with OAN (Beckn)](design/oan-interoperability.md).
+
+<figure><img src="../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use cases of value to the farmer, for example access to credit, access to market, grievance, access to payment, and more. A use case for a farmer reaches Agri Stack through Beckn or Agri Stack's own API. Agri Stack has the Exchange for consented data sharing, the departments' registries and the public catalogues."><figcaption><p>Concept: Agri Stack with OAN on top (proposal)</p></figcaption></figure>
+
 ## Map of this section
 
 Built today: the Farmer and Crop Sown registries, activity registers in the registry platform, the catalogues (Master Data Service), and the [Exchange](architecture/exchange.md): the [Composite](composite/README.md) with its [console](composite/console.md), a [consent token per registry](architecture/request-flow.md) from one consent, and [consent collection](architecture/consent.md) in person with a form. Still to do: [TODOs & Open Items](open-items/README.md).
@@ -59,7 +65,7 @@ Built today: the Farmer and Crop Sown registries, activity registers in the regi
 | Part | Pages |
 | --- | --- |
 | **[Architecture and concepts](architecture/README.md)** | Components and who talks to whom; [the Exchange](architecture/exchange.md); [consent](architecture/consent.md); [data-sharing policies](architecture/data-sharing-policies.md); [request flow](architecture/request-flow.md); [registries](architecture/registries.md); [terms](architecture/terms.md); [standards](architecture/standards.md) |
-| **[Design](design/README.md)** | [Registry data sync](design/registry-data-sync.md); [Livestock Registry](design/livestock-registry.md) |
+| **[Design](design/README.md)** | [Registry data sync](design/registry-data-sync.md); [Livestock Registry](design/livestock-registry.md); [Interoperability with OAN](design/oan-interoperability.md) |
 | **[Exchange](exchange.md)** | The [Composite](composite/README.md), the partners' entry point: design; [Composite API](composite/api.md); [use-case configuration](composite/use-case-configuration.md); [adding a data source](composite/adding-a-data-source.md); [Composite console](composite/console.md); [running the Composite locally](composite/running-locally.md) |
 | **[Deployment](deployment/README.md)** | Topology, install order and the names that must match; installing the [Exchange](deployment/exchange.md), the [Farmer Registry](deployment/farmer-registry.md), the [Crop Sown Registry](deployment/crop-sown-registry.md) and the [Composite](deployment/composite.md); [after install](deployment/after-install.md); [testing](deployment/testing.md); [upgrades and uninstall](deployment/upgrades-and-uninstall.md); [separate clusters](deployment/separate-clusters.md) |
 | **[Partner guide](partner-guide.md)** | For banks, MFIs and agritechs: joining Agri Stack and calling a use case end to end |
