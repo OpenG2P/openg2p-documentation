@@ -7,8 +7,6 @@ description: >-
 
 # Agri Stack
 
-<figure><img src="../.gitbook/assets/open-agri-stack-logo.jpg" alt="Agri Stack — DPI for Agriculture" width="160"><figcaption></figcaption></figure>
-
 {% hint style="info" %}
 **Source code:** [github.com/openg2p/agri-stack](https://github.com/openg2p/agri-stack) (the Composite), [github.com/OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry), [github.com/OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) and [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
 {% endhint %}
