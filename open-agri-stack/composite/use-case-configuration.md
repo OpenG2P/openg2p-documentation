@@ -59,7 +59,7 @@ A subject ID type names the kind of identifier a request's subject is given in. 
 
 | Subject ID type | What it is | Farmer Registry field | Crop Sown Registry field |
 | --- | --- | --- | --- |
-| `FAYDA_FAN` | Fayda (national ID) FAN | `foundational_id` | `fayda_fan` |
+| `FAYDA_FAN` | The national ID (as named in the Ethiopia example) | `foundational_id` | `fayda_fan` |
 | `FARMER_ID` | Farmer Registry ID, e.g. `FR-0007` | `functional_record_id` | `farmer_id` |
 
 * **Use case:** `input.subject.id_types` lists the types a partner may send.

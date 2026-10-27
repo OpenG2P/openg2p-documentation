@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560" role="img" aria-label="The Exchange. A partner, onboarded and approved with the use cases assigned to it, sends one request: a use case, for a farmer. In the Exchange, the Composite runs the use case; the Consent Manager, with its partner portal, holds the farmer's consent and issues a consent token per registry; Partner Management holds the partner's keys and use-case policies; eSignet is the farmer's national-ID login; the Audit Manager records every call. The Composite searches each department's registry with its consent token and returns one consolidated, signed answer to the partner."><style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.t{font-size:14px;font-weight:600} .s{font-size:11.5px;fill:#56625B} .lbl{font-size:11.5px;fill:#3B4640}
+.cap{font-size:11px;letter-spacing:.08em;fill:#3B4640;font-family:'JetBrains Mono',Menlo,monospace;font-weight:700}
+.plain{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.3}
+.blk{fill:#FBFCFB;stroke:#7E8A82;stroke-width:1.6}
+.dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.5}
+.cmp{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.5}
+.reg{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5}
+.ar{stroke:#3B4640;stroke-width:1.5;fill:none}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+
+<!-- partner -->
+<rect class="plain" x="330" y="16" width="440" height="60" rx="8"/>
+<text class="t" x="550" y="42" text-anchor="middle">Partner · bank · MFI · agritech</text>
+<text class="s" x="550" y="62" text-anchor="middle">onboarded and approved · assigned use cases</text>
+<!-- farmer -->
+<rect class="plain" x="20" y="200" width="170" height="56" rx="8"/>
+<text class="t" x="105" y="224" text-anchor="middle">Farmer</text><text class="s" x="105" y="243" text-anchor="middle">gives consent</text>
+
+<line class="ar" x1="470" y1="78" x2="470" y2="132" marker-end="url(#a)"/>
+<text class="lbl" x="462" y="108" text-anchor="end">a use case, for a farmer</text>
+<line class="ar" x1="630" y1="132" x2="630" y2="78" marker-end="url(#a)"/>
+<text class="lbl" x="640" y="108">one consolidated, signed answer</text>
+
+<!-- Exchange -->
+<rect class="blk" x="210" y="136" width="680" height="246" rx="12"/>
+<text class="cap" x="226" y="158">EXCHANGE</text>
+<rect class="cmp" x="390" y="168" width="320" height="64" rx="8"/>
+<text class="t" x="550" y="195" text-anchor="middle">Composite</text><text class="s" x="550" y="214" text-anchor="middle">runs the use case · one query, many registries</text>
+<rect class="dpi" x="226" y="262" width="200" height="64" rx="8"/>
+<text class="t" x="326" y="288" text-anchor="middle">Consent Manager</text><text class="s" x="326" y="307" text-anchor="middle">consents · partner portal · tokens</text>
+<rect class="dpi" x="440" y="262" width="210" height="64" rx="8"/>
+<text class="t" x="545" y="288" text-anchor="middle">Partner Management</text><text class="s" x="545" y="307" text-anchor="middle">partners · keys · use cases</text>
+<rect class="dpi" x="664" y="262" width="210" height="64" rx="8"/>
+<text class="t" x="769" y="288" text-anchor="middle">National-ID Login</text><text class="s" x="769" y="307" text-anchor="middle">eSignet</text>
+<text class="s" x="550" y="362" text-anchor="middle">Audit Manager: every call and change recorded</text>
+<line class="ar" x1="440" y1="234" x2="360" y2="260" marker-end="url(#a)"/>
+<line class="ar" x1="560" y1="234" x2="555" y2="260" marker-end="url(#a)"/>
+<line class="ar" x1="192" y1="228" x2="232" y2="270" marker-end="url(#a)"/>
+<text class="lbl" x="110" y="276" text-anchor="middle">national-ID login,</text><text class="lbl" x="110" y="291" text-anchor="middle">in the partner portal</text>
+
+<!-- registries -->
+<polyline class="ar" points="550,384 550,412 275,412 275,440" marker-end="url(#a)"/>
+<line class="ar" x1="550" y1="412" x2="550" y2="440" marker-end="url(#a)"/>
+<polyline class="ar" points="550,412 825,412 825,440" marker-end="url(#a)"/>
+<text class="lbl" x="560" y="406">search + its consent token</text>
+<rect class="reg" x="160" y="444" width="230" height="64" rx="8"/>
+<text class="t" x="275" y="471" text-anchor="middle">Farmer Registry</text><text class="s" x="275" y="490" text-anchor="middle">its department</text>
+<rect class="reg" x="435" y="444" width="230" height="64" rx="8"/>
+<text class="t" x="550" y="471" text-anchor="middle">Crop Sown Registry</text><text class="s" x="550" y="490" text-anchor="middle">its department</text>
+<rect class="reg" x="710" y="444" width="230" height="64" rx="8"/>
+<text class="t" x="825" y="471" text-anchor="middle">Other registries</text><text class="s" x="825" y="490" text-anchor="middle">livestock, land, …</text>
+<text class="s" x="550" y="540" text-anchor="middle">Each registry decides what it releases, with its own Consent Manager and Partner Management.</text>
+</svg>

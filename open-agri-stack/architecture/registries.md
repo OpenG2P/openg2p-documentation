@@ -84,7 +84,7 @@ Every Agri Stack registry is keyed to the same national identifier; the Farmer R
 
 | Identifier | Subject ID type | In the Farmer Registry | In the Crop Sown Registry |
 | --- | --- | --- | --- |
-| National ID (Fayda FAN in the shipped Ethiopia example) | `FAYDA_FAN` | The farmer's foundational ID; `UIN` in the DCI record's `member_identifier` | Recorded on each activity (`fayda_fan`) |
+| National ID | `FAYDA_FAN` | The farmer's foundational ID; `UIN` in the DCI record's `member_identifier` | Recorded on each activity (`fayda_fan`) |
 | Farmer ID (e.g. `FR-0007`) | `FARMER_ID` | The farmer's functional ID; `FARMER_ID` in `member_identifier` | The register's subject |
 
 * A partner can ask about a farmer by either. Given a national ID, the Composite reads the Farmer ID from the Farmer Registry and searches the Crop Sown Registry with it.

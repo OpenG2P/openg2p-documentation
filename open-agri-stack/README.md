@@ -33,7 +33,7 @@ The services that use Agri Stack's data sit above it. They can be anything a cou
 
 ### Exchange
 
-The **Exchange** is where service providers (partners) onboard once and ask for farmer data. It collects and checks the farmer's consent, decides which partner may ask for what, and queries several registries in one request. A registry can also be used directly, without the Exchange. More: [The Exchange](architecture/exchange.md).
+The **Exchange** is where service providers (partners) onboard once and ask for farmer data. It collects and checks the farmer's consent, decides which partner may ask for what, and queries several registries in one request. Data is shared through **use cases**, which partners are assigned when they are onboarded ([Use Cases](architecture/use-cases.md)). A registry can also be used directly, without the Exchange. More: [The Exchange](architecture/exchange.md).
 
 ### Registries
 

@@ -79,7 +79,7 @@ Partner Management (PM) is the trust root: it holds your public key and your **a
 | **Public key(s)** | PEM, X.509 certificate, or JWK; or a `jwks_url` to import from once | With `kid` and `algorithm` (EdDSA, ES256 or RS256) |
 | **Use cases** | `loan-profile@1` | Each use case you will call, as `name@major` ([step 3](#step-3-discover-the-use-case)) |
 | Purposes | `credit-assessment` | Per use case: its `purpose` |
-| Subject ID types | `FAYDA_FAN`, `FARMER_ID` | Per use case: its `input.subject.id_types` |
+| Subject ID types | e.g. `FAYDA_FAN` (the national ID in the Ethiopia example), `FARMER_ID` | Per use case: its `input.subject.id_types` |
 | Signing algorithms | `ES256` | Your key's algorithm |
 | Longest consent validity | `P90D` | As agreed with the Exchange |
 | Partner-signed consents | Off | On (**May present its own signed consents**) only if you will sign consents yourself ([step 4](#step-4-collect-the-farmers-consent)) and the Exchange trusts your own consent collection |
@@ -175,7 +175,7 @@ It is either held by the Consent Manager or signed by you, and a query presents 
 
 The first two need the Composite's Exchange consent mode. The response names the consent used (`message.consent_id`).
 
-**A consent held in the Consent Manager.** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (Fayda in the reference setup, through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. See [consent](architecture/consent.md) and [consent collection](../consent-management/design/consent-collection.md).
+**A consent held in the Consent Manager.** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. See [consent](architecture/consent.md) and [consent collection](../consent-management/design/consent-collection.md).
 
 **A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 5](#step-5-build-and-sign-the-consent)). The Exchange accepts it only if your policy for the use case allows partner-signed consents (off by default; otherwise `consent_denied`, reason `partner_consent_not_accepted`): the Consent Manager can verify your signature, not that the farmer agreed. What that means for you:
 

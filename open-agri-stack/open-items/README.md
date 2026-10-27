@@ -28,7 +28,7 @@ Functional work, in order, for the first production release. Country data and re
 
 ## Identity, consent and policies
 
-* **Common farmer identifier** — confirm that every department's registry stores the same national identifier (Fayda-based in the reference setup); with a separate MOSIP relying party and token per registry, records can't be joined. *Design:* a check, not a build.
+* **Common farmer identifier** — confirm that every department's registry stores the same national identifier; with a separate MOSIP relying party and token per registry, records can't be joined. *Design:* a check, not a build.
 * **Exchange consent used directly at a registry** — a consent held in the Exchange CM used at a registry without the Composite (path A in the [architecture](../architecture/README.md#components-and-who-talks-to-whom)); today a registry's own CM finds only the consents it holds. Also decide whether consent spanning registries is always collected in CM. *Design:* [consent](../architecture/consent.md); recommended: always collect it in CM.
 * **More ways to give consent** at the Exchange CM — in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to farmers (e.g. of consent requests). *Design:* [consent](../architecture/consent.md).
 * **Which CM to trust, per partner** — let a department CM choose, per partner, which CM's consent tokens it trusts (today it trusts the Exchange CM for every partner the Composite presents). *Design:* not designed yet.
@@ -36,6 +36,9 @@ Functional work, in order, for the first production release. Country data and re
 * **Farmer access to their own records (phase 2)** — a farmer-facing portal or app and beneficiary APIs for the Farmer Registry and Crop Sown Registry, to see their records and request corrections (the CM's beneficiary API is scaffolded). *Design:* not designed yet.
 * **Partner self-service in PM** — partners submit their own onboarding, key-rotation and policy requests (today a PM administrator files them). *Design:* not designed yet.
 * **Standing permission for a purpose** — a Consent Manager rule for sharing on a mandate instead of consent (registry to registry, e.g. CSR checking a farmer is registered; a yes/no Farmer ID check before consent): one caller, one purpose, narrow scopes, legal basis recorded, every use logged. *Depends on:* the departments agreeing the legal basis.
+
+* **Partner onboarding expiry** — a partner stays active until disabled; an end date for a partner (or its use-case policies) and a renewal step are not built.
+* **Partner-level limits** — how often a partner may fetch data and how much (daily quotas, data volume) are not enforced; today only a per-use-case rate limit per partner exists, and the policy's `max_fetch_frequency` and `data_life` are recorded only.
 
 ## Composite
 

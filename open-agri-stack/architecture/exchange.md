@@ -1,15 +1,22 @@
 ---
 description: >-
-  The Agri Stack Exchange: where partners onboard once and use one farmer
-  consent across registries. Its parts, what it holds and does not hold,
-  partners and their use-case grants, and how departments trust it.
+  The Agri Stack Exchange: it queries several departments' registries and gives
+  a partner one consolidated answer about a farmer, through the use cases the
+  partner is assigned and only with the farmer's consent.
 ---
 
 # The Exchange
 
-The **Exchange** is where partners (banks, MFIs, agritechs) onboard once and use one farmer consent for data held in several departments' registries. Without it, a partner would onboard and collect consent at every registry it reads (path A in the [architecture](README.md#components-and-who-talks-to-whom)). The departments keep control: each still decides at its own boundary what leaves its registry.
+The **Exchange** gives a service provider (a **partner**: a bank, an insurer, an agritech) one consolidated answer about a farmer, drawn from several departments' registries, **with the farmer's consent**. The partner sends one request; the Exchange checks that the partner may ask, finds the farmer's consent, queries each registry that holds the data, and returns one signed answer.
 
-The Exchange is one more install, hosted by one department, next to the registries' installs. It holds no registry.
+<figure><img src="../../.gitbook/assets/open-agri-stack-exchange.svg" alt="The Exchange. A partner, onboarded and approved with the use cases assigned to it, sends one request: a use case, for a farmer. In the Exchange, the Composite runs the use case; the Consent Manager, with its partner portal, holds the farmer's consent and issues a consent token per registry; Partner Management holds the partner's keys and use-case policies; eSignet is the farmer's national-ID login; the Audit Manager records every call. The Composite searches each department's registry with its consent token and returns one consolidated, signed answer to the partner."><figcaption><p>The Exchange</p></figcaption></figure>
+
+* **Everything goes through a use case.** A partner never asks for arbitrary data: it asks for a **use case** it has been assigned (for example a farmer's loan profile), which says exactly what is read from each registry. See [Use Cases](use-cases.md).
+* **Partners are onboarded and approved.** Before it can ask anything, a partner is onboarded in the Exchange's Partner Management: its keys, and the use cases it is assigned. Both are approved there.
+* **The farmer consents.** The farmer gives consent for the use case, proving who they are with the national ID ([Consent](consent.md)).
+* **Departments keep control.** Each registry still decides, at its own boundary, what it releases ([below](#how-departments-trust-it)).
+
+The Exchange is its own install, above the departments' registries. It holds no registry and keeps no farmer data. Without it, a partner would onboard and collect consent at every registry separately (path A in the [architecture](README.md#components-and-who-talks-to-whom)).
 
 ## Its parts
 
@@ -22,23 +29,16 @@ The Exchange is one more install, hosted by one department, next to the registri
 | Composite | [Composite](../composite/README.md) | The partners' entry point |
 | Audit Manager | [Audit Manager](../../platform/platform-services/audit-manager/README.md) | Who asked what: the Composite's audit events |
 
-The **Composite** serves approved use cases (e.g. `loan-profile@1`): a partner sends one signed request about one farmer, with the farmer's consent, and the Composite queries several registries and returns one signed response. It stores nothing after it responds. Each use case is a configuration file, not new code: see [Composite](../composite/README.md).
+## What the Exchange keeps, and what it does not
 
-In the partner portal, every consent request carries the farmer's Farmer ID besides the national ID; CM staff check it in the Farmer Registry before approving the consent ([Farmer ID and national ID](registries.md#farmer-id-and-national-id)). How a consent is collected: [consent](consent.md).
+For the Exchange as a whole, component by component:
 
-## What it holds, and what it does not
-
-| Holds | Does not hold |
-| --- | --- |
-| The farmers' consents, and the form the farmer signed (evidence) | Any registry, or any farmer data: the Composite keeps nothing after it responds |
-| Each partner's identity, key and use-case policies (in PM) | Any department's ceiling: each department decides in its own PM what it releases to the Composite |
-| The Composite's key and its published use cases | Any partner's key in the departments: they trust the Composite and the Exchange's consent tokens, not each partner |
-
-## Partners and their use-case grants
-
-A partner onboards in the Exchange's PM as `PARTNER_<ID>` (e.g. `PARTNER_BANK_A`), with its public key and **one use-case policy per use case it may call** (e.g. `loan-profile@1`), each with the purposes, subject ID types and consent validity allowed. All are approved in the Exchange's PM; adding a use case later is **Add policy** on the partner. A partner of the Exchange is never onboarded in a department. A granted use case brings its own scopes, so a partner needs no policy per registry. This holds for consents its staff collect in the partner portal too: there a consent is made for one of the partner's granted use cases ([data-sharing policies](data-sharing-policies.md#two-policies-two-places)).
-
-How the use-case grant, the consent and each department's ceiling combine, and who approves what: [data-sharing policies](data-sharing-policies.md). Getting onboarded, as a partner: [partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management).
+| Component | Keeps | Does not keep |
+| --- | --- | --- |
+| Consent Manager and partner portal | The farmers' consents, and the form the farmer signed (evidence) | Any farmer data from the registries |
+| Partner Management | Each partner's identity, keys and use-case policies | The departments' ceilings: each department sets in its own Partner Management what it releases to the Exchange |
+| Composite | The published use cases and its own key | Any answer: it keeps nothing after it responds |
+| Audit Manager | Who asked for what, and when | The data that was returned |
 
 ## How departments trust it
 
