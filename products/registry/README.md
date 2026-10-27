@@ -18,12 +18,4 @@ The **platform is itself installable** and ships a runnable reference registry. 
 * [`farmer-registry`](https://github.com/OpenG2P/farmer-registry)
 {% endhint %}
 
-## In this section
-
-| | |
-|---|---|
-| [**OpenG2P Registry (Platform)**](registry/README.md) | The platform itself — concepts, features, design, the developer zone, and how it is [packaged and extended](registry/deployment-and-extension/README.md). Start here to understand how registries are built. |
-| [**Farmer Registry**](farmer-registry/README.md) | A registry tuned for agricultural use — Farmer and Household registers plus farm, land, crop, livestock and cooperative data. |
-| [**National Social Registry**](national-social-registry/README.md) | A registry for social protection — Individual and Household registers with the socio-economic data used to target and enrol programmes. |
-
 Both the Farmer Registry and the National Social Registry are **extensions of the platform**: each adds only its domain model, seed data, tests and a thin values overlay. See [Deployment and Extension](registry/deployment-and-extension/README.md) for how that works, and [Building a registry](registry/developer-zone/building-a-registry/README.md) to build your own.

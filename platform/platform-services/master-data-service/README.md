@@ -67,20 +67,3 @@ admin UI; see the [Admin Guide](admin-guide.md).
 MDS ships inside the **`commons-services`** Helm chart; see
 [Deployment](deployment.md). Code, images and the changelog:
 [Software Versions](versions.md).
-
-## Pages
-
-| Page | What it covers |
-|---|---|
-| [Concepts](concepts.md) | The ideas: datasets, entries and typed fields, the geography, versions and effective dates, fixed codes and retired entries, reads and releases, the change feed |
-| [Geography and Boundary Changes](geography.md) | P-codes, how geography and boundaries are represented, change events, the crosswalk |
-| [Change Control and Approvals](change-control.md) | Drafts, approval modes, settings that apply at once, permissions, audit |
-| [For Consumers](consumers.md) | Who reads MDS, and how to read, cache, pin and follow changes |
-| [Public Catalogue](public-catalogue.md) | The opt-in, anonymous catalogue for other websites |
-| [Admin Guide](admin-guide.md) | Who can do what in the admin UI, and the common tasks |
-| [Country Packs](country-packs.md) | What a country pack is, how to build one, and how it loads |
-| [Design Decisions](design-decisions.md) | Why reference data needs versions, and why MDS is designed as it is |
-| [Deployment](deployment.md) | Installing MDS and every setting |
-| [API Reference](api-reference.md) | Every endpoint, and the data model: fields, statuses, typed fields schema, change log |
-| [Standards](standards.md) | The standards MDS uses |
-| [Software Versions](versions.md) | Chart and image versions, and the changelog |

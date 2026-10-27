@@ -11,15 +11,6 @@ This section documents how OpenG2P registry services emit audit events to Audit 
 
 There is **no shared library** for the middleware — each BFF carries its own copy adapted to its auth model. This is a deliberate choice: the shared `openg2p-fastapi-common` library is consumed by many services across the platform and its release cycle should not be coupled to audit-only changes. Drift risk is accepted in exchange for keeping the common library stable.
 
-## Pages in this section
-
-| Page                                                       | Description                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Local Install — Staff Portal API](local-install.md)       | Step-by-step instructions to run `openg2p-registry-staff-portal-api` locally on a developer machine, with all the fixes needed beyond the upstream README. Required before integrating audit emissions.                                                                      |
-| [Audit Middleware — Staff Portal API](audit-middleware.md) | Design of the middleware in Staff Portal API: where it sits in the stack, what gets emitted per call, the files changed, configuration env vars (including the on/off switch), the audit policy (including rejected anonymous calls), and how the JWT-on-403 recovery works. |
-| [Audit Middleware — Partner API](partner-api.md)           | The partner-api variant of the same middleware: how it adapts to signature-based auth, the two opt-in `request.state` hooks for controllers (actor enrichment + wrapped-200-on-error outcome override), and the limitations of the v1 wiring.                                |
-| [Verification — End to End](verification.md)               | Smoke test that confirms the integration works: token fetch, authenticated call, anonymous call, and skipped `/ping` — with the exact `curl` + `psql` for each, plus a troubleshooting matrix.                                                                               |
-
 ## Where the middleware lives
 
 | BFF                    | Repo                                                           | Auth model                                                                      | Audit middleware path                                       |

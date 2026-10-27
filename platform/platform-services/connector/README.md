@@ -34,14 +34,6 @@ The connector is responsible for:
 
 The connector does not decide whether a record is correct, does not deduplicate against registry contents, and does not approve anything. Those are registry responsibilities and happen after delivery. The connector also does not act as a long-term store of registry data; the copies it keeps exist to support tracing, retry, and replay.
 
-## In this section
-
-| Page                                                     | Covers                                                                                         |
-| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [Functional Specifications](functional-specifications.md) | Pipelines, transports, partner trust, receiving, fetching, delivery, failure handling, operations |
-| [Technical Architecture](technical-architecture.md)       | Components, the database and the task queue, background workers, stored data                    |
-| [Deployment](deployment.md)                               | Runtime roles, scaling, dependencies, health checks                                             |
-
 ## Related documentation
 
 * [OpenG2P Registry](../../../products/registry/registry/README.md)

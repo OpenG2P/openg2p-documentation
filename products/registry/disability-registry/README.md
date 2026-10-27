@@ -178,13 +178,3 @@ can act on:
 
 None of this is decoration: it is the difference between a department knowing a
 person needs an interpreter and finding out when they fail to attend.
-
-## In this section
-
-| | |
-|---|---|
-| [**Customisation**](customisation.md) | Adapting the registry to your country or use case — what is configuration, what is a code change |
-| [**Dashboards and maps**](dashboards.md) | The seven Superset dashboards and the Insights map surface |
-| [**Deployment**](deployment/README.md) | How it is packaged, where the source and artifacts live, and what each image contains |
-| [**Deploying on Rancher**](deployment/rancher.md) | Step-by-step install |
-| [**Versions**](versions/README.md) | Where releases and changelogs are published |

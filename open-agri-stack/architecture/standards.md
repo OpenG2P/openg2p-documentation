@@ -68,7 +68,7 @@ Standards for consent itself (consent receipts, data-subject rights, artefact se
 
 | Area | Components | Where | Standard | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Lists (reference data) | Catalogue (MDS), RP | [Catalogues](../README.md#catalogues-platform-services-and-the-exchange) | — | **Own** | Codes are the country's (e.g. `CROP_TEFF`, `SEASON_MEHER`); the catalogue APIs and list format are our own. |
+| Lists (reference data) | Catalogue (MDS), RP | [Catalogues](README.md#components-and-source-code) | — | **Own** | Codes are the country's (e.g. `CROP_TEFF`, `SEASON_MEHER`); the catalogue APIs and list format are our own. |
 | Lists as concept schemes | Catalogue (MDS) | [Public catalogue](../../platform/platform-services/master-data-service/public-catalogue.md#skos-concept-schemes) (`/public/datasets/{code}/skos`) | [W3C SKOS](https://www.w3.org/TR/skos-reference/) (JSON-LD) | **Used** | Opt-in: only lists marked public, at published versions. A `skos:Concept` per entry with `skos:notation`, language-tagged `skos:prefLabel` and `skos:broader`. |
 | Crop and commodity codes | Catalogue (MDS) | `CROP_COMMODITY` | FAO [AGROVOC](https://agrovoc.fao.org/), FAO Indicative Crop Classification, FAOSTAT commodity codes | **To explore** | As optional mappings from the country's codes. |
 | Administrative areas | Catalogue (MDS), RP | Catalogues; every activity's location | OCHA COD-AB P-codes (e.g. `ET040611`) | **Used** | The Ethiopia country pack's geography; CC BY-IGO licence (see [Country Packs](../../platform/platform-services/master-data-service/country-packs.md#sources-and-licence)). |

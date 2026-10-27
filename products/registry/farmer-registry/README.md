@@ -125,13 +125,3 @@ The register, DCI record type, search text, consent scopes and the tab and secti
 ## In Agri Stack
 
 In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md#farmer-registry). How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).
-
-## In this section
-
-| | |
-| --- | --- |
-| [**Data Scopes**](data-scopes.md) | The scopes partners' consents and access policies name, and how to read the live catalogue |
-| [**Deployment**](deployment/README.md) | Prerequisites, install order, the choices to make, and checks after install |
-| [**Data seeding**](deployment/data-seeding.md) | Turning on sample, bulk and sanity data, reporting views and dashboards; the install Jobs in order |
-| [**Sanity testing**](deployment/sanity-testing.md) | Running the sanity suite and reading its results |
-| [**Versions**](versions/README.md) | Where releases and changelogs are published |

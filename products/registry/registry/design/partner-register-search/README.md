@@ -55,16 +55,6 @@ A future adapter would own its own routes and body format. It would still call
 data model. UNDP-style search is an example of that extension point. It is not
 implemented.
 
-## Pages
-
-{% content-ref url="core-search.md" %}
-[Core register search](core-search.md)
-{% endcontent-ref %}
-
-{% content-ref url="dci-search.md" %}
-[DCI partner search](dci-search.md)
-{% endcontent-ref %}
-
 The feature overview is in
 [Partner Register Search](../../features/partner-register-search.md). WebSub hub
 behaviour is in

@@ -35,6 +35,27 @@ description: >-
 * The ingress (dashed grey: OpenG2P deployment infrastructure, not an Agri Stack service) routes requests but never reads data. The Composite runs only approved use cases and keeps nothing after it responds.
 * Beckn appears only at the OAN network layer, for discovering service providers and consumers. It isn't used to exchange registry data today; a proposal makes the Composite a provider on that network: [Interoperability with OAN (Beckn)](../design/oan-interoperability.md).
 
+## Components and source code
+
+Every component in the diagram, what it does, and where its source code is. All are open source under the Mozilla Public License 2.0, except eSignet (MOSIP, under its own open-source licence).
+
+| Layer | Component | What it does | Source code |
+| --- | --- | --- | --- |
+| Registries | [Farmer Registry](../../products/registry/farmer-registry/README.md) | Farmers, their households, land parcels and declared crops; links the Farmer ID to the national ID | [OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) |
+| Registries | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) | What each farmer plans, sows and harvests, plot by plot and season by season | [OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry) |
+| Registries | Livestock Registry | Animals and livestock events ([design](../design/livestock-registry.md)) | Not built yet |
+| Registries | [Registry Platform](../../products/registry/registry/README.md) | The platform every registry is built on: registers, activity registers, partner APIs, consent enforcement, verifiable credentials | [OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform) |
+| Catalogues | [Master Data Service](../../platform/platform-services/master-data-service/README.md) | The catalogues: datasets (crops, seeds, units, …) and geography, versioned; public read API | [OpenG2P/master-data-service](https://github.com/OpenG2P/master-data-service) |
+| Catalogues | Country packs | A country's datasets and geography, loaded into the Master Data Service | [OpenG2P/openg2p-data](https://github.com/OpenG2P/openg2p-data) |
+| Exchange | [Composite](../composite/README.md) | Serves approved use cases: one query, several registries, one signed answer | [OpenG2P/agri-stack](https://github.com/OpenG2P/agri-stack) |
+| Exchange and every install | [Consent Manager](../../consent-management/README.md) | The farmer's consent: collected (partner portal), checked, and turned into a consent token per registry | [OpenG2P/consent-manager](https://github.com/OpenG2P/consent-manager) |
+| Exchange and every install | [Partner Management](../../platform/platform-services/partner-management/README.md) | Partners, their keys and their access policies | [OpenG2P/partner-management](https://github.com/OpenG2P/partner-management) |
+| Exchange | National-ID login (eSignet) | The farmer proves who they are with the national ID | [mosip/esignet](https://github.com/mosip/esignet) |
+| Every install | [Audit Manager](../../platform/platform-services/audit-manager/README.md) | Audit events from every hop | [OpenG2P/audit-manager](https://github.com/OpenG2P/audit-manager) |
+| Every install | [Approval Workflow Engine](../../platform/platform-services/approval-workflow-engine/README.md) | Approval of changes to registry records | [OpenG2P/awe](https://github.com/OpenG2P/awe) |
+| Every install | [IAM](../../identity-and-access-management/README.md) | Staff login and roles | [OpenG2P/iam](https://github.com/OpenG2P/iam) |
+| Every install | Commons | The Helm charts that install the shared services in each namespace | [OpenG2P/commons](https://github.com/OpenG2P/commons) |
+
 ## Across departments
 
 Each department runs its registries for its own work: its staff, approvals, partners and use cases. It must not depend on another department being up, or on another department's partners and consents. OAN partners, on the other hand, need one onboarding and one consent for all registries. Separate installs give the first; the Exchange gives the second.
@@ -76,15 +97,3 @@ Agri Stack has **no API gateway product**. Partners reach it through the ingress
 {% hint style="info" %}
 A gateway product is worth adding only if many partner-facing APIs from different teams need a common portal, keys, analytics or billing, or if a national API gateway is mandated. It would then sit in front of the Composite, unchanged.
 {% endhint %}
-
-## In this part
-
-| Page | Covers |
-| --- | --- |
-| [The Exchange](exchange.md) | Where partners onboard once and use one consent across registries: its parts, what it holds and does not hold, partners and their policies, how departments trust it |
-| [Consent](consent.md) | One consent per partner and farmer with a grant per registry; how a farmer gives it (in person with a form, built; in person digitally; self-service) |
-| [Data-Sharing Policies](data-sharing-policies.md) | The policy model: use-case grants at the Exchange, the Composite's ceiling per department, how they combine with consent, who approves what |
-| [Request flow](request-flow.md) | One request, end to end |
-| [Registries](registries.md) | The Farmer and Crop Sown registries in Agri Stack: what each holds, Farmer ID and national ID, what the Composite reads, the Composite as a partner |
-| [Terms](terms.md) | Validation, change, correction, void, approval of changes, verification, dispute |
-| [Standards](standards.md) | The open standards used in each area, our own formats, and standards still to explore |

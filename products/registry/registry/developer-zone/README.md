@@ -15,21 +15,3 @@ to production.
 ## Codebase
 
 The registry codebase is organized across multiple repositories. See [Organization of Codebase](organization-of-codebase.md) for the full breakdown.
-
-## In this section
-
-{% content-ref url="organization-of-codebase.md" %}
-[organization-of-codebase.md](organization-of-codebase.md)
-{% endcontent-ref %}
-
-{% content-ref url="building-a-registry/" %}
-[building-a-registry](building-a-registry/)
-{% endcontent-ref %}
-
-{% content-ref url="developer-install/" %}
-[developer-install](developer-install/)
-{% endcontent-ref %}
-
-{% content-ref url="api-documentation/" %}
-[api-documentation](api-documentation/)
-{% endcontent-ref %}

@@ -37,16 +37,6 @@ Those products choose the topic name and the payload. Subscription, the
 callback challenge, and `X-Hub-Signature` are hub behaviour and are the same
 for every publisher.
 
-## Pages
-
-{% content-ref url="subscription.md" %}
-[Subscription and delivery](subscription.md)
-{% endcontent-ref %}
-
-{% content-ref url="deployment.md" %}
-[Deployment](deployment.md)
-{% endcontent-ref %}
-
 Registry uses of the hub:
 
 {% content-ref url="../../../products/registry/registry/design/outgestion-pipeline.md" %}

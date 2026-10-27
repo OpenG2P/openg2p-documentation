@@ -81,17 +81,3 @@ A send that fails is logged and swallowed. The change request, the intake submis
 | Changing who receives a registrant email | [Workflows and payloads](workflows-and-payloads.md#registrant-contact-in-an-extension) |
 | Replacing the notification provider | [Switch provider on the connector](connector.md#switch-provider) and [on the client](client.md#switch-provider) |
 | Checking why one event is silent | [Architecture](architecture.md#when-a-send-does-not-happen) |
-
-## In this section
-
-| Page | Covers |
-| --- | --- |
-| [Architecture](architecture.md) | Hops, identity, and what each side owns |
-| [Connector](connector.md) | Python API, environment variables, and switching the provider |
-| [Client](client.md) | npm package, packaging, and the staff UI bell |
-| [Integrating a new service](integrating.md) | Backend send and UI inbox for a new app |
-| [Implementing a send](implementing.md) | How a service calls the connector |
-| [Workflows and payloads](workflows-and-payloads.md) | Registry and AWE events, recipients, and template fields |
-| [Deployment](deployment.md) | Helm values, secrets, and Docker build args |
-| [Notification provider](notification-provider/README.md) | Index of the notification provider pages |
-| [Novu](notification-provider/novu.md) | Default install, secrets, workflow seeding, and email and SMS links |

@@ -215,13 +215,3 @@ The Crop Sown Registry is a thin extension of the Registry Platform. How domain 
 ## In Agri Stack
 
 In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack Composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack Exchange, alongside the Farmer Registry. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md#crop-sown-registry). How it is set up for Agri Stack is in [Agri Stack → Deployment → Crop Sown Registry](../../../open-agri-stack/deployment/crop-sown-registry.md).
-
-## In this section
-
-| | |
-| --- | --- |
-| [**Data Scopes**](data-scopes.md) | The scopes partners' consents and access policies name, and how to read the live catalogue |
-| [**Customisation**](customisation.md) | What a country or programme changes — lists, activities, rules, scopes — and how |
-| [**Deployment**](deployment/README.md) | Install order and the Jobs that run on install |
-| [**Deploying on Rancher**](deployment/rancher.md) | Prerequisites, the choices to make, sample data, ODK, checks after install, uninstall |
-| [**Versions**](versions/README.md) | Where releases and changelogs are published |

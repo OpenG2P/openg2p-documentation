@@ -69,14 +69,3 @@ shared platform-services layer), deployed as `commons-services-pm-*`. See
 ## Built on
 
 The two backend services are built on **[`openg2p-fastapi-common`](https://github.com/OpenG2P/openg2p-fastapi-common)** (with `openg2p-fastapi-auth` for staff-realm JWT validation), tracked at the `develop` ref. See [Technical Architecture → Framework](technical-architecture.md#framework).
-
-## Pages
-
-* [Versions](versions.md)
-* [Functional Specifications](functional-specifications.md)
-* [Creating and Changing Policies](creating-and-changing-policies.md)
-* [API Reference](api-reference.md)
-* [Technical Architecture](technical-architecture.md)
-* [Integration — consuming partner keys and policies](integration.md)
-* [Deployment](deployment.md)
-* [Testing](testing.md)
