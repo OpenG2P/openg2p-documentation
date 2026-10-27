@@ -147,7 +147,7 @@ A template is sandboxed Jinja that renders the query part of the DCI `search_cri
 | --- | --- |
 | `execution.overall_timeout_ms` | 100–300000; default from the service setting `DEFAULT_OVERALL_TIMEOUT_MS` (10000). Must cover the slowest chain of `depends_on` |
 | `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does ([failure handling](README.md#failure-handling)) |
-| `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted per pod and worker ([scaling](../deployment/composite.md#scaling-and-rate-limits)) |
+| `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted across all pods in Redis; per worker while Redis is unreachable ([rate limiting](../design/rate-limiting.md), [settings](../deployment/composite.md#scaling-and-rate-limits)) |
 | `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) ([audit](../deployment/composite.md#audit)) |
 
 ## Accepted but not acted on

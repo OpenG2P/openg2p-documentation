@@ -133,7 +133,7 @@ audit:
 | **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
 
 {% hint style="warning" %}
-**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet, and the Composite enforces a per-pod rate limit itself. See [what the first version does](#what-the-first-version-does).
+**First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet, and the Composite enforces the per-partner rate limit itself, shared across pods in Redis ([rate limiting](../design/rate-limiting.md)). See [what the first version does](#what-the-first-version-does).
 {% endhint %}
 
 ## Checks when a use case is published
@@ -271,7 +271,7 @@ After the partner checks (steps 1–4 above), the Composite calls the Exchange C
 
 * Checks when a use case is published (against the departments' ceilings in PM).
 * Data-blind mode.
-* Daily quotas and rate limits across pods (shared counters).
+* Daily quotas.
 * Registry endpoints held in PM rather than in configuration.
 * Calling the crop sources in parallel with the farmer when the partner already sends a Farmer ID.
 * A configuration UI.

@@ -363,7 +363,7 @@ Get the Composite's public key from the operator, or from PM's key API (`GET {pm
 
 ## Rate limits
 
-Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is applied per Composite pod and worker, so it is a floor rather than an exact ceiling; limits across all pods and daily quotas are [not built yet](open-items/README.md).
+Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is counted across all Composite pods. The ingress gateway also limits all partners' traffic to the use-case API together; beyond that it answers `429` with the header `x-local-rate-limit: true` and a plain-text body. Back off and retry on either `429`. Daily quotas are [not built yet](open-items/README.md).
 
 ## Worked example: `loan-profile`
 

@@ -89,7 +89,7 @@ Agri Stack has **no API gateway product**. Partners reach it through the ingress
 | Single public entry point, TLS, routing | Nginx and the Istio ingress gateway, a VirtualService per service |
 | Partner authentication | Each service verifies the partner's signature over the request body against [Partner Management](../../platform/platform-services/partner-management/README.md) |
 | Access control | Each partner's use-case policies (one per use case) in the Exchange's Partner Management, checked by the Composite on every call; Istio `AuthorizationPolicy` to limit registries' partner APIs to the Composite (to do) |
-| Rate limits and quotas | In the Composite, which knows the partner on every request: per pod today, shared across pods and daily quotas to do |
+| Rate limits and quotas | An edge limit on the Composite's route at the Istio ingress gateway, and a per-partner, per-use-case limit in the Composite (which knows the partner on every request), shared across pods in Redis; daily quotas to do ([rate limiting](../design/rate-limiting.md)) |
 | Usage reports | Audit events from every hop, in the Audit Manager |
 | mTLS between services, timeouts, retries, circuit breaking | Istio |
 | Developer portal | The [partner guide](../partner-guide.md) and the Composite's describe endpoints |

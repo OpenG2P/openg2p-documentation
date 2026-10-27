@@ -38,7 +38,7 @@ Functional work, in order, for the first production release. Country data and re
 * **Standing permission for a purpose** — a Consent Manager rule for sharing on a mandate instead of consent (registry to registry, e.g. CSR checking a farmer is registered; a yes/no Farmer ID check before consent): one caller, one purpose, narrow scopes, legal basis recorded, every use logged. *Depends on:* the departments agreeing the legal basis.
 
 * **Partner onboarding expiry** — a partner stays active until disabled; an end date for a partner (or its use-case policies) and a renewal step are not built.
-* **Partner-level limits** — how often a partner may fetch data and how much (daily quotas, data volume) are not enforced; today only a per-use-case rate limit per partner exists, and the policy's `max_fetch_frequency` and `data_life` are recorded only.
+* **Partner-level limits** — how often a partner may fetch data and how much (daily quotas, data volume) are not enforced; today only a per-use-case rate limit per partner exists ([rate limiting](../design/rate-limiting.md)), and the policy's `max_fetch_frequency` and `data_life` are recorded only.
 
 ## Composite
 
@@ -47,7 +47,7 @@ Functional work, in order, for the first production release. Country data and re
 * **Developer sandbox** — each published use case's schema, sample request and response, and a test harness. *Design:* not designed yet.
 * **Data-blind mode** — each registry encrypts its part to the partner's PM key; the Composite only bundles the parts. *Design:* not designed yet.
 * **Restrict the registries' partner APIs** — an Istio `AuthorizationPolicy` so only the Composite (and partners deliberately allowed direct access) can call them. *Design:* [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway); decided: Istio policy, no separate API gateway.
-* **Rate limits across pods and daily quotas** — shared counters in Redis, and `limits.daily_quota_per_partner` enforced (today the rate limit is per pod and worker). *Design:* decided as stated.
+* **Daily quotas** — `limits.daily_quota_per_partner` enforced, counted in the Redis that already holds the rate-limit buckets. *Design:* [rate limiting](../design/rate-limiting.md#later).
 * **API gateway product** — reconsider only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated. *Design:* decided: none for now ([entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)).
 * **Registry endpoints in PM** — instead of the Composite's `composite.registries`. *Design:* not designed yet.
 * **Crop sources in parallel with the farmer** — when the partner already sends a Farmer ID, search the Crop Sown Registry alongside the Farmer Registry. *Design:* see step 7 of the [request flow](../architecture/request-flow.md).
