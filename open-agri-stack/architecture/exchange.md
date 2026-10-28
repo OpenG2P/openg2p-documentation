@@ -52,5 +52,5 @@ One request, hop by hop: [request flow](request-flow.md). The token format, the 
 A registry installed without the Exchange is not affected: it checks partners and consents at its own PM and CM (path A).
 
 {% hint style="info" %}
-Installing the Exchange: [Deployment: Exchange](../deployment/exchange.md) and [Deployment: Composite](../deployment/composite.md).
+Installing the Exchange: [Deployment: Exchange](../deployment/exchange.md) and [Deployment: Composite](../deployment/exchange.md#composite).
 {% endhint %}

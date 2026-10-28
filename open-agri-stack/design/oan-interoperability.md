@@ -66,7 +66,7 @@ This fits because the Composite already works at the level of **use cases** (e.g
 | An agreement with the Agri Stack operator | Legal and data-sharing terms: purposes, data retention. Outside any system |
 | Its partner record in the Exchange's Partner Management | Its key taken from its Beckn registry entry (if built; see [what would need to be built](#what-would-need-to-be-built-or-decided)), otherwise its public key supplied once |
 | A grant for each use case it may order | Approved in Partner Management ([creating and changing policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)). Without it, orders are refused |
-| Partner-portal accounts for its staff | Created by the operator ([after install](../deployment/after-install.md#partner-portal-realm-and-users)) |
+| Partner-portal accounts for its staff | Created by the operator ([after install](../deployment/after-install.md#partner-portal-users)) |
 
 ### Consent, by scenario
 

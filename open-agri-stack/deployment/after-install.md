@@ -1,93 +1,114 @@
 ---
 description: >-
-  One-time setup after installing Agri Stack: the partner portal's realm and
-  users, and the Exchange setup script (the Composite's signing key, its key in
-  each Partner Management, its scope policy per registry in each department's
-  Partner Management).
+  One-time setup after installing the registries and the Exchange: partner
+  portal users, and the Exchange setup (the Composite's signing key and its
+  access in each Partner Management), by script or by hand.
 ---
 
 # After Install
 
-Two steps the charts cannot do, run once by an operator after the [Exchange](exchange.md), the registries and the [Composite](composite.md) are installed. Partners (e.g. a bank) are **not** set up here: they are onboarded in the Exchange's Partner Management with a policy per use case ([partner guide](../partner-guide.md)).
+Step 3 of the [install order](README.md#install-order), run once by an operator. Partners themselves (e.g. a bank) are not set up here: they are onboarded in the Exchange's Partner Management ([Managing Partners](../managing-partners.md)).
 
 | Step | Needed for | Rerun |
 | --- | --- | --- |
-| [Partner portal realm and users](#partner-portal-realm-and-users) | Consent collected in the partner portal | For each new partner user |
-| [Exchange setup](#exchange-setup) | Every query: without it no PM knows the Composite, partners cannot verify its answers and the registries refuse its calls | After adding a registry, or a use case with new data scopes or purposes |
+| [Partner portal users](#partner-portal-users) | Consent collected in the partner portal | For each new partner user |
+| [Exchange setup](#exchange-setup) | Every query | After adding a registry, or a use case with new data scopes or purposes |
 
-## Partner portal realm and users
+## Partner portal users
 
-Partner users (e.g. bank staff) log in to the Consent Manager's partner portal through a Keycloak realm `partner`. The chart creates the realm and the portal's client; the roles, the `partner_id` attribute, its token mapper and the partner users need Keycloak's admin CLI. From the [consent-manager](https://github.com/OpenG2P/consent-manager) repository:
+Partner staff log in to the partner portal through the Keycloak realm `partner`. The chart creates the realm; this script adds its roles and the users. From the [consent-manager](https://github.com/OpenG2P/consent-manager) repository:
 
 ```bash
 ./deployment/scripts/setup-partner-realm.sh --namespace agrix --user bank-a-operator:bank-a:PARTNER_OPERATOR
 ```
 
-The user's password is in the Secret `partner-user-bank-a-operator` in the namespace. A user's `partner_id` (here `bank-a`) must be the partner's ID, the `aud` of its consents (its Partner Management entry is `PARTNER_BANK_A`). See [partner portal and consent evidence](../../consent-management/deployment/README.md#partner-portal-and-consent-evidence-optional).
+The user's password is in the Secret `partner-user-bank-a-operator`. The middle part (`bank-a`) is the partner's ID; its Partner Management entry is `PARTNER_BANK_A`. More: [partner portal and consent evidence](../../consent-management/deployment/README.md#partner-portal-and-consent-evidence-optional).
 
 ## Exchange setup
 
-[`scripts/setup_exchange.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/setup_exchange.py) does the operator setup for the Composite. It changes only what is missing, so a rerun is safe.
+The Composite needs a signing key, and an entry with that key in the Exchange's and each department's Partner Management, with a scope policy per registry in the department (what that department releases to the Exchange). Until then queries fail with `signing_unavailable`.
 
-### What it sets up
+### By script
 
-| Where | What |
-| --- | --- |
-| Exchange namespace | Secret `agri-composite-signing` (a generated `.p12`), then a restart of the Composite. A Secret whose key the Exchange PM already serves is left alone |
-| Exchange PM and each department PM | The Composite (`PARTNER_AGRI_COMPOSITE`) with its signing key: onboarded and approved, or the key added with a key-update request and approved. Each registry checks the Composite's signature at its **own** PM |
-| Each department PM | The Composite's **scope policy** per registry served there (its ceiling in that department), in the same onboarding request or a policy request, raised and approved. **Scopes and purposes come from the Composite's published use cases**: per registry, the union of each use case's `consent_scopes` (required and optional) and their purposes. An existing policy is only widened, never narrowed. The script then checks that PM's policy API serves it. See [data sharing policies](../architecture/data-sharing-policies.md) |
-| Each department CM and the Exchange CM (checked, not set) | That each department CM trusts the Exchange CM's consent tokens for the Composite (**Exchange Role** `department`), and that the Exchange CM issues them (**Exchange Role** `exchange`). These are form choices; the script names the missing one and stops |
-
-### Prerequisites
-
-* The Exchange (commons and the Composite) and each department (commons and its registry) installed.
-* `kubectl` with a context that can read Deployments, Services and Secrets, port-forward, and (for the signing key) create a Secret and restart the Composite in the Exchange namespace. `--context` picks another context.
-* **One cluster.** The script uses one kubectl context for the Exchange and every department. It reaches a department only in the Exchange's cluster, as when all three namespaces run on one cluster for testing. A department on its own cluster (the Crops Department in the [topology](README.md#topology)) is set up by hand: [the Composite's key and access](exchange.md#the-composites-key-and-access).
-* Python 3 with a virtual environment:
+[`scripts/setup_exchange.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/setup_exchange.py) does all of it when one `kubectl` context reaches every namespace (as in the [reference topology](README.md#topology)). It changes only what is missing, so a rerun is safe. From the [agri-stack](https://github.com/openg2p/agri-stack) repository:
 
 ```bash
-cd agri-stack
 python3 -m venv .venv && . .venv/bin/activate
-pip install -r scripts/requirements.txt     # cryptography, pyjwt, httpx
-```
-
-### Commands
-
-```bash
+pip install -r scripts/requirements.txt
 python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1 --dry-run
 python scripts/setup_exchange.py -n agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
 ```
 
+| What it does | Where |
+| --- | --- |
+| Creates the Secret `agri-composite-signing` (a generated key) and restarts the Composite; keeps a Secret whose key the Exchange PM already serves | Exchange namespace |
+| Onboards the Composite (`PARTNER_AGRI_COMPOSITE`) with its key, or adds the key; raises and approves the requests | Exchange PM and each department PM |
+| Adds the Composite's scope policy for each registry, covering the scopes and purposes of all published use cases; only ever widens it | Each department PM |
+| Checks that each department CM has **Exchange Role** `department` and the Exchange CM `exchange`; names the missing one and stops | All CMs |
+
 | Option | Meaning |
 | --- | --- |
-| `-n` | The Exchange namespace (the Composite and its commons) |
-| `--registry <controller>=<namespace>` | Each registry and the namespace of the department install that serves it (repeatable). A registry the Composite calls but that is not listed is reported and skipped |
-| `--dry-run` | Discover and plan with GETs only, and list the writes |
-| `--yes` | Make the listed writes without the typed `yes` |
-| `--new-key` | A new Composite key (new `kid`) instead of the saved one |
-| `--pm-client-id` | The Keycloak client with PM's admin role (default PM's `PARTNER_MANAGER_AUTH_ADMIN_CLIENT_ID`). Its secret is read with kubectl into memory, never printed |
-| `--state-dir` | Where the Composite's key is kept (below) |
+| `-n` | The Exchange namespace |
+| `--registry <controller>=<namespace>` | Each registry and its department's namespace (repeatable) |
+| `--dry-run` | Plan with reads only, and list the writes |
+| `--yes` | Make the writes without the typed `yes` |
+| `--new-key` | A new Composite key (new `kid`) |
+| `--context` | Another `kubectl` context |
+| `--state-dir` | Where the key is kept locally (default `~/.agri-stack-setup/<ns>/`, mode 0700) |
 
-### Steps
+Exit code `2` means a decision is needed: the message says which (a CM role, an open Partner Management request to approve or reject, a key conflict, or the writes not confirmed).
 
-| Step | What happens |
+### By hand
+
+When the script cannot reach a department (another cluster), or each organisation does its own part:
+
+| # | Who | What |
+| --- | --- | --- |
+| 1 | Exchange | Create the Composite's key |
+| 2 | Exchange | Onboard the Composite in the Exchange PM |
+| 3 | Each department | Onboard the Composite in its PM, with a scope policy per registry |
+| 4 | Exchange | Create the Secret and restart the Composite |
+
+**1. Key.** An EC P-256 key in a password-protected `.p12`, and a `kid` you choose:
+
+```bash
+openssl ecparam -name prime256v1 -genkey -noout -out composite.key
+openssl req -new -x509 -key composite.key -subj "/CN=agri-composite" -days 365 -out composite.crt
+openssl pkcs12 -export -inkey composite.key -in composite.crt -name agri-composite -out composite.p12
+openssl ec -in composite.key -pubout -out composite.pub.pem
+```
+
+Keep `composite.p12` and its password in your secrets store and delete `composite.key`.
+
+**2. Exchange PM.** In `https://partner-management.agrix.openg2p.org`, **Onboard partner**: ID `PARTNER_AGRI_COMPOSITE`, the public key from `composite.pub.pem`, the `kid`, algorithm `ES256`, no policy. Approve it.
+
+**3. Each department PM.** **Onboard partner** `PARTNER_AGRI_COMPOSITE` with the same key and `kid`, and a **scope policy** for each registry there:
+
+| Field | Value |
 | --- | --- |
-| Discover | The Composite, PM, CM and Keycloak of the Exchange and of each department, from the Deployments' environment; the consent-token trust check |
-| Admin tokens | Keycloak client credentials for each PM; checks the admin role. No CM credentials are needed |
-| Use cases | The Composite's published use cases (`GET /composite/v1/use-cases`) and the policy each registry needs |
-| Plan | GETs only: the signing Secret, the Composite and its key in each PM, its scope policies and open requests in each department PM |
-| Apply | After confirmation: PM requests (onboarding, key update, policy) raised and approved, the Secret and the restart |
+| Data controller | The registry, e.g. `farmer-registry` |
+| Data scopes | Every scope the published use cases read from it: `consent_scopes` in `GET /composite/v1/use-cases` |
+| Purposes | Those use cases' purposes |
+| Subject ID types | e.g. `FAYDA_FAN`, `FARMER_ID` |
+| Signing algorithms | `ES256` |
+| Maximum validity, Fetch type | e.g. `P90D`, `oneshot` |
 
-**Exit codes:** `0` ok; `1` error; `2` a decision is needed: a department CM does not trust the Exchange's consent tokens, an open PM request proposes a policy that does not cover what is needed (approve or reject it in Partner Management, then rerun), a PM key conflicts (rerun with `--new-key`), the PM admin client lacks its role, or the writes were not confirmed.
+Approve it. Steps in the portal: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md).
 
-### Where the key is stored
+**4. Secret and restart.**
 
-| What | Where |
-| --- | --- |
-| The Composite's key | `~/.agri-stack-setup/<ns>/composite.p12` (0600) |
-| Its `kid` and the `.p12` password | `~/.agri-stack-setup/<ns>/state.json` (0600) |
-| The directory | Mode 0700; `--state-dir` puts it elsewhere |
+```bash
+kubectl -n agrix create secret generic agri-composite-signing \
+  --from-file=composite.p12=./composite.p12 --from-literal=password='<p12 password>' \
+  --from-literal=kid=<kid> --from-literal=algorithm=auto
+kubectl -n agrix rollout restart deploy/agri-composite-api
+```
 
-The cluster holds the same key in the Secret `agri-composite-signing`; the local copy lets a rerun see that nothing changed. To use your own key instead of a generated one: [Composite: signing key](composite.md#signing-key).
+### Check
 
-The same setup by hand, and what production needs: [Exchange](exchange.md#the-composites-key-and-access).
+* Composite console, **Registries**: each registry reachable and the Composite's key served.
+* A test partner's query: [Testing](testing.md).
+
+### When use cases change
+
+A new use case, or one that reads more scopes or another registry, needs each department's scope policy for the Composite widened: rerun the script, or **Edit** the policy in that department's PM (**Add policy** for a new registry). Until then the registry refuses what the policy does not cover. Narrowing is always done by hand.

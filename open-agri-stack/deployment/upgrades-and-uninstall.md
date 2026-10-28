@@ -31,7 +31,7 @@ After any upgrade, check the Composite, the CMs and the registries' partner APIs
 | Key | How |
 | --- | --- |
 | Exchange CM signing key | New Secret with the new `.p12`, then a new **Signing Key ID** in Commons Services. The departments read its public keys from the Exchange CM's JWKS URL, not from their own settings |
-| Composite signing key | `python scripts/setup_exchange.py … --new-key`: a new key (new `kid`), registered in each PM with a key-update request, and the Secret replaced |
+| Composite signing key | `python scripts/setup_exchange.py … --new-key`: a new key (new `kid`), registered in each PM with a key-update request, and the Secret replaced. By hand: add the new key with a key-update request in every PM, replace the Secret and restart the Composite, then revoke the old `kid` once caches have expired (5 minutes). A compromised key: revoke its `kid` in every PM at once, then rotate |
 | A partner's key | The partner raises a key-update request in PM ([partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management)) |
 
 ## Uninstalling

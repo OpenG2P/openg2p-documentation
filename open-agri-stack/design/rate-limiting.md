@@ -28,7 +28,7 @@ The identity-aware edge layer is **not possible today**: partners sign inside th
 
 If Redis is unreachable, each worker process falls back to its own in-memory bucket and logs a warning. This is deliberate: **availability over exactness**. A Redis outage never fails a partner call; the limit only loosens (up to pods × workers × the rate) until Redis answers again.
 
-Settings: [Composite deployment](../deployment/composite.md#scaling-and-rate-limits).
+Settings: [Composite deployment](../composite/chart-settings.md#scaling-and-rate-limits).
 
 ## Later
 

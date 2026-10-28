@@ -1,34 +1,31 @@
 ---
 description: >-
-  Installing the Farmer Registry for Agri Stack: its own deployment guide, plus
-  the Consent Manager in the department role, the Composite's search URL, the
-  Exchange setup and a check.
+  Installing the Farmer Registry for Agri Stack: its own install guide, and the
+  form fields Agri Stack needs on top.
 ---
 
 # Farmer Registry
 
-Install the Farmer Registry by its own guide: [Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md), including its checks and [before going to production](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production). These pages install it in the namespace `trial` ([topology](README.md#topology)). This page lists only what Agri Stack needs on top. Its role in Agri Stack: [Registries in Agri Stack](../architecture/registries.md#farmer-registry).
+Step 1 of the [install order](README.md#install-order), in the namespace `trial`.
 
-## Choices for Agri Stack
+## Install
+
+Follow the Farmer Registry's own guide: [Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md). It installs Commons Base, Commons Services and the Farmer Registry. Change these fields on top:
 
 | Chart | Field | Value | Why |
 | --- | --- | --- | --- |
 | Commons Services | Exchange Role (Consent Manager) | **department** | The CM accepts the Exchange's consent tokens, presented by the Composite |
-| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | The CM reads the Exchange CM's public keys there (e.g. `agrix.openg2p.org` for `trial.openg2p.org`) |
+| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | Where the CM reads the Exchange CM's public keys (e.g. `agrix.openg2p.org` for `trial.openg2p.org`) |
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) | Consents are collected at the Exchange |
-| Farmer Registry | Release name | Any; these pages use `fr` | The Composite's **Farmer Registry Search URL** is then `https://partner-fr.<domain>/dci/registry/sync/search` ([Composite](composite.md)). The chart has no default for it |
-| Farmer Registry | Load Sample Data | **On**, for a demo only | Farmers matching the Crop Sown Registry's samples ([sample data](../architecture/registries.md#sample-data)) |
-
-## After install
-
-Run the [Exchange setup](after-install.md#exchange-setup) with `--registry farmer-registry=trial`, once the Composite is installed. It registers the Composite in this namespace's Partner Management with its key and its scope policy for this registry, the ceiling of what this department releases through the Exchange ([the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)). If this CM does not trust the Exchange's consent tokens, it stops and names the form field.
+| Farmer Registry | Release name | e.g. `fr` | Sets the registry's partner hostname, `partner-fr.<domain>` |
+| Farmer Registry | Load Sample Data | **On** for a demo only | Farmers matching the Crop Sown Registry's samples ([sample data](../architecture/registries.md#sample-data)) |
 
 ## Check
 
-From the [agri-stack](https://github.com/openg2p/agri-stack) repository, once the Composite and the Exchange setup are in place:
+The registry's own checks pass ([Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md)), and note its partner search URL:
 
-```bash
-./scripts/exchange_test.sh --namespace agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
+```
+https://partner-fr.trial.openg2p.org/dci/registry/sync/search
 ```
 
-The `loan-profile` response has the `farmer` source `ok`. Details and common failures: [Testing](testing.md).
+It is the Composite's **Farmer Registry Search URL** in the [Exchange](exchange.md#composite) install.

@@ -36,7 +36,7 @@ Every key is listed in [use-case file structure](use-case-configuration.md#file-
 
 ## Step 3 — Put it into the Composite's configuration
 
-Use cases are entries in the Composite's Helm values ([Deployment: Composite, use cases](../deployment/composite.md#use-cases)):
+Use cases are entries in the Composite's Helm values ([Deployment: Composite, use cases](chart-settings.md#use-cases)):
 
 * **Rancher:** open the Composite app, **Edit YAML**, and add an entry under `composite.useCases`: the use case's name, then the file's text as a block (`my-use-case: |`). Upgrade. Templates must be inline here (`query_template: |`), since each entry becomes one `<name>.yaml` key.
 * **Your own ConfigMap** (e.g. GitOps): set `composite.existingUseCasesConfigMap` to its name and add the file as key `<name>.yaml` (and any `.j2` templates next to it).
@@ -61,7 +61,7 @@ Steps: [Creating and Changing Policies](../../platform/platform-services/partner
 
 ## Step 6 — Update the departments' ceilings for the Composite
 
-Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`) after step 4, so the new use case is published. It reads the published use cases and, in each department's PM, raises and approves a policy request that widens the Composite's scope policy to cover the new scopes and purpose ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Without the script, each department widens it itself ([when use cases change](../deployment/exchange.md#when-use-cases-change)). Until then the registry withholds the new scopes.
+Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`) after step 4, so the new use case is published. It reads the published use cases and, in each department's PM, raises and approves a policy request that widens the Composite's scope policy to cover the new scopes and purpose ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Without the script, each department widens it itself ([when use cases change](../deployment/after-install.md#when-use-cases-change)). Until then the registry withholds the new scopes.
 
 ## Step 7 — Test
 

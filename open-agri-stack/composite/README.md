@@ -20,7 +20,7 @@ The **Composite** is the partners' entry point to Agri Stack and the Agri Stackâ
 | [Composite Console](console.md) | The read-only staff console: use cases, registries and their data scopes, partners, the call log |
 | [Running the Composite Locally](running-locally.md) | Running the service and its tests on a laptop |
 
-Installing the Composite and every chart option (registries, consent mode, use cases, signing key, console, scaling) is in [Deployment: Composite](../deployment/composite.md).
+Installing the Composite and every chart option (registries, consent mode, use cases, signing key, console, scaling) is in [Deployment: Composite](../deployment/exchange.md#composite).
 
 {% hint style="info" %}
 **Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [what the first version does](#what-the-first-version-does) and what it does not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
@@ -188,7 +188,7 @@ Each registry still decides what it releases ([how departments trust the Exchang
 
 ### Registry calls
 
-**Every source is one DCI synchronous search** on a registry's **partner API**: `POST /dci/registry/sync/search`. The Composite calls nothing else on a registry, and nothing about a registry is hard-coded: the endpoint comes from the service's settings ([Deployment: registries](../deployment/composite.md#registries)), and what is asked comes from the use case's source (`controller`, `dci`, [query template](use-case-configuration.md#query-templates)). For `loan-profile`, a request makes one call to the Exchange CM, one to the Farmer Registry, then two parallel calls to the Crop Sown Registry.
+**Every source is one DCI synchronous search** on a registry's **partner API**: `POST /dci/registry/sync/search`. The Composite calls nothing else on a registry, and nothing about a registry is hard-coded: the endpoint comes from the service's settings ([Deployment: registries](chart-settings.md#registries)), and what is asked comes from the use case's source (`controller`, `dci`, [query template](use-case-configuration.md#query-templates)). For `loan-profile`, a request makes one call to the Exchange CM, one to the Farmer Registry, then two parallel calls to the Crop Sown Registry.
 
 The Composite renders the source's query template, adds the rest, signs the envelope with its own key and posts it:
 
@@ -242,7 +242,7 @@ The Composite renders the source's query template, adds the rest, signs the enve
 
 ### Consent mode
 
-The consent mode is a service setting, `exchange` by default, as on the Agri Stack Exchange ([setting it](../deployment/composite.md#consent-mode-and-the-exchange-cm)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is granted use cases only at the Exchange (its PM); each department CM trusts the Exchange CM's consent tokens and applies the department's ceiling for the Composite, its scope policy in the department's PM.
+The consent mode is a service setting, `exchange` by default, as on the Agri Stack Exchange ([setting it](chart-settings.md#consent-mode-and-the-exchange-cm)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is granted use cases only at the Exchange (its PM); each department CM trusts the Exchange CM's consent tokens and applies the department's ceiling for the Composite, its scope policy in the department's PM.
 
 After the partner checks (steps 1â€“4 above), the Composite calls the Exchange CM's `POST /consent/v1/validate` with:
 

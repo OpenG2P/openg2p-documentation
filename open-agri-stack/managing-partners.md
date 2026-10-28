@@ -14,7 +14,7 @@ How the Exchange's operator lets a partner (a bank, an insurer, an agritech) use
 1. **Agree terms** with the partner outside the system: the use cases it may use, purposes, data retention.
 2. **Onboard it in Partner Management** with its public key and a policy for each use case it is assigned ([Creating and Changing Policies](../platform/platform-services/partner-management/creating-and-changing-policies.md#a-new-partner-with-its-policy)). Its partner ID is its own ID upper-cased with the prefix `PARTNER_` (`bank-a` → `PARTNER_BANK_A`).
 3. **Approve** the onboarding request.
-4. **Partner-portal accounts** for its staff, if they will collect consents in the portal ([After Install: partner portal realm and users](deployment/after-install.md#partner-portal-realm-and-users)).
+4. **Partner-portal accounts** for its staff, if they will collect consents in the portal ([After Install: partner portal realm and users](deployment/after-install.md#partner-portal-users)).
 
 The partner's own steps: [Partner Guide](partner-guide.md).
 
