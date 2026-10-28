@@ -23,7 +23,7 @@ The identity-aware edge layer is **not possible today**: partners sign inside th
 
 ## What Agri Stack does
 
-1. **Edge limit at the ingress gateway.** The Composite chart adds a local rate limit (Envoy token bucket) on the Composite's use-case route (`/composite/v1/use-cases`) at the shared Istio ingress gateway. It counts all partners together, per gateway pod. Over the limit the gateway answers `429` with the header `x-local-rate-limit: true` (plain text, not a signed envelope). Default 600 requests per minute.
+1. **Edge limit at the ingress gateway.** The Composite chart adds a local rate limit (Envoy token bucket) on the Composite's use-case route (`/composite/v1/use-cases`) at the shared Istio ingress gateway. It counts all partners together, per gateway pod. Over the limit the gateway answers `429` with the header `x-local-rate-limit: true` (plain text, not a signed envelope). **Off by default** (120 requests per minute when on): the filter has to live in the gateway's namespace, `istio-system`, which a user limited to their own namespace cannot write. How to do this within a namespace is open.
 2. **Per partner, per use case, in the Composite.** Each use case sets `limits.rate_per_partner` (e.g. `60/min`). The Composite applies it after the signature and use-case policy checks: a token bucket per (partner, use case) in Redis (the commons Redis), so every pod and worker draws from the same bucket. Over the limit: `429 rate_limited`.
 
 If Redis is unreachable, each worker process falls back to its own in-memory bucket and logs a warning. This is deliberate: **availability over exactness**. A Redis outage never fails a partner call; the limit only loosens (up to pods × workers × the rate) until Redis answers again.

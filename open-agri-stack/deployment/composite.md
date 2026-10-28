@@ -182,8 +182,8 @@ Rate limits ([design](../design/rate-limiting.md)):
 
 | Value | Default | Form |
 | --- | --- | --- |
-| `edgeRateLimit.enabled` | `true` | Rate Limits: Edge Rate Limit |
-| `edgeRateLimit.requests` | `600` | Rate Limits: Edge Limit (Requests) |
+| `edgeRateLimit.enabled` | `false` (it creates an EnvoyFilter in `istio-system`: the installing user needs rights there) | Rate Limits: Edge Rate Limit |
+| `edgeRateLimit.requests` | `120` | Rate Limits: Edge Limit (Requests) |
 | `edgeRateLimit.per` | `1m` (`<n>s`, `<n>m`, `<n>h`) | Rate Limits: Edge Limit Interval |
 | `edgeRateLimit.pathPrefix` | `/composite/v1/use-cases`; empty = the whole hostname | Values only |
 | `edgeRateLimit.gatewayNamespace`, `gatewaySelector` | `istio-system`, `istio: ingressgateway` | Values only |
