@@ -32,12 +32,10 @@ Test plan, raw measurements, and the interpreted final report for `staff-portal-
 
 ## Partner API
 
-{% hint style="info" %}
-Deferred — no working scenarios yet.
-{% endhint %}
+Test plan, raw measurements, and the interpreted final report for partner-api's DCI-compliant search (sync and async) and the ingest endpoint.
 
-{% content-ref url="partner-api/test-scenarios.md" %}
-[test-scenarios.md](partner-api/test-scenarios.md)
+{% content-ref url="partner-api/README.md" %}
+[README.md](partner-api/README.md)
 {% endcontent-ref %}
 
 ## Celery
