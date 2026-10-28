@@ -12,7 +12,7 @@ Agri Stack is **open-source digital public infrastructure (DPI) for agriculture*
 * **Open source.** Free to deploy, adapt and extend.
 * **Digital public infrastructure.** Countries deploy it to provide essential services to farmers, on infrastructure they own and run.
 * **Consent built in.** Farmer data is shared with service providers only with the farmer's consent, checked on every request.
-* **Departments stay in control.** Each department runs its own registry; Agri Stack queries them together and shares the result, without taking their data away.
+* **Distributed registries.** Each department runs its own registry, on its own infrastructure, and stays in control of its data; Agri Stack queries them together and shares the result, without centralising the data.
 * **Open standards.** It follows open standards for data, consent, identity and APIs ([Standards](architecture/standards.md)).
 * **A foundation for farmer services networks.** A natural building block for networks such as the Open Agri Network (OAN), and usable on its own without one.
 * **Partners onboard once.** A bank or agritech joins once and uses one farmer consent across several registries.

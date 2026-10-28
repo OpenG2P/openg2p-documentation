@@ -44,9 +44,7 @@ Every component in the diagram, what it does, and where its source code is. All 
 | Registries | [Farmer Registry](../../products/registry/farmer-registry/README.md) | Farmers, their households, land parcels and declared crops; links the Farmer ID to the national ID | [OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) |
 | Registries | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) | What each farmer plans, sows and harvests, plot by plot and season by season | [OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry) |
 | Registries | Livestock Registry | Animals and livestock events ([design](../design/livestock-registry.md)) | Not built yet |
-| Registries | [Registry Platform](../../products/registry/registry/README.md) | The platform every registry is built on: registers, activity registers, partner APIs, consent enforcement, verifiable credentials | [OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform) |
 | Catalogues | [Master Data Service](../../platform/platform-services/master-data-service/README.md) | The catalogues: datasets (crops, seeds, units, …) and geography, versioned; public read API | [OpenG2P/master-data-service](https://github.com/OpenG2P/master-data-service) |
-| Catalogues | Country packs | A country's datasets and geography, loaded into the Master Data Service | [OpenG2P/openg2p-data](https://github.com/OpenG2P/openg2p-data) |
 | Exchange | [Composite](../composite/README.md) | Serves approved use cases: one query, several registries, one signed answer | [OpenG2P/agri-stack](https://github.com/OpenG2P/agri-stack) |
 | Exchange and every install | [Consent Manager](../../consent-management/README.md) | The farmer's consent: collected (partner portal), checked, and turned into a consent token per registry | [OpenG2P/consent-manager](https://github.com/OpenG2P/consent-manager) |
 | Exchange and every install | [Partner Management](../../platform/platform-services/partner-management/README.md) | Partners, their keys and their access policies | [OpenG2P/partner-management](https://github.com/OpenG2P/partner-management) |
@@ -56,7 +54,7 @@ Every component in the diagram, what it does, and where its source code is. All 
 | Every install | [IAM](../../identity-and-access-management/README.md) | Staff login and roles | [OpenG2P/iam](https://github.com/OpenG2P/iam) |
 | Every install | Commons | The Helm charts that install the shared services in each namespace | [OpenG2P/commons](https://github.com/OpenG2P/commons) |
 
-## Across departments
+## Distributed registries across departments
 
 Each department runs its registries for its own work: its staff, approvals, partners and use cases. It must not depend on another department being up, or on another department's partners and consents. OAN partners, on the other hand, need one onboarding and one consent for all registries. Separate installs give the first; the Exchange gives the second.
 
@@ -80,16 +78,16 @@ Each department runs its registries for its own work: its staff, approvals, part
 How the departments and the Exchange are installed and set up: [Deployment](../deployment/README.md#topology).
 {% endhint %}
 
-## Entry point: the OpenG2P deployment, not a separate API gateway
+## API gateway functions
 
-Agri Stack has **no API gateway product**. Partners reach it through the ingress of the [OpenG2P deployment](../../deployment/openg2p-deployment-model.md), as for every OpenG2P service. What an API gateway usually provides is covered as follows:
+The functions of an API gateway are fulfilled by the ingress of the [OpenG2P deployment](../../deployment/openg2p-deployment-model.md) (Nginx, Istio), through which partners reach Agri Stack as every OpenG2P service, and by the services themselves:
 
 | API gateway feature | In the OpenG2P deployment |
 | --- | --- |
 | Single public entry point, TLS, routing | Nginx and the Istio ingress gateway, a VirtualService per service |
 | Partner authentication | Each service verifies the partner's signature over the request body against [Partner Management](../../platform/platform-services/partner-management/README.md) |
 | Access control | Each partner's use-case policies (one per use case) in the Exchange's Partner Management, checked by the Composite on every call; Istio `AuthorizationPolicy` to limit registries' partner APIs to the Composite (to do) |
-| Rate limits and quotas | An edge limit on the Composite's route at the Istio ingress gateway, and a per-partner, per-use-case limit in the Composite (which knows the partner on every request), shared across pods in Redis; daily quotas to do ([rate limiting](../design/rate-limiting.md)) |
+| Rate limits and quotas | A per-partner, per-use-case limit in the Composite, set in each use case and counted across pods in Redis; optionally an edge limit on the Composite's route at the Istio ingress gateway (off by default); daily quotas to do ([rate limiting](../design/rate-limiting.md)) |
 | Usage reports | Audit events from every hop, in the Audit Manager |
 | mTLS between services, timeouts, retries, circuit breaking | Istio |
 | Developer portal | The [partner guide](../partner-guide.md) and the Composite's describe endpoints |

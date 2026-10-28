@@ -130,7 +130,7 @@ audit:
 | **Input** | What the partner sends: subject identifier types, parameters, batch size | Checked before any registry is called |
 | **Sources** | One entry per registry: controller, whether it's mandatory, the data scopes it needs (`scopes`) and may use (`optional_scopes`), DCI query template, timeout, retries | Endpoints and signing keys come from **PM**, never from this file. The query templates use the Jinja style the registries already use for DCI mapping. |
 | **Response** | Merged or data-blind, published schema, field mapping, derived fields, per-source status | In data-blind mode `mapping` and `derived` aren't allowed. Each registry encrypts its part to the partner's PM key and the Composite only bundles the parts. |
-| **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway)) |
+| **Execution / limits / audit** | Timeouts, partial-response rule, rate limits, audit events | Limits are enforced by the Composite (there is no separate API gateway; see [entry point](../architecture/README.md#api-gateway-functions)) |
 
 {% hint style="warning" %}
 **First version:** registry endpoints are configured in the Composite's own settings (`registries`), because PM holds no registry endpoints yet, and the Composite enforces the per-partner rate limit itself, shared across pods in Redis ([rate limiting](../design/rate-limiting.md)). See [what the first version does](#what-the-first-version-does).

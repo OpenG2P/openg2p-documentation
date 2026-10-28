@@ -19,7 +19,7 @@ These pages assume one arrangement, used for the reference install:
 | Agriculture Department | `trial` | The **Farmer Registry**: commons (department role) and the Farmer Registry | Farmers, land, households, declared main crops |
 | Crops Department | `dept1` | The **Crop Sown Registry**: commons (department role) and the Crop Sown Registry | Crop seasons, plot by plot and season by season |
 
-Each namespace is installed as if it were a separate organisation, with its own commons (Keycloak, Postgres, Partner Management, Consent Manager, Master Data). Calls between namespaces use **public hostnames** only, never in-cluster service names. A partner (e.g. `bank-a`) onboards and the farmer consents only at the Exchange; each department still decides at its own boundary. Why it is split this way: [across departments](../architecture/README.md#across-departments).
+Each namespace is installed as if it were a separate organisation, with its own commons (Keycloak, Postgres, Partner Management, Consent Manager, Master Data). Calls between namespaces use **public hostnames** only, never in-cluster service names. A partner (e.g. `bank-a`) onboards and the farmer consents only at the Exchange; each department still decides at its own boundary. Why it is split this way: [across departments](../architecture/README.md#distributed-registries-across-departments).
 
 For testing, all three namespaces can run on one cluster; the commands on these pages assume that. With the Crops Department on its own cluster, see [Separate Clusters](separate-clusters.md). Each needs its own domain on its `internal` gateway (e.g. `*.agrix.openg2p.org`, `*.trial.openg2p.org`, `*.dept1.openg2p.org`), with DNS and TLS.
 

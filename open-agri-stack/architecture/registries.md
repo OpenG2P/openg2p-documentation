@@ -7,7 +7,7 @@ description: >-
 
 # Registries in Agri Stack
 
-Agri Stack reads two registries today, each its own install in its own department ([across departments](README.md#across-departments)). Both are built on the [registry platform](../../products/registry/registry/README.md); their registers, fields and data scopes are documented with each product. This page covers only their part in Agri Stack. How to install them: [Deployment](../deployment/README.md).
+Agri Stack reads two registries today, each its own install in its own department ([across departments](README.md#distributed-registries-across-departments)). Both are built on the [registry platform](../../products/registry/registry/README.md); their registers, fields and data scopes are documented with each product. This page covers only their part in Agri Stack. How to install them: [Deployment](../deployment/README.md).
 
 | Registry | Department (example) | Holds |
 | --- | --- | --- |

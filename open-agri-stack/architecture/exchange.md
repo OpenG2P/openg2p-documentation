@@ -51,13 +51,6 @@ One request, hop by hop: [request flow](request-flow.md). The token format, the 
 
 A registry installed without the Exchange is not affected: it checks partners and consents at its own PM and CM (path A).
 
-## Not built yet
-
-* Consent given in person digitally (no form, no staff step) and self-service consent by the farmer ([consent](consent.md#how-a-farmer-gives-consent)).
-* A consent collected in the Exchange CM presented directly at a registry, without the Composite.
-
-See [TODOs and open items](../open-items/README.md).
-
 {% hint style="info" %}
 Installing the Exchange: [Deployment: Exchange](../deployment/exchange.md) and [Deployment: Composite](../deployment/composite.md).
 {% endhint %}

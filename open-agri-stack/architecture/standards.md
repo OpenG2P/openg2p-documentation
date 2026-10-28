@@ -129,7 +129,7 @@ For each dataset, the evaluation should record:
 | --- | --- | --- | --- | --- | --- |
 | Deployment | All services | All services | Kubernetes, Helm, OCI container images | **Used** | See the [OpenG2P deployment model](../../deployment/openg2p-deployment-model.md). |
 | Object storage | Garage (commons); RP, Catalogue (MDS), ODK, Novu, CM | All services | Amazon S3 API | **Used** | Garage replaced MinIO; services use the S3 API in-cluster at `commons-garage:3900`. CM keeps consent evidence in bucket `consent-evidence`. |
-| Service mesh and ingress | Istio, Nginx | Cluster | Istio, Nginx | **Used** | See [entry point](README.md#entry-point-the-openg2p-deployment-not-a-separate-api-gateway). |
+| Service mesh and ingress | Istio, Nginx | Cluster | Istio, Nginx | **Used** | See [entry point](README.md#api-gateway-functions). |
 | Audit events | Audit Manager; RP, Catalogue (MDS), CM, Composite emit events | Audit Manager | [CloudEvents 1.0](https://cloudevents.io/) | **Used** | See [Audit Manager](../../platform/platform-services/audit-manager/README.md). |
 | Distributed tracing | Composite, RP, CM | Composite → registries → CM | [W3C Trace Context](https://www.w3.org/TR/trace-context/), [OpenTelemetry](https://opentelemetry.io/) | **To explore** | Today hops are linked by the request ID in logs and audit events; no `traceparent` is sent. |
 

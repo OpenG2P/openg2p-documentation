@@ -8,7 +8,7 @@ description: >-
 
 # Exchange consent tokens (Agri Stack Exchange)
 
-In [Agri Stack across departments](../../open-agri-stack/architecture/README.md#across-departments)
+In [Agri Stack across departments](../../open-agri-stack/architecture/README.md#distributed-registries-across-departments)
 a partner (e.g. a bank) onboards and the farmer consents **only at the Exchange** (the data exchange layer, `agrix`), while
 each department registry (`trial`, `dept1`) still decides at its own boundary through its own Consent
 Manager. The link between the two is a **consent token** (called *receipt* in the API and settings):
