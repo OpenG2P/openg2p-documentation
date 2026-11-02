@@ -1,13 +1,15 @@
 ---
 description: >-
-  Testing an Agri Stack install with one script: its configuration file (the
-  install's names and hostnames), what it checks and sets up for a test
-  partner, the query, and common failures.
+  A basic end-to-end sanity test of an Agri Stack install: one script, one
+  query by a test partner for one farmer, through every registry of a use
+  case. Its configuration, what it does, clean-up and common failures.
 ---
 
 # Testing
 
-Step 4 of the [install steps](README.md#install-steps). One script tests the install end to end, as a partner would use it: [`scripts/test_install.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.py) in the [agri-stack](https://github.com/openg2p/agri-stack) repository. It only tests: in production, partners, policies and keys are managed by the administrators ([Administration](../administration/README.md)).
+Step 4 of the [install steps](README.md#install-steps). [`scripts/test_install.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.py) (in the [agri-stack](https://github.com/openg2p/agri-stack) repository) is a **basic end-to-end sanity check**: one test partner makes one query for one farmer through every registry of a use case, and the script checks the answer and its signature. If it passes, the install is wired together.
+
+It is not a tool for running Agri Stack: real partners, consents, policies and keys are handled by hand, by the administrators ([Administration](../administration/README.md)). To pass, it sets up what it needs for its own test partner; on an install that will go live, [clean up](#clean-up) after it.
 
 ## Run it
 
@@ -58,15 +60,9 @@ With `test.auto_approve: false`, the script raises the requests and waits (`test
 
 **Exit codes:** `0` ok; `1` error; `2` a step was not completed (an approval timed out, or a conflict needs a decision); `3` the query failed or a source did not answer ok.
 
-## Consent through the partner portal
+## A consent collected by hand
 
-By default the script signs the consent as the partner (`test.consent: sign`). To test a consent collected in person instead:
-
-1. Partner portal (`https://consent-partner-portal.<Exchange domain>`), as `<partner>-operator` (created in step 5): **New request** for the use case, with the farmer's national ID and Farmer ID (e.g. `946053125409`, `FR-0007`). **Authenticate with national ID**: the farmer logs in with eSignet in the popup. Upload the signed form, **Submit**.
-2. CM console (`https://consent-manager.<Exchange domain>`), **Consent Approvals**: a staff user checks and approves it.
-3. In the configuration, `test.consent: lookup` (the Exchange CM finds the farmer's consent for the partner and use case) or `id:<consent ID>`, and `test.subject` the consent's farmer. Run the script again.
-
-More: [consent collection](../../consent-management/design/consent-collection.md).
+By default the script signs the consent as the test partner (`test.consent: sign`). To test with a consent collected in the partner portal instead, first collect it ([Collecting a Consent](../administration/collecting-a-consent.md)), then run the script with `test.consent: lookup` (or `id:<consent ID>`) and `test.subject` that farmer.
 
 ## Where to look
 

@@ -7,14 +7,16 @@ description: >-
 
 # Administration
 
-The install sets up everything Agri Stack needs to run ([what the install sets up](../architecture/exchange.md#what-the-install-sets-up)). What remains are decisions people make, in the portals of their own install. These pages give the steps; the test script does some of them for a test partner only ([Testing](../deployment/testing.md)).
+The install sets up everything Agri Stack needs to run ([what the install sets up](../architecture/exchange.md#what-the-install-sets-up)). What remains are decisions people make, in the portals of their own install. Each page below is one task, step by step. The [test script](../deployment/testing.md) does none of them for real partners.
 
-| Who | Task | Page |
+| Guide | What it does | Who |
 | --- | --- | --- |
-| The Exchange's partner manager | Onboard a partner, assign and remove its use cases, disable it | [Managing Partners](managing-partners.md) |
-| The Exchange's Keycloak administrator | Partner portal accounts for a partner's staff | [Partner Portal Users](partner-portal-users.md) |
-| Each department's partner manager | Decide what its registry releases to the Exchange, and widen or narrow it as use cases change | [Releasing Data to the Exchange](releasing-data-to-the-exchange.md) |
-| Each install's operator | Replace or rotate the signing keys; respond to a compromised key | [Keys](keys.md) |
+| [Managing Partners](managing-partners.md) | Onboard a partner, assign and remove its use cases, disable it | The Exchange's partner manager |
+| [Partner Portal Users](partner-portal-users.md) | Create and disable partner portal accounts for a partner's staff | The Exchange's Keycloak administrator |
+| [Collecting a Consent](collecting-a-consent.md) | Record a farmer's consent in the partner portal and approve it | Partner staff; the Exchange's CM staff |
+| [Releasing Data to the Exchange](releasing-data-to-the-exchange.md) | Set what a registry releases to the Exchange; widen or narrow it as use cases change | Each department's partner manager |
+| [Onboarding the Composite](onboarding-the-composite.md) | Onboard the Composite in a department by hand, where the install did not | Each department's partner manager |
+| [Keys](keys.md) | Replace or rotate a signing key; respond to a compromised key | Each install's operator |
 
 Where each one works:
 

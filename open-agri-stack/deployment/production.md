@@ -9,6 +9,10 @@ description: >-
 
 A demo install keeps the defaults; a production install changes the items below, during the [install steps](README.md#install-steps). The registries' own production settings are in their guides ([Farmer Registry](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#production)).
 
+## Topology
+
+In production, each department and the Exchange usually run on their own clusters: [Separate Clusters](separate-clusters.md).
+
 ## Exchange Consent Manager signing key
 
 The demo key is public: anyone could sign consent tokens the departments accept. Create the Secret before installing Commons Services:
