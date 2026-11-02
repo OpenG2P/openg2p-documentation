@@ -57,7 +57,7 @@ The departments read the new key from the Exchange CM's JWKS URL. Consent tokens
 
 ## A partner's key
 
-The partner sends its new public key and `kid`. In the Exchange's Partner Management, on the partner: **Rotate / add keys** with the new key (a key-update request), approve. Old and new keys both work until the old `kid` is revoked: revoke it (**Rotate / add keys**, tick the old key) once the partner has switched. Partner's side: [Partner Guide](../partner-guide.md#step-2-get-onboarded-in-partner-management).
+The partner sends its new public key and `kid`. In the Exchange's Partner Management, on the partner: **Rotate / add keys** with the new key (a key-update request), approve. Old and new keys both work until the old `kid` is revoked: revoke it (**Rotate / add keys**, tick the old key) once the partner has switched. Partner's side: [Partner Integration Guide](../partner-integration-guide.md#step-2-get-onboarded-in-partner-management).
 
 ## A compromised key
 

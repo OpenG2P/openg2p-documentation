@@ -155,7 +155,7 @@ Publishing is done by the Agri Stack platform team. Because the configuration ca
 
 ## At runtime and worked example
 
-How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request is [below](#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [partner guide](../partner-guide.md#worked-example-loan-profile).
+How the Composite serves a request, hop by hop (partner checks, consent tokens, each registry's own check, the signed response), is in the [request flow](../architecture/request-flow.md); what the first version does per request is [below](#what-it-does-per-request). A worked example with the shipped `loan-profile` use case, the same one the test scripts run, with its request and response, is in the [Partner Integration Guide](../partner-integration-guide.md#worked-example-loan-profile).
 
 ## Where configurations live
 

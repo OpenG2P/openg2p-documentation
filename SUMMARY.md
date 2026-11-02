@@ -638,7 +638,7 @@
     * [Releasing Data to the Exchange](open-agri-stack/administration/releasing-data-to-the-exchange.md)
     * [Onboarding the Composite](open-agri-stack/administration/onboarding-the-composite.md)
     * [Keys](open-agri-stack/administration/keys.md)
-  * [Partner Guide](open-agri-stack/partner-guide.md)
+  * [Partner Integration Guide](open-agri-stack/partner-integration-guide.md)
   * [Versions](open-agri-stack/versions/README.md)
   * [TODOs & Open Items](open-agri-stack/open-items/README.md)
 

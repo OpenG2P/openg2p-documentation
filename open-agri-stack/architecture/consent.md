@@ -35,7 +35,7 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 * **The farmer is identified by the national ID and the Farmer ID.** The consent's subject is the national ID the farmer logs in with; each request also carries the **Farmer ID**, which CM staff check in the Farmer Registry (the source of truth for the link between the two) before approving ([identifiers and demographics](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
 * **The use case sets what is asked for.** The use case's purpose and its scopes per registry, read from the Composite, become the consent's purpose and grants; the consent can be used only for that use case ([data-sharing policies](data-sharing-policies.md#two-policies-two-places)).
 * **The registries are the data controllers.** Each grant names a registry (`farmer-registry`, `crop-sown-registry`) and its data scopes (e.g. `farmer-registry.personal_details`).
-* **The partner need not send the consent.** The Exchange CM finds the partner's active consent for the farmer and use case ([partner guide](../partner-guide.md)).
+* **The partner need not send the consent.** The Exchange CM finds the partner's active consent for the farmer and use case ([Partner Integration Guide](../partner-integration-guide.md)).
 * **Revocation and consent tokens.** A revoked consent gets no further consent token; a token already issued stays usable until it expires (5 minutes by default), since registries check tokens offline.
 
 {% hint style="warning" %}

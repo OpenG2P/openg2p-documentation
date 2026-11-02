@@ -63,7 +63,7 @@ Agri Stack is available under the **Mozilla Public License 2.0** ([licence](../l
 ## Where to go next
 
 * **How it works:** [Architecture & Concepts](architecture/README.md): the components, consent, policies, one request end to end.
-* **Connect as a service provider:** [Partner Guide](partner-guide.md).
+* **Connect as a service provider:** [Partner Integration Guide](partner-integration-guide.md).
 * **Run it:** [Deployment](deployment/README.md).
 * **Add or change a use case:** [Composite](composite/README.md) and [Creating a Use Case](composite/creating-a-use-case.md).
 * **What is being designed:** [Design](design/README.md), including [Interoperability with OAN](design/oan-interoperability.md).

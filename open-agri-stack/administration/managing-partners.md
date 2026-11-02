@@ -16,7 +16,7 @@ How the Exchange's partner manager lets a partner (a bank, an insurer, an agrite
 3. **Approve** the onboarding request.
 4. **Partner portal accounts** for its staff, if they will collect consents in the portal ([Partner Portal Users](partner-portal-users.md)).
 
-The partner's own steps: [Partner Guide](../partner-guide.md).
+The partner's own steps: [Partner Integration Guide](../partner-integration-guide.md).
 
 ## Assign or remove a use case
 
