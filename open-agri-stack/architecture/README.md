@@ -1,6 +1,6 @@
 ---
 description: >-
-  Agri Stack components, the layers they belong to, and who talks to whom
+  Agri Stack components, what each does, the layers they belong to, and who talks to whom
   when a partner asks for farmer data.
 ---
 
@@ -16,6 +16,23 @@ description: >-
 | Ochre | Catalogues (reference data) |
 | Teal | Platform services (Partner Management, Consent Manager, Audit Manager), and the Exchange's partner portal and eSignet |
 | Green | The Composite (the Exchange's use-case service) |
+
+| Layer | Component | What it does |
+| --- | --- | --- |
+| Registries | [Farmer Registry](../../products/registry/farmer-registry/README.md) | Farmers, their households, land parcels and declared crops; links the Farmer ID to the national ID |
+| Registries | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) | What each farmer plans, sows and harvests, plot by plot and season by season |
+| Registries | Livestock Registry | Animals and livestock events ([design](../design/livestock-registry.md)) |
+| Catalogues | [Master Data Service](../../platform/platform-services/master-data-service/README.md) | The catalogues: datasets (crops, seeds, units, …) and geography, versioned; public read API |
+| Exchange | [Composite](../composite/README.md) | Serves approved use cases: one query, several registries, one signed answer |
+| Exchange and every install | [Consent Manager](../../consent-management/README.md) | The farmer's consent: collected (partner portal), checked, and turned into a consent token per registry |
+| Exchange and every install | [Partner Management](../../platform/platform-services/partner-management/README.md) | Partners, their keys and their access policies |
+| Exchange | National-ID login (eSignet) | The farmer proves who they are with the national ID |
+| Every install | [Audit Manager](../../platform/platform-services/audit-manager/README.md) | Audit events from every hop |
+| Every install | [Approval Workflow Engine](../../platform/platform-services/approval-workflow-engine/README.md) | Approval of changes to registry records |
+| Every install | [IAM](../../identity-and-access-management/README.md) | Staff login and roles |
+| Every install | Commons | The Helm charts that install the shared services in each namespace |
+
+Versions and source code of each: [Versions & Source Code](../versions/README.md).
 
 **Departments and installs.** Each department runs its own Kubernetes cluster, behind its own ingress (Nginx, Istio): the public entry point for everything in that cluster. An **install** is one namespace in a cluster with its own commons: Partner Management, Consent Manager, Audit Manager and catalogue. Each registry is its own install. The **Exchange** (the data exchange layer: partner portal, Consent Manager, Partner Management, eSignet, the Composite) is one more install, above the departments ([The Exchange](exchange.md)). It can run in its own cluster or share one with a department; either way it is a separate install, with its own Partner Management, Consent Manager and Audit Manager.
 
@@ -34,25 +51,6 @@ description: >-
 
 * The ingress (dashed grey: OpenG2P deployment infrastructure, not an Agri Stack service) routes requests but never reads data. The Composite runs only approved use cases and keeps nothing after it responds.
 * Beckn appears only at the OAN network layer, for discovering service providers and consumers. It isn't used to exchange registry data today; a proposal makes the Composite a provider on that network: [Interoperability with OAN (Beckn)](../design/oan-interoperability.md).
-
-## Components and source code
-
-Every component in the diagram, what it does, and where its source code is. All are open source under the Mozilla Public License 2.0, except eSignet (MOSIP, under its own open-source licence).
-
-| Layer | Component | What it does | Source code |
-| --- | --- | --- | --- |
-| Registries | [Farmer Registry](../../products/registry/farmer-registry/README.md) | Farmers, their households, land parcels and declared crops; links the Farmer ID to the national ID | [OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) |
-| Registries | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) | What each farmer plans, sows and harvests, plot by plot and season by season | [OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry) |
-| Registries | Livestock Registry | Animals and livestock events ([design](../design/livestock-registry.md)) | Not built yet |
-| Catalogues | [Master Data Service](../../platform/platform-services/master-data-service/README.md) | The catalogues: datasets (crops, seeds, units, …) and geography, versioned; public read API | [OpenG2P/master-data-service](https://github.com/OpenG2P/master-data-service) |
-| Exchange | [Composite](../composite/README.md) | Serves approved use cases: one query, several registries, one signed answer | [OpenG2P/agri-stack](https://github.com/OpenG2P/agri-stack) |
-| Exchange and every install | [Consent Manager](../../consent-management/README.md) | The farmer's consent: collected (partner portal), checked, and turned into a consent token per registry | [OpenG2P/consent-manager](https://github.com/OpenG2P/consent-manager) |
-| Exchange and every install | [Partner Management](../../platform/platform-services/partner-management/README.md) | Partners, their keys and their access policies | [OpenG2P/partner-management](https://github.com/OpenG2P/partner-management) |
-| Exchange | National-ID login (eSignet) | The farmer proves who they are with the national ID | [mosip/esignet](https://github.com/mosip/esignet) |
-| Every install | [Audit Manager](../../platform/platform-services/audit-manager/README.md) | Audit events from every hop | [OpenG2P/audit-manager](https://github.com/OpenG2P/audit-manager) |
-| Every install | [Approval Workflow Engine](../../platform/platform-services/approval-workflow-engine/README.md) | Approval of changes to registry records | [OpenG2P/awe](https://github.com/OpenG2P/awe) |
-| Every install | [IAM](../../identity-and-access-management/README.md) | Staff login and roles | [OpenG2P/iam](https://github.com/OpenG2P/iam) |
-| Every install | Commons | The Helm charts that install the shared services in each namespace | [OpenG2P/commons](https://github.com/OpenG2P/commons) |
 
 ## Distributed registries across departments
 
