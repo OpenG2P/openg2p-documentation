@@ -53,6 +53,31 @@ One request, hop by hop: [request flow](request-flow.md). The token format, the 
 
 A registry installed without the Exchange is not affected: it checks partners and consents at its own PM and CM (path A).
 
+## What the install sets up
+
+| What | Done by |
+| --- | --- |
+| The Composite's signing key (Secret `agri-composite-signing`) and its public keys at `https://agri-composite.<Exchange domain>/.well-known/jwks.json` | The Composite chart |
+| The Composite onboarded in the Exchange's and each department's Partner Management, its keys read from that URL, with no policy | Commons Services (Partner Management), from **Exchange Role** |
+| Trust between the Consent Managers: the Exchange CM issues consent tokens, each department CM accepts them | Commons Services (Consent Manager), from **Exchange Role** |
+| The partner portal's Keycloak realm, client, roles and `partner_id` attribute | Commons Services (Consent Manager), with **Partner Portal?** |
+
+Because each Partner Management reads the Composite's key when needed, the departments and the Exchange can be installed in either order. Left to people, by design: what each department releases to the Exchange, and which partners may use which use cases ([Administration](../administration/README.md)).
+
+## Names shared across installs
+
+The defaults match in every install. Change one only together with every place that uses it.
+
+| Name | Default | Used by |
+| --- | --- | --- |
+| Composite partner ID | `agri-composite` | The Composite; its Partner Management entry `PARTNER_AGRI_COMPOSITE` in every install; the token presenter at the Exchange CM and the trusted presenter at the department CMs |
+| Composite hostname | `agri-composite.<Exchange domain>` | The departments' Partner Management reads the Composite's keys there (**Composite JWKS URL** otherwise) |
+| Consent token issuer | `agri-stack-exchange-cm` | The Exchange CM (issuer); the department CMs (trusted issuer) |
+| Data controllers | `farmer-registry`, `crop-sown-registry` | Each registry; the Composite's registries; consents; Partner Management scope policies |
+| Subject ID types | `FAYDA_FAN`, `FARMER_ID` | Use cases, Partner Management policies (Master Data list `SUBJECT_ID_TYPE`), consents. The registries map the DCI type `UIN` to `FAYDA_FAN` |
+| Purposes | `credit-assessment` | Use cases, Partner Management policies (Master Data list `CONSENT_PURPOSE`), consents |
+| Exchange domain | `agrix.<parent domain>` | The department CMs read the Exchange CM's public keys there, and their Partner Management the Composite's |
+
 {% hint style="info" %}
-Installing the Exchange: [Deployment: Exchange](../deployment/exchange.md) and [Deployment: Composite](../deployment/exchange.md#composite).
+Installing the Exchange: [Deployment: Exchange](../deployment/exchange.md).
 {% endhint %}

@@ -7,7 +7,7 @@ description: >-
 
 # Administration
 
-The install sets up everything Agri Stack needs to run ([Deployment](../deployment/README.md)). What remains are decisions people make, in the portals of their own install. These pages give the steps; the test script does some of them for a test partner only ([Testing](../deployment/testing.md)).
+The install sets up everything Agri Stack needs to run ([what the install sets up](../architecture/exchange.md#what-the-install-sets-up)). What remains are decisions people make, in the portals of their own install. These pages give the steps; the test script does some of them for a test partner only ([Testing](../deployment/testing.md)).
 
 | Who | Task | Page |
 | --- | --- | --- |
@@ -23,4 +23,8 @@ Where each one works:
 | The Exchange | Partner Management `https://partner-management.<Exchange domain>`; Keycloak `https://keycloak.<Exchange domain>` (realm `partner`) |
 | A department | Its own Partner Management `https://partner-management.<department domain>` |
 
-Every Partner Management change is a request that is raised and then approved. Have one person raise and another approve ([Production: approvals](../deployment/production.md#approvals)).
+## Approvals
+
+* **Separate the roles.** Every Partner Management change is a request that is raised and then approved, and Partner Management lets the person who raised it approve it. In production, have one person raise and another approve every onboarding, key and policy request, at the Exchange and in each department.
+* **One exception: the Composite's onboarding.** The install raises and approves it itself (actor `bootstrap` in the Partner Management audit), with no policy: it grants nothing until a department adds the Composite's scope policy.
+* **Departments own their scope policies for the Composite.** The Exchange's operator should not hold Partner Management admin rights in a department. Review widenings before approving them.

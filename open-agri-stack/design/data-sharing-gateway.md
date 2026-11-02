@@ -79,7 +79,7 @@ Raw request templates and JSONPath mappings stay available for what criteria can
 
 ## Setup at install
 
-**Built.** The former one-time setup after install is done by the install, in production too ([what the install sets up](../deployment/README.md#what-the-install-sets-up)):
+**Built.** The former one-time setup after install is done by the install, in production too ([what the install sets up](../architecture/exchange.md#what-the-install-sets-up)):
 
 * **Partner portal realm.** keycloak-init already creates the realm, client and roles. It also declares the `partner_id` user attribute and its token mapper, configurable per realm and client and set by the CM chart. Creating partner staff users stays an operations task.
 * **The Composite's key.** The Composite chart generates its signing key into a Secret at install when it is missing, and serves its public keys at `/.well-known/jwks.json`. It writes to no Partner Management.

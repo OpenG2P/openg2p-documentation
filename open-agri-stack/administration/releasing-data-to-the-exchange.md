@@ -9,7 +9,7 @@ description: >-
 
 Each department decides what its registry releases through the Exchange: the Composite's scope policy for the registry, in the department's own Partner Management. Until it exists the registry releases nothing to the Exchange. Why and how it is applied: [Scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite) and [Data-Sharing Policies](../architecture/data-sharing-policies.md).
 
-The install has already onboarded the Composite (`PARTNER_AGRI_COMPOSITE`) in the department's Partner Management, with its key and no policy.
+Step 3 of the [install steps](../deployment/README.md#install-steps), and again whenever use cases change. The install has already onboarded the Composite (`PARTNER_AGRI_COMPOSITE`) in the department's Partner Management, with its key and no policy.
 
 ## What the Exchange asks for
 

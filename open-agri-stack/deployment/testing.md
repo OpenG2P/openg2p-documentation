@@ -73,13 +73,22 @@ More: [consent collection](../../consent-management/design/consent-collection.md
 * **Composite console** (`https://agri-composite-console.<Exchange domain>`): each call, its partner, sources and status ([Composite console](../composite/console.md)).
 * **CM console:** the decision log of each consent check.
 
+## Clean up
+
+On an install that will go live, remove what the test created:
+
+* The test partner in the Exchange's Partner Management (`test.partner`, e.g. `PARTNER_BANK_A`): **Disable** it ([Managing Partners](../administration/managing-partners.md#disable-a-partner)).
+* Its partner portal user `<partner>-operator` in the realm `partner`, and the Secret `partner-user-<partner>-operator`.
+* The test's widening of the departments' scope policies for the Composite, if wider than the departments agree to ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md#when-use-cases-change)).
+* The test partner's local key (`test.state_dir`, default `~/.agri-stack-test/`) and the answers in `scripts/out/`.
+
 ## Common failures
 
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | Step 1: the Composite does not serve `/.well-known/jwks.json` | A Composite chart older than the generated key | Upgrade the Composite |
 | Step 1: the Composite serves no signing key | Its Secret is missing or unreadable | Check the Secret `agri-composite-signing` and the Composite's log |
-| Step 1: a Partner Management does not serve `PARTNER_AGRI_COMPOSITE` | That install's Commons Services has no **Exchange Role**, or cannot reach the Composite's JWKS URL | [After Install: check](after-install.md#check) |
+| Step 1: a Partner Management does not serve `PARTNER_AGRI_COMPOSITE` | That install's Commons Services has no **Exchange Role**, or cannot reach the Composite's JWKS URL | [Farmer Registry: check](farmer-registry.md#check) |
 | Step 1: a Partner Management serves other keys for `PARTNER_AGRI_COMPOSITE` | An install older than the generated key holds a key of its own | [Keys: an older install](../administration/keys.md#an-older-install) |
 | Admin token: HTTP 401 | Wrong client secret, or a secret from another install | Check the credential in the configuration |
 | The query fails with 403 `partner_not_allowed` | The partner has no policy for the use case (`name@major`) | Rerun; or **Add policy** for the use case on the partner |

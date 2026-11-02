@@ -627,7 +627,6 @@
     * [Farmer Registry](open-agri-stack/deployment/farmer-registry.md)
     * [Crop Sown Registry](open-agri-stack/deployment/crop-sown-registry.md)
     * [Exchange](open-agri-stack/deployment/exchange.md)
-    * [After Install](open-agri-stack/deployment/after-install.md)
     * [Testing](open-agri-stack/deployment/testing.md)
     * [Production](open-agri-stack/deployment/production.md)
     * [Upgrades and Uninstall](open-agri-stack/deployment/upgrades-and-uninstall.md)
