@@ -64,7 +64,7 @@ You never call the registries or `/validate` yourself. The Composite checks that
 
 You sign every **request envelope** with your key and, if your policy lets you sign your own consents, each **consent** too. Supported algorithms: **EdDSA** (Ed25519), **ES256** (EC P-256) and **RS256** (RSA). Keep the private key in a keystore (a `.p12` is recommended); share only the public key. Choose a stable `kid` (e.g. `bank-a-2026-01`) and put it in every JWS header.
 
-Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [partner test kit](#test-kit) generates an EC P-256 key (ES256) for testing.
+Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [test script](#test-script) generates an EC P-256 key (ES256) for testing.
 
 ## Step 2 — Get onboarded in Partner Management
 
@@ -421,22 +421,9 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 
 If the farmer had not consented to the Crop Sown Registry (no grant), `season_summaries` and `crop_seasons` would be `denied` with `detail: "the consent has no grant for crop-sown-registry"`, `crops.*` would be `null`, and the request would still succeed. If the Farmer Registry denied the consent, the request would fail `403 source_denied`.
 
-## Test kit
+## Test script
 
-[`scripts/partner_kit.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_kit.py) does all of the above for testing (`pip install cryptography pyjwt`):
-
-```bash
-python scripts/partner_kit.py keys          # partner key + composite .p12 in scripts/kit-out (git-ignored), and what to onboard
-python scripts/partner_kit.py consent --subject FAYDA_FAN:946053125409
-python scripts/partner_kit.py describe --url https://agri-composite.<ns>.openg2p.org
-python scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org \
-    --subject FAYDA_FAN:<FAN of a registered farmer> --param crop_year=2019 --param season=SEASON_MEHER
-```
-
-* `keys` (defaults: partner `bank-a`, Composite `agri-composite`) prints the PM onboarding requests for `PARTNER_BANK_A` (with its use-case policy for `loan-profile@1`, allowing partner-signed consents because `call` signs its own) and `PARTNER_AGRI_COMPOSITE`, the `kubectl create secret generic agri-composite-signing …` command, and the Composite's scope policy requests for each department's PM.
-* `call` builds a consent with both grants (`--controllers` narrows it), signs the envelope, verifies the Composite's signature on the answer and prints it.
-
-To go through these steps as a test partner against an environment, use the [partner test](deployment/testing.md#partner-test-public-apis).
+[`scripts/test_install.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.py) does all of the above as a test partner against an install: the consent (`make_consent`), the signed request (`build_query`) and the check of the Composite's signature (`verify_response`) are working examples in Python. Running it: [Testing](deployment/testing.md).
 
 ## Checklist
 

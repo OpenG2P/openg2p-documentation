@@ -50,6 +50,7 @@ Functional work, in order, for the first production release. Country data and re
 * **Restrict the registries' partner APIs** — an Istio `AuthorizationPolicy` so only the Composite (and partners deliberately allowed direct access) can call them. *Design:* [entry point](../architecture/README.md#api-gateway-functions); decided: Istio policy, no separate API gateway.
 * **Daily quotas** — `limits.daily_quota_per_partner` enforced, counted in the Redis that already holds the rate-limit buckets. *Design:* [rate limiting](../design/rate-limiting.md#later).
 * **API gateway product** — reconsider only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated. *Design:* decided: none for now ([entry point](../architecture/README.md#api-gateway-functions)).
+* **Composite key rotation without a gap** — the Composite's JWKS serving the next key before it signs with it (and the old one for a while after), so that rotating needs no quiet window; today registries may refuse its calls for up to 5 minutes ([Keys](../administration/keys.md#rotate-the-generated-key)). *Design:* not designed yet.
 * **Registry endpoints in PM** — instead of the Composite's `composite.registries`. *Design:* not designed yet.
 * **Crop sources in parallel with the farmer** — when the partner already sends a Farmer ID, search the Crop Sown Registry alongside the Farmer Registry. *Design:* see step 7 of the [request flow](../architecture/request-flow.md).
 * **Make adding a use case easy** — in order:
@@ -109,6 +110,7 @@ Functional work, in order, for the first production release. Country data and re
 
 ## Platform and build
 
+* **Data Sharing Gateway** — generic names in place of Agri ones (one coordinated release), stacks as packs (`agri-stack` holding content only), connectors per registry with the four levels of flexibility, use cases from criteria and a field picker. *Design:* [Data Sharing Gateway](../design/data-sharing-gateway.md) (setup at install is built).
 * **Across departments** — *Design:* [across departments](../architecture/README.md#distributed-registries-across-departments).
   * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, Exchange CM), and setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs);
   * **Gateway between departments** with mutual TLS (a client certificate per department) on top of signed requests, exposing only the service APIs others need; document site-to-site WireGuard as the alternative for a few departments;

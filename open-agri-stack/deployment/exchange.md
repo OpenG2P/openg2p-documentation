@@ -7,13 +7,13 @@ description: >-
 
 # Exchange
 
-Step 2 of the [install order](README.md#install-order), in the namespace `agrix`, once the registries are installed. What the Exchange is: [The Exchange](../architecture/exchange.md).
+Step 2 of the [install steps](README.md#install-steps), in the namespace `agrix`, before or after the registries. What the Exchange is: [The Exchange](../architecture/exchange.md).
 
 ## What gets installed
 
 | Service | Role in the Exchange | Installed by |
 | --- | --- | --- |
-| Partner Management | Partners, their keys and use-case policies; the Composite's key | Commons Services |
+| Partner Management | Partners, their keys and use-case policies; the Composite, onboarded at install | Commons Services |
 | Consent Manager, with its partner portal | Farmers' consents, collected by partner staff in the portal; a consent token per registry for the Composite | Commons Services |
 | eSignet, and a mock identity system for testing | The farmer's national-ID login in the partner portal | Commons Services |
 | Master Data | The catalogue (the same country pack as the registries) | Commons Services |
@@ -44,7 +44,7 @@ Keep the defaults: PostgreSQL, Keycloak, Redis, Kafka and Garage are all needed.
 
 | Group | Field | Value | Why |
 | --- | --- | --- | --- |
-| Consent Manager | Exchange Role | **exchange** | The CM issues consent tokens to the Composite |
+| Consent Manager | Exchange Role | **exchange** | The CM issues consent tokens to the Composite; Partner Management onboards the Composite (`PARTNER_AGRI_COMPOSITE`) with its keys read from the Composite in this namespace |
 | Consent Manager | Partner Portal? | **Yes** | Partner staff raise consent requests for farmers |
 | AWE | Install AWE? | **No** | Partner and policy changes are approved in Partner Management |
 | Staff Portal | Install Staff Portal UI? | **No** | No registry here |
@@ -64,10 +64,10 @@ openg2p-awe:
   enabled: false
 openg2p-inji-verify:
   enabled: false
+global:
+  agriStackExchange:
+    role: exchange
 openg2p-consent-manager:
-  global:
-    agriStackExchange:
-      role: exchange
   partnerPortal:
     enabled: true
 ```
@@ -78,20 +78,22 @@ openg2p-consent-manager:
 
 ## Composite
 
-Install **Agri Stack Composite** in `agrix`. Only the registries' search URLs have no default:
+Install **Agri Stack Composite** in `agrix`. Only the registries' search URLs have no default; they follow from each registry's release name and domain, so the registries need not be installed yet:
 
 | Group | Field | Value |
 | --- | --- | --- |
 | Integration | Farmer Registry Search URL | `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` ([Farmer Registry](farmer-registry.md#check)) |
 | Integration | Crop Sown Registry Search URL | `https://partner-csr.dept1.openg2p.org/dci/registry/sync/search` ([Crop Sown Registry](crop-sown-registry.md#check)) |
 
-Use the departments' public hostnames, never in-cluster service names. Keep the other fields at their defaults for a demo; for production see [Production](production.md#composite). Every option of the chart: [Composite chart settings](../composite/chart-settings.md).
+Use the departments' public hostnames, never in-cluster service names. Keep the other fields at their defaults; **Generate Signing Key** (on) gives the Composite its key. For production see [Production](production.md#composite). Every option of the chart: [Composite chart settings](../composite/chart-settings.md).
 
 **Check:**
 
 ```bash
 helm -n agrix list
 curl -s https://agri-composite.agrix.openg2p.org/composite/v1/use-cases
+curl -s https://agri-composite.agrix.openg2p.org/.well-known/jwks.json
+curl -s https://partner-management-partner-api.agrix.openg2p.org/keys/PARTNER_AGRI_COMPOSITE
 ```
 
-The release `deployed` and `loan-profile` listed. Queries fail with `signing_unavailable` until the Composite has its signing key: the next step, [After Install](after-install.md).
+The release `deployed`, `loan-profile` listed, the Composite's public key served, and the Exchange's Partner Management serving the same `kid`. Next: [After Install](after-install.md).

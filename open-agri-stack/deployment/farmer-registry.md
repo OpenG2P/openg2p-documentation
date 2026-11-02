@@ -6,7 +6,7 @@ description: >-
 
 # Farmer Registry
 
-Step 1 of the [install order](README.md#install-order), in the namespace `trial`.
+Step 1 of the [install steps](README.md#install-steps), in the namespace `trial`.
 
 ## Install
 
@@ -14,8 +14,8 @@ Follow the Farmer Registry's own guide: [Farmer Registry → Deployment](../../p
 
 | Chart | Field | Value | Why |
 | --- | --- | --- | --- |
-| Commons Services | Exchange Role (Consent Manager) | **department** | The CM accepts the Exchange's consent tokens, presented by the Composite |
-| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | Where the CM reads the Exchange CM's public keys (e.g. `agrix.openg2p.org` for `trial.openg2p.org`) |
+| Commons Services | Exchange Role (Consent Manager) | **department** | The CM accepts the Exchange's consent tokens, presented by the Composite; Partner Management onboards the Composite with its keys read from the Exchange |
+| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | Where the CM reads the Exchange CM's public keys, and Partner Management the Composite's (e.g. `agrix.openg2p.org` for `trial.openg2p.org`) |
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) | Consents are collected at the Exchange |
 | Farmer Registry | Release name | e.g. `fr` | Sets the registry's partner hostname, `partner-fr.<domain>` |
 | Farmer Registry | Load Sample Data | **On** for a demo only | Farmers matching the Crop Sown Registry's samples ([sample data](../architecture/registries.md#sample-data)) |

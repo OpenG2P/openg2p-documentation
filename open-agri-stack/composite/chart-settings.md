@@ -61,7 +61,7 @@ Each registry is a data controller ID mapped to its full DCI sync search URL. Pa
 
 The chart renders `composite.useCases` into the ConfigMap `<release>-use-cases`, mounted at `/app/config/use-cases`. Running pods pick up a change within the reload interval (about a minute after the ConfigMap updates), without a restart. Each file is validated strictly when loaded; only `published` use cases are served. To manage use cases elsewhere (e.g. GitOps), point `composite.existingUseCasesConfigMap` at your own ConfigMap with keys `<name>.yaml` (and any `.j2` template files).
 
-**Adding a use case.** In **Edit YAML**, add an entry under `composite.useCases` (or a key to your own ConfigMap), written in the [use-case file format](use-case-configuration.md). Then rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) if it reads new data scopes or has a new purpose, so each department's scope policy for the Composite covers it. A partner calls it only when its use-case policy in the Exchange PM grants it (`name@major`, e.g. `loan-profile@1`): raise and approve a policy request there ([access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)).
+**Adding a use case.** In **Edit YAML**, add an entry under `composite.useCases` (or a key to your own ConfigMap), written in the [use-case file format](use-case-configuration.md). If it reads new data scopes or has a new purpose, each department decides whether to widen the Composite's scope policy ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md#when-use-cases-change)). A partner calls it only when its use-case policy in the Exchange PM grants it (`name@major`, e.g. `loan-profile@1`): raise and approve a policy request there ([access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)).
 
 **The shipped use case**, `loan-profile` (version `1.0.0`, purpose `credit-assessment`):
 
@@ -70,7 +70,7 @@ The chart renders `composite.useCases` into the ConfigMap `<release>-use-cases`,
 | **Input** | A farmer by `FAYDA_FAN` or `FARMER_ID`; optional `crop_year` and `season` |
 | **Sources** | `farmer` (Farmer Registry, mandatory); then `season_summaries` and `crop_seasons` (Crop Sown Registry, optional, both depending on `farmer`) |
 | **Returns** | The farmer's identity and location, land parcels and total land, declared main crops, crop seasons, season summaries and total area sown |
-| **Who may call it** | Partners with a policy for `loan-profile@1` in the Exchange PM; the [partner test](../deployment/testing.md#partner-test-public-apis) grants it to `bank-a` |
+| **Who may call it** | Partners with a policy for `loan-profile@1` in the Exchange PM; the [test](../deployment/testing.md) grants it to its test partner |
 | **Rate limit** | 60 per minute per partner |
 
 The scopes it needs from each registry: [Farmer Registry](../architecture/registries.md#farmer-data-the-composite-reads), [Crop Sown Registry](../architecture/registries.md#crop-data-the-composite-reads). The file, setting by setting: [the `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case).
@@ -79,18 +79,16 @@ The scopes it needs from each registry: [Farmer Registry](../architecture/regist
 
 | Value | Default | Form |
 | --- | --- | --- |
+| `composite.signingKey.generate` | `true` | Signing key: Generate Signing Key |
 | `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: Signing Key Secret |
-| `composite.signingKey.p12Key`, `passwordKey`, `kidKey`, `algorithmKey` | `composite.p12`, `password`, `kid`, `algorithm` | Values only: the keys in the Secret |
+| `composite.signingKey.pemKey`, `p12Key`, `passwordKey`, `kidKey`, `algorithmKey` | `key.pem`, `composite.p12`, `password`, `kid`, `algorithm` | Values only: the keys in the Secret |
 
-The Composite signs its calls to the registries and its answers to partners with this key. The [Exchange setup](../deployment/after-install.md#exchange-setup) generates it, creates the Secret and registers the key in each PM. To bring your own key instead, first onboard it in the Exchange PM as `PARTNER_AGRI_COMPOSITE` with its `kid`, then create the Secret. The Exchange setup keeps a Secret whose key the Exchange PM already serves and adds that key to each department PM; a Secret whose key the Exchange PM does not serve is replaced with a generated key.
+The Composite signs its calls to the registries and its answers to partners with this key, and serves its public key at `/.well-known/jwks.json`, where every Partner Management reads it.
 
-```bash
-kubectl -n agrix create secret generic agri-composite-signing \
-  --from-file=composite.p12=./composite.p12 --from-literal=password='<p12 password>' \
-  --from-literal=kid=agri-composite-2026-01 --from-literal=algorithm=auto
-```
+* **Generated** (`generate: true`): on first install the chart creates the Secret with an EC P-256 key (`key.pem`) and a `kid` (`<partner ID>-<random>`), then reads it back on every upgrade, and keeps it on uninstall.
+* **Your own:** create the Secret before installing, with a `.p12` (`composite.p12`, `password`, and optionally `kid` and `algorithm`). The chart leaves a Secret it did not create alone, and a `.p12` is used before a generated key. `kid` blank: the certificate's SHA-256 thumbprint; `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).
 
-`kid` must match the kid registered for the Composite in PM (blank: the certificate's SHA-256 thumbprint). `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).
+Replacing and rotating it: [Keys](../administration/keys.md#the-composites-key).
 
 ## Console
 

@@ -36,7 +36,7 @@ Through the Composite (path B in the [architecture](README.md#components-and-who
 
 A misconfigured use case or use-case grant can never leak more than the department allows.
 
-**The ceiling must cover every use case.** Partner Management does not know what a use case contains, so no department policy is derived from the grants automatically. Each department's ceiling for the Composite is the **superset** of what all published use cases read from its registry: every scope, required and optional, and every purpose. A new use case, or one that reads more, gets nothing extra from a registry until that department widens the ceiling; until then the registry withholds the scopes not covered, and denies the call if none of the requested scopes is covered (a mandatory source then fails the request). Widening is the department's decision: [when use cases change](../deployment/after-install.md#when-use-cases-change).
+**The ceiling must cover every use case.** Partner Management does not know what a use case contains, so no department policy is derived from the grants automatically. Each department's ceiling for the Composite is the **superset** of what all published use cases read from its registry: every scope, required and optional, and every purpose. A new use case, or one that reads more, gets nothing extra from a registry until that department widens the ceiling; until then the registry withholds the scopes not covered, and denies the call if none of the requested scopes is covered (a mandatory source then fails the request). Widening is the department's decision: [when use cases change](../administration/releasing-data-to-the-exchange.md#when-use-cases-change).
 
 <figure><img src="../../.gitbook/assets/open-agri-stack-released-scopes.svg" alt="Worked example: the use case asks for five scopes; the bank is granted the use case, so all five pass; the farmer declines land; the Livestock Department does not allow herd data; released: Farmer Registry personal details, Crop Sown crop season and measures"><figcaption><p>Worked example of released scopes</p></figcaption></figure>
 
@@ -56,7 +56,7 @@ In the registries, a scope is a registry **data scope**: a named group of the re
 | A partner gets another use case | **Add policy** on the partner (a policy request adding that use case's policy) | The Exchange's PM |
 | A partner loses a use case | **Revoke** that use case's policy (a policy request) | The Exchange's PM |
 | A new use case is published | The Agri Stack platform team ([creating a use case](../composite/creating-a-use-case.md)) | Not a policy change; partners still need it granted |
-| The Composite may read more from a registry (a new scope or purpose) | The operator reruns the [Exchange setup](../deployment/after-install.md#exchange-setup), which raises a policy request for the Composite's scope policy | The department's PM |
+| The Composite may read more from a registry (a new scope or purpose) | The department's partner manager edits the Composite's scope policy ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md)) | The department's PM |
 | A farmer consents, or revokes | The farmer | The Exchange's CM |
 
 Policy changes are versioned and audited in PM, and take effect when approved; modules see them within their policy cache time (about a minute by default).

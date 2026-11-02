@@ -30,6 +30,7 @@ Onboard a new partner and its initial key(s).
   "description": "Onboarding G2P Bridge for disbursement signing",
   "jwks_url": null,
   "import_from_jwks_url": false,
+  "keys_from_jwks_url": false,
   "keys": [
     { "public_key": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----", "kid": "key-1" }
   ],
@@ -53,6 +54,7 @@ Validation (rejected with `400`, code `G2P-REQ-102`):
   `crypto_allowed_algorithms` excludes, is rejected with `PM-KEY-400`.
 * `partner_id`, `kid` — no spaces or `/`, `?`, `#`, `%`.
 * `jwks_url` — an `http(s)://` URL, or omitted / `""`.
+* `keys_from_jwks_url` — needs `jwks_url`; `keys` may then be empty ([keys from a JWKS URL](functional-specifications.md#keys-from-a-jwks-url)).
 
 Policies are also checked against the [catalogue sources](functional-specifications.md#catalogue-sources)
 and the [Master Data code lists](functional-specifications.md#master-data-code-lists),

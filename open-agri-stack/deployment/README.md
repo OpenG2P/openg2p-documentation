@@ -1,13 +1,13 @@
 ---
 description: >-
-  Installing Agri Stack: the reference topology, the prerequisites and the
-  install order (the registries first, then the Exchange), with the names that
-  must match across installs.
+  Installing Agri Stack: the reference topology, the prerequisites, the
+  install steps (registries and Exchange in either order), what the install
+  sets up by itself, and the names that must match across installs.
 ---
 
 # Deployment
 
-Agri Stack is installed from the OpenG2P Helm charts, through Rancher. These pages are the install guide: which chart goes where, which form fields to change, and the one-time setup after install. How the parts work together: [Architecture & Concepts](../architecture/README.md).
+Agri Stack is installed from the OpenG2P Helm charts, through Rancher. These pages are the install guide: which chart goes where and which form fields to change. How the parts work together: [Architecture & Concepts](../architecture/README.md). What administrators do once it runs: [Administration](../administration/README.md).
 
 ## Topology
 
@@ -21,9 +21,9 @@ The reference install runs three namespaces in one Kubernetes cluster. Each name
 | `dept1` | The **Crop Sown Registry** (Crops Department) | Commons Base, Commons Services, Crop Sown Registry |
 | `agrix` | The **Exchange** | Commons Base, Commons Services, Composite |
 
-Each namespace has its own domain on the `internal` gateway (e.g. `*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS. The namespace names are examples; the commands on these pages use them.
+Each namespace has its own domain on the `internal` gateway (e.g. `*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS. The namespace and release names are examples: any names work, and the [test](testing.md) takes them from its configuration file.
 
-Departments can also run on **separate clusters**: the same charts and choices, with a few extra steps for hostnames and the Exchange setup ([Separate Clusters](separate-clusters.md)).
+Departments can also run on **separate clusters**: the same charts and choices ([Separate Clusters](separate-clusters.md)).
 
 ## Prerequisites
 
@@ -32,22 +32,31 @@ Departments can also run on **separate clusters**: the same charts and choices, 
 | A Kubernetes cluster with Rancher, Istio and the `internal` gateway | [Infrastructure setup](../../operations/deployment/infrastructure-setup/README.md) |
 | One environment (namespace) per install, with its domain, DNS and TLS | [Environment setup](../../operations/deployment/environment-setup-multi-node.md) |
 | The OpenG2P chart repository in Rancher (**Apps → Repositories**) | [Commons Helm chart](../../deployment/openg2p-commons-helm-chart.md) |
-| `kubectl` and Python 3 on the operator's machine, for the after-install scripts | [agri-stack/scripts](https://github.com/openg2p/agri-stack/tree/develop/scripts) |
+| For the test only: `kubectl` and Python 3 on the operator's machine | [Testing](testing.md) |
 
-## Install order
+## Install steps
 
-The registries come first: the Composite, installed with the Exchange, needs their search URLs.
-
-<figure><img src="../../.gitbook/assets/open-agri-stack-install-order.svg" alt="Install order: 1, the registries, each in its own namespace with its commons (Farmer Registry in trial, Crop Sown Registry in dept1); 2, the Exchange in agrix: Commons Base and Commons Services, then the Composite, which needs the registries' search URLs; 3, after install: partner portal users and the Exchange setup script; 4, test with exchange_test.sh."><figcaption><p>Install order</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/open-agri-stack-install-order.svg" alt="Install steps: the registries, each in its own namespace with its commons, and the Exchange with its commons and the Composite, in either order; then each department releases its registry's data to the Exchange in its Partner Management; then the test script."><figcaption><p>Install steps</p></figcaption></figure>
 
 | # | Step | Page |
 | --- | --- | --- |
-| 1 | Farmer Registry in `trial`, Crop Sown Registry in `dept1` (in either order, or in parallel) | [Farmer Registry](farmer-registry.md), [Crop Sown Registry](crop-sown-registry.md) |
+| 1 | The registries: Farmer Registry in `trial`, Crop Sown Registry in `dept1` | [Farmer Registry](farmer-registry.md), [Crop Sown Registry](crop-sown-registry.md) |
 | 2 | The Exchange in `agrix`: its commons, then the Composite | [Exchange](exchange.md) |
-| 3 | Partner portal users; the Exchange setup | [After Install](after-install.md) |
+| 3 | Each department releases its registry's data to the Exchange | [After Install](after-install.md) |
 | 4 | Test | [Testing](testing.md) |
 
-Start each step once the previous one is ready: releases `deployed`, all pods running (`helm -n <ns> list`, `kubectl -n <ns> get pods`). Before going live: [Production](production.md).
+Steps 1 and 2 can come in either order. Registries usually exist already and the Exchange is added to them; on a fresh install the Exchange can come first. Start each install once the one before it in the same namespace is ready: releases `deployed`, all pods running (`helm -n <ns> list`, `kubectl -n <ns> get pods`). Before going live: [Production](production.md).
+
+### What the install sets up
+
+| What | Done by |
+| --- | --- |
+| The Composite's signing key (Secret `agri-composite-signing`) and its public keys at `https://agri-composite.<Exchange domain>/.well-known/jwks.json` | The Composite chart |
+| The Composite onboarded in the Exchange's and each department's Partner Management, its keys read from that URL | Commons Services (Partner Management), from **Exchange Role** |
+| Trust between the Consent Managers: the Exchange CM issues consent tokens, each department CM accepts them | Commons Services (Consent Manager), from **Exchange Role** |
+| The partner portal's Keycloak realm, client, roles and `partner_id` attribute | Commons Services (Consent Manager), with **Partner Portal?** |
+
+What it does not do, because people decide it: what each department releases to the Exchange ([After Install](after-install.md)), and which partners may use which use cases ([Administration](../administration/README.md)).
 
 ## Catalogue in every namespace
 
@@ -69,8 +78,9 @@ The defaults match everywhere, so a default install needs none of these set. Cha
 | Name | Default | Used by |
 | --- | --- | --- |
 | Composite partner ID | `agri-composite` | The Composite; its Partner Management entry `PARTNER_AGRI_COMPOSITE` in every install; the token presenter at the Exchange CM and the trusted presenter at the department CMs |
+| Composite hostname | `agri-composite.<Exchange domain>` | The departments' Partner Management reads the Composite's keys there (**Composite JWKS URL** otherwise) |
 | Consent token issuer | `agri-stack-exchange-cm` | The Exchange CM (issuer); the department CMs (trusted issuer) |
 | Data controllers | `farmer-registry`, `crop-sown-registry` | Each registry; the Composite's registries; consents; Partner Management scope policies |
 | Subject ID types | `FAYDA_FAN`, `FARMER_ID` | Use cases, Partner Management policies (Master Data list `SUBJECT_ID_TYPE`), consents. The registries map the DCI type `UIN` to `FAYDA_FAN` |
 | Purposes | `credit-assessment` | Use cases, Partner Management policies (Master Data list `CONSENT_PURPOSE`), consents |
-| Exchange domain | `agrix.<parent domain>` | The department CMs read the Exchange CM's public keys there |
+| Exchange domain | `agrix.<parent domain>` | The department CMs read the Exchange CM's public keys there, and their Partner Management the Composite's |

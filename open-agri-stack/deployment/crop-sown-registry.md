@@ -6,7 +6,7 @@ description: >-
 
 # Crop Sown Registry
 
-Step 1 of the [install order](README.md#install-order), in the namespace `dept1`.
+Step 1 of the [install steps](README.md#install-steps), in the namespace `dept1`.
 
 ## Install
 
@@ -14,8 +14,8 @@ Follow the Crop Sown Registry's own guide: [Crop Sown Registry → Deployment](.
 
 | Chart | Field | Value | Why |
 | --- | --- | --- | --- |
-| Commons Services | Exchange Role (Consent Manager) | **department** | The CM accepts the Exchange's consent tokens, presented by the Composite |
-| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | Where the CM reads the Exchange CM's public keys. On a separate cluster it usually is not ([Separate Clusters](separate-clusters.md)) |
+| Commons Services | Exchange Role (Consent Manager) | **department** | The CM accepts the Exchange's consent tokens, presented by the Composite; Partner Management onboards the Composite with its keys read from the Exchange |
+| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | Where the CM reads the Exchange CM's public keys, and Partner Management the Composite's. On a separate cluster it usually is not ([Separate Clusters](separate-clusters.md)) |
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) | Consents are collected at the Exchange |
 | Crop Sown Registry | Release name | e.g. `csr` | Sets the registry's partner hostname, `partner-csr.<domain>` |
 | Crop Sown Registry | Load Sample Data, Load sample crop seasons | **On** for a demo only | Crop seasons for the Farmer Registry's sample farmers ([sample data](../architecture/registries.md#sample-data)) |

@@ -20,7 +20,7 @@ The Livestock Registry is [planned](../design/livestock-registry.md), not built.
 | --- | --- | --- |
 | [1. Registry prerequisites](#step-1-registry-prerequisites) | The registry | Registry team |
 | [2. Identities in Partner Management](#step-2-identities-in-partner-management) | PM | PM administrator |
-| [3. The Composite's ceiling in the department](#step-3-the-composites-ceiling-in-the-department) | Department PM and CM | Department partner manager, operator (setup script) |
+| [3. The Composite's ceiling in the department](#step-3-the-composites-ceiling-in-the-department) | Department PM and CM | Department partner manager |
 | [4. Register the endpoint in the Composite](#step-4-register-the-endpoint-in-the-composite) | Composite Helm values | Agri Stack operator |
 | [5. Add the source to the use case](#step-5-add-the-source-to-the-use-case) | Use-case YAML | Use-case author |
 | [6. Partners add a grant](#step-6-partners-add-a-grant) | Partner's consent | Each partner |
@@ -38,7 +38,7 @@ The registry must answer the Composite exactly as it answers a partner:
 
 ## Step 2 — Identities in Partner Management
 
-* **The Composite** (`PARTNER_AGRI_COMPOSITE`) must be onboarded with its key in the department's PM; the new registry verifies it with the key PM serves. The setup script adds it if missing ([step 7](#step-7-test)).
+* **The Composite** (`PARTNER_AGRI_COMPOSITE`) is onboarded in the department's PM at install (**Exchange Role** `department`), with its key read from the Composite's JWKS URL; the new registry verifies it with the key PM serves.
 * **The registry**, if you want the Composite to verify the registry's **response** signatures: onboard the registry in PM under its DCI ID (e.g. `livestock-registry` → `PARTNER_LIVESTOCK_REGISTRY`) with its signing key, and set `partnerId` in step 4. Optional.
 
 See the PM [API reference](../../platform/platform-services/partner-management/api-reference.md).
@@ -47,8 +47,8 @@ See the PM [API reference](../../platform/platform-services/partner-management/a
 
 The department that runs the new registry decides what it releases to the Composite ([data-sharing policies](../architecture/data-sharing-policies.md)). It needs:
 
-* **A scope policy for the Composite** in the department's PM: partner `PARTNER_AGRI_COMPOSITE`, data controller `livestock-registry`, with the scopes and purposes of the use cases that read the registry (e.g. `livestock-registry.animals`, `livestock-registry.owner_reference`; `credit-assessment`), the subject identifier types (`FAYDA_FAN`, `FARMER_ID`), the signing algorithms, the maximum validity and the fetch type ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). [`scripts/setup_exchange.py`](../deployment/after-install.md#exchange-setup) raises it as a PM policy request from the published use cases and approves it ([step 7](#step-7-test)); to approve it yourself, see [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies).
-* **Trust of the Exchange CM** as a consent-token issuer, in the department's CM: **Exchange Role** department in the department's commons-services form (`global.agriStackExchange.role`; it trusts `agri-stack-exchange-cm` presented by `agri-composite` by default). The setup script checks it and stops if it is missing. See [Exchange consent tokens](../../consent-management/deployment/README.md#setting-up-a-department).
+* **A scope policy for the Composite** in the department's PM: partner `PARTNER_AGRI_COMPOSITE`, data controller `livestock-registry`, with the scopes and purposes of the use cases that read the registry (e.g. `livestock-registry.animals`, `livestock-registry.owner_reference`; `credit-assessment`), the subject identifier types (`FAYDA_FAN`, `FARMER_ID`), the signing algorithms, the maximum validity and the fetch type ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Steps: [Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md).
+* **Trust of the Exchange CM** as a consent-token issuer, in the department's CM: **Exchange Role** department in the department's commons-services form (`global.agriStackExchange.role`; it trusts `agri-stack-exchange-cm` presented by `agri-composite` by default). See [Exchange consent tokens](../../consent-management/deployment/README.md#setting-up-a-department).
 
 Partners need nothing per registry: a partner with a policy for `loan-profile@1` in the Exchange's PM gets the new source with it, as far as its consent grants it ([step 6](#step-6-partners-add-a-grant)). A new major version (`loan-profile@2`) needs its own policy per partner in the Exchange's PM.
 
@@ -145,5 +145,5 @@ So add a new source as `optional` unless every partner can be asked to update it
 ## Step 7 — Test
 
 * **Describe:** `GET /composite/v1/use-cases/loan-profile` should list the new source, its `depends_on`, the new output fields and `livestock-registry` in `consent_grants_needed`. If it doesn't, check the Composite's logs for a load error.
-* **End to end:** rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) with `--registry <controller>=<namespace>` for the new registry: it adds the Composite's key and its scope policy with the use cases' scopes to that department's PM (PM requests, raised and approved). Then test with the [partner test](../deployment/testing.md#partner-test-public-apis), which builds the consent from the use case's `consent_scopes`.
+* **End to end:** add the new registry under `registries` in the [test](../deployment/testing.md)'s configuration and run it. It checks the department's PM serves the Composite's key, adds the Composite's scope policy there for the use case if missing, and builds the consent from the use case's `consent_scopes`.
 * **Check the statuses:** with a grant and a matching record the new source is `ok`; without a record `no_record`; without a grant `denied`; with the registry down `unavailable`, while the rest of the response still comes back.

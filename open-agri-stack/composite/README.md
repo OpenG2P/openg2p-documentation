@@ -23,7 +23,7 @@ The **Composite** is the partners' entry point to Agri Stack and the Agri Stackâ
 Installing the Composite and every chart option (registries, consent mode, use cases, signing key, console, scaling) is in [Deployment: Composite](../deployment/exchange.md#composite).
 
 {% hint style="info" %}
-**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, partner test kit). See [what the first version does](#what-the-first-version-does) and what it does not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
+**Status: first version built (October 2026)**, in the agri-stack repository under [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) (service, Helm chart, and the install test script). See [what the first version does](#what-the-first-version-does) and what it does not yet, and [Use-Case Configuration](use-case-configuration.md) for the file format the service accepts.
 {% endhint %}
 
 The configuration describes **how** a request is served. It **never grants access**. What a partner may receive is decided only by the policies in Partner Management (the partner's use-case grant, each department's ceiling for the Composite) and the farmer's consent, and each registry enforces that itself (see [data-sharing policies](../architecture/data-sharing-policies.md)).

@@ -2,7 +2,7 @@
 description: >-
   What a production Agri Stack install changes from the demo defaults: the
   Exchange's form fields and keys, the Composite's settings, approvals,
-  internal services, and demo leftovers to remove.
+  internal services, and test leftovers to remove.
 ---
 
 # Production
@@ -44,13 +44,14 @@ Step by step: [replacing the demo key](../../consent-management/deployment/READM
 
 ## The Composite's key
 
-* **Custody.** Generate it where your organisation generates keys; keep the `.p12` and its password in its secrets store. Set it up [by hand](after-install.md#by-hand), or run the script with `--state-dir` on protected storage and remove the local copy afterwards.
-* **Access.** Only the Composite and its operators may read the Secret `agri-composite-signing`.
-* **Rotation and compromise:** [Upgrades: rotating keys](upgrades-and-uninstall.md#rotating-keys).
+* **Generated or your own.** The install generates it in the Secret `agri-composite-signing`. Where keys must come from your organisation's own key management, create that Secret with your `.p12` before installing the Composite ([Keys: use your own key](../administration/keys.md#use-your-own-key)).
+* **Access.** Only the Composite and its operators may read the Secret.
+* **Rotation and compromise:** [Keys](../administration/keys.md).
 
 ## Approvals
 
 * **Separate the roles.** Partner Management lets the person who raises a request approve it. Have one person raise and another approve every onboarding, key and policy request, at the Exchange and in each department.
+* **One exception: the Composite's onboarding.** The install raises and approves it itself (actor `bootstrap` in the Partner Management audit), with no policy: it grants nothing until a department adds the Composite's scope policy.
 * **Departments own their scope policies for the Composite.** The Exchange operator should not hold Partner Management admin rights in a department.
 * **Review widenings** of those policies before approving them.
 
@@ -58,12 +59,13 @@ Step by step: [replacing the demo key](../../consent-management/deployment/READM
 
 Partner Management's partner API and the CMs' partner APIs have no login: check that no public route exposes them (the charts put them on the internal gateway). The Composite's API is the only public entry for partners.
 
-## Remove demo leftovers
+## Remove test leftovers
 
-* Test partners in the Exchange PM (e.g. `PARTNER_BANK_A`): disable them, and remove their partner-portal users.
+* The test partner in the Exchange PM (`test.partner` of the [test](testing.md), e.g. `PARTNER_BANK_A`): disable it, and remove its partner portal user `<partner>-operator` and the Secret `partner-user-<partner>-operator`.
+* The test's widening of the departments' scope policies for the Composite, if wider than the departments agree to.
 * The registries' sanity partner `PARTNER_CM_SANITY`, if the sanity tests ran.
 * Sample data in the registries.
-* Local test keys (`~/.agri-partner-test/`, `~/.agri-stack-setup/`).
+* The test partner's local key (`~/.agri-stack-test/`).
 
 ## Keep
 
