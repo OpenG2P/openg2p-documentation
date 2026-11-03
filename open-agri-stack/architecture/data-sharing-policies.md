@@ -19,9 +19,9 @@ Access policies say what a partner may ask for. In Agri Stack they are all held 
 
 A partner of the Exchange has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange only with its partners.
 
-Consents collected in the Exchange's partner portal (a `consent_id`) are made **by use case**: the partner's staff pick one of the use cases it has a policy for, and the consent takes that use case's purpose and scopes per registry, read from the Composite; that policy's purposes, subject ID types and longest validity apply. Such a consent can then be used only for that use case. A partner of the Exchange therefore needs only its use-case policies, whether its staff collect the consent in the portal or it signs the consent itself (`consent_jws`, accepted only if that use case's policy allows partner-signed consents).
+**Consents and use-case policies.** In the partner portal, partner staff start a consent request by choosing one of the partner's use cases. The request then carries that use case's purpose and the data scopes it reads from each registry; the partner's policy for the use case sets the farmer ID types allowed and the longest validity. The consent can be used only for that use case. A consent the partner signs itself (`consent_jws`) is accepted only if that use case's policy allows partner-signed consents. Either way, a partner needs only its use-case policies.
 
-**The use case** itself ([Composite](../composite/README.md)) is configuration owned by the Agri Stack platform team: its sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), its purpose and its response. A use-case grant gives the partner exactly that use case's scopes; it carries no scopes of its own. **The consent** is the farmer's, kept in the Exchange's CM: one consent per partner and purpose, with a grant per registry ([consent](consent.md)).
+**The use case** is configuration in the [Composite](../composite/README.md), owned by the Agri Stack platform team: its sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), its purpose and its response. A use-case grant gives the partner exactly that use case's scopes; it carries no scopes of its own. **The consent** is the farmer's, kept in the Exchange's CM: one consent per partner and purpose, with a grant per registry ([consent](consent.md)).
 
 ## What actually gets released
 
@@ -50,13 +50,13 @@ In the registries, a scope is a registry **data scope**: a named group of the re
 
 ## Who approves what
 
-| Change | Raised by | Approved in |
+| Change | Who raises it, and how | Approved in |
 | --- | --- | --- |
-| A partner joins the Exchange: its keys and a policy per use case it may call | The partner asks; the Exchange's partner manager raises an onboarding request carrying them | The Exchange's PM |
-| A partner gets another use case | **Add policy** on the partner (a policy request adding that use case's policy) | The Exchange's PM |
-| A partner loses a use case | **Revoke** that use case's policy (a policy request) | The Exchange's PM |
+| A partner joins the Exchange: its keys and a policy per use case it may call | The Exchange's partner manager, at the partner's request: an onboarding request | The Exchange's PM |
+| A partner gets another use case | The Exchange's partner manager: **Add policy** on the partner | The Exchange's PM |
+| A partner loses a use case | The Exchange's partner manager: **Revoke** that use case's policy | The Exchange's PM |
 | A new use case is published | The Agri Stack platform team ([creating a use case](../composite/creating-a-use-case.md)) | Not a policy change; partners still need it granted |
-| The Composite may read more from a registry (a new scope or purpose) | The department's partner manager edits the Composite's scope policy ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md)) | The department's PM |
+| The Composite may read more from a registry (a new scope or purpose) | The department's partner manager: edits the Composite's scope policy ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md)) | The department's PM |
 | A farmer consents, or revokes | The farmer | The Exchange's CM |
 
 Policy changes are versioned and audited in PM, and take effect when approved; modules see them within their policy cache time (about a minute by default).

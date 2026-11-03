@@ -11,7 +11,7 @@ Three kinds of signing key, each changed where it lives:
 
 | Key | Signs | Who trusts it, and how they get it |
 | --- | --- | --- |
-| The Composite's | Its calls to the registries, its answers to partners | Every Partner Management reads it from the Composite's JWKS URL when needed ([how](../architecture/exchange.md#the-composite-as-a-partner-of-each-department)) |
+| The Composite's | Its calls to the registries, its answers to partners | Every Partner Management reads it from the Composite's JWKS URL when needed ([how](../architecture/exchange.md#composite-as-a-partner)) |
 | The Exchange Consent Manager's | The consent tokens for the registries | Each department's Consent Manager reads it from the Exchange CM's JWKS URL |
 | A partner's | Its requests and the consents it signs | The Exchange's Partner Management holds it, from the partner's onboarding |
 
