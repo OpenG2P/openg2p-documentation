@@ -6,7 +6,7 @@ description: >-
 
 # Onboarding the Composite
 
-Onboards the Composite (`PARTNER_AGRI_COMPOSITE`) in a Partner Management, with its keys read from the Composite's JWKS URL. **Usually not needed:** Commons Services does it at install when **Exchange Role** is set ([what the install sets up](../architecture/exchange.md#what-the-install-sets-up)). Do it by hand only where that was off, or the entry was removed.
+Onboards the Composite (`PARTNER_AGRI_COMPOSITE`) in a Partner Management, with its keys read from the Composite's JWKS URL. **Usually not needed:** Commons Services does it at install when **Exchange Role** is set ([what the install sets up](../deployment/README.md#what-the-install-sets-up)). Do it by hand only where that was off, or the entry was removed.
 
 ## Steps
 

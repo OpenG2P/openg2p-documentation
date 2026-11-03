@@ -13,7 +13,7 @@ description: >-
 
 ## The Exchange
 
-Its own install ([The Exchange](exchange.md)):
+Its own install ([Exchange](exchange.md)). **Everything goes through a use case:** a partner never asks for arbitrary data, only for a use case it is assigned (for example a farmer's loan profile), which says exactly what is read from each registry ([Use Cases](use-cases.md)).
 
 | Component | Role |
 | --- | --- |
@@ -65,6 +65,6 @@ The letters in the diagram:
 
 **C — registry to registry (not in use today).** A registry that needs another's data is simply one of its partners: onboarded in its Partner Management with a scope policy there, no Composite involved. The reference design is crop activity from the Crop Sown Registry kept in the Farmer Registry, through the registries' outgestion and ingestion and a small relay (not built): [registry data sync](../design/registry-data-sync.md), including [how it would be set up](../design/registry-data-sync.md#how-it-would-be-set-up). Sharing of this kind usually rests on a mandate rather than each farmer's consent; the Consent Manager's rule for that (a standing permission for a purpose) is an [open item](../open-items/README.md).
 
-**To each department, the Exchange is one partner,** and the department decides at its own boundary what leaves its registry ([how departments trust the Exchange](exchange.md#how-departments-trust-it), [request flow](request-flow.md)). Beckn is used only at the OAN layer, for discovery; it does not carry registry data ([Interoperability with OAN](../design/oan-interoperability.md)).
+**To each department, the Exchange is one partner,** and the department decides at its own boundary what leaves its registry ([how departments trust the Exchange](exchange.md#the-composite-as-a-partner-of-each-department), [request flow](request-flow.md)). Beckn is used only at the OAN layer, for discovery; it does not carry registry data ([Interoperability with OAN](../design/oan-interoperability.md)).
 
 Versions and source code of each component: [Versions & Source Code](../versions/README.md).

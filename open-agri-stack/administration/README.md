@@ -7,7 +7,7 @@ description: >-
 
 # Administration
 
-The install sets up everything Agri Stack needs to run ([what the install sets up](../architecture/exchange.md#what-the-install-sets-up)). What remains are decisions people make, in the portals of their own install. Each page below is one task, step by step. The [test script](../deployment/testing.md) does none of them for real partners.
+The install sets up everything Agri Stack needs to run ([what the install sets up](../deployment/README.md#what-the-install-sets-up)). What remains are decisions people make, in the portals of their own install. Each page below is one task, step by step. The [test script](../deployment/testing.md) does none of them for real partners.
 
 | Guide | What it does | Who |
 | --- | --- | --- |

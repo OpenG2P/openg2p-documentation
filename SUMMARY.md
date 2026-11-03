@@ -600,7 +600,7 @@
       * [1.0.2](products/g2p-bridge/_archive/releases/1.0.2.md)
 * [Agri Stack](open-agri-stack/README.md)
   * [Architecture & Concepts](open-agri-stack/architecture/README.md)
-    * [The Exchange](open-agri-stack/architecture/exchange.md)
+    * [Exchange](open-agri-stack/architecture/exchange.md)
     * [Use Cases](open-agri-stack/architecture/use-cases.md)
     * [Consent](open-agri-stack/architecture/consent.md)
     * [Data-Sharing Policies](open-agri-stack/architecture/data-sharing-policies.md)

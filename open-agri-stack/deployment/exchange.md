@@ -7,7 +7,7 @@ description: >-
 
 # Exchange
 
-Step 2 of the [install steps](README.md#install-steps), in the namespace `agrix`, before or after the registries. What the Exchange is made of: [The Exchange](../architecture/exchange.md#its-parts).
+Step 2 of the [install steps](README.md#install-steps), in the namespace `agrix`, before or after the registries. What the Exchange is made of: [The Exchange](../architecture/README.md#the-exchange).
 
 In Rancher, **Apps → Charts**, namespace `agrix`, install in this order: [Commons Base](#commons-base), [Commons Services](#commons-services), [Composite](#composite). Start each once the one before is `deployed` with all its pods running.
 

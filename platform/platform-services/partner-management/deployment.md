@@ -151,7 +151,7 @@ staffPortalApi:
       name: Agri Stack Composite
 ```
 
-Commons Services fills this from its Exchange Role ([Agri Stack](../../../open-agri-stack/architecture/exchange.md#what-the-install-sets-up)).
+Commons Services fills this from its Exchange Role ([Agri Stack](../../../open-agri-stack/deployment/README.md#what-the-install-sets-up)).
 
 ### Routing
 
