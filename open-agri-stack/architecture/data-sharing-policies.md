@@ -25,7 +25,7 @@ Consents collected in the Exchange's partner portal (a `consent_id`) are made **
 
 ## What actually gets released
 
-Through the Composite (path B in the [architecture](README.md#components-and-who-talks-to-whom)):
+Through the Composite (path B in the [architecture](README.md#data-sharing-paths)):
 
 **effective scopes = the scopes of a use case the partner is granted ∩ what the farmer consented to ∩ what the department allows the Composite (its ceiling)**
 

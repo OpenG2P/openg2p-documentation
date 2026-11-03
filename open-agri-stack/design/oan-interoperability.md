@@ -52,7 +52,7 @@ This fits because the Composite already works at the level of **use cases** (e.g
 
 ## How it relates to the architecture
 
-* Path B in the [architecture](../architecture/README.md#components-and-who-talks-to-whom) is unchanged behind the adapter: one consent, a consent token per registry, each department deciding with its own Consent Manager and ceiling.
+* Path B in the [architecture](../architecture/README.md#data-sharing-paths) is unchanged behind the adapter: one consent, a consent token per registry, each department deciding with its own Consent Manager and ceiling.
 * Today Beckn appears only at the OAN layer, for discovering service providers and consumers; this proposal adds the Composite as a provider on that network.
 
 ## What a partner needs beyond OAN

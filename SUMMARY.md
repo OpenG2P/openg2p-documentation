@@ -613,6 +613,7 @@
     * [Livestock Registry](open-agri-stack/design/livestock-registry.md)
     * [Interoperability with OAN (Beckn)](open-agri-stack/design/oan-interoperability.md)
     * [Rate Limiting](open-agri-stack/design/rate-limiting.md)
+    * [API Gateway](open-agri-stack/design/api-gateway.md)
     * [Data Sharing Gateway](open-agri-stack/design/data-sharing-gateway.md)
   * [Exchange](open-agri-stack/exchange.md)
     * [Composite](open-agri-stack/composite/README.md)

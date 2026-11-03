@@ -16,7 +16,7 @@ The **Exchange** gives a service provider (a **partner**: a bank, an insurer, an
 * **The farmer consents.** The farmer gives consent for the use case, proving who they are with the national ID ([Consent](consent.md)).
 * **Departments keep control.** Each registry still decides, at its own boundary, what it releases ([below](#how-departments-trust-it)).
 
-The Exchange is its own install, above the departments' registries. It holds no registry and keeps no farmer data. Without it, a partner would onboard and collect consent at every registry separately (path A in the [architecture](README.md#components-and-who-talks-to-whom)).
+The Exchange is its own install, above the departments' registries. It holds no registry and keeps no farmer data. Without it, a partner would onboard and collect consent at every registry separately (path A in the [architecture](README.md#data-sharing-paths)).
 
 ## Its parts
 

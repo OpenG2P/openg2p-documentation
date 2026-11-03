@@ -58,13 +58,4 @@ Agri Stack stands on its own: any authorised partner uses it through its API. A 
 
 ## Licence and ownership
 
-Agri Stack is available under the **Mozilla Public License 2.0** ([licence](../license.md)). It is owned and maintained by the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), as part of OpenG2P. The source code of every module: [Versions & Source Code](versions/README.md).
-
-## Where to go next
-
-* **How it works:** [Architecture & Concepts](architecture/README.md): the components, consent, policies, one request end to end.
-* **Connect as a service provider:** [Partner Integration Guide](partner-integration-guide.md).
-* **Run it:** [Deployment](deployment/README.md).
-* **Add or change a use case:** [Composite](composite/README.md) and [Creating a Use Case](composite/creating-a-use-case.md).
-* **What is being designed:** [Design](design/README.md), including [Interoperability with OAN](design/oan-interoperability.md).
-* **What is still to do:** [TODOs & Open Items](open-items/README.md).
+Agri Stack is available under the **Mozilla Public License 2.0** ([licence](../license.md)). It is owned and maintained by the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)). The source code of every module: [Versions & Source Code](versions/README.md).

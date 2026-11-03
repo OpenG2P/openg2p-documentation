@@ -22,7 +22,7 @@ description: >-
 
 Alpha uses the `develop` versions of all its modules. The versions will be tagged later, after feedback and testing are incorporated. Each module's current version and change log: [OpenG2P Versions](https://openg2p.github.io/versions/index.html).
 
-What each module does: [Architecture & Concepts](../architecture/README.md#components-and-who-talks-to-whom).
+What each module does: [Architecture & Concepts](../architecture/README.md).
 
 ### Installed from their own charts
 
@@ -53,4 +53,4 @@ Commons Services pins their versions.
 
 ## Licence
 
-All modules are open source under the Mozilla Public License 2.0 ([licence](../../license.md)), except eSignet (MOSIP, under its own open-source licence).
+All modules are open source under the Mozilla Public License 2.0 ([licence](../../license.md)).
