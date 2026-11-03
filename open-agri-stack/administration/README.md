@@ -2,7 +2,7 @@
 description: >-
   What the administrators of Agri Stack do by hand once it is installed: at
   the Exchange, partners and their staff accounts; in each department, what it
-  releases to the Exchange; everywhere, keys.
+  releases to the Composite; everywhere, keys.
 ---
 
 # Administration
@@ -14,7 +14,7 @@ The install sets up everything Agri Stack needs to run ([what the install sets u
 | [Managing Partners](managing-partners.md) | Onboard a partner, assign and remove its use cases, disable it | The Exchange's partner manager |
 | [Partner Portal Users](partner-portal-users.md) | Create and disable partner portal accounts for a partner's staff | The Exchange's Keycloak administrator |
 | [Collecting a Consent](collecting-a-consent.md) | Record a farmer's consent in the partner portal and approve it | Partner staff; the Exchange's CM staff |
-| [Releasing Data to the Exchange](releasing-data-to-the-exchange.md) | Set what a registry releases to the Exchange; widen or narrow it as use cases change | Each department's partner manager |
+| [Releasing Data to the Composite](releasing-data-to-the-composite.md) | Set what a registry releases to the Composite; widen or narrow it as use cases change | Each department's partner manager |
 | [Onboarding the Composite](onboarding-the-composite.md) | Onboard the Composite in a department by hand, where the install did not | Each department's partner manager |
 | [Keys](keys.md) | Replace or rotate a signing key; respond to a compromised key | Each install's operator |
 

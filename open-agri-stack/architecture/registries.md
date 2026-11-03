@@ -103,7 +103,7 @@ Each registry sees only the Composite, never the partner (e.g. a bank). The part
 
 ### Scope policy for the Composite
 
-The department decides once what it releases through the Exchange: the Composite's scope policy for the registry, in the department's Partner Management, is the **ceiling**. The department's CM reads it from PM and cuts every consent token down to it (token scopes ∩ ceiling); without it, every search through the Composite is denied.
+The department decides once what it releases to the Composite: the Composite's scope policy for the registry, in the department's Partner Management, is the **ceiling**. The department's CM reads it from PM and cuts every consent token down to it (token scopes ∩ ceiling); without it, every search through the Composite is denied.
 
 | Policy field | Value |
 | --- | --- |
@@ -113,7 +113,7 @@ The department decides once what it releases through the Exchange: the Composite
 | Maximum validity | `P90D` |
 | Fetch type | `oneshot` |
 
-The department's administrator adds and changes it in the department's PM ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md)); the [test](../deployment/testing.md) adds it for a test install. A scope the department removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-consent-tokens.md); policies in general: [Data-Sharing Policies](data-sharing-policies.md).
+The department's administrator adds and changes it in the department's PM ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md)); the [test](../deployment/testing.md) adds it for a test install. A scope the department removes then comes back `null` (optional) or fails the source (required). How the department and Exchange CMs work together: [Exchange consent tokens](../../consent-management/design/exchange-consent-tokens.md); policies in general: [Data-Sharing Policies](data-sharing-policies.md).
 
 ## Sample data
 

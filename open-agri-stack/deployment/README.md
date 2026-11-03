@@ -42,17 +42,17 @@ Each namespace has its own domain on the `internal` gateway (`*.trial.openg2p.or
 | Trust between the Consent Managers: the Exchange CM issues consent tokens, each department CM accepts them | Commons Services (Consent Manager), from **Exchange Role** |
 | The partner portal's Keycloak realm, client, roles and `partner_id` attribute | Commons Services (Consent Manager), with **Partner Portal?** |
 
-Because each Partner Management reads the Composite's key when needed, the departments and the Exchange can be installed in either order. Left to people, by design: what each department releases to the Exchange, and which partners may use which use cases ([Administration](../administration/README.md)).
+Because each Partner Management reads the Composite's key when needed, the departments and the Exchange can be installed in either order. Left to people, by design: what each department releases to the Composite, and which partners may use which use cases ([Administration](../administration/README.md)).
 
 ## Install steps
 
-<figure><img src="../../.gitbook/assets/open-agri-stack-install-order.svg" alt="Install steps: the registries, each in its own namespace with its commons, and the Exchange with its commons and the Composite, in either order; then each department releases its registry's data to the Exchange in its Partner Management; then the test script."><figcaption><p>Install steps</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/open-agri-stack-install-order.svg" alt="Install steps: the registries, each in its own namespace with its commons, and the Exchange with its commons and the Composite, in either order; then each department releases its registry's data to the Composite in its Partner Management; then the test script."><figcaption><p>Install steps</p></figcaption></figure>
 
 | # | Step | Page |
 | --- | --- | --- |
 | 1 | Install the registries: Farmer Registry in `trial`, Crop Sown Registry in `dept1` | [Farmer Registry](farmer-registry.md), [Crop Sown Registry](crop-sown-registry.md) |
 | 2 | Install the Exchange in `agrix`: Commons Base, Commons Services, the Composite | [Exchange](exchange.md) |
-| 3 | In each department's Partner Management, add the Composite's scope policy for its registry. Until then the registry releases nothing to the Exchange | [Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md) |
+| 3 | In each department's Partner Management, add the Composite's scope policy for its registry. Until then the registry releases nothing to the Composite | [Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md) |
 | 4 | Run the test | [Testing](testing.md) |
 
 * Steps 1 and 2 can come in either order. Registries usually exist already; upgrading their Commons Services with **Exchange Role** `department` is then step 1.

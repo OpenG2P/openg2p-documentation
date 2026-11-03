@@ -23,7 +23,7 @@ Each install is upgraded on its own, in Rancher (**Apps → Installed Apps → �
 * **Use cases:** a change to `composite.useCases` (or your own ConfigMap) is picked up by running pods within the reload interval, without a restart or a chart upgrade.
 * **Registries and other settings** are environment variables: changing them rolls the pods.
 * **Signing key:** kept on every upgrade (the chart reads its Secret back).
-* **After a use case with new data scopes or purposes,** each department decides whether to widen the Composite's scope policy ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md#when-use-cases-change)).
+* **After a use case with new data scopes or purposes,** each department decides whether to widen the Composite's scope policy ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)).
 
 After any upgrade, check the Composite, the CMs and the registries' partner APIs together: run the [test](testing.md).
 

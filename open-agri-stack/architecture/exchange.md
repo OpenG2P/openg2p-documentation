@@ -28,7 +28,7 @@ The Exchange holds no registry data: the Composite passes each answer on and kee
 
 ## The Composite as a partner of each department
 
-**To each department, the Exchange is one partner: the Composite.** The department's PM holds only the Composite's entry and its scope policy per registry (the ceiling), and its CM trusts the Exchange CM's consent tokens.
+**To each department, the Composite is one partner.** The department's PM holds only the Composite's entry and its scope policy per registry (the ceiling), and its CM trusts the Exchange CM's consent tokens.
 
 * **The Composite's key.** The Composite publishes its public key at its JWKS URL (`/.well-known/jwks.json` on its public hostname). Every Partner Management, the Exchange's and each department's, onboards the Composite with that URL and reads the key from it when a registry checks a signature, caching it for a few minutes. No key is copied anywhere: a new key reaches every department by itself, and a department can be set up before or after the Exchange. The department's own decision is only what it releases: the scope policy.
 

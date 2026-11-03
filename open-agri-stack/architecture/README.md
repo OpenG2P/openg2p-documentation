@@ -32,7 +32,7 @@ Each department is its own install, with its registry and its own services:
 | --- | --- |
 | Registry ([Farmer Registry](../../products/registry/farmer-registry/README.md), [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)) | The system of record; serves its partners through its partner API ([Registries](registries.md)) |
 | Consent Manager | Checks each consent, including the Exchange's consent tokens |
-| Partner Management | The department's partners, and what it releases to the Exchange (the Composite's scope policy) |
+| Partner Management | The department's partners, and what it releases to the Composite (the Composite's scope policy) |
 | Catalogue, Audit Manager | The same codes as every install (one country pack); who accessed the department's data |
 
 Registries are joined on the farmer's national ID. Other departments (Livestock, Land, …) follow the same pattern.
@@ -65,6 +65,6 @@ The letters in the diagram:
 
 **C — registry to registry (not in use today).** A registry that needs another's data is simply one of its partners: onboarded in its Partner Management with a scope policy there, no Composite involved. The reference design is crop activity from the Crop Sown Registry kept in the Farmer Registry, through the registries' outgestion and ingestion and a small relay (not built): [registry data sync](../design/registry-data-sync.md), including [how it would be set up](../design/registry-data-sync.md#how-it-would-be-set-up). Sharing of this kind usually rests on a mandate rather than each farmer's consent; the Consent Manager's rule for that (a standing permission for a purpose) is an [open item](../open-items/README.md).
 
-**To each department, the Exchange is one partner,** and the department decides at its own boundary what leaves its registry ([how departments trust the Exchange](exchange.md#the-composite-as-a-partner-of-each-department), [request flow](request-flow.md)). Beckn is used only at the OAN layer, for discovery; it does not carry registry data ([Interoperability with OAN](../design/oan-interoperability.md)).
+**To each department, the Composite is one partner,** and the department decides at its own boundary what leaves its registry ([the Composite as a partner of each department](exchange.md#the-composite-as-a-partner-of-each-department), [request flow](request-flow.md)). Beckn is used only at the OAN layer, for discovery; it does not carry registry data ([Interoperability with OAN](../design/oan-interoperability.md)).
 
 Versions and source code of each component: [Versions & Source Code](../versions/README.md).

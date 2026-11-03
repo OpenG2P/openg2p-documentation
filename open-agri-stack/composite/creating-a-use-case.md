@@ -61,7 +61,7 @@ Steps: [Creating and Changing Policies](../../platform/platform-services/partner
 
 ## Step 6 — The departments' ceilings for the Composite
 
-Each department whose registry the use case reads decides whether to release what it asks: it widens the Composite's scope policy in its PM to the new scopes and purpose ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md#when-use-cases-change); why: [scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Until then the registry withholds the new scopes.
+Each department whose registry the use case reads decides whether to release what it asks: it widens the Composite's scope policy in its PM to the new scopes and purpose ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change); why: [scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Until then the registry withholds the new scopes.
 
 ## Step 7 — Test
 

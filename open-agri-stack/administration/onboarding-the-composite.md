@@ -25,7 +25,7 @@ In the department's Partner Management (`https://partner-management.<department 
 
 2. **Submit request**, then approve the request (another person, in production).
 
-The Composite then has no policy, so the registry still releases nothing to it: next, [Releasing Data to the Exchange](releasing-data-to-the-exchange.md).
+The Composite then has no policy, so the registry still releases nothing to it: next, [Releasing Data to the Composite](releasing-data-to-the-composite.md).
 
 ## Check
 

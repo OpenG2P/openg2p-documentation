@@ -636,7 +636,7 @@
     * [Managing Partners](open-agri-stack/administration/managing-partners.md)
     * [Partner Portal Users](open-agri-stack/administration/partner-portal-users.md)
     * [Collecting a Consent](open-agri-stack/administration/collecting-a-consent.md)
-    * [Releasing Data to the Exchange](open-agri-stack/administration/releasing-data-to-the-exchange.md)
+    * [Releasing Data to the Composite](open-agri-stack/administration/releasing-data-to-the-composite.md)
     * [Onboarding the Composite](open-agri-stack/administration/onboarding-the-composite.md)
     * [Keys](open-agri-stack/administration/keys.md)
   * [Partner Integration Guide](open-agri-stack/partner-integration-guide.md)

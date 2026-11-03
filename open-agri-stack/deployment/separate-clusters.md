@@ -32,5 +32,5 @@ Each department upgrades on its own schedule; after any upgrade, run the [test](
 
 1. Install its registry as on the [registry pages](farmer-registry.md), with **Exchange Role** `department`.
 2. Add the registry to the Composite (`composite.registries` in **Edit YAML**) and to the use cases that read it ([adding a data source](../composite/adding-a-data-source.md)).
-3. The department releases its registry's data: [Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md).
+3. The department releases its registry's data: [Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md).
 4. Add the registry to the test's configuration (`registries`) and run the [test](testing.md).

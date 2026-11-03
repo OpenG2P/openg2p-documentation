@@ -184,7 +184,7 @@ How the Composite serves a request, hop by hop (partner checks, consent tokens, 
 7. Maps the results, computes derived fields, and returns a response signed by the Composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
 8. Sends audit events to the Audit Manager, without ever blocking the request.
 
-Each registry still decides what it releases ([how departments trust the Exchange](../architecture/exchange.md#the-composite-as-a-partner-of-each-department)).
+Each registry still decides what it releases ([the Composite as a partner of each department](../architecture/exchange.md#the-composite-as-a-partner-of-each-department)).
 
 ### Registry calls
 

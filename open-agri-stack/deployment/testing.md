@@ -75,7 +75,7 @@ On an install that will go live, remove what the test created:
 
 * The test partner in the Exchange's Partner Management (`test.partner`, e.g. `PARTNER_BANK_A`): **Disable** it ([Managing Partners](../administration/managing-partners.md#disable-a-partner)).
 * Its partner portal user `<partner>-operator` in the realm `partner`, and the Secret `partner-user-<partner>-operator`.
-* The test's widening of the departments' scope policies for the Composite, if wider than the departments agree to ([Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md#when-use-cases-change)).
+* The test's widening of the departments' scope policies for the Composite, if wider than the departments agree to ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)).
 * The test partner's local key (`test.state_dir`, default `~/.agri-stack-test/`) and the answers in `scripts/out/`.
 
 ## Common failures
@@ -89,5 +89,5 @@ On an install that will go live, remove what the test created:
 | Admin token: HTTP 401 | Wrong client secret, or a secret from another install | Check the credential in the configuration |
 | The query fails with 403 `partner_not_allowed` | The partner has no policy for the use case (`name@major`) | Rerun; or **Add policy** for the use case on the partner |
 | The query fails with 403 `consent_denied` (`partner_consent_not_accepted`) | The partner signed its own consent but its policy does not allow it | Rerun with `test.consent: sign` (the script then allows it), or tick **May present its own signed consents** on the policy |
-| A source `denied` | The department's scope policy for the Composite does not cover the use case, or the department CM has no **Exchange Role** `department` | [Releasing Data to the Exchange](../administration/releasing-data-to-the-exchange.md); the department's Commons Services |
+| A source `denied` | The department's scope policy for the Composite does not cover the use case, or the department CM has no **Exchange Role** `department` | [Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md); the department's Commons Services |
 | The query fails with 503 `partner_policy_unavailable` | The Composite cannot read Partner Management | Check the Exchange's Partner Management partner API |
