@@ -13,14 +13,25 @@ Access policies say what a partner may ask for. In Agri Stack they are all held 
 
 Agri Stack uses both kinds of [access policy](../../platform/platform-services/partner-management/functional-specifications.md#two-kinds-of-policy) that Partner Management offers, one at the Exchange and one in each department:
 
-* **The partner's use-case policy, at the Exchange.** Which use case a partner may call, for example `loan-profile@1`: one policy per partner and use case, in the Exchange's Partner Management, approved by the Exchange's partner manager. It also sets the purposes, farmer ID types, signing algorithms and longest consent validity allowed. It lists no data: the use case defines that.
-* **The Composite's scope policy, in each department.** The most a registry releases to the Composite: the registry's data scopes, purposes and farmer ID types. One policy per registry, in the department's Partner Management, approved by the department's partner manager. Nothing beyond it leaves the registry, whatever a use case asks ([how a registry applies it](registries.md#scope-policy-for-the-composite)).
+* **The partner's use-case policy, at the Exchange.** Which use case a partner may call, for example `loan-profile@1`, and with what limits: the purposes, farmer ID types and signing algorithms allowed, and the longest a consent may last. One policy per partner and use case, in the Exchange's Partner Management, approved by the Exchange's partner manager ([example policy](../../platform/platform-services/partner-management/api-reference.md#post-partners-requests-policy)). It lists no data: the use case defines that.
+* **The Composite's scope policy, in each department.** Which of the registry's data the department allows the Composite to receive, for which purposes and farmer ID types. One policy per registry, in the department's Partner Management, approved by the department's partner manager. Nothing beyond it leaves the registry, whatever a use case asks ([how a registry applies it](registries.md#scope-policy-for-the-composite)).
 
-A partner has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange only with its partners.
+{% hint style="info" %}
+**Partners and departments never deal with each other.** A partner has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange with the partners.
+{% endhint %}
 
-**Consents and use-case policies.** In the partner portal, partner staff start a consent request by choosing one of the partner's use cases. The request then carries that use case's purpose and the data scopes it reads from each registry; the partner's policy for the use case sets the farmer ID types allowed and the longest validity. The consent can be used only for that use case. A consent the partner signs itself (`consent_jws`) is accepted only if that use case's policy allows partner-signed consents. Either way, a partner needs only its use-case policies.
+### Use case, policies and consent
 
-**The use case** is configuration in the [Composite](../composite/README.md), owned by the Agri Stack platform team: the registries it reads, the data scopes it needs and may optionally use from each, its purpose and its response. **The consent** is the farmer's, kept in the Exchange's CM: one consent per partner and purpose, with a grant per registry ([consent](consent.md)).
+Four things together decide what a partner gets:
+
+| | What it decides | Owned by | Kept in |
+| --- | --- | --- | --- |
+| **Use case** | The data read from each registry (required and optional), the purpose and the response | The Agri Stack platform team | The [Composite](../composite/README.md), as configuration (e.g. [`loan-profile.yaml`](https://github.com/OpenG2P/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml)) |
+| **Partner's use-case policy** | Whether the partner may call the use case, and its limits | The Exchange's partner manager | The Exchange's Partner Management |
+| **Composite's scope policy** | The most each registry releases to the Composite | Each department's partner manager | The department's Partner Management |
+| **Consent** | The farmer's agreement to share the use case's data with this partner | The farmer | The Exchange's Consent Manager ([consent](consent.md)) |
+
+A consent is asked for one use case. In the partner portal, staff choose one of the partner's use cases; the request takes that use case's purpose and data, within its use-case policy's limits (farmer ID types, longest validity), and the consent can be used only for that use case. A consent the partner signs itself is accepted only if the use-case policy allows it.
 
 ## What actually gets released
 
