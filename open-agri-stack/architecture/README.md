@@ -32,7 +32,7 @@ Each department is its own install, with its registry and its own services:
 | Partner Management | The department's partners, and what it releases to the Composite (the Composite's scope policy) |
 | Catalogue, Audit Manager | The same codes as every install (one country pack); who accessed the department's data |
 
-Registries are joined on the farmer's national ID. Other departments (Livestock, Land, …) follow the same pattern.
+Registries are joined on the farmer's Farmer ID; the national ID only authenticates the farmer. Other departments (Livestock, Land, …) follow the same pattern.
 
 ## Infrastructure
 

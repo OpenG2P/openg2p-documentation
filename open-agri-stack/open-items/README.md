@@ -25,7 +25,7 @@ Functional work, in order, for the first production release. Country data and re
 
 ## Identity, consent and policies
 
-* **Common farmer identifier** — confirm that every department's registry stores the same national identifier; with a separate MOSIP relying party and token per registry, records can't be joined. *Design:* a check, not a build.
+* **Common farmer identifier** — confirm that every department's registry records the Farmer ID, with the national ID beside it for the consent check; with a separate MOSIP relying party and token per registry, national IDs differ per registry and can't serve that check. *Design:* a check, not a build.
 * **Exchange consent used directly at a registry** — a consent held in the Exchange CM used at a registry without the Composite (path A in the [architecture](../architecture/README.md#data-sharing-paths)); today a registry's own CM finds only the consents it holds. Also decide whether consent spanning registries is always collected in CM. *Design:* [consent](../architecture/consent.md); recommended: always collect it in CM.
 * **More ways to give consent** at the Exchange CM — in person digitally (no form, no staff step) and self-service (scenarios 2 and 3), with notifications to farmers (e.g. of consent requests). *Design:* [consent](../architecture/consent.md).
 * **Farmer-readable consent form** — generate the form the farmer reads and signs from the consent request: the purpose, the period and, per registry, each data scope with a plain-language description (and in the farmer's language), instead of a partner-made form and scope codes in the partner portal. *Design:* not designed yet.

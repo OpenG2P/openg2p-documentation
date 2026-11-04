@@ -13,7 +13,7 @@ Through the Exchange, farmer data is shared **only through use cases**. A partne
 A **use case** is a named, versioned definition of one kind of data request, published in the [Composite](../composite/README.md) by the Agri Stack operator. For example `loan-profile@1`, a farmer's loan profile. It says:
 
 * **Why:** its purpose (e.g. credit assessment), which the farmer's consent must match.
-* **About whom:** the farmer's ID it takes (the national ID or the Farmer ID) and any parameters (e.g. a crop season).
+* **About whom:** the farmer's ID it takes (the Farmer ID, or the national ID) and any parameters (e.g. a crop season).
 * **What:** the registries it reads and, from each, the [data scopes](../../products/registry/registry/design/data-scopes.md) it needs (and may optionally use).
 * **The answer:** how the data from the registries is put together into one response.
 

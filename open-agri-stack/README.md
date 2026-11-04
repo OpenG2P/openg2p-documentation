@@ -41,7 +41,7 @@ The **registries** are the systems of record, each run by its own department. Re
 * **Livestock Registry:** animals and their life events.
 * **Land Registry:** parcels, holdings and tenure.
 
-More can be added as a country needs them. All registries identify the farmer by the same national ID. Each registry also issues verifiable credentials to farmers. More: [Registries](architecture/registries.md).
+More can be added as a country needs them. All registries identify the farmer by the **Farmer ID** the Farmer Registry issues; the national ID is used to authenticate the farmer. Each registry also issues verifiable credentials to farmers. More: [Registries](architecture/registries.md).
 
 ### Catalogues
 
