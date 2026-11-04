@@ -2,16 +2,15 @@
 description: >-
   Consent in Agri Stack: one consent per partner, farmer and use case, with a
   grant per registry, collected and kept by the Exchange's Consent Manager, and
-  a consent token per registry at query time. How a farmer gives it, its key
-  features (validity, proof, revocation, audit), and what is specific to Agri
-  Stack.
+  a consent token per registry at query time. How a farmer gives it, and its key
+  features (validity, proof, revocation, audit).
 ---
 
 # Consent
 
 A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the farmer's data with it. In Agri Stack:
 
-* **One consent per use case, covering every registry it reads.** The bank asks once, for a use case (e.g. a farmer's loan profile); inside, the consent holds a **grant per registry** the use case reads (Farmer Registry, Crop Sown Registry, …). The bank never deals with which registry holds what.
+* **One consent per use case, covering every registry it reads.** The bank asks once, for a use case (e.g. a farmer's loan profile); inside, the consent holds a **grant per registry** the use case reads (Farmer Registry, Crop Sown Registry, …). The consent can be used only for that use case, and the bank never deals with which registry holds what.
 * **The Exchange's Consent Manager (CM) collects and keeps it,** not the bank. The farmer confirms it there and proves who they are with the national ID.
 * **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the [Composite's scope policy](data-sharing-policies.md#two-policies) ([request flow](request-flow.md)). Why a token, rather than passing the consent on or simply trusting the Composite up to its scope policy: [why a consent token](../../consent-management/design/exchange-consent-tokens.md#why-a-consent-token).
 
@@ -36,18 +35,12 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 | Feature | In brief | Details |
 | --- | --- | --- |
 | **Given in person, approved by the CM** | Partner staff raise the request in the Exchange's partner portal, for a use case. The farmer logs in with the national ID and signs the consent form, which lists all the data to be shared from each registry, its purpose and its period: the farmer consents to that data. CM admin staff check the form in the CM console and approve it | [Collecting a Consent](../administration/collecting-a-consent.md) |
+| **Tied to one farmer** | The farmer authenticates with the national ID, the consent's subject; a Farmer ID on the request is optional. The bank may name the farmer by either, and each registry returns only that farmer's records: a wrong ID finds no data, never another farmer's | [identifiers and demographics](../../consent-management/design/consent-collection.md#identifiers-and-demographics) |
 | **Time-bound** | Valid until the end date set on the request, never longer than the partner's use-case policy allows; then it expires | [expiry](../../consent-management/design/consent-lifecycle.md#expiry) |
 | **Used without being sent** | The bank queries naming only the farmer. The Exchange CM finds the consent and gives each registry a short-lived consent token, carrying only that registry's data | [request flow](request-flow.md) |
 | **Provable** | The bank downloads the consent record: the receipt, the signed form and a statement signed by the CM, which it can check without the CM | [the partner's copy of a consent](../../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent) |
 | **Revocable** | CM admin staff revoke it at the farmer's request. Sharing stops within minutes, when the consent tokens already issued expire | [revocation](../../consent-management/design/consent-lifecycle.md#revocation) |
 | **Audited** | Every decision and change is logged, append-only | [Consent Management](../../consent-management/README.md#design-principles) |
-
-## What is specific to Agri Stack
-
-* **The farmer authenticates with the national ID; the Farmer ID is optional.** The consent's subject is the national ID the farmer logs in with. A request may also carry the **Farmer ID**, kept as entered ([identifiers and demographics](../../consent-management/design/consent-collection.md#identifiers-and-demographics)). At query time the partner names the farmer by either ID: the Composite finds the Farmer ID in the Farmer Registry's record when it is not given, and each registry returns only records of the consent's subject, the national ID. A wrong Farmer ID therefore finds no data, never another farmer's.
-* **The use case sets what is asked for.** The use case's purpose and its scopes per registry, read from the Composite, become the consent's purpose and grants; the consent can be used only for that use case ([data-sharing policies](data-sharing-policies.md#two-policies)).
-* **The registries are the data controllers.** Each grant names a registry (`farmer-registry`, `crop-sown-registry`) and its data scopes (e.g. `farmer-registry.personal_details`).
-* **The partner need not send the consent.** The Exchange CM finds the partner's active consent for the farmer and use case ([Partner Integration Guide](../partner-integration-guide.md)).
 
 {% hint style="warning" %}
 **Not built yet:** scenarios 2 and 3; a consent form generated by the CM, listing the data in plain language (today the partner prepares the form); declining individual items or revoking one registry's grant only; using a consent held by the Exchange CM directly at a registry, without the Composite ([open items](../open-items/README.md#identity-consent-and-policies)).
