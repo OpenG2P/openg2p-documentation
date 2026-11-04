@@ -264,6 +264,8 @@
     * [Deployment](products/registry/crop-sown-registry/deployment/README.md)
       * [Deploying on Rancher](products/registry/crop-sown-registry/deployment/rancher.md)
     * [Versions](products/registry/crop-sown-registry/versions/README.md)
+  * [SPA Registry](products/registry/spa-registry/README.md)
+    * [Requirements](products/registry/spa-registry/requirements/spa-registry-requirements.md)
 * [PBMS](pbms/README.md)
   * [Features](pbms/features/README.md)
     * [Decoupled yet Registry-Aware](pbms/features/decoupled-yet-registry-aware.md)
