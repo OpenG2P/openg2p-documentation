@@ -1,8 +1,5 @@
 ---
-description: >-
-  API reference for the Agri Stack Composite: list and describe use cases,
-  query a use case with a signed envelope, and the staff console's read-only
-  API.
+description: Composite API reference.
 ---
 
 # Composite API
@@ -16,7 +13,7 @@ The Composite serves approved use cases. A partner sends one signed request abou
 * **Result:** each source (registry query) gets a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. A failed optional source leaves its fields null. A failed mandatory source fails the request.
 
 {% hint style="info" %}
-For the step-by-step (onboarding, keys, consent, signing, verifying the response), see the [Partner Guide](../partner-guide.md).
+For the step-by-step (onboarding, keys, consent, signing, verifying the response), see the [Partner Integration Guide](../partner-integration-guide.md).
 {% endhint %}
 
 ## Operations

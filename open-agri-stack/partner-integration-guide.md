@@ -1,12 +1,10 @@
 ---
-description: >-
-  How a partner (bank, MFI, agritech) joins Agri Stack and uses it end to
-  end: onboarding in the Exchange's Partner Management with keys and a
-  use-case grant, the farmer's consent with a grant per registry, signing,
-  calling a use case, and reading and verifying the response.
+description: Integrating a partner's system.
 ---
 
-# Partner Guide
+# Partner Integration Guide
+
+**For a partner's developers.** The Exchange's administrators onboarding partners: [Managing Partners](administration/managing-partners.md).
 
 You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier to the Composite, under **one consent** of the farmer, and get back **one signed response** with a status per registry.
 
@@ -58,17 +56,17 @@ You never call the registries or `/validate` yourself. The Composite checks that
 | --- | --- | --- |
 | A signing key pair and a `kid` | You | [1](#step-1-generate-your-signing-key) |
 | Your partner record, public key and a **use-case policy per use case** you may call, in the Exchange's Partner Management | The Exchange's **partner manager** (PM administrator; no self-service yet) | [2](#step-2-get-onboarded-in-partner-management) |
-| The Composite's URL and its public key | The Agri Stack operator | [3](#step-3-discover-the-use-case) |
+| The Composite's URL | The Agri Stack operator | [3](#step-3-discover-the-use-case) |
 
 ## Step 1 — Generate your signing key
 
 You sign every **request envelope** with your key and, if your policy lets you sign your own consents, each **consent** too. Supported algorithms: **EdDSA** (Ed25519), **ES256** (EC P-256) and **RS256** (RSA). Keep the private key in a keystore (a `.p12` is recommended); share only the public key. Choose a stable `kid` (e.g. `bank-a-2026-01`) and put it in every JWS header.
 
-Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [partner test kit](#test-kit) generates an EC P-256 key (ES256) for testing.
+Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [test script](#test-script) generates an EC P-256 key (ES256) for testing.
 
 ## Step 2 — Get onboarded in Partner Management
 
-Partner Management (PM) is the trust root: it holds your public key and your **access policies**, and the Composite and the Exchange's Consent Manager read both from it. In the first version of PM the portal is **admin-run**: the Exchange's partner manager files your onboarding request, with your keys and your use-case policies, and approves it. There is no partner self-service. You are onboarded only in the Exchange, never in a department.
+Partner Management (PM) holds your public key and your policies; the Composite and the Exchange's Consent Manager read both from it. The Exchange's partner manager onboards you, with your key and a policy per use case ([Managing Partners](administration/managing-partners.md)); there is no self-service yet. You are onboarded only in the Exchange, never in a department.
 
 **What you give the partner manager:**
 
@@ -76,7 +74,7 @@ Partner Management (PM) is the trust root: it holds your public key and your **a
 | --- | --- | --- |
 | **Partner ID** | `bank-a` | Your DCI `sender_id`, used in every request, and the consent's `aud`. Lower-case with hyphens is the convention. |
 | Name and organisation | Bank A | |
-| **Public key(s)** | PEM, X.509 certificate, or JWK; or a `jwks_url` to import from once | With `kid` and `algorithm` (EdDSA, ES256 or RS256) |
+| **Public key(s)** | PEM, X.509 certificate, or JWK; or a `jwks_url`, to import from once or to read from whenever needed | With `kid` and `algorithm` (EdDSA, ES256 or RS256) |
 | **Use cases** | `loan-profile@1` | Each use case you will call, as `name@major` ([step 3](#step-3-discover-the-use-case)) |
 | Purposes | `credit-assessment` | Per use case: its `purpose` |
 | Subject ID types | e.g. `FAYDA_FAN` (the national ID in the Ethiopia example), `FARMER_ID` | Per use case: its `input.subject.id_types` |
@@ -84,7 +82,7 @@ Partner Management (PM) is the trust root: it holds your public key and your **a
 | Longest consent validity | `P90D` | As agreed with the Exchange |
 | Partner-signed consents | Off | On (**May present its own signed consents**) only if you will sign consents yourself ([step 4](#step-4-collect-the-farmers-consent)) and the Exchange trusts your own consent collection |
 
-You get **one use-case policy per use case**, with that use case's purposes, subject ID types, algorithms and validity: the partner manager creates each as in [Creating and Changing Policies](../platform/platform-services/partner-management/creating-and-changing-policies.md) (its fields: [access policies](../platform/platform-services/partner-management/functional-specifications.md#access-policies)). A use-case policy carries no data scopes: the use case brings its own, and each department's ceiling for the Composite still applies ([data-sharing policies](architecture/data-sharing-policies.md)).
+You get **one use-case policy per use case**, with its purposes, subject ID types, algorithms and validity. It carries no data scopes: the use case brings its own, and each department's ceiling for the Composite still applies ([data-sharing policies](architecture/data-sharing-policies.md)).
 
 {% hint style="info" %}
 **Consents collected in the partner portal** ([step 4](#step-4-collect-the-farmers-consent)) need nothing more: your staff pick one of your granted use cases, and the consent takes its purpose and its scopes per registry. It can be used only for that use case.
@@ -92,11 +90,11 @@ You get **one use-case policy per use case**, with that use case's purposes, sub
 
 **The PM ID.** PM stores you as `PARTNER_<SENDER_ID>`, upper-cased with `-` replaced by `_`: partner `bank-a` is `PARTNER_BANK_A`. Every module looks your key and policies up under that ID. The Composite is itself a PM partner: `agri-composite` is `PARTNER_AGRI_COMPOSITE`.
 
-After approval your keys are served at `GET {pm}/keys/PARTNER_BANK_A` (and `/keys/PARTNER_BANK_A/jwks.json`). Ask the partner manager to confirm; PM returns `404` for an unknown or disabled partner, which everyone treats as a rejection. Key rotation is a **key-update request**. Another use case is **Add policy** on your partner (a policy request); changing or revoking one use case's policy leaves the others alone. All are filed and approved in PM. See the PM [API reference](../platform/platform-services/partner-management/api-reference.md) and [functional specifications](../platform/platform-services/partner-management/functional-specifications.md).
+After approval, ask the partner manager to confirm. **Later changes** go through the partner manager too: another use case, or a new key (send the new public key and `kid`; old and new both work until the old one is revoked: [Keys: a partner's key](administration/keys.md#a-partners-key)).
 
 ## Step 3 — Discover the use case
 
-The operator gives you the Composite's URL, e.g. `https://agri-composite.<namespace>.openg2p.org`, and its public key for verifying responses. The describe endpoints need no signature:
+The operator gives you the Composite's URL, e.g. `https://agri-composite.<namespace>.openg2p.org`. The describe endpoints need no signature:
 
 ```bash
 curl -s https://agri-composite.<ns>.openg2p.org/composite/v1/use-cases              # all published use cases
@@ -175,7 +173,7 @@ It is either held by the Consent Manager or signed by you, and a query presents 
 
 The first two need the Composite's Exchange consent mode. The response names the consent used (`message.consent_id`).
 
-**A consent held in the Consent Manager.** Your staff record the farmer's consent in the CM's **partner portal**, for example in person at a branch: the farmer logs in with their national ID (through eSignet) when that is switched on, the portal records the farmer's identifiers the department requires (e.g. the Farmer ID) and the evidence (stored by the CM), and CM staff verify it (checking the Farmer ID in the registry) before it becomes active. You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)). The CM holds the consent; you can download its consent record, signed by the CM. See [consent](architecture/consent.md) and [consent collection](../consent-management/design/consent-collection.md).
+**A consent held in the Consent Manager.** Your staff record the farmer's consent in the Exchange's partner portal, and CM staff approve it ([Collecting a Consent](administration/collecting-a-consent.md)). You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)); you can download its [consent record](../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent), signed by the CM: in the portal, or through the CM's [partner portal API](../consent-management/api/README.md#partner-portal-endpoints) (`GET /consent/v1/partner-portal/consents/{id}/record`). See [consent](architecture/consent.md).
 
 **A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 5](#step-5-build-and-sign-the-consent)). The Exchange accepts it only if your policy for the use case allows partner-signed consents (off by default; otherwise `consent_denied`, reason `partner_consent_not_accepted`): the Consent Manager can verify your signature, not that the farmer agreed. What that means for you:
 
@@ -359,7 +357,7 @@ def verify_response(body: dict, composite_public_key) -> None:
     PyJWS().decode(f"{h}.{payload}.{s}", composite_public_key, algorithms=["ES256", "RS256", "EdDSA"])  # raises if invalid
 ```
 
-Get the Composite's public key from the operator, or from PM's key API (`GET {pm}/keys/PARTNER_AGRI_COMPOSITE`) where it is reachable to you; the key-fetch API is served on the cluster-internal gateway.
+The Composite publishes its public keys at `https://agri-composite.<namespace>.openg2p.org/.well-known/jwks.json`; pick the one with the response's `kid`, and refetch when a new `kid` appears.
 
 ## Rate limits
 
@@ -421,22 +419,9 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 
 If the farmer had not consented to the Crop Sown Registry (no grant), `season_summaries` and `crop_seasons` would be `denied` with `detail: "the consent has no grant for crop-sown-registry"`, `crops.*` would be `null`, and the request would still succeed. If the Farmer Registry denied the consent, the request would fail `403 source_denied`.
 
-## Test kit
+## Test script
 
-[`scripts/partner_kit.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/partner_kit.py) does all of the above for testing (`pip install cryptography pyjwt`):
-
-```bash
-python scripts/partner_kit.py keys          # partner key + composite .p12 in scripts/kit-out (git-ignored), and what to onboard
-python scripts/partner_kit.py consent --subject FAYDA_FAN:946053125409
-python scripts/partner_kit.py describe --url https://agri-composite.<ns>.openg2p.org
-python scripts/partner_kit.py call --url https://agri-composite.<ns>.openg2p.org \
-    --subject FAYDA_FAN:<FAN of a registered farmer> --param crop_year=2019 --param season=SEASON_MEHER
-```
-
-* `keys` (defaults: partner `bank-a`, Composite `agri-composite`) prints the PM onboarding requests for `PARTNER_BANK_A` (with its use-case policy for `loan-profile@1`, allowing partner-signed consents because `call` signs its own) and `PARTNER_AGRI_COMPOSITE`, the `kubectl create secret generic agri-composite-signing …` command, and the Composite's scope policy requests for each department's PM.
-* `call` builds a consent with both grants (`--controllers` narrows it), signs the envelope, verifies the Composite's signature on the answer and prints it.
-
-To go through these steps as a test partner against an environment, use the [partner test](deployment/testing.md#partner-test-public-apis).
+[`scripts/test_install.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.py) does all of the above as a test partner against an install: the consent (`make_consent`), the signed request (`build_query`) and the check of the Composite's signature (`verify_response`) are working examples in Python. Running it: [Testing](deployment/testing.md).
 
 ## Checklist
 

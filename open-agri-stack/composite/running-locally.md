@@ -1,6 +1,5 @@
 ---
-description: >-
-  Running the Composite and its tests on a laptop.
+description: Running the Composite locally.
 ---
 
 # Running the Composite Locally
@@ -15,9 +14,9 @@ pip install "git+https://github.com/openg2p/iam@develop#subdirectory=iam-core"
 pip install -e ".[test]"
 pytest                                     # no network needed
 
-python ../../scripts/partner_kit.py keys      # test keys in scripts/kit-out (git-ignored)
+openssl ecparam -name prime256v1 -genkey -noout -out /tmp/composite.pem   # a test signing key
 export AGRI_COMPOSITE_USE_CASES_DIR=../use-cases
-export AGRI_COMPOSITE_SIGNING_P12_PATH=../../scripts/kit-out/composite.p12 AGRI_COMPOSITE_SIGNING_P12_PASSWORD=openg2p-test
+export AGRI_COMPOSITE_SIGNING_KEY_PEM_PATH=/tmp/composite.pem AGRI_COMPOSITE_SIGNING_KID=composite-local
 export AGRI_COMPOSITE_PARTNER_MGMT_API_URL=http://localhost:9001          # a PM partner-api
 export AGRI_COMPOSITE_REGISTRIES='{"farmer-registry":{"url":"http://localhost:9002/dci/registry/sync/search"},
                                   "crop-sown-registry":{"url":"http://localhost:9003/dci/registry/sync/search"}}'
@@ -25,18 +24,19 @@ python -m openg2p_agri_composite.main run  # http://localhost:8000/docs
 ```
 
 * The ports are examples: point `PARTNER_MGMT_API_URL` and `REGISTRIES` at a PM partner API and the registries' partner APIs you can reach, e.g. through `kubectl port-forward`.
-* The partner's and the Composite's public keys must be in that PM (`PARTNER_BANK_A`, `PARTNER_AGRI_COMPOSITE`), and the partner needs a policy there for the use case (`loan-profile@1`); `partner_kit.py keys` prints the onboarding requests, the partner's with its policy for the use case.
+* The partner's and the Composite's public keys must be in that PM (`PARTNER_BANK_A`, `PARTNER_AGRI_COMPOSITE`; the Composite's from `http://localhost:8000/.well-known/jwks.json`), and the partner needs a policy there for the use case (`loan-profile@1`).
 * With the console off (the default outside the chart) the service has no database; startup only loads the use cases. The chart turns the console on, which needs a database, IAM and Redis (see [Composite console](console.md)).
 * The consent mode is `exchange` by default: set `AGRI_COMPOSITE_CONSENT_EXCHANGE_CM_URL` to a reachable CM partner API (the default is the in-cluster service), or `AGRI_COMPOSITE_CONSENT_MODE=passthrough` to skip the Exchange CM.
-* Every setting is listed in [Deployment: Composite, environment settings](../deployment/composite.md#environment-settings).
+* Every setting is listed in [Deployment: Composite, environment settings](chart-settings.md#environment-settings).
 
-Then call it as a partner:
+Then read it as a partner would:
 
 ```bash
-python ../../scripts/partner_kit.py describe --url http://localhost:8000
-python ../../scripts/partner_kit.py call --url http://localhost:8000 \
-    --subject FAYDA_FAN:<FAN of a registered farmer> --param crop_year=2019 --param season=SEASON_MEHER
+curl -s http://localhost:8000/composite/v1/use-cases/loan-profile
+curl -s http://localhost:8000/.well-known/jwks.json
 ```
+
+A signed query needs a partner key in that PM: the [test](../deployment/testing.md)'s signing functions show how to build one.
 
 ## Building the image
 

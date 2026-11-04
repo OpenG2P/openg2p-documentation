@@ -1,8 +1,5 @@
 ---
-description: >-
-  Agri Stack is open-source digital public infrastructure for agriculture:
-  departments' registries, shared catalogues and an Exchange that shares farmer
-  data with service providers only with the farmer's consent.
+description: Open digital public infrastructure for agriculture.
 ---
 
 # Agri Stack
@@ -44,7 +41,7 @@ The **registries** are the systems of record, each run by its own department. Re
 * **Livestock Registry:** animals and their life events.
 * **Land Registry:** parcels, holdings and tenure.
 
-More can be added as a country needs them. All registries identify the farmer by the same national ID. Each registry also issues verifiable credentials to farmers. More: [Registries](architecture/registries.md).
+More can be added as a country needs them. All registries identify the farmer by the **Farmer ID** the Farmer Registry issues; the national ID is used to authenticate the farmer. Each registry also issues verifiable credentials to farmers. More: [Registries](architecture/registries.md).
 
 ### Catalogues
 
@@ -58,13 +55,4 @@ Agri Stack stands on its own: any authorised partner uses it through its API. A 
 
 ## Licence and ownership
 
-Agri Stack is available under the **Mozilla Public License 2.0** ([licence](../license.md)). It is owned and maintained by the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)), as part of OpenG2P. The source code of every component: [Components and source code](architecture/README.md#components-and-source-code).
-
-## Where to go next
-
-* **How it works:** [Architecture & Concepts](architecture/README.md): the components, consent, policies, one request end to end.
-* **Connect as a service provider:** [Partner Guide](partner-guide.md).
-* **Run it:** [Deployment](deployment/README.md).
-* **Add or change a use case:** [Composite](composite/README.md) and [Creating a Use Case](composite/creating-a-use-case.md).
-* **What is being designed:** [Design](design/README.md), including [Interoperability with OAN](design/oan-interoperability.md).
-* **What is still to do:** [TODOs & Open Items](open-items/README.md).
+Agri Stack is available under the **Mozilla Public License 2.0** ([licence](../license.md)). It is owned and maintained by the International Institute of Information Technology, Bangalore ([IIITB](https://www.iiitb.ac.in/)). The source code of every module: [Versions & Source Code](versions/README.md).

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="330" viewBox="0 0 1000 330" role="img" aria-label="Departments on separate clusters: the Agriculture Department's cluster with the Farmer Registry (trial), the Crops Department's cluster with the Crop Sown Registry (dept1), and the Exchange (agrix) in its own cluster or sharing one with a department. Each cluster has its own ingress and domain. The Composite calls each registry's partner API by public hostname; each department's Consent Manager reads the Exchange Consent Manager's public keys from its public JWKS URL.">
+<style>
+text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
+.t{font-size:14px;font-weight:600} .s{font-size:11.5px;fill:#56625B} .lbl{font-size:11.5px;fill:#3B4640}
+.cap{font-size:11px;letter-spacing:.08em;fill:#3B4640;font-family:'JetBrains Mono',Menlo,monospace;font-weight:700}
+.mono{font-family:'JetBrains Mono',Menlo,monospace;font-size:11.5px;fill:#3B4640}
+.plain{fill:#FFFFFF;stroke:#3B4640;stroke-width:1.3}
+.clu{fill:#FBFCFB;stroke:#7E8A82;stroke-width:1.6}
+.ns{fill:#FFFFFF;stroke:#B4BDB6;stroke-width:1.2;stroke-dasharray:5 4}
+.ing{fill:#F1F2F1;stroke:#9AA39C;stroke-width:1.2;stroke-dasharray:4 3}
+.dpi{fill:#E1EEF0;stroke:#3C7C88;stroke-width:1.5}
+.cmp{fill:#E3F0DF;stroke:#4B8646;stroke-width:1.5}
+.reg{fill:#E5EDF6;stroke:#56799F;stroke-width:1.5}
+.ar{stroke:#3B4640;stroke-width:1.5;fill:none}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3B4640"/></marker></defs>
+<rect width="100%" height="100%" fill="#FFFFFF"/>
+<rect class="clu" x="20" y="20" width="300" height="230" rx="12"/>
+<text class="cap" x="36" y="42">CLUSTER · AGRICULTURE DEPT</text>
+<rect class="ing" x="36" y="54" width="268" height="30" rx="6"/><text class="lbl" x="170" y="74" text-anchor="middle">ingress · *.trial.agri.example</text>
+<rect class="reg" x="36" y="100" width="268" height="56" rx="8"/><text class="t" x="170" y="124" text-anchor="middle">Farmer Registry</text><text class="s" x="170" y="142" text-anchor="middle">namespace trial</text>
+<rect class="dpi" x="36" y="170" width="268" height="56" rx="8"/><text class="t" x="170" y="194" text-anchor="middle">Commons</text><text class="s" x="170" y="212" text-anchor="middle">PM, CM (department role), …</text>
+
+<rect class="clu" x="350" y="20" width="300" height="230" rx="12"/>
+<text class="cap" x="366" y="42">CLUSTER · CROPS DEPT</text>
+<rect class="ing" x="366" y="54" width="268" height="30" rx="6"/><text class="lbl" x="500" y="74" text-anchor="middle">ingress · *.dept1.crops.example</text>
+<rect class="reg" x="366" y="100" width="268" height="56" rx="8"/><text class="t" x="500" y="124" text-anchor="middle">Crop Sown Registry</text><text class="s" x="500" y="142" text-anchor="middle">namespace dept1</text>
+<rect class="dpi" x="366" y="170" width="268" height="56" rx="8"/><text class="t" x="500" y="194" text-anchor="middle">Commons</text><text class="s" x="500" y="212" text-anchor="middle">PM, CM (department role), …</text>
+
+<rect class="clu" x="680" y="20" width="300" height="230" rx="12"/>
+<text class="cap" x="696" y="42">CLUSTER · EXCHANGE</text>
+<rect class="ing" x="696" y="54" width="268" height="30" rx="6"/><text class="lbl" x="830" y="74" text-anchor="middle">ingress · *.agrix.agri.example</text>
+<rect class="cmp" x="696" y="100" width="268" height="56" rx="8"/><text class="t" x="830" y="124" text-anchor="middle">Composite</text><text class="s" x="830" y="142" text-anchor="middle">namespace agrix</text>
+<rect class="dpi" x="696" y="170" width="268" height="56" rx="8"/><text class="t" x="830" y="194" text-anchor="middle">Commons</text><text class="s" x="830" y="212" text-anchor="middle">PM, CM (exchange role), …</text>
+
+<polyline class="ar" points="830,252 830,280 170,280 170,252" marker-end="url(#a)"/>
+<line class="ar" x1="500" y1="280" x2="500" y2="252" marker-end="url(#a)"/>
+<text class="lbl" x="500" y="300" text-anchor="middle">the Composite searches each registry's partner API · each department CM reads the Exchange CM's public keys</text>
+<text class="lbl" x="500" y="318" text-anchor="middle">all over public hostnames with trusted TLS; nothing in-cluster is shared</text>
+</svg>

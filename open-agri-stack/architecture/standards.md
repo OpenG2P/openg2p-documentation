@@ -1,7 +1,5 @@
 ---
-description: >-
-  The open standards Agri Stack uses, where it uses its own formats, and
-  where a standard exists that is still to be explored.
+description: Standards Agri Stack uses.
 ---
 
 # Standards
@@ -68,7 +66,7 @@ Standards for consent itself (consent receipts, data-subject rights, artefact se
 
 | Area | Components | Where | Standard | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Lists (reference data) | Catalogue (MDS), RP | [Catalogues](README.md#components-and-source-code) | — | **Own** | Codes are the country's (e.g. `CROP_TEFF`, `SEASON_MEHER`); the catalogue APIs and list format are our own. |
+| Lists (reference data) | Catalogue (MDS), RP | [Catalogues](README.md#department-registries) | — | **Own** | Codes are the country's (e.g. `CROP_TEFF`, `SEASON_MEHER`); the catalogue APIs and list format are our own. |
 | Lists as concept schemes | Catalogue (MDS) | [Public catalogue](../../platform/platform-services/master-data-service/public-catalogue.md#skos-concept-schemes) (`/public/datasets/{code}/skos`) | [W3C SKOS](https://www.w3.org/TR/skos-reference/) (JSON-LD) | **Used** | Opt-in: only lists marked public, at published versions. A `skos:Concept` per entry with `skos:notation`, language-tagged `skos:prefLabel` and `skos:broader`. |
 | Crop and commodity codes | Catalogue (MDS) | `CROP_COMMODITY` | FAO [AGROVOC](https://agrovoc.fao.org/), FAO Indicative Crop Classification, FAOSTAT commodity codes | **To explore** | As optional mappings from the country's codes. |
 | Administrative areas | Catalogue (MDS), RP | Catalogues; every activity's location | OCHA COD-AB P-codes (e.g. `ET040611`) | **Used** | The Ethiopia country pack's geography; CC BY-IGO licence (see [Country Packs](../../platform/platform-services/master-data-service/country-packs.md#sources-and-licence)). |
@@ -129,7 +127,7 @@ For each dataset, the evaluation should record:
 | --- | --- | --- | --- | --- | --- |
 | Deployment | All services | All services | Kubernetes, Helm, OCI container images | **Used** | See the [OpenG2P deployment model](../../deployment/openg2p-deployment-model.md). |
 | Object storage | Garage (commons); RP, Catalogue (MDS), ODK, Novu, CM | All services | Amazon S3 API | **Used** | Garage replaced MinIO; services use the S3 API in-cluster at `commons-garage:3900`. CM keeps consent evidence in bucket `consent-evidence`. |
-| Service mesh and ingress | Istio, Nginx | Cluster | Istio, Nginx | **Used** | See [entry point](README.md#api-gateway-functions). |
+| Service mesh and ingress | Istio, Nginx | Cluster | Istio, Nginx | **Used** | See [API Gateway](../design/api-gateway.md). |
 | Audit events | Audit Manager; RP, Catalogue (MDS), CM, Composite emit events | Audit Manager | [CloudEvents 1.0](https://cloudevents.io/) | **Used** | See [Audit Manager](../../platform/platform-services/audit-manager/README.md). |
 | Distributed tracing | Composite, RP, CM | Composite → registries → CM | [W3C Trace Context](https://www.w3.org/TR/trace-context/), [OpenTelemetry](https://opentelemetry.io/) | **To explore** | Today hops are linked by the request ID in logs and audit events; no `traceparent` is sent. |
 

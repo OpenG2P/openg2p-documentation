@@ -104,7 +104,7 @@ Assisted consents submitted from the partner portal ([Consent collection](../des
 | `GET /consent/v1/verifications` | List requests; `status` filter (`pending_verification`, `approved`, `rejected`, `cancelled`), `limit`, `offset` |
 | `GET /consent/v1/verifications/{request_id}` | One request with its evidence and the subject's national-ID login |
 | `GET /consent/v1/verifications/{request_id}/evidence/{evidence_id}` | Download an uploaded file |
-| `POST /consent/v1/verifications/{request_id}/approve` | `{note?, identifiers_checked}`: makes the consent active. `identifiers_checked` must be true when the request carries other subject identifiers |
+| `POST /consent/v1/verifications/{request_id}/approve` | `{note?}`: makes the consent active |
 | `POST /consent/v1/verifications/{request_id}/reject` | `{note}` (required) |
 
 ### Consents (console consent page)

@@ -1,8 +1,5 @@
 ---
-description: >-
-  The Composite's read-only staff console: use cases with their data scopes,
-  registries and their scope catalogues, partners and the call log. Staff log
-  in through IAM (Keycloak staff realm).
+description: The Composite's staff console.
 ---
 
 # Composite Console

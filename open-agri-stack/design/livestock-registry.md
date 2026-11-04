@@ -1,8 +1,5 @@
 ---
-description: >-
-  Design for a Livestock Registry in Agri Stack: an Animal entity register and
-  a livestock events activity register in one registry, its keys, its relation
-  to the Farmer Registry and what it would share. Not built.
+description: A Livestock Registry.
 ---
 
 # Livestock Registry
@@ -53,7 +50,7 @@ The events are the history. The animal's current status (last vaccinated, sold) 
 | Key | Value |
 | --- | --- |
 | **Animal** | The registry's own Animal ID (format not decided) |
-| **Owner** | The Farmer Registry's Farmer ID, with the national ID alongside, as in the [Crop Sown Registry](../architecture/registries.md#how-it-relates-to-the-farmer-registry) |
+| **Owner** | The Farmer Registry's Farmer ID, with the national ID alongside, as in the [Crop Sown Registry](../architecture/registries.md#farmer-id-across-registries) |
 | **Vet** | A typed participant: a Veterinarian record in this registry, or an ID held by another system |
 
 The Farmer ID is checked by format only: the Farmer Registry runs in another department, so it is not looked up. The farmer is registered in the Farmer Registry first.

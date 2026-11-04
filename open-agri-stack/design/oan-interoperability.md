@@ -1,8 +1,5 @@
 ---
-description: >-
-  Proposal: the Composite as a provider node on the Open Agri Network (OAN),
-  so partners already on the network reach Agri Stack use cases through the
-  Beckn order flow, via a beckn-onix adapter. Not built.
+description: Joining the Open Agri Network.
 ---
 
 # Interoperability with OAN (Beckn)
@@ -11,7 +8,7 @@ description: >-
 
 **Concept.** At a high level, OAN's use-case services sit on top of Agri Stack, which provides consented data sharing (the Exchange), the departments' registries and the public catalogues:
 
-<figure><img src="../../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use-case services of value to the farmer, for example access to credit, access to market, grievance, access to payment. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land). OAN asks for a use case for a farmer, through Beckn or Agri Stack's own API; the Exchange searches each registry with its consent token."><figcaption><p>Concept: OAN and Agri Stack at a high level (the registries a country may run)</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use-case services of value to the farmer, for example access to credit, access to market, grievance, access to payment. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land). OAN asks for a use case for a farmer, through Beckn or Agri Stack's own API; the Composite searches each registry with its consent token."><figcaption><p>Concept: OAN and Agri Stack at a high level (the registries a country may run)</p></figcaption></figure>
 
 ## Why
 
@@ -52,7 +49,7 @@ This fits because the Composite already works at the level of **use cases** (e.g
 
 ## How it relates to the architecture
 
-* Path B in the [architecture](../architecture/README.md#components-and-who-talks-to-whom) is unchanged behind the adapter: one consent, a consent token per registry, each department deciding with its own Consent Manager and ceiling.
+* Path B in the [architecture](../architecture/README.md#data-sharing-paths) is unchanged behind the adapter: one consent, a consent token per registry, each department deciding with its own Consent Manager and ceiling.
 * Today Beckn appears only at the OAN layer, for discovering service providers and consumers; this proposal adds the Composite as a provider on that network.
 
 ## What a partner needs beyond OAN
@@ -66,7 +63,7 @@ This fits because the Composite already works at the level of **use cases** (e.g
 | An agreement with the Agri Stack operator | Legal and data-sharing terms: purposes, data retention. Outside any system |
 | Its partner record in the Exchange's Partner Management | Its key taken from its Beckn registry entry (if built; see [what would need to be built](#what-would-need-to-be-built-or-decided)), otherwise its public key supplied once |
 | A grant for each use case it may order | Approved in Partner Management ([creating and changing policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)). Without it, orders are refused |
-| Partner-portal accounts for its staff | Created by the operator ([after install](../deployment/after-install.md#partner-portal-realm-and-users)) |
+| Partner-portal accounts for its staff | Created by the Exchange's administrator ([Partner Portal Users](../administration/partner-portal-users.md)) |
 
 ### Consent, by scenario
 

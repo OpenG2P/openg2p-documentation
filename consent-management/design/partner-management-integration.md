@@ -67,7 +67,7 @@ inside the cluster. Request and response shapes:
 | **Key** | `GET {pm}/keys/PARTNER_<AUD>/…` (by the JWS `kid`) | Verifying the signature of a partner's consent object |
 | **One policy** | `GET {pm}/policies/PARTNER_<AUD>?data_controller=<controller>` | The partner's **scope policy** for one registry |
 | **Use-case policy** | `GET {pm}/policies/PARTNER_<AUD>?use_case=<name@major>` | The partner's policy for **one use case** (an Exchange grant, not tied to one registry; one policy per use case) |
-| **All policies** | `GET {pm}/policies/PARTNER_<AUD>` | The partner portal's "What we can ask for" page (scope policies; at an Exchange, one entry per use-case policy) |
+| **All policies** | `GET {pm}/policies/PARTNER_<AUD>` | The partner portal's **Use cases** page (**Data access** outside an Exchange) (scope policies; at an Exchange, one entry per use-case policy) |
 
 PM returns only **active** policies of an **active** partner. A pending change never affects a
 decision; once approved in PM it applies within the cache time below.

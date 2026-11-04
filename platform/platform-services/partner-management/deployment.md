@@ -135,6 +135,24 @@ country's pack does not have, or an unreachable MDS, leaves the field free text
 and never blocks a request. In Rancher: **Catalogue Sources → Master Data URL**,
 **Purposes List Code**, **Subject ID Types List Code**.
 
+### Partners onboarded at install
+
+`staffPortalApi.bootstrapPartners`: partners the staff API onboards and approves
+when it starts, with their keys read from their JWKS URL and no policy
+([how](functional-specifications.md#partners-onboarded-at-install)). Each entry's
+fields are templated; one whose `partnerId` or `jwksUrl` renders empty is skipped.
+It reaches the API as `PARTNER_MANAGER_BOOTSTRAP_PARTNERS` (JSON).
+
+```yaml
+staffPortalApi:
+  bootstrapPartners:
+    - partnerId: PARTNER_AGRI_COMPOSITE
+      jwksUrl: https://agri-composite.agrix.example.org/.well-known/jwks.json
+      name: Agri Stack Composite
+```
+
+Commons Services fills this from its Exchange Role ([Agri Stack](../../../open-agri-stack/deployment/README.md#what-the-install-sets-up)).
+
 ### Routing
 
 Each component exposes an Istio `VirtualService` on the **internal** gateway:

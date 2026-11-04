@@ -18,7 +18,8 @@ they need to check (see [Access policies](#access-policies)).
 | `partner_id` | Admin-supplied, unique, stable business key used to fetch keys (e.g. `PARTNER_G2P_BRIDGE`). Free text at onboarding, but no spaces or `/`, `?`, `#`, `%` (it is a URL path segment). |
 | `name`, `org_name` | Display fields. |
 | `description` | Free text captured at onboarding. |
-| `jwks_url` | Optional well-known JWKS endpoint keys may be imported from. Must be an `http(s)://` URL. |
+| `jwks_url` | Optional well-known JWKS endpoint keys may be imported from, or read from (`keys_from_jwks_url`). Must be an `http(s)://` URL. |
+| `keys_from_jwks_url` | When true, the partner's keys are read from `jwks_url` whenever they are fetched, in addition to its stored keys ([keys from a JWKS URL](#keys-from-a-jwks-url)). Set at onboarding. |
 | `status` | One of `created`, `active`, `disabled` (`created` → `active` → `disabled`). |
 | `created_by`, `approved_by` | Audit: staff identity behind each transition. |
 
@@ -126,8 +127,31 @@ still load and display as-is.
 
 If a partner publishes a JWKS endpoint, the admin can supply `jwks_url` and tick
 *import*. The service fetches it **once** and stores the resulting keys against
-`partner_id` + `kid`. It does **not** live-poll the endpoint — the DB is the
-source of truth.
+`partner_id` + `kid`.
+
+### Keys from a JWKS URL
+
+Instead, a partner can be onboarded with `keys_from_jwks_url`: no key is needed at
+onboarding, and the fetch APIs read the partner's keys from `jwks_url` when asked.
+
+* **Cached:** each answer is reused for `jwks_live_cache_ttl` (300 s); while the URL
+  fails, the last good keys are served for up to `jwks_live_stale_ttl` (6 h), then
+  only the partner's stored keys (fail-closed when none).
+* **Checked as at onboarding:** a key that would be refused (private, weak RSA,
+  disallowed algorithm or curve) is skipped and logged.
+* **Combined:** stored active keys are served too; a stored key wins over one from
+  the URL with the same `kid`. The partner must still be `active`.
+* **Use:** the partner rotates its own keys and can be onboarded before its URL
+  answers, e.g. a service generating its key at install. The URL must be trusted as
+  the partner's: whoever controls it controls the partner's keys.
+
+### Partners onboarded at install
+
+`bootstrap_partners` (Helm `staffPortalApi.bootstrapPartners`) lists partners, each
+a `partner_id` and a `jwks_url`, that the staff API onboards when it starts: with
+`keys_from_jwks_url`, no policy, raised and approved by the actor `bootstrap`. A
+partner that already exists is left as it is. Policies are added by the admins as
+for any partner.
 
 ## Access policies
 

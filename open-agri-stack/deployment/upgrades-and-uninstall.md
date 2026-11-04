@@ -1,7 +1,5 @@
 ---
-description: >-
-  Upgrading Agri Stack's charts and images, rotating the signing keys, and
-  uninstalling the Composite and the registries with their scripts.
+description: Upgrading and uninstalling.
 ---
 
 # Upgrades and Uninstall
@@ -22,17 +20,14 @@ Each install is upgraded on its own, in Rancher (**Apps → Installed Apps → �
 * **Image versions:** **Image Tag** and **Console UI Image Tag**. The chart's default `develop` moves (pulled on every pod start); pin a released version in production.
 * **Use cases:** a change to `composite.useCases` (or your own ConfigMap) is picked up by running pods within the reload interval, without a restart or a chart upgrade.
 * **Registries and other settings** are environment variables: changing them rolls the pods.
-* **After a use case with new data scopes or purposes,** rerun the [Exchange setup](after-install.md#exchange-setup) so each department's scope policy for the Composite (in its PM) covers it.
+* **Signing key:** kept on every upgrade (the chart reads its Secret back).
+* **After a use case with new data scopes or purposes,** each department decides whether to widen the Composite's scope policy ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)).
 
-After any upgrade, check the Composite, the CMs and the registries' partner APIs together: run the [partner test](testing.md#partner-test-public-apis).
+After any upgrade, check the Composite, the CMs and the registries' partner APIs together: run the [test](testing.md).
 
-### Rotating keys
+**Upgrading an install from before the generated key.** The Exchange questions of Commons Services moved under `global.agriStackExchange` (so Partner Management sees the role too). On the upgrade form, set **Exchange Role** again (and **Exchange Domain** where used): left at `none`, it overrides the earlier answer. Such an install keeps its Composite key and Partner Management entries; rotating it later: [Keys: an older install](../administration/keys.md#an-older-install).
 
-| Key | How |
-| --- | --- |
-| Exchange CM signing key | New Secret with the new `.p12`, then a new **Signing Key ID** in Commons Services. The departments read its public keys from the Exchange CM's JWKS URL, not from their own settings |
-| Composite signing key | `python scripts/setup_exchange.py … --new-key`: a new key (new `kid`), registered in each PM with a key-update request, and the Secret replaced |
-| A partner's key | The partner raises a key-update request in PM ([partner guide](../partner-guide.md#step-2-get-onboarded-in-partner-management)) |
+Rotating keys: [Keys](../administration/keys.md).
 
 ## Uninstalling
 

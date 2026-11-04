@@ -1,34 +1,32 @@
 ---
-description: >-
-  Installing the Farmer Registry for Agri Stack: its own deployment guide, plus
-  the Consent Manager in the department role, the Composite's search URL, the
-  Exchange setup and a check.
+description: Installing the Farmer Registry.
 ---
 
 # Farmer Registry
 
-Install the Farmer Registry by its own guide: [Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md), including its checks and [before going to production](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production). These pages install it in the namespace `trial` ([topology](README.md#topology)). This page lists only what Agri Stack needs on top. Its role in Agri Stack: [Registries in Agri Stack](../architecture/registries.md#farmer-registry).
+Step 1 of the [install steps](README.md#install-steps), in the namespace `trial`.
 
-## Choices for Agri Stack
+## Install
 
-| Chart | Field | Value | Why |
-| --- | --- | --- | --- |
-| Commons Services | Exchange Role (Consent Manager) | **department** | The CM accepts the Exchange's consent tokens, presented by the Composite |
-| Commons Services | Exchange Domain (Consent Manager) | Empty, unless the Exchange is not at `agrix.<parent domain>` | The CM reads the Exchange CM's public keys there (e.g. `agrix.openg2p.org` for `trial.openg2p.org`) |
-| Commons Services | Partner Portal? (Consent Manager) | **No** (the default) | Consents are collected at the Exchange |
-| Farmer Registry | Release name | Any; these pages use `fr` | The Composite's **Farmer Registry Search URL** is then `https://partner-fr.<domain>/dci/registry/sync/search` ([Composite](composite.md)). The chart has no default for it |
-| Farmer Registry | Load Sample Data | **On**, for a demo only | Farmers matching the Crop Sown Registry's samples ([sample data](../architecture/registries.md#sample-data)) |
+Follow the Farmer Registry's own guide: [Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md). It installs Commons Base, Commons Services and the Farmer Registry. Set these fields on top:
 
-## After install
-
-Run the [Exchange setup](after-install.md#exchange-setup) with `--registry farmer-registry=trial`, once the Composite is installed. It registers the Composite in this namespace's Partner Management with its key and its scope policy for this registry, the ceiling of what this department releases through the Exchange ([the Composite as a partner](../architecture/registries.md#the-composite-as-a-partner)). If this CM does not trust the Exchange's consent tokens, it stops and names the form field.
+| Chart | Field | Value |
+| --- | --- | --- |
+| Commons Services | Exchange Role (Consent Manager) | **department** |
+| Commons Services | Exchange Domain (Consent Manager) | Empty when the Exchange is at `agrix.<parent domain>`; otherwise its domain |
+| Commons Services | Partner Portal? (Consent Manager) | **No** (the default) |
+| Commons Services | Country Pack | The same as every other install (default `ETH`) |
+| Farmer Registry | Release name | e.g. `fr` (gives the hostname `partner-fr.<domain>`) |
+| Farmer Registry | Load Sample Data | **On** for a demo only ([sample data](testing.md#sample-data)) |
 
 ## Check
 
-From the [agri-stack](https://github.com/openg2p/agri-stack) repository, once the Composite and the Exchange setup are in place:
+1. The registry's own checks pass ([Farmer Registry → Deployment](../../products/registry/farmer-registry/deployment/README.md)).
+2. Note its partner search URL, for the [Composite](exchange.md#composite): `https://partner-fr.trial.openg2p.org/dci/registry/sync/search`.
+3. Once the Exchange is installed, Partner Management serves the Composite's key:
 
-```bash
-./scripts/exchange_test.sh --namespace agrix --registry farmer-registry=trial --registry crop-sown-registry=dept1
-```
+   ```bash
+   curl -s https://partner-management-partner-api.trial.openg2p.org/keys/PARTNER_AGRI_COMPOSITE
+   ```
 
-The `loan-profile` response has the `farmer` source `ok`. Details and common failures: [Testing](testing.md).
+   If not: **Exchange Role** is not `department`, or Partner Management cannot reach `https://agri-composite.<Exchange domain>/.well-known/jwks.json` (set **Exchange Domain**, or **Composite JWKS URL**); the PM staff API log ("Bootstrap").

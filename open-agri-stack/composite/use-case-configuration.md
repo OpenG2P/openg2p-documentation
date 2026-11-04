@@ -1,14 +1,10 @@
 ---
-description: >-
-  The Composite's use-case file format, key by key: identity and versioning
-  (name@major), purpose and consent, inputs and parameters, sources and their
-  data scopes, query templates, response mapping, derived values and output,
-  execution, limits and audit, with the shipped loan-profile file.
+description: The use-case file format.
 ---
 
 # Use-Case Configuration
 
-The format of a use-case file, as the [Composite](README.md) accepts it. How a use case runs (the registry calls, failure handling, the consent mode) is in the [Composite overview](README.md#what-the-first-version-does); where the files go, the reload interval and the service settings are in [Deployment: Composite](../deployment/composite.md#use-cases); writing one step by step is in [Creating a Use Case](creating-a-use-case.md).
+The format of a use-case file, as the [Composite](README.md) accepts it. How a use case runs (the registry calls, failure handling, the consent mode) is in the [Composite overview](README.md#what-the-first-version-does); where the files go, the reload interval and the service settings are in [Deployment: Composite](chart-settings.md#use-cases); writing one step by step is in [Creating a Use Case](creating-a-use-case.md).
 
 ## File structure
 
@@ -87,7 +83,7 @@ One entry per registry search.
 | Key | |
 | --- | --- |
 | `id` | Required, unique, matches `^[a-z][a-z0-9_]*$`. Named in `depends_on`, templates and mappings as `sources.<id>` |
-| `controller` | Required: the registry's data controller ID (e.g. `farmer-registry`). It must have an endpoint in the Composite's settings ([Deployment: registries](../deployment/composite.md#registries)), or the file does not load |
+| `controller` | Required: the registry's data controller ID (e.g. `farmer-registry`). It must have an endpoint in the Composite's settings ([Deployment: registries](chart-settings.md#registries)), or the file does not load |
 | `requirement` | `mandatory` (default) or `optional`: whether the source failing fails the request ([failure handling](README.md#failure-handling)) |
 | `depends_on` | A source ID or a list of them. This source runs after them and its template sees their results; it is not called if one of them is not `ok`. No unknown IDs, no self-reference, no cycles |
 | `scopes`, `optional_scopes` | The registry's [data scopes](#data-scopes) the source uses. `request_scopes` is accepted as the earlier name of `scopes` |
@@ -147,8 +143,8 @@ A template is sandboxed Jinja that renders the query part of the DCI `search_cri
 | --- | --- |
 | `execution.overall_timeout_ms` | 100–300000; default from the service setting `DEFAULT_OVERALL_TIMEOUT_MS` (10000). Must cover the slowest chain of `depends_on` |
 | `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does ([failure handling](README.md#failure-handling)) |
-| `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted across all pods in Redis; per worker while Redis is unreachable ([rate limiting](../design/rate-limiting.md), [settings](../deployment/composite.md#scaling-and-rate-limits)) |
-| `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) ([audit](../deployment/composite.md#audit)) |
+| `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted across all pods in Redis; per worker while Redis is unreachable ([rate limiting](../design/rate-limiting.md), [settings](chart-settings.md#scaling-and-rate-limits)) |
+| `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) ([audit](chart-settings.md#audit)) |
 
 ## Accepted but not acted on
 
@@ -305,6 +301,6 @@ limits:
 
 * **Sources:** `farmer` (mandatory) first; then `season_summaries` and `crop_seasons` (optional) in parallel. The Crop Sown Registry knows the farmer by farmer ID, so both crop sources depend on `farmer` and read `FARMER_ID` from its record (or use the subject itself when the partner sends a `FARMER_ID`). The request fails only when the Farmer Registry fails or denies; the crop data is best effort.
 * **Timeouts:** each source `timeout_ms: 10000` with `retries: 0` (a slow registry search is not retried: a retry only doubles the wait); `overall_timeout_ms: 25000` covers the two levels.
-* **Scopes:** one consent, with a grant per registry naming its [data scopes](../../products/registry/registry/design/data-scopes.md); the describe endpoint gives them per registry as `consent_scopes`. `farmer-registry.farmer_identifiers` is required, since the crop sources query by the farmer ID read from it. The partner test kit grants every listed scope:
+* **Scopes:** one consent, with a grant per registry naming its [data scopes](../../products/registry/registry/design/data-scopes.md); the describe endpoint gives them per registry as `consent_scopes`. `farmer-registry.farmer_identifiers` is required, since the crop sources query by the farmer ID read from it. The install test script grants every listed scope:
   * `farmer-registry`: `farmer_identifiers`, `personal_details`, `land`, `main_crops` (required); `household_location`, `land_location` (optional);
   * `crop-sown-registry`: `farmer_reference`, `crop_season`, `measures` (required); `location` (optional).

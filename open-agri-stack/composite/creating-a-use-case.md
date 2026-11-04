@@ -1,9 +1,5 @@
 ---
-description: >-
-  Creating a Composite use case, step by step: what the partner needs, the
-  use-case file, putting it into the Composite's configuration, checking it
-  loaded, granting it to partners, the departments' ceilings, and testing. Also how to
-  read a use case in the console.
+description: Creating a use case.
 ---
 
 # Creating a Use Case
@@ -18,7 +14,7 @@ Write down:
 * **Inputs:** how the farmer is identified ([subject ID types](use-case-configuration.md#subject-id-types)) and any parameters (e.g. a crop year).
 * **Output fields:** what the partner gets back.
 
-Then find which registries hold that data and which of their [data scopes](../../products/registry/registry/design/data-scopes.md) cover it. Each registry's scope catalogue is on the console's **Registries** page; the scopes the shipped registries offer are under [farmer data](../architecture/registries.md#farmer-data-the-composite-reads) and [crop data](../architecture/registries.md#crop-data-the-composite-reads).
+Then find which registries hold that data and which of their [data scopes](../../products/registry/registry/design/data-scopes.md) cover it. Each registry's scope catalogue is on the console's **Registries** page; the scopes the shipped registries offer are under [farmer data](../../products/registry/farmer-registry/data-scopes.md) and [crop data](../../products/registry/crop-sown-registry/data-scopes.md).
 
 ## Step 2 — Write the use case file
 
@@ -36,7 +32,7 @@ Every key is listed in [use-case file structure](use-case-configuration.md#file-
 
 ## Step 3 — Put it into the Composite's configuration
 
-Use cases are entries in the Composite's Helm values ([Deployment: Composite, use cases](../deployment/composite.md#use-cases)):
+Use cases are entries in the Composite's Helm values ([Deployment: Composite, use cases](chart-settings.md#use-cases)):
 
 * **Rancher:** open the Composite app, **Edit YAML**, and add an entry under `composite.useCases`: the use case's name, then the file's text as a block (`my-use-case: |`). Upgrade. Templates must be inline here (`query_template: |`), since each entry becomes one `<name>.yaml` key.
 * **Your own ConfigMap** (e.g. GitOps): set `composite.existingUseCasesConfigMap` to its name and add the file as key `<name>.yaml` (and any `.j2` templates next to it).
@@ -57,16 +53,15 @@ A partner gets one **use-case policy per use case** it may call. In the Exchange
 * **A new partner:** in its onboarding request, with its keys.
 * **An onboarded partner:** **Add policy** on the partner (a policy request). Its other use cases' policies are untouched.
 
-Steps: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md). The [partner test](../deployment/testing.md#partner-test-public-apis) does this for its test partner when given the PM admin credentials (`--use-case`).
+Steps: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md). The [test](../deployment/testing.md) does this for its test partner (`test.use_case`).
 
-## Step 6 — Update the departments' ceilings for the Composite
+## Step 6 — The departments' ceilings for the Composite
 
-Rerun the [Exchange setup](../deployment/after-install.md#exchange-setup) (`scripts/setup_exchange.py`) after step 4, so the new use case is published. It reads the published use cases and, in each department's PM, raises and approves a policy request that widens the Composite's scope policy to cover the new scopes and purpose ([scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Without the script, each department widens it itself ([when use cases change](../deployment/exchange.md#when-use-cases-change)). Until then the registry withholds the new scopes.
+Each department whose registry the use case reads decides whether to release what it asks: it widens the Composite's scope policy in its PM to the new scopes and purpose ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change); why: [scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released)). Until then the registry withholds the new scopes.
 
 ## Step 7 — Test
 
-* **Partner test:** `python scripts/partner_test.py --base-domain <domain> --partner <partner> --use-case <name> --auto-approve` ([partner test](../deployment/testing.md#partner-test-public-apis)). It builds the consent from the use case's scopes. It sends only the `crop_year` and `season` parameters (`--crop-year`, `--season`).
-* **`scripts/exchange_test.sh`** runs the Exchange setup and the partner test in one go (`--use-case <name>`, default `loan-profile`).
+Set `test.use_case` (and `test.parameters`) in the [test](../deployment/testing.md)'s configuration and run it. It builds the consent from the use case's scopes and, for a test install, widens the departments' scope policies for the Composite to cover it.
 
 Read the status of each source in the response: `ok`, `no_record`, `denied`, `unavailable` or `error` ([source statuses](README.md#source-statuses)). A mandatory source that isn't `ok` or `no_record` fails the request.
 

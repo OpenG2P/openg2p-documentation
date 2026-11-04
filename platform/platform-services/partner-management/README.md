@@ -37,7 +37,8 @@ shared platform-services layer), deployed as `commons-services-pm-*`. See
 
 * **Onboarding** — an admin registers a partner (`partner_id`, name, free-text
   description) and its initial public key(s). Keys may be pasted (PEM, X.509
-  certificate, or JWK) or imported once from the partner's `jwks_url`.
+  certificate, or JWK), imported once from the partner's `jwks_url`, or read
+  from that URL whenever needed ([keys from a JWKS URL](functional-specifications.md#keys-from-a-jwks-url)).
 * **Approval** — a partner moves through `created` → `active` → `disabled`. Keys
   are served only while the partner is `active`.
 * **Key rotation** — a partner (via the admin, in v1) files an *update* request
