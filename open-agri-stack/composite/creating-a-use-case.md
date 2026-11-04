@@ -1,9 +1,5 @@
 ---
-description: >-
-  Creating a Composite use case, step by step: what the partner needs, the
-  use-case file, putting it into the Composite's configuration, checking it
-  loaded, granting it to partners, the departments' ceilings, and testing. Also how to
-  read a use case in the console.
+description: Creating a use case.
 ---
 
 # Creating a Use Case
@@ -18,7 +14,7 @@ Write down:
 * **Inputs:** how the farmer is identified ([subject ID types](use-case-configuration.md#subject-id-types)) and any parameters (e.g. a crop year).
 * **Output fields:** what the partner gets back.
 
-Then find which registries hold that data and which of their [data scopes](../../products/registry/registry/design/data-scopes.md) cover it. Each registry's scope catalogue is on the console's **Registries** page; the scopes the shipped registries offer are under [farmer data](../architecture/registries.md#farmer-data-the-composite-reads) and [crop data](../architecture/registries.md#crop-data-the-composite-reads).
+Then find which registries hold that data and which of their [data scopes](../../products/registry/registry/design/data-scopes.md) cover it. Each registry's scope catalogue is on the console's **Registries** page; the scopes the shipped registries offer are under [farmer data](../../products/registry/farmer-registry/data-scopes.md) and [crop data](../../products/registry/crop-sown-registry/data-scopes.md).
 
 ## Step 2 — Write the use case file
 
@@ -61,7 +57,7 @@ Steps: [Creating and Changing Policies](../../platform/platform-services/partner
 
 ## Step 6 — The departments' ceilings for the Composite
 
-Each department whose registry the use case reads decides whether to release what it asks: it widens the Composite's scope policy in its PM to the new scopes and purpose ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change); why: [scope policy for the Composite](../architecture/registries.md#scope-policy-for-the-composite)). Until then the registry withholds the new scopes.
+Each department whose registry the use case reads decides whether to release what it asks: it widens the Composite's scope policy in its PM to the new scopes and purpose ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change); why: [scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released)). Until then the registry withholds the new scopes.
 
 ## Step 7 — Test
 

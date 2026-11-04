@@ -1,7 +1,5 @@
 ---
-description: >-
-  Installing the Crop Sown Registry for Agri Stack: its own install guide, the
-  form fields Agri Stack needs on top, and the checks.
+description: Installing the Crop Sown Registry.
 ---
 
 # Crop Sown Registry
@@ -19,7 +17,7 @@ Follow the Crop Sown Registry's own guide: [Crop Sown Registry → Deployment](.
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) |
 | Commons Services | Country Pack | The same as every other install (default `ETH`) |
 | Crop Sown Registry | Release name | e.g. `csr` (gives the hostname `partner-csr.<domain>`) |
-| Crop Sown Registry | Load Sample Data, Load sample crop seasons | **On** for a demo only ([sample data](../architecture/registries.md#sample-data)) |
+| Crop Sown Registry | Load Sample Data, Load sample crop seasons | **On** for a demo only ([sample data](testing.md#sample-data)) |
 
 ## Check
 

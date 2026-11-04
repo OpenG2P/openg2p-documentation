@@ -1,9 +1,5 @@
 ---
-description: >-
-  Proposal: registries sharing data with each other (registry to registry),
-  using the registry platform's outgestion and ingestion. Reference design:
-  crop activity from the Crop Sown Registry kept in the Farmer Registry; the
-  gaps to close; how it would be set up; mirrors the other way.
+description: Registries sharing data with each other.
 ---
 
 # Registry Data Sync

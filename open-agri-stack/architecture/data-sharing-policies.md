@@ -1,8 +1,5 @@
 ---
-description: >-
-  The Agri Stack policy model: the partner's use-case policy at the Exchange,
-  the Composite's scope policy in each department, how they combine with the
-  farmer's consent, who approves what, and how each hop fails closed.
+description: Policies that control data sharing.
 ---
 
 # Data-Sharing Policies
@@ -14,7 +11,7 @@ Access policies say what a partner may ask for. In Agri Stack they are all held 
 Agri Stack uses both kinds of [access policy](../../platform/platform-services/partner-management/functional-specifications.md#two-kinds-of-policy) that Partner Management offers, one at the Exchange and one in each department:
 
 * **The partner's use-case policy, at the Exchange.** Which use case a partner may call, for example `loan-profile@1`, and with what limits: the purposes, farmer ID types and signing algorithms allowed, and the longest a consent may last. One policy per partner and use case, in the Exchange's Partner Management, approved by the Exchange's partner manager ([example policy](../../platform/platform-services/partner-management/api-reference.md#post-partners-requests-policy)). It lists no data: the use case defines that.
-* **The Composite's scope policy, in each department.** Which of the registry's data the department allows the Composite to receive, for which purposes and farmer ID types. One policy per registry, in the department's Partner Management, approved by the department's partner manager ([how a registry applies it](registries.md#scope-policy-for-the-composite)).
+* **The Composite's scope policy, in each department.** Which of the registry's data the department allows the Composite to receive, for which purposes and farmer ID types. One policy per registry, in the department's Partner Management, approved by the department's partner manager ([how a registry applies it](#what-actually-gets-released)).
 
 {% hint style="info" %}
 **Partners and departments never deal with each other.** A partner has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange with the partners.

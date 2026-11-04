@@ -1,9 +1,5 @@
 ---
-description: >-
-  For a partner's developers (bank, MFI, agritech): integrating with Agri
-  Stack end to end. Keys, what to give for onboarding, discovering a use case,
-  the farmer's consent, signing, calling the Composite, and verifying the
-  response.
+description: Integrating a partner's system.
 ---
 
 # Partner Integration Guide

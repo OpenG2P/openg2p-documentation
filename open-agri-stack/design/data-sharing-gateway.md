@@ -1,9 +1,5 @@
 ---
-description: >-
-  Decisions for restructuring Agri Stack: the Exchange becomes a generic Data
-  Sharing Gateway, a stack is content (packs) on top of it, registries are
-  called through standard-aware connectors, and the Exchange setup moves into
-  the install.
+description: Generalising the Exchange.
 ---
 
 # Data Sharing Gateway

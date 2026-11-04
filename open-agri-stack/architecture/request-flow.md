@@ -1,9 +1,5 @@
 ---
-description: >-
-  One request through Agri Stack at query time, end to end: a bank asks the
-  Composite for a farmer's loan profile, the Exchange Consent Manager issues a
-  consent token per registry, and each registry checks its consent token at its own
-  Consent Manager.
+description: One request, end to end.
 ---
 
 # Request Flow

@@ -1,7 +1,5 @@
 ---
-description: >-
-  Installing the Farmer Registry for Agri Stack: its own install guide, the
-  form fields Agri Stack needs on top, and the checks.
+description: Installing the Farmer Registry.
 ---
 
 # Farmer Registry
@@ -19,7 +17,7 @@ Follow the Farmer Registry's own guide: [Farmer Registry → Deployment](../../p
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) |
 | Commons Services | Country Pack | The same as every other install (default `ETH`) |
 | Farmer Registry | Release name | e.g. `fr` (gives the hostname `partner-fr.<domain>`) |
-| Farmer Registry | Load Sample Data | **On** for a demo only ([sample data](../architecture/registries.md#sample-data)) |
+| Farmer Registry | Load Sample Data | **On** for a demo only ([sample data](testing.md#sample-data)) |
 
 ## Check
 

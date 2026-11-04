@@ -1,7 +1,5 @@
 ---
-description: >-
-  The open standards Agri Stack uses, where it uses its own formats, and
-  where a standard exists that is still to be explored.
+description: Standards Agri Stack uses.
 ---
 
 # Standards

@@ -1,8 +1,5 @@
 ---
-description: >-
-  How Agri Stack limits request rates: an edge limit at the Istio ingress
-  gateway and a per-partner, per-use-case limit in the Composite, shared in
-  Redis. What is built and what is later.
+description: Limiting request rates.
 ---
 
 # Rate Limiting

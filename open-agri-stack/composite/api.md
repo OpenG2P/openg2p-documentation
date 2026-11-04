@@ -1,8 +1,5 @@
 ---
-description: >-
-  API reference for the Agri Stack Composite: list and describe use cases,
-  query a use case with a signed envelope, and the staff console's read-only
-  API.
+description: Composite API reference.
 ---
 
 # Composite API

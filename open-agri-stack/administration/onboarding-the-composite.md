@@ -1,7 +1,5 @@
 ---
-description: >-
-  Step by step, for a department's partner manager: onboard the Composite in
-  the department's Partner Management by hand, where the install did not.
+description: Onboarding the Composite in a department.
 ---
 
 # Onboarding the Composite

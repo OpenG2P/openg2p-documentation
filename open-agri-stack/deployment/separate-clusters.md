@@ -1,7 +1,5 @@
 ---
-description: >-
-  Installing Agri Stack with departments on their own clusters: what changes
-  from the one-cluster reference install, and adding a department.
+description: Departments on their own clusters.
 ---
 
 # Separate Clusters

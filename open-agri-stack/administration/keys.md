@@ -1,8 +1,5 @@
 ---
-description: >-
-  Replacing and rotating the signing keys of Agri Stack: the Composite's, the
-  Exchange Consent Manager's and a partner's, and what to do when a key is
-  compromised.
+description: Replacing and rotating signing keys.
 ---
 
 # Keys

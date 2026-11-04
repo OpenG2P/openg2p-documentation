@@ -124,4 +124,4 @@ The register, DCI record type, search text, consent scopes and the tab and secti
 
 ## In Agri Stack
 
-In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md#farmer-registry). How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).
+In [Agri Stack](../../../open-agri-stack/README.md), the Farmer Registry is the agriculture department's registry and holds the link between the Fayda FAN and the Farmer ID. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md). How it is set up for Agri Stack is in [Agri Stack → Deployment → Farmer Registry](../../../open-agri-stack/deployment/farmer-registry.md).

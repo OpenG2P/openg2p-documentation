@@ -1,8 +1,5 @@
 ---
-description: >-
-  The Agri Stack architecture: distributed registries, each in its own
-  department's install, and an Exchange above them; what each block holds,
-  the infrastructure, the partners, and the paths data takes.
+description: How Agri Stack is put together.
 ---
 
 # Architecture & Concepts

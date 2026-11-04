@@ -1,8 +1,5 @@
 ---
-description: >-
-  The Exchange's components: Consent Manager, Partner Management and eSignet
-  are documented in their products; the Agri Stack–specific component is the
-  Composite.
+description: Documentation of the Exchange's components.
 ---
 
 # Exchange

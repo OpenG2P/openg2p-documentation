@@ -1,6 +1,5 @@
 ---
-description: >-
-  Running the Composite and its tests on a laptop.
+description: Running the Composite locally.
 ---
 
 # Running the Composite Locally

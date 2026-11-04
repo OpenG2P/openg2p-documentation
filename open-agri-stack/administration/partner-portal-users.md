@@ -1,7 +1,5 @@
 ---
-description: >-
-  Creating, disabling and removing partner portal accounts for a partner's
-  staff, in the Exchange's Keycloak realm partner.
+description: Managing partner portal accounts.
 ---
 
 # Partner Portal Users

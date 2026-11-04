@@ -1,9 +1,5 @@
 ---
-description: >-
-  Consent in Agri Stack: one consent per partner, farmer and use case, with a
-  grant per registry, collected and kept by the Exchange's Consent Manager, and
-  a consent token per registry at query time. How a farmer gives it, and its key
-  features (validity, proof, revocation, audit).
+description: Farmer consent in Agri Stack.
 ---
 
 # Consent

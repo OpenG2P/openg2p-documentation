@@ -1,8 +1,5 @@
 ---
-description: >-
-  Agri Stack is open-source digital public infrastructure for agriculture:
-  departments' registries, open catalogues and an Exchange that shares farmer
-  data with service providers only with the farmer's consent.
+description: Open digital public infrastructure for agriculture.
 ---
 
 # Agri Stack

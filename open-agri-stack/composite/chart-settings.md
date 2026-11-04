@@ -1,8 +1,5 @@
 ---
-description: >-
-  Every setting of the Composite's Helm chart, by Rancher form group: hostnames,
-  consent mode, registries, use cases, signing key, console, CORS, scaling and
-  rate limits, audit, sanity check and environment variables.
+description: Composite Helm chart settings.
 ---
 
 # Chart Settings
@@ -73,7 +70,7 @@ The chart renders `composite.useCases` into the ConfigMap `<release>-use-cases`,
 | **Who may call it** | Partners with a policy for `loan-profile@1` in the Exchange PM; the [test](../deployment/testing.md) grants it to its test partner |
 | **Rate limit** | 60 per minute per partner |
 
-The scopes it needs from each registry: [Farmer Registry](../architecture/registries.md#farmer-data-the-composite-reads), [Crop Sown Registry](../architecture/registries.md#crop-data-the-composite-reads). The file, setting by setting: [the `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case).
+The file, setting by setting: [the `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case).
 
 ## Signing key
 

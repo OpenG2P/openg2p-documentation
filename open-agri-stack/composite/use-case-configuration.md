@@ -1,9 +1,5 @@
 ---
-description: >-
-  The Composite's use-case file format, key by key: identity and versioning
-  (name@major), purpose and consent, inputs and parameters, sources and their
-  data scopes, query templates, response mapping, derived values and output,
-  execution, limits and audit, with the shipped loan-profile file.
+description: The use-case file format.
 ---
 
 # Use-Case Configuration

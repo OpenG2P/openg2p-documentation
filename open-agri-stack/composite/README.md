@@ -1,10 +1,5 @@
 ---
-description: >-
-  The Composite, Agri Stack's partner entry point: one generic service that
-  serves approved use cases, each a configuration file. Design overview and how
-  a query runs (registry calls, failure handling, consent mode), with the pages
-  on creating a use case, its API, the use-case file format, adding a data
-  source, console and local running.
+description: The partners' entry point.
 ---
 
 # Composite

@@ -1,8 +1,5 @@
 ---
-description: >-
-  What the administrators of Agri Stack do by hand once it is installed: at
-  the Exchange, partners and their staff accounts; in each department, what it
-  releases to the Composite; everywhere, keys.
+description: Administering Agri Stack after install.
 ---
 
 # Administration

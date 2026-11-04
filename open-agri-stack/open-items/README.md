@@ -1,8 +1,5 @@
 ---
-description: >-
-  Work still to do in Agri Stack, each item with the design worked out so far:
-  identity, consent and policies; the Composite; the registries; catalogues;
-  the platform and build.
+description: Work still to do.
 ---
 
 # TODOs & Open Items

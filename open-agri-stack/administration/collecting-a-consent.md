@@ -1,8 +1,5 @@
 ---
-description: >-
-  Step by step: partner staff record a farmer's consent in the Exchange's
-  partner portal, and Consent Manager staff approve it, so the partner can
-  query without sending a consent.
+description: Recording a farmer's consent.
 ---
 
 # Collecting a Consent

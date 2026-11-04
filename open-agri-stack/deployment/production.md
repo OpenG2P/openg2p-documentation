@@ -1,8 +1,5 @@
 ---
-description: >-
-  What a production Agri Stack install changes from the demo defaults: the
-  Exchange's form fields and keys, the Composite's settings and key,
-  approvals, internal services, and test leftovers.
+description: Preparing an install for production.
 ---
 
 # Production

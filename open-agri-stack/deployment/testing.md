@@ -1,8 +1,5 @@
 ---
-description: >-
-  A basic end-to-end sanity test of an Agri Stack install: one script, one
-  query by a test partner for one farmer, through every registry of a use
-  case. Its configuration, what it does, clean-up and common failures.
+description: A basic end-to-end sanity test.
 ---
 
 # Testing
@@ -59,6 +56,10 @@ It needs Python 3, the hostnames of the installs, and the admin credentials: rea
 With `test.auto_approve: false`, the script raises the requests and waits (`test.wait_seconds`) for an administrator to approve them in Partner Management, as in production.
 
 **Exit codes:** `0` ok; `1` error; `2` a step was not completed (an approval timed out, or a conflict needs a decision); `3` the query failed or a source did not answer ok.
+
+## Sample data
+
+The registries' sample data describe the same people: person `ETH-IND-0007` is farmer `FR-0007` with lands `LAND-0007-1`, `LAND-0007-2`…, and the Crop Sown Registry's sample crop seasons are for those farmers and plots, so a `loan-profile` query returns both for the same farmer. The mock identity system at the Exchange holds the same people, so a sample farmer can log in with their national ID in the partner portal. Details: [Farmer Registry](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data).
 
 ## A consent collected by hand
 

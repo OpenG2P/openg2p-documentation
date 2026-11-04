@@ -1,7 +1,5 @@
 ---
-description: >-
-  Upgrading Agri Stack's charts and images, and uninstalling the Composite
-  and the registries with their scripts.
+description: Upgrading and uninstalling.
 ---
 
 # Upgrades and Uninstall

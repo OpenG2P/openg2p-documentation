@@ -1,8 +1,5 @@
 ---
-description: >-
-  Step by step for the Exchange's partner manager: onboard a partner, assign and remove
-  use cases, give its staff partner portal accounts, and disable or re-enable
-  the partner.
+description: Onboarding and managing partners.
 ---
 
 # Managing Partners

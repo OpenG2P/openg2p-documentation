@@ -1,8 +1,5 @@
 ---
-description: >-
-  How the functions of an API gateway are met in Agri Stack: the ingress
-  (Nginx, Istio) and the services themselves, with no separate gateway
-  product; networking between installs.
+description: API gateway functions in Agri Stack.
 ---
 
 # API Gateway

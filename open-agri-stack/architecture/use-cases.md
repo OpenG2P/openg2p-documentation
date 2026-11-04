@@ -1,9 +1,5 @@
 ---
-description: >-
-  Use cases: how farmer data is shared through the Exchange. A use case says
-  what is read from each registry and for what purpose; partners are assigned
-  use cases when they are onboarded; the farmer consents to the data a use case
-  reads; departments see only that data, never the use case.
+description: How data is shared through use cases.
 ---
 
 # Use Cases

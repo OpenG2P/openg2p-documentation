@@ -1,8 +1,5 @@
 ---
-description: >-
-  Installing the Agri Stack Exchange in its own namespace: Commons Base,
-  Commons Services, then the Composite, with the Rancher form fields to set
-  and the checks.
+description: Installing the Exchange.
 ---
 
 # Exchange

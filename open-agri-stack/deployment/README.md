@@ -1,9 +1,5 @@
 ---
-description: >-
-  Installing Agri Stack: the reference topology, the prerequisites and the
-  install steps (registries and Exchange in either order, each department's
-  release of data, the test), what the install sets up by itself, and the
-  settings that must agree across installs.
+description: Installing Agri Stack.
 ---
 
 # Deployment

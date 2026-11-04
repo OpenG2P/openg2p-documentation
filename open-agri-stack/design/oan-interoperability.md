@@ -1,8 +1,5 @@
 ---
-description: >-
-  Proposal: the Composite as a provider node on the Open Agri Network (OAN),
-  so partners already on the network reach Agri Stack use cases through the
-  Beckn order flow, via a beckn-onix adapter. Not built.
+description: Joining the Open Agri Network.
 ---
 
 # Interoperability with OAN (Beckn)

@@ -1,8 +1,5 @@
 ---
-description: >-
-  Agri Stack versions and source code: Alpha, the first version, and every
-  module it is installed from, with its charts, source code repository, and
-  current versions and change log.
+description: Versions and source code.
 ---
 
 # Versions & Source Code

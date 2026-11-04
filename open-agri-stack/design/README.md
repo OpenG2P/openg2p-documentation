@@ -1,7 +1,5 @@
 ---
-description: >-
-  Design notes for Agri Stack: registry data sync, the Livestock Registry,
-  interoperability with OAN (Beckn), rate limiting, the API gateway, the Data Sharing Gateway.
+description: Design notes and proposals.
 ---
 
 # Design
