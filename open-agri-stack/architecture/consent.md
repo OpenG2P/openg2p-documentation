@@ -2,8 +2,8 @@
 description: >-
   Consent in Agri Stack: one consent per partner, farmer and use case, with a
   grant per registry, collected and kept by the Exchange's Consent Manager, and
-  a consent token per registry at query time. How a farmer gives it, its
-  lifecycle (validity, proof, revocation, audit), and what is specific to Agri
+  a consent token per registry at query time. How a farmer gives it, its key
+  features (validity, proof, revocation, audit), and what is specific to Agri
   Stack.
 ---
 
@@ -31,17 +31,16 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 In every scenario the farmer proves who they are with the national ID; an SMS is only ever a notification afterwards. The steps, the partner portal and the gaps are in the Consent Manager's [consent collection](../../consent-management/design/consent-collection.md).
 
-## Consent lifecycle
+## Key features
 
-| Aspect | In brief | Details |
+| Feature | In brief | Details |
 | --- | --- | --- |
-| **Collecting** | Partner staff raise the request in the Exchange's partner portal for a use case; the farmer logs in with the national ID and signs a form; CM staff approve it | [Collecting a Consent](../administration/collecting-a-consent.md) (steps) |
-| **What the farmer consents to** | The data shared, not the use case: the purpose, the period and the data from each registry. Today the form is the partner's own and the portal shows scope codes; a farmer-readable form is not built | [open items](../open-items/README.md#identity-consent-and-policies) |
-| **Validity** | Set on the request, up to the longest the partner's use-case policy allows. Past it the consent expires and is refused | [expiry](../../consent-management/design/consent-lifecycle.md#expiry) |
-| **Use at query time** | The partner sends the consent or none; the Exchange CM finds the active one and issues a consent token per registry; each registry checks its token offline | [request flow](request-flow.md), [consent tokens](../../consent-management/design/exchange-consent-tokens.md) |
-| **Proof of consent** | The partner downloads the **consent record**, a ZIP of the receipt, the signed form and a statement signed by the CM, in the portal or through the CM's API, and can check it without the CM | [the partner's copy of a consent](../../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent) |
-| **Revocation** | Today by CM staff, on the farmer's request, in the CM console. A revoked consent gets no new consent token; one already issued lapses within its lifetime (5 minutes by default), unless the department CMs' status check is on | [revocation](../../consent-management/design/consent-lifecycle.md#revocation), [status check](../../consent-management/design/exchange-consent-tokens.md#department-role-accepting) |
-| **Audit** | The CM logs every decision and state change, append-only | [Consent Management](../../consent-management/README.md#design-principles) |
+| **Given in person, approved by the CM** | Partner staff raise the request in the Exchange's partner portal, for a use case. The farmer logs in with the national ID and signs the consent form, which lists all the data to be shared from each registry, its purpose and its period: the farmer consents to that data. CM admin staff check the form in the CM console and approve it | [Collecting a Consent](../administration/collecting-a-consent.md) |
+| **Time-bound** | Valid until the end date set on the request, never longer than the partner's use-case policy allows; then it expires | [expiry](../../consent-management/design/consent-lifecycle.md#expiry) |
+| **Used without being sent** | The bank queries naming only the farmer. The Exchange CM finds the consent and gives each registry a short-lived consent token, carrying only that registry's data | [request flow](request-flow.md) |
+| **Provable** | The bank downloads the consent record: the receipt, the signed form and a statement signed by the CM, which it can check without the CM | [the partner's copy of a consent](../../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent) |
+| **Revocable** | CM admin staff revoke it at the farmer's request. Sharing stops within minutes, when the consent tokens already issued expire | [revocation](../../consent-management/design/consent-lifecycle.md#revocation) |
+| **Audited** | Every decision and change is logged, append-only | [Consent Management](../../consent-management/README.md#design-principles) |
 
 ## What is specific to Agri Stack
 
@@ -51,5 +50,5 @@ In every scenario the farmer proves who they are with the national ID; an SMS is
 * **The partner need not send the consent.** The Exchange CM finds the partner's active consent for the farmer and use case ([Partner Integration Guide](../partner-integration-guide.md)).
 
 {% hint style="warning" %}
-**Not built yet:** scenarios 2 and 3; declining individual items or revoking one registry's grant only; using a consent held by the Exchange CM directly at a registry, without the Composite ([open items](../open-items/README.md#identity-consent-and-policies)).
+**Not built yet:** scenarios 2 and 3; a consent form generated by the CM, listing the data in plain language (today the partner prepares the form); declining individual items or revoking one registry's grant only; using a consent held by the Exchange CM directly at a registry, without the Composite ([open items](../open-items/README.md#identity-consent-and-policies)).
 {% endhint %}
