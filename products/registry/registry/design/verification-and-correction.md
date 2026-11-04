@@ -23,6 +23,18 @@ Today each kind has its own way to verify and to correct a record. This proposal
 
 The registry's job is that its records are **authentic, and verified where that is needed**. Whether a programme acts on a record (approval for payment or eligibility) is decided outside the registry, in the programme system (PBMS).
 
+## Terms
+
+| Term | What it means | What happens to the data |
+| --- | --- | --- |
+| **Validation** | Automatic checks at entry: format, required fields, reference data, plausibility | Bad input is rejected or warned on; nothing is stored about it |
+| **Change** | The world changed: the person moved, sold a plot | A new version; the old value stays in history as true _at that time_. An activity never changes: a new event is a new activity |
+| **Correction** | The record was wrong: a typo, a mis-measured area | A new version; the old value is marked as an error, never true |
+| **Void** | The record shouldn't exist: a duplicate, an event that never happened | Kept, but no longer counts |
+| **Approval** (of a change) | A supervisor authorises a change or correction before it enters the register | Governs who may change data; says nothing about whether it is true |
+| **Verification** (attestation) | An independent check that the data matches reality or an authoritative source: a field visit, a document, a trusted device | **Never changes the data.** Adds a trust status, with who checked, how and with what evidence. A failed verification leads to a correction or a void |
+| **Dispute** | The person concerned says a record is wrong | Triggers verification, then a correction if the claim holds |
+
 ## Today
 
 | | Entity register | Activity register |
@@ -174,4 +186,3 @@ The built pieces listed above were phase 1. Phase 2 is this proposal:
 * [Activity register](../features/activity-register.md) and its [design](activity-register.md)
 * [Change management](change-management.md)
 * [VC issuance](vc-issuance.md)
-* [Agri Stack terms: validation, correction, verification](../../../../open-agri-stack/architecture/terms.md): the vocabulary as used in Agri Stack

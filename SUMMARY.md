@@ -606,7 +606,6 @@
     * [Data-Sharing Policies](open-agri-stack/architecture/data-sharing-policies.md)
     * [Request Flow](open-agri-stack/architecture/request-flow.md)
     * [Registries](open-agri-stack/architecture/registries.md)
-    * [Terms: Validation, Correction, Verification](open-agri-stack/architecture/terms.md)
     * [Standards](open-agri-stack/architecture/standards.md)
   * [Design](open-agri-stack/design/README.md)
     * [Registry Data Sync](open-agri-stack/design/registry-data-sync.md)
