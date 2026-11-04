@@ -1,8 +1,7 @@
 ---
 description: >-
-  The Agri Stack policy model: partners' use-case grants in the Exchange's
-  Partner Management, the Composite's scope policy per registry in each
-  department's Partner Management as the ceiling, how they combine with the
+  The Agri Stack policy model: the partner's use-case policy at the Exchange,
+  the Composite's scope policy in each department, how they combine with the
   farmer's consent, who approves what, and how each hop fails closed.
 ---
 
@@ -10,33 +9,33 @@ description: >-
 
 Access policies say what a partner may ask for. In Agri Stack they are all held and approved in **Partner Management (PM)**, next to the partners' keys; the Consent Manager (CM) holds only consents, and reads policies from PM when it validates one. What a policy contains (its fields, versions and statuses, and how it is changed) is defined once, in Partner Management: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies). This page explains how Agri Stack uses them.
 
-## Two policies, two places
+## Two policies
 
-| Policy | Held in | For | Grants | Approved by |
-| --- | --- | --- | --- | --- |
-| **Use-case policy** (the partner's use-case grant) | The **Exchange's** PM, one per partner **and use case** | Each partner of the Exchange (e.g. `PARTNER_BANK_A`) | One published use case it may call, as `name@major` (e.g. `loan-profile@1`), with the purposes, subject ID types, signing algorithms and longest consent validity allowed for it | The Exchange's partner manager |
-| **Scope policy** for the Composite (the department's ceiling) | **Each department's** PM, one per registry (data controller) | The Composite (`PARTNER_AGRI_COMPOSITE`) | The registry's data scopes the Composite may receive, at most, with the purposes and subject ID types allowed | The department's partner manager |
+Agri Stack uses both kinds of [access policy](../../platform/platform-services/partner-management/functional-specifications.md#two-kinds-of-policy) that Partner Management offers, one at the Exchange and one in each department:
 
-A partner of the Exchange has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange only with its partners.
+* **The partner's use-case policy, at the Exchange.** Which use case a partner may call, for example `loan-profile@1`: one policy per partner and use case, in the Exchange's Partner Management, approved by the Exchange's partner manager. It also sets the purposes, farmer ID types, signing algorithms and longest consent validity allowed. It lists no data: the use case defines that.
+* **The Composite's scope policy, in each department.** The most a registry releases to the Composite: the registry's data scopes, purposes and farmer ID types. One policy per registry, in the department's Partner Management, approved by the department's partner manager. Nothing beyond it leaves the registry, whatever a use case asks ([how a registry applies it](registries.md#scope-policy-for-the-composite)).
+
+A partner has no policy in any department, and the Composite has no use-case policy: each department deals only with the Composite, and the Exchange only with its partners.
 
 **Consents and use-case policies.** In the partner portal, partner staff start a consent request by choosing one of the partner's use cases. The request then carries that use case's purpose and the data scopes it reads from each registry; the partner's policy for the use case sets the farmer ID types allowed and the longest validity. The consent can be used only for that use case. A consent the partner signs itself (`consent_jws`) is accepted only if that use case's policy allows partner-signed consents. Either way, a partner needs only its use-case policies.
 
-**The use case** is configuration in the [Composite](../composite/README.md), owned by the Agri Stack platform team: its sources, the scopes each source needs (`scopes`) and may use (`optional_scopes`), its purpose and its response. A use-case grant gives the partner exactly that use case's scopes; it carries no scopes of its own. **The consent** is the farmer's, kept in the Exchange's CM: one consent per partner and purpose, with a grant per registry ([consent](consent.md)).
+**The use case** is configuration in the [Composite](../composite/README.md), owned by the Agri Stack platform team: the registries it reads, the data scopes it needs and may optionally use from each, its purpose and its response. **The consent** is the farmer's, kept in the Exchange's CM: one consent per partner and purpose, with a grant per registry ([consent](consent.md)).
 
 ## What actually gets released
 
 Through the Composite (path B in the [architecture](README.md#data-sharing-paths)):
 
-**effective scopes = the scopes of a use case the partner is granted ∩ what the farmer consented to ∩ what the department allows the Composite (its ceiling)**
+**released = the use case's scopes (if the partner has a use-case policy for it) ∩ what the farmer consented to ∩ the Composite's scope policy in the department**
 
-* **The Composite** refuses a partner that has no policy for the use case (`name@major`).
+* **The Composite** refuses a partner that has no use-case policy for the use case.
 * **The Exchange's CM** validates the consent against the partner's policy for that use case (purpose, subject ID type, signing algorithm, validity) and puts, for each registry, the consent's grant ∩ the use case's scopes into that registry's signed **consent token**.
 * **Each registry's own CM** checks the consent token and intersects it with the Composite's scope policy for that registry, read from the department's PM. A department therefore always decides what leaves its registry.
 * **The registry** releases only what is left, and only its own slice.
 
-A misconfigured use case or use-case grant can never leak more than the department allows.
+A misconfigured use case or use-case policy can never release more than the department allows.
 
-**The ceiling must cover every use case.** Partner Management does not know what a use case contains, so no department policy is derived from the grants automatically. Each department's ceiling for the Composite is the **superset** of what all published use cases read from its registry: every scope, required and optional, and every purpose. A new use case, or one that reads more, gets nothing extra from a registry until that department widens the ceiling; until then the registry withholds the scopes not covered, and denies the call if none of the requested scopes is covered (a mandatory source then fails the request). Widening is the department's decision: [when use cases change](../administration/releasing-data-to-the-composite.md#when-use-cases-change).
+**The Composite's scope policy must cover every use case.** Partner Management does not know what a use case contains, so no scope policy is derived from the use-case policies automatically. Each department's scope policy for the Composite is the **superset** of what all published use cases read from its registry: every scope, required and optional, and every purpose. A new use case, or one that reads more, gets nothing extra from a registry until that department widens its scope policy; until then the registry withholds the scopes not covered, and denies the call if none of the requested scopes is covered (a mandatory source then fails the request). Widening is the department's decision: [when use cases change](../administration/releasing-data-to-the-composite.md#when-use-cases-change).
 
 <figure><img src="../../.gitbook/assets/open-agri-stack-released-scopes.svg" alt="Worked example: the use case asks for five scopes; the bank is granted the use case, so all five pass; the farmer declines land; the Livestock Department does not allow herd data; released: Farmer Registry personal details, Crop Sown crop season and measures"><figcaption><p>Worked example of released scopes</p></figcaption></figure>
 
@@ -63,9 +62,9 @@ Policy changes are versioned and audited in PM, and take effect when approved; m
 
 ## Fail closed
 
-Every hop refuses when it cannot prove a grant:
+Every hop refuses when it cannot find a policy that allows the request:
 
-| Hop | No grant | PM cannot be read |
+| Hop | No policy | PM cannot be read |
 | --- | --- | --- |
 | Composite | `403 partner_not_allowed`: no policy for the use case | The last answer is used for a while (up to six hours by default), then `503 partner_policy_unavailable` |
 | Exchange CM | No policy for the use case: the consent is denied (`use_case_not_granted`), so the call fails with `consent_denied` | As the Composite, then denied with `policy_unavailable` (`consent_denied`) |
@@ -74,5 +73,5 @@ Every hop refuses when it cannot prove a grant:
 Partners are matched to PM by convention: `bank-a` → `PARTNER_BANK_A` ([partner ID convention](../../platform/platform-services/partner-management/functional-specifications.md#partner-id-convention)). How the CM evaluates a policy at validate time: [verification & enforcement](../../consent-management/design/verification-and-enforcement.md). How modules read policies from PM and cache them: [PM integration](../../platform/platform-services/partner-management/integration.md).
 
 {% hint style="warning" %}
-**Not built yet:** checking a use case against the policies when it is published (for example, that its scopes are within each department's ceiling). See [open items](../open-items/README.md).
+**Not built yet:** checking a use case against the policies when it is published (for example, that its scopes are within each department's scope policy for the Composite). See [open items](../open-items/README.md).
 {% endhint %}

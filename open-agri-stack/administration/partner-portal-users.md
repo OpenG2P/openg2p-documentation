@@ -12,7 +12,7 @@ Partner staff who collect farmers' consents log in to the partner portal (`https
 
 In Keycloak (`https://keycloak.<Exchange domain>`), realm **partner**:
 
-1. **Users → Add user**: a username (e.g. `bank-a-operator`), **Email verified** on. In the attribute **Partner ID** (`partner_id`), the partner's ID as it signs requests: `bank-a`, not `PARTNER_BANK_A`. **Create**.
+1. **Users → Add user**: a username (e.g. `bank-a-operator`), the user's **Email**, **First name** and **Last name** (Keycloak requires them: left empty, the user must fill them in at first login), **Email verified** on. In the attribute **Partner ID** (`partner_id`), the partner's ID as it signs requests: `bank-a`, not `PARTNER_BANK_A`. **Create**.
 2. **Credentials → Set password**: a password the user changes at first login (**Temporary** on).
 3. **Role mapping → Assign role → Filter by clients**: `consent-partner-portal` **PARTNER_OPERATOR** (or **PARTNER_ADMIN**; the Consent Manager treats them alike today).
 

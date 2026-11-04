@@ -177,7 +177,7 @@ It is either held by the Consent Manager or signed by you, and a query presents 
 
 The first two need the Composite's Exchange consent mode. The response names the consent used (`message.consent_id`).
 
-**A consent held in the Consent Manager.** Your staff record the farmer's consent in the Exchange's partner portal, and CM staff approve it ([Collecting a Consent](administration/collecting-a-consent.md)). You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)); you can download its consent record, signed by the CM. See [consent](architecture/consent.md).
+**A consent held in the Consent Manager.** Your staff record the farmer's consent in the Exchange's partner portal, and CM staff approve it ([Collecting a Consent](administration/collecting-a-consent.md)). You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)); you can download its [consent record](../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent), signed by the CM: in the portal, or through the CM's [partner portal API](../consent-management/api/README.md#partner-portal-endpoints) (`GET /consent/v1/partner-portal/consents/{id}/record`). See [consent](architecture/consent.md).
 
 **A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 5](#step-5-build-and-sign-the-consent)). The Exchange accepts it only if your policy for the use case allows partner-signed consents (off by default; otherwise `consent_denied`, reason `partner_consent_not_accepted`): the Consent Manager can verify your signature, not that the farmer agreed. What that means for you:
 

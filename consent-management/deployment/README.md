@@ -249,7 +249,7 @@ The partner portal lets partner users (a partner's own employees) collect consen
 | Value | Default | |
 | --- | --- | --- |
 | `partnerPortal.enabled` | `false` | The portal (`consent-partner-portal.<baseDomain>`), the partner realm in Keycloak, and evidence storage |
-| `partnerPortal.requiredSubjectIdentifiers` | `[]` | Other identifiers every request must carry besides the subject ID, e.g. `[FARMER_ID]` in Agri Stack; staff confirm them in the registry before approving ([identifiers and demographics](../design/consent-collection.md#identifiers-and-demographics)) |
+| `partnerPortal.requiredSubjectIdentifiers` | `[]` | Other identifiers every request must carry besides the subject ID, e.g. `[FARMER_ID]` in Agri Stack; kept as entered, not checked ([identifiers and demographics](../design/consent-collection.md#identifiers-and-demographics)) |
 | `partnerPortal.consentRecordJwksUrl` | the partner API's `/.well-known/jwks.json` on `consent-manager-partner.<baseDomain>` | Named in the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) partners download, to check the CM's signature (`CONSENT_MANAGER_CONSENT_RECORD_JWKS_URL`) |
 | `partnerPortal.compositeUrl` | empty | Optional: a Composite URL; the portal then shows its use cases and pre-fills requests from them (the Composite must allow the portal's origin: `composite.corsAllowOrigins`) |
 | `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files (PDF, JPEG, PNG; up to 10 MB each); the commons Garage init job creates the bucket |

@@ -89,7 +89,7 @@ Every Agri Stack registry is keyed to the same national identifier; the Farmer R
 
 * A partner can ask about a farmer by either. Given a national ID, the Composite reads the Farmer ID from the Farmer Registry and searches the Crop Sown Registry with it.
 * **One consent covers both registries.** The Crop Sown Registry's configuration names `fayda_fan` among its subject ID fields, so a consent given for the national ID passes its subject check on a search by Farmer ID, as long as its own activities record that Farmer ID with that national ID ([sharing through partner search](../../products/registry/registry/design/activity-register.md#sharing-through-partner-search)).
-* When a consent is collected in the Exchange's partner portal, CM staff check the Farmer ID in the request against the Farmer Registry before approving it ([consent collection](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
+* A Farmer ID on a consent collected in the Exchange's partner portal is kept as the partner entered it; the Farmer Registry returns only the consent subject's own record, so a wrong one finds no data ([consent collection](../../consent-management/design/consent-collection.md#identifiers-and-demographics)).
 
 ## The Composite as a partner
 

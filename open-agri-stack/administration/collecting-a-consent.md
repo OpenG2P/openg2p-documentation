@@ -15,15 +15,15 @@ Records a farmer's consent for a use case in the Exchange's Consent Manager, col
 
 In the partner portal (`https://consent-partner-portal.<Exchange domain>`), logged in with the partner portal account:
 
-1. **New request**, choose the use case.
-2. Enter the farmer's identifiers the use case asks for, e.g. the national ID and the Farmer ID (`946053125409`, `FR-0007` in the sample data).
+1. **Consents → New consent**, choose the use case.
+2. Enter the farmer's national ID and, if known (or required by the install), the Farmer ID (`946053125409`, `FR-0007` in the sample data).
 3. **Authenticate with national ID**: the farmer logs in with eSignet in the popup.
 4. Upload the consent form the farmer signed, **Submit**.
 
 ## Consent Manager staff: approve it
 
-In the Exchange's CM console (`https://consent-manager.<Exchange domain>`), **Consent Approvals**: check the request and its form (and the Farmer ID in the registry), **Approve**. The consent is then active.
+In the Exchange's CM console (`https://consent-manager.<Exchange domain>`), **Consent Approvals**: check the request, its form and the national-ID login, **Approve**. The consent is then active.
 
 ## Check
 
-The consent shows as active in the CM console. A query by the partner for that farmer and use case, without a consent, now uses it: the response names it (`message.consent_id`). With the [test script](../deployment/testing.md): `test.consent: lookup` and `test.subject` the farmer.
+The consent shows as active in the CM console, and under **Consents** in the partner portal. A query by the partner for that farmer and use case, without a consent, now uses it: the response names it (`message.consent_id`). With the [test script](../deployment/testing.md): `test.consent: lookup` and `test.subject` the farmer.
