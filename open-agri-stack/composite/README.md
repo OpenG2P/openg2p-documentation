@@ -19,18 +19,6 @@ A partner (e.g. a bank) sends one signed request for a [use case](../architectur
 * **Stores no farmer data.** Logs, audit events and the console's call log carry IDs, statuses and timings only.
 * **Rate limited** per partner and use case, and optionally at the gateway ([rate limiting](../design/rate-limiting.md)).
 
-## Pages
-
-| Page | Covers |
-| --- | --- |
-| [Use-Case Configuration](use-case-configuration.md) | Creating a use case, step by step, and the file format, key by key, with the shipped `loan-profile` |
-| [Request Handling](request-handling.md) | What the Composite does per request: checks, registry calls, failure handling, source statuses, the consent mode |
-| [Adding a Data Source](adding-a-data-source.md) | Adding a registry (e.g. a Livestock Registry) to a use case |
-| [Composite API](api.md) | The partner and console endpoints, error codes (OpenAPI) |
-| [Composite Console](console.md) | The read-only staff console |
-| [Chart Settings](chart-settings.md) | Every Helm value |
-| [Running the Composite Locally](running-locally.md) | Running the service and its tests on a laptop |
-
 Installing it: [Deployment: Exchange](../deployment/exchange.md#composite). Source: [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) in the agri-stack repository.
 
 {% hint style="warning" %}
