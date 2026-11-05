@@ -30,7 +30,7 @@ Both the API and the console are served through the Istio `internal` gateway, li
 | `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL. `/consent/v1/validate` is appended |
 | `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout |
 
-Keep the mode `exchange`: the Composite presents the partner's consent (its `consent_id`, or a consent the partner signed), or asks the Exchange CM to look it up when the partner sent none, and gets one consent token per registry ([Composite as a partner](../architecture/exchange.md#composite-as-a-partner)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [consent mode](README.md#consent-mode).
+Keep the mode `exchange`: the Composite presents the partner's consent (its `consent_id`, or a consent the partner signed), or asks the Exchange CM to look it up when the partner sent none, and gets one consent token per registry ([Composite as a partner](../architecture/exchange.md#composite-as-a-partner)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [consent mode](request-handling.md#consent-mode).
 
 The other mode, `passthrough`, sends the partner's consent to each registry unchanged (it needs a partner-signed consent), so each registry's Partner Management needs a scope policy for every partner. It suits only a single install where the registries share the Composite's commons.
 
@@ -58,19 +58,7 @@ Each registry is a data controller ID mapped to its full DCI sync search URL. Pa
 
 The chart renders `composite.useCases` into the ConfigMap `<release>-use-cases`, mounted at `/app/config/use-cases`. Running pods pick up a change within the reload interval (about a minute after the ConfigMap updates), without a restart. Each file is validated strictly when loaded; only `published` use cases are served. To manage use cases elsewhere (e.g. GitOps), point `composite.existingUseCasesConfigMap` at your own ConfigMap with keys `<name>.yaml` (and any `.j2` template files).
 
-**Adding a use case.** In **Edit YAML**, add an entry under `composite.useCases` (or a key to your own ConfigMap), written in the [use-case file format](use-case-configuration.md). If it reads new data scopes or has a new purpose, each department decides whether to widen the Composite's scope policy ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)). A partner calls it only when its use-case policy in the Exchange PM grants it (`name@major`, e.g. `loan-profile@1`): raise and approve a policy request there ([access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)).
-
-**The shipped use case**, `loan-profile` (version `1.0.0`, purpose `credit-assessment`):
-
-| | |
-| --- | --- |
-| **Input** | A farmer by `FAYDA_FAN` or `FARMER_ID`; optional `crop_year` and `season` |
-| **Sources** | `farmer` (Farmer Registry, mandatory); then `season_summaries` and `crop_seasons` (Crop Sown Registry, optional, both depending on `farmer`) |
-| **Returns** | The farmer's identity and location, land parcels and total land, declared main crops, crop seasons, season summaries and total area sown |
-| **Who may call it** | Partners with a policy for `loan-profile@1` in the Exchange PM; the [test](../deployment/testing.md) grants it to its test partner |
-| **Rate limit** | 60 per minute per partner |
-
-The file, setting by setting: [the `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case).
+Writing a use case and adding it: [Use-Case Configuration](use-case-configuration.md). The default, `loan-profile`: [the `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case).
 
 ## Signing key
 

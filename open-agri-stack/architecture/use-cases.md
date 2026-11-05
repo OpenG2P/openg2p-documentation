@@ -17,7 +17,7 @@ A **use case** is a named, versioned definition of one kind of data request, pub
 * **What:** the registries it reads and, from each, the [data scopes](../../products/registry/registry/design/data-scopes.md) it needs (and may optionally use).
 * **The answer:** how the data from the registries is put together into one response.
 
-A use case is configuration, not code: adding one is writing a file ([Creating a Use Case](../composite/creating-a-use-case.md); the format: [Use-Case Configuration](../composite/use-case-configuration.md)). It is versioned as `name@major`; a change that reads more data is a new major version, which partners must be assigned again and farmers must consent to again.
+A use case is configuration, not code: adding one is writing a file ([Use-Case Configuration](../composite/use-case-configuration.md)). It is versioned as `name@major`; a change that reads more data is a new major version, which partners must be assigned again and farmers must consent to again.
 
 ## Partners are assigned use cases at onboarding
 

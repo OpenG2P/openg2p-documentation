@@ -1,10 +1,20 @@
 ---
-description: The use-case file format.
+description: Creating a use case and its file format.
 ---
 
 # Use-Case Configuration
 
-The format of a use-case file, as the [Composite](README.md) accepts it. How a use case runs (the registry calls, failure handling, the consent mode) is in the [Composite overview](README.md#what-the-first-version-does); where the files go, the reload interval and the service settings are in [Deployment: Composite](chart-settings.md#use-cases); writing one step by step is in [Creating a Use Case](creating-a-use-case.md).
+A use case is one YAML file the [Composite](README.md) loads; adding one needs no code. This page gives the steps, then the file format key by key. What the Composite does with the file at runtime: [Request Handling](request-handling.md). Adding a new registry as a source: [Adding a Data Source](adding-a-data-source.md).
+
+## Creating a use case
+
+1. **Decide what the partner needs:** the purpose (e.g. `credit-assessment`), how the farmer is identified ([subject ID types](#subject-id-types)) and any parameters, and the output fields. Then find the registries that hold that data and their [data scopes](#data-scopes): each registry's scope catalogue is on the console's **Registries** page.
+2. **Write the file.** Copy [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml) and change its name, version, title, purpose, inputs, [sources](#sources) and [response](#response-mapping-and-derived-values). Unknown keys stop the file from loading.
+3. **Put it into the Composite's configuration.** In Rancher, open the Composite app, **Edit YAML**, and add an entry under `composite.useCases` (`my-use-case: |`, then the file's text; templates inline), then upgrade. Or add `<name>.yaml` to your own ConfigMap ([chart settings: use cases](chart-settings.md#use-cases)). Running pods reload it within about 30 seconds.
+4. **Check it loaded.** The console's **Use cases** page lists it, or shows the error if it failed; `GET /composite/v1/use-cases/<name>` describes it. Only `status: published` is served.
+5. **Grant it to partners.** In the Exchange's Partner Management, give each partner a use-case policy for `name@major` (e.g. `my-use-case@1`) with the use case's purpose: in a new partner's onboarding request, or **Add policy** on an onboarded one ([Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)).
+6. **Ask the departments.** Each department whose registry the use case reads widens the Composite's scope policy to the new scopes and purpose, or the registry withholds them ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)).
+7. **Test.** Set `test.use_case` (and `test.parameters`) in the [test](../deployment/testing.md)'s configuration and run it, then read each source's status in the response ([source statuses](request-handling.md#source-statuses)).
 
 ## File structure
 
@@ -39,7 +49,7 @@ Partners call a use case as **`name@major`** (e.g. `loan-profile@1`); without a 
 | --- | --- |
 | `policy` | Informational label |
 | `purpose` | Sent to the Exchange CM with `name@major`: the consent's purpose must match it, and the partner's policy for the use case must allow it |
-| `consent.required` | Default `true`. `false`: the Exchange CM is not called and registries get no consent token. How the consent is presented and checked: [consent mode](README.md#consent-mode) |
+| `consent.required` | Default `true`. `false`: the Exchange CM is not called and registries get no consent token. How the consent is presented and checked: [consent mode](request-handling.md#consent-mode) |
 
 ## Inputs
 
@@ -84,7 +94,7 @@ One entry per registry search.
 | --- | --- |
 | `id` | Required, unique, matches `^[a-z][a-z0-9_]*$`. Named in `depends_on`, templates and mappings as `sources.<id>` |
 | `controller` | Required: the registry's data controller ID (e.g. `farmer-registry`). It must have an endpoint in the Composite's settings ([Deployment: registries](chart-settings.md#registries)), or the file does not load |
-| `requirement` | `mandatory` (default) or `optional`: whether the source failing fails the request ([failure handling](README.md#failure-handling)) |
+| `requirement` | `mandatory` (default) or `optional`: whether the source failing fails the request ([failure handling](request-handling.md#failure-handling)) |
 | `depends_on` | A source ID or a list of them. This source runs after them and its template sees their results; it is not called if one of them is not `ok`. No unknown IDs, no self-reference, no cycles |
 | `scopes`, `optional_scopes` | The registry's [data scopes](#data-scopes) the source uses. `request_scopes` is accepted as the earlier name of `scopes` |
 | `dci.reg_type`, `dci.reg_record_type` | Required: sent in the DCI `search_criteria` (e.g. `Farmer`, `spdci-extensions-dci:Farmer`) |
@@ -102,11 +112,11 @@ Each source names the data scopes it uses, from its registry's catalogue (signed
 * A scope ID is `<controller>.<name>` and must belong to the source's registry. It may not be listed twice, nor in both lists.
 * A source with neither list has no scope check: its registry's consent token carries every scope the consent grants for that registry.
 * A grant with no `data_scopes` (including a legacy consent with `data_controller` only) grants no scopes, so it fails a source with required scopes.
-* The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent, and what each department's ceiling for the Composite must allow. A scope one source requires and another lists as optional is required.
+* The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent, and what each department's scope policy for the Composite must allow. A scope one source requires and another lists as optional is required.
 
 ### Query templates
 
-A template is sandboxed Jinja that renders the query part of the DCI `search_criteria` as JSON. The Composite adds `version`, `reg_type`, `reg_record_type` and the consent token ([registry calls](README.md#registry-calls)).
+A template is sandboxed Jinja that renders the query part of the DCI `search_criteria` as JSON. The Composite adds `version`, `reg_type`, `reg_record_type` and the consent token ([registry calls](request-handling.md#registry-calls)).
 
 * **Inline or a file:** `query_template` holds the template, or the plain name of a `.j2`, `.jinja` or `.jinja2` file next to the use case (no directories: a ConfigMap has none).
 * **Output:** a JSON object with `query: {type, value}` and optionally `query_type` (default: `query.type`), `pagination` and `sort`; no other keys.
@@ -142,19 +152,19 @@ A template is sandboxed Jinja that renders the query part of the DCI `search_cri
 | Key | |
 | --- | --- |
 | `execution.overall_timeout_ms` | 100–300000; default from the service setting `DEFAULT_OVERALL_TIMEOUT_MS` (10000). Must cover the slowest chain of `depends_on` |
-| `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does ([failure handling](README.md#failure-handling)) |
+| `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does ([failure handling](request-handling.md#failure-handling)) |
 | `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted across all pods in Redis; per worker while Redis is unreachable ([rate limiting](../design/rate-limiting.md), [settings](chart-settings.md#scaling-and-rate-limits)) |
 | `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) ([audit](chart-settings.md#audit)) |
 
-## Accepted but not acted on
+## Accepted for later
 
-Keys from the [full design](README.md#example-configuration-full-design) that load but do nothing yet (each is logged once at load, except `response.mode` and `execution.fan_out`, which accept only their one built value):
+These keys load but do nothing yet; each is logged once at load ([open items](../open-items/README.md#composite)):
 
 * `owner`
-* `consent.collection` (`cm-originated` or `partner-embedded`) and `consent.mode` (`single`): how consent is checked is a service setting ([consent mode](README.md#consent-mode))
+* `consent.collection` (`cm-originated`, `partner-embedded`) and `consent.mode` (`single`): how consent is checked is a service setting ([consent mode](request-handling.md#consent-mode))
 * `response.schema`, `response.correlate_on`
 * `limits.daily_quota_per_partner`
-* `response.mode: merged` (data-blind is not built) and `execution.fan_out: parallel`
+* `response.mode` (only `merged`; data-blind is not built) and `execution.fan_out` (only `parallel`)
 
 ## The `loan-profile` use case
 

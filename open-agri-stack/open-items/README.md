@@ -40,7 +40,7 @@ Functional work, in order, for the first production release. Country data and re
 
 ## Composite
 
-* **Publish checks** — when a use case is published, check it against the departments' ceilings for the Composite in PM (purpose, scopes, subject types), and its mapping paths and response schema against its scopes. *Design:* [checks when a use case is published](../composite/README.md#checks-when-a-use-case-is-published).
+* **Publish checks** — a use case moves `draft` → `validated` → `published` only if: its purpose, each source's scopes and its subject ID types are within the Composite's scope policy in each department it reads (a source whose scopes are not yet approved can stay, returning `denied`); every mapping path reads only fields its scopes cover; its templates render valid DCI queries against sample data (built, at load); and the response schema validates the mapped output. *Design:* decided as stated.
 * **JSON Schema per use case** — an endpoint serving each use case's JSON Schema (`response.schema`, accepted but not used today), and responses validated against it. *Design:* decided as stated; see [use-case configuration](../composite/use-case-configuration.md).
 * **Developer sandbox** — each published use case's schema, sample request and response, and a test harness. *Design:* not designed yet.
 * **Data-blind mode** — each registry encrypts its part to the partner's PM key; the Composite only bundles the parts. *Design:* not designed yet.
@@ -114,7 +114,7 @@ Functional work, in order, for the first production release. Country data and re
   * **Request ID** passed through the Composite, registries and CMs, and recorded in every audit log;
   * **API versioning** and a compatibility promise for the shared APIs (Composite, consent tokens, catalogue, registry partner API);
   * **Usage metering** per partner at the Exchange (later: billing);
-  * **Onboarding a department** as one documented step list: keys in both PMs, the Composite's scope policy (the department's ceiling), its published scope catalogue, its client certificate, the Exchange URLs in its charts.
+  * **Onboarding a department** as one documented step list: keys in both PMs, the Composite's scope policy, its published scope catalogue, its client certificate, the Exchange URLs in its charts.
 * **Scripted installs for multi-department setups (later)** — Rancher Fleet (`fleet.yaml` per release, `dependsOn` ordering, `releaseName` `commons` / `commons-services`), Exchange choices as override files, pinned chart versions, one git repo for the Exchange and each department. Trade-offs: changes only through git, secrets outside git, drift correction undoes manual patches. *Design:* decided as stated.
 * **SQLAlchemy dependency at the root** — declare `sqlalchemy[asyncio]` in [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) (and test against 2.1), instead of each service pinning `sqlalchemy[asyncio] >=2.0,<2.1` (SQLAlchemy 2.1 no longer installs `greenlet`). *Depends on:* openg2p-fastapi-common changes, frozen for now.
 * **Migrations run once** — run migrations as a Helm hook Job instead of in every API on start (extension migrations still run unlocked and can collide). *Design:* decided as stated.

@@ -16,7 +16,7 @@ The Livestock Registry is [planned](../design/livestock-registry.md), not built.
 | --- | --- | --- |
 | [1. Registry prerequisites](#step-1-registry-prerequisites) | The registry | Registry team |
 | [2. Identities in Partner Management](#step-2-identities-in-partner-management) | PM | PM administrator |
-| [3. The Composite's ceiling in the department](#step-3-the-composites-ceiling-in-the-department) | Department PM and CM | Department partner manager |
+| [3. The Composite's scope policy in the department](#step-3-the-composites-scope-policy-in-the-department) | Department PM and CM | Department partner manager |
 | [4. Register the endpoint in the Composite](#step-4-register-the-endpoint-in-the-composite) | Composite Helm values | Agri Stack operator |
 | [5. Add the source to the use case](#step-5-add-the-source-to-the-use-case) | Use-case YAML | Use-case author |
 | [6. Partners add a grant](#step-6-partners-add-a-grant) | Partner's consent | Each partner |
@@ -39,7 +39,7 @@ The registry must answer the Composite exactly as it answers a partner:
 
 See the PM [API reference](../../platform/platform-services/partner-management/api-reference.md).
 
-## Step 3 — The Composite's ceiling in the department
+## Step 3 — The Composite's scope policy in the department
 
 The department that runs the new registry decides what it releases to the Composite ([data-sharing policies](../architecture/data-sharing-policies.md)). It needs:
 

@@ -9,10 +9,22 @@ The console shows how the Composite is set up and what it has been doing. It is 
 | Page | What it shows |
 | --- | --- |
 | **Overview** | Composite partner ID, consent mode and Exchange Consent Manager, signing key, Audit Manager on/off; counts of use cases (and files that failed to load), registries and partners; calls and failures in the last 24 hours |
-| **Use cases** | Each published use case: its sources (one search per registry), what happens if a source can't answer, which sources run after which, their required and optional [data scopes](use-case-configuration.md#data-scopes), inputs, output fields (with their mapping), **Granted to** (the partners with a policy for this use case, `name@major`, in Partner Management), and the use case file. The labels are explained in [reading a use case in the console](creating-a-use-case.md#reading-a-use-case-in-the-console) |
+| **Use cases** | Each published use case: its sources (one search per registry), what happens if a source can't answer, which sources run after which, their required and optional [data scopes](use-case-configuration.md#data-scopes), inputs, output fields (with their mapping), **Granted to** (the partners with a policy for this use case, `name@major`, in Partner Management), and the use case file. ([the labels](#reading-a-use-case)) |
 | **Registries** | Each configured registry: its URL, whether it answers, and its data scope catalogue (read from the registry with the Composite's signature, cached 5 minutes): every scope with its fields and the use case sources that use it. This is where an admin picks the scopes when writing a use case. |
 | **Partners** | Read from Partner Management: every partner with a policy for a published use case (one policy per use case), with its **Partner (Partner Management ID)**, **Granted use cases** and the keys PM serves for it. Policy versions are in Partner Management. If PM cannot be read, the page says *Partner Management could not be read* and the list may be incomplete; the Overview's partner count shows a dash |
 | **Activity** | The call log, newest first, filtered by partner, use case and outcome: time, HTTP status, outcome and reason, the consent used, duration and each source's status |
+
+## Reading a use case
+
+| Label | Meaning |
+| --- | --- |
+| **Use case** | e.g. `loan-profile · version 1.0.0 (partners call @1)`: the name, the full version, and the major version partners call |
+| **Source (search)** | The source's `id`: one search of one registry |
+| **Registry** | The registry the search goes to (`controller`) |
+| **If it can't answer** | **Fail the request** (`mandatory`) or **Continue without it** (`optional`); the source's status tells the partner |
+| **Runs after** | `depends_on`: the sources whose result this search needs |
+| **Required scopes**, **Optional scopes** | Data scopes the consent must grant, or may leave out (their fields are then `null`) |
+| **Output fields** | What the partner gets: the `mapping` fields and the `derived` values |
 
 ## Access
 
@@ -31,23 +43,7 @@ The Audit Manager stays the record of every request (it has no read API), so the
 
 ## Install
 
-In the Composite's Rancher form, group **Console**, or in Helm values:
-
-| Value | Default | |
-| --- | --- | --- |
-| `console.enabled` | `true` | `false`: no UI, no login checks, no database (the partner API only) |
-| `global.consoleHostname` | `agri-composite-console.<namespace>.openg2p.org` | The console's address |
-| `console.iam.providerApiUrl` | `http://commons-services-iam-staff-portal-api` | IAM staff portal API (in-cluster) |
-| `console.iam.publicUrl` | `https://staff-iam.<namespace>.openg2p.org` | IAM staff portal API, public (the browser's login) |
-| `console.iam.redisUrl` | `redis://commons-redis-master:6379/0` | Login sessions |
-| `console.iam.keycloakClientId` | `agri-composite` | The console's Keycloak client and IAM application |
-| `console.db.*` | `commons-postgresql`, `agri_composite`, `agri_composite_user` | Created by the chart's database job; password in Secret `agri-composite-db` (kept on uninstall) |
-| `console.pmPortalUrl`, `console.cmPortalUrl` | the namespace's PM and CM portals | Links shown in the console |
-| `console.activityRetentionDays` | `90` | Call log retention |
-
-With the console on, the chart also creates the Keycloak client and registers the console in IAM (a Helm hook; set `console.iamRegister.runAsHook: false` in an umbrella install that runs it after IAM is ready). Then grant staff `AGRI_COMPOSITE_ADMIN` or `AGRI_COMPOSITE_VIEWER` in IAM.
-
-**Uninstall:** [`scripts/uninstall-agri-composite.sh`](https://github.com/openg2p/agri-stack/blob/develop/scripts/uninstall-agri-composite.sh) `--namespace <ns>` removes the release and what survives `helm uninstall`: its Jobs, ConfigMaps and Secrets, the console database and role, and the console's IAM application rows (`--keep-db`, `--keep-iam` to keep them; `--dry-run` to see the plan). It keeps the console's Keycloak client (a reinstall updates it), the PM/CM entries, and the signing Secret unless `--drop-signing-secret`.
+On by default; its settings are in [chart settings: console](chart-settings.md#console). With the console on, grant staff `AGRI_COMPOSITE_ADMIN` or `AGRI_COMPOSITE_VIEWER` in IAM.
 
 {% hint style="info" %}
 **Later:** editing use cases in the console (stored in the database, with a record of who changed what and when, also sent to the Audit Manager), and a "give partner X use case Y" flow that raises the policy request in Partner Management from the console. See the [open items](../open-items/README.md).
