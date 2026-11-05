@@ -1,20 +1,13 @@
 ---
-description: Composite API reference.
----
+description: The Composite's endpoints.
+---# Composite API Reference
 
-# Composite API
-
-The Composite serves approved use cases. A partner sends one signed request about one farmer, with the farmer's consent. The Composite queries each registry the use case names and returns one signed response.
+The endpoints of the [Composite](README.md), their request and response formats and error codes. How to use them, step by step (onboarding, keys, consent, signing the request, verifying the response): [Partner Integration Guide](../partner-integration-guide.md).
 
 * **Base URL:** `https://<composite host>/composite/v1`
-* **Who calls it:** partners (banks, MFIs, agritechs) onboarded in Partner Management with a policy there for the use case (`name@major`). Staff use the console API.
-* **Signing:** the query body is an envelope `{signature, header, message}`. `signature` is a detached JWS over `{header, message}`, made with the partner's key. The Composite verifies it against the partner's keys in Partner Management (`header.sender_id`). The Composite signs every response, errors included, with its own key.
-* **Consent:** send nothing (the Exchange's Consent Manager looks up the consent it holds from this partner for this farmer and use case), `message.consent_id` (a consent it holds) or `message.consent_jws` (a consent the partner signed, accepted only if its policy for the use case allows partner-signed consents). The first two need the Exchange consent mode. The Exchange turns the consent into a consent token for each registry, and the response names the one used (`message.consent_id`).
-* **Result:** each source (registry query) gets a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. A failed optional source leaves its fields null. A failed mandatory source fails the request.
+* **Authentication:** a query is a signed envelope `{signature, header, message}`, verified against the partner's keys in Partner Management; every response is signed by the Composite. The console API needs a staff login.
 
-{% hint style="info" %}
-For the step-by-step (onboarding, keys, consent, signing, verifying the response), see the [Partner Integration Guide](../partner-integration-guide.md).
-{% endhint %}
+
 
 ## Operations
 

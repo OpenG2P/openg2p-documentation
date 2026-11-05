@@ -59,7 +59,7 @@ With `test.auto_approve: false`, the script raises the requests and waits (`test
 
 ## Sample data
 
-The registries' sample data describe the same people: person `ETH-IND-0007` is farmer `FR-0007` with lands `LAND-0007-1`, `LAND-0007-2`…, and the Crop Sown Registry's sample crop seasons are for those farmers and plots, so a `loan-profile` query returns both for the same farmer. The mock identity system at the Exchange holds the same people, so a sample farmer can log in with their national ID in the partner portal. Details: [Farmer Registry](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data).
+The registries' sample data describe the same people: person `ETH-IND-0007` is farmer `FR-0007` with lands `LAND-0007-1`, `LAND-0007-2`…, and the Crop Sown Registry's sample crop seasons are for those farmers and plots, so a `loan-profile` query returns both for the same farmer. They match only by convention (`FR-<n>`, `LAND-<n>-<k>`): a change to either registry's sample IDs must be made in both. The mock identity system at the Exchange holds the same people, so a sample farmer can log in with their national ID in the partner portal. Details: [Farmer Registry](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data).
 
 ## A consent collected by hand
 

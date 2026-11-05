@@ -48,7 +48,7 @@ A department-level agreement, not each farmer's consent: the CSR shares these fi
 
 * **The FR's Partner Management** holds the CSR as a partner (its key). The FR's ingestion accepts only signed events from an active partner.
 * **The CSR's Partner Management** holds the relay (acting for the FR) as a partner with its key and a scope policy for the nightly search: these scopes only, this purpose. The CSR's Consent Manager reads that policy from there.
-* The Consent Manager has no rule yet for sharing on a standing permission instead of a consent: the [standing permission for a purpose](../open-items/README.md) open item. Until then the nightly search needs that rule, and the trigger path rests on the CSR's outgestion configuration (the topic and its template decide what leaves).
+* The Consent Manager has no rule yet for sharing on a standing permission instead of a consent: the [standing permission for a purpose](README.md) open item. Until then the nightly search needs that rule, and the trigger path rests on the CSR's outgestion configuration (the topic and its template decide what leaves).
 
 ## What has to be built
 

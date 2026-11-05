@@ -78,6 +78,4 @@ Every hop refuses when it cannot find a policy that allows the request:
 
 Partners are matched to PM by convention: `bank-a` → `PARTNER_BANK_A` ([partner ID convention](../../platform/platform-services/partner-management/functional-specifications.md#partner-id-convention)). How the CM evaluates a policy at validate time: [verification & enforcement](../../consent-management/design/verification-and-enforcement.md). How modules read policies from PM and cache them: [PM integration](../../platform/platform-services/partner-management/integration.md).
 
-{% hint style="warning" %}
-**Not built yet:** checking a use case against the policies when it is published (for example, that its scopes are within each department's scope policy for the Composite). See [open items](../open-items/README.md).
-{% endhint %}
+Checking a use case against these policies when it is published is planned: [Roadmap](../roadmap/README.md).

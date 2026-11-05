@@ -19,10 +19,8 @@ It is part of the Exchange, the install that partners onboard with: [the Composi
 * **Stores no farmer data.** Logs, audit events and the console's call log carry IDs, statuses and timings only.
 * **Rate limited** per partner and use case, and optionally at the gateway ([rate limiting](rate-limiting.md)).
 * **A staff console**, read-only: the use cases, the registries and their data scopes, the partners allowed each use case, and a log of calls ([console](console.md)).
-* **A partner API** to list and describe the use cases and to query one ([Composite API](api.md)).
+* **A partner API** to list and describe the use cases and to query one ([Composite API Reference](api.md)).
 
 Installing it: [Deployment: Exchange](../deployment/exchange.md#composite). Source: [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) in the agri-stack repository.
 
-{% hint style="warning" %}
-**Not built yet:** checks when a use case is published, data-blind responses, daily quotas, registry endpoints held in Partner Management, a JSON Schema per use case, editing use cases in the console ([open items](../open-items/README.md#composite)).
-{% endhint %}
+What is planned for the Composite: [Roadmap](../roadmap/README.md).

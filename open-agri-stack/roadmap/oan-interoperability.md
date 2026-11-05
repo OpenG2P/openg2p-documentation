@@ -4,7 +4,7 @@ description: Joining the Open Agri Network.
 
 # Interoperability with OAN (Beckn)
 
-**Status: proposal, not built.** Today partners call the [Composite](../composite/README.md) through its own API ([Composite API](../composite/api.md)).
+**Status: proposal, not built.** Today partners call the [Composite](../composite/README.md) through its own API ([Composite API Reference](../composite/api.md)).
 
 **Concept.** At a high level, OAN's use-case services sit on top of Agri Stack, which provides consented data sharing (the Exchange), the departments' registries and the public catalogues:
 

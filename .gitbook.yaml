@@ -12,6 +12,7 @@ redirects:
   products/registry/registry/developer-zone/api-documentation/1.1.0/partner-api: products/registry/registry/developer-zone/api-documentation/partner-api.md
   open-agri-stack/implementation: open-agri-stack/deployment/README.md
   open-agri-stack/exchange: open-agri-stack/composite/README.md
+  open-agri-stack/open-items: open-agri-stack/roadmap/README.md
   open-agri-stack/composite/adding-a-data-source: open-agri-stack/registries/adding-a-registry.md
   open-agri-stack/design: open-agri-stack/roadmap/README.md
   open-agri-stack/design/rate-limiting: open-agri-stack/composite/rate-limiting.md
@@ -81,5 +82,5 @@ redirects:
   open-agri-stack/guides/partner-guide: open-agri-stack/partner-integration-guide.md
   open-agri-stack/guides/adding-a-data-source: open-agri-stack/registries/adding-a-registry.md
   open-agri-stack/guides/registry-to-registry-sync: open-agri-stack/roadmap/registry-data-sync.md
-  open-agri-stack/open-items/catalogue-content: open-agri-stack/open-items/README.md
+  open-agri-stack/open-items/catalogue-content: open-agri-stack/roadmap/README.md
   products/registry/farmer-registry/deployment/helm-chart: products/registry/farmer-registry/deployment/README.md

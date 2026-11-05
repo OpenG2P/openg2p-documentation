@@ -34,7 +34,7 @@ Solid arrows are requests; dashed arrows are replies.
 **When a source is left out.** A mandatory source that the consent doesn't cover fails the whole request. An optional source whose scopes the consent does not grant is **not called** and is reported `denied`. An optional source whose registry is down is reported `unavailable`; the bank still gets the rest.
 {% endhint %}
 
-What each part of the use case does (sources, scopes, templates, mapping, timeouts) is in the [Composite design](../composite/README.md) and the [Use-Case Configuration](../composite/use-case-configuration.md). The request and response formats are in the [Composite API](../composite/api.md) reference.
+What each part of the use case does (sources, scopes, templates, mapping, timeouts) is in the [Composite design](../composite/README.md) and the [Use-Case Configuration](../composite/use-case-configuration.md). The request and response formats are in the [Composite API Reference](../composite/api.md) reference.
 
 ## Variants
 

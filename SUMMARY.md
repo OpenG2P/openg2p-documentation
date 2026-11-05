@@ -615,7 +615,7 @@
     * [Use-Case Configuration](open-agri-stack/composite/use-case-configuration.md)
     * [Request Handling](open-agri-stack/composite/request-handling.md)
     * [Rate Limiting](open-agri-stack/composite/rate-limiting.md)
-    * [Composite API](open-agri-stack/composite/api.md)
+    * [Composite API Reference](open-agri-stack/composite/api.md)
     * [Composite Console](open-agri-stack/composite/console.md)
     * [Running the Composite Locally](open-agri-stack/composite/running-locally.md)
   * [Roadmap](open-agri-stack/roadmap/README.md)
@@ -641,7 +641,6 @@
     * [Keys](open-agri-stack/administration/keys.md)
   * [Partner Integration Guide](open-agri-stack/partner-integration-guide.md)
   * [Versions & Source Code](open-agri-stack/versions/README.md)
-  * [TODOs & Open Items](open-agri-stack/open-items/README.md)
 
 ## Platform
 

@@ -32,7 +32,7 @@ Both are approved in Partner Management. A partner may be assigned several use c
 
 ## The farmer consents to the data
 
-A farmer does not know what `loan-profile@1` means, so the consent is about the data itself: the purpose and, for each registry, the data being shared. The consent request records each item, not only the use case's name, and the partner portal shows the data scopes under **Data requested**. The form the farmer signs is the partner's own; CM staff check that it matches the request before approving. Showing the farmer each item in plain language, field by field, generated from the request, is not built yet ([open items](../open-items/README.md#identity-consent-and-policies)). A consent collected in the partner portal can be used only for the use case it was requested for ([Consent](consent.md)).
+A farmer does not know what `loan-profile@1` means, so the consent is about the data itself: the purpose and, for each registry, the data being shared. The consent request records each item, not only the use case's name, and the partner portal shows the data scopes under **Data requested**. The form the farmer signs is the partner's own; CM staff check that it matches the request before approving. Showing the farmer each item in plain language, field by field, generated from the request, is not built yet ([Roadmap](../roadmap/README.md)). A consent collected in the partner portal can be used only for the use case it was requested for ([Consent](consent.md)).
 
 ## Departments see data, not use cases
 

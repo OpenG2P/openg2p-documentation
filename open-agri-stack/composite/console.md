@@ -45,6 +45,4 @@ The Audit Manager stays the record of every request (it has no read API), so the
 
 On by default; its settings are in [chart settings: console](../deployment/composite-chart-settings.md#console). With the console on, grant staff `AGRI_COMPOSITE_ADMIN` or `AGRI_COMPOSITE_VIEWER` in IAM.
 
-{% hint style="info" %}
-**Later:** editing use cases in the console (stored in the database, with a record of who changed what and when, also sent to the Audit Manager), and a "give partner X use case Y" flow that raises the policy request in Partner Management from the console. See the [open items](../open-items/README.md).
-{% endhint %}
+Editing use cases in the console is planned: [Roadmap](../roadmap/README.md).

@@ -13,7 +13,7 @@ This guide covers what is specific to Agri Stack. The consent object, its signin
 {% endhint %}
 
 {% hint style="info" %}
-Endpoint reference (request and response schemas, error codes): [Composite API](composite/api.md).
+Endpoint reference (request and response schemas, error codes): [Composite API Reference](composite/api.md).
 {% endhint %}
 
 ## How it fits together
@@ -361,7 +361,7 @@ The Composite publishes its public keys at `https://agri-composite.<namespace>.o
 
 ## Rate limits
 
-Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is counted across all Composite pods. The ingress gateway also limits all partners' traffic to the use-case API together; beyond that it answers `429` with the header `x-local-rate-limit: true` and a plain-text body. Back off and retry on either `429`. Daily quotas are [not built yet](open-items/README.md).
+Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is counted across all Composite pods. The ingress gateway also limits all partners' traffic to the use-case API together; beyond that it answers `429` with the header `x-local-rate-limit: true` and a plain-text body. Back off and retry on either `429`. Daily quotas are [not built yet](roadmap/README.md).
 
 ## Worked example: `loan-profile`
 

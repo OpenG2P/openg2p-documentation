@@ -141,11 +141,11 @@ A template is sandboxed Jinja that renders the query part of the DCI `search_cri
 
 ### Output
 
-* **`message.data` is defined by the use case:** each output path becomes a nested object (`farmer.name` → `{"farmer": {"name": …}}`). The signed envelope around it is in [Composite API](api.md).
+* **`message.data` is defined by the use case:** each output path becomes a nested object (`farmer.name` → `{"farmer": {"name": …}}`). The signed envelope around it is in [Composite API Reference](api.md).
 * **Failed sources give `null`:** a field built from a source that is `denied`, `unavailable` or `error` is `null`; `[]` and `0` mean the registry answered and has nothing.
 * **Records keep the registries' shapes.** Where a mapping copies records (e.g. `land.parcels`, `crops.seasons`), they are the registries' DCI / SPDCI records, already clamped by each registry to the consented scopes.
 * **Not an open standard.** The envelope follows DCI conventions; the `data` shape is Agri Stack's, per use case.
-* **No machine-readable schema is published yet.** The describe endpoint lists the output field names only (`output_fields`); a JSON Schema per use case is a [TODO](../open-items/README.md#composite).
+* **No machine-readable schema is published yet.** The describe endpoint lists the output field names only (`output_fields`); a JSON Schema per use case is a [Roadmap](../roadmap/README.md).
 
 ## Execution, limits and audit
 
@@ -158,7 +158,7 @@ A template is sandboxed Jinja that renders the query part of the DCI `search_cri
 
 ## Keys not used yet
 
-These keys are allowed in the file, but the Composite does not use them yet; each is logged once when the file loads ([open items](../open-items/README.md#composite)):
+These keys are allowed in the file, but the Composite does not use them yet; each is logged once when the file loads ([Roadmap](../roadmap/README.md)):
 
 * `owner`
 * `consent.collection` (`cm-originated`, `partner-embedded`) and `consent.mode` (`single`): how consent is checked is a service setting ([consent mode](request-handling.md#consent-mode))

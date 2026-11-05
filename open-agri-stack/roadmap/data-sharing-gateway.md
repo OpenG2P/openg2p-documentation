@@ -4,7 +4,7 @@ description: Generalising the Exchange.
 
 # Data Sharing Gateway
 
-**Status: decided.** Setup at install is built; the rest is not, and its steps are in [TODOs](../open-items/README.md#platform-and-build).
+**Status: decided.** Setup at install is built; the rest is not, and its steps are in the [Roadmap](README.md#phase-3-many-departments-other-stacks).
 
 ## Why
 
@@ -88,6 +88,6 @@ Raw request templates and JSONPath mappings stay available for what criteria can
 
 1. The gateway repository's name (`data-sharing-gateway`, `composite`).
 2. The criteria language and field picker now, or first only the connector split with use cases as files.
-3. Gateway packs and use cases edited in the console: starter use cases from the pack seed the database ([editing use cases in the console](../open-items/README.md#composite)).
+3. Gateway packs and use cases edited in the console: starter use cases from the pack seed the database ([editing use cases in the console](README.md)).
 4. The gateway pack's delivery format: a ConfigMap from a folder, or an OCI or image artifact.
 5. Whether a department may list its scope policy for the gateway in its own install values (an empty list releases nothing).
