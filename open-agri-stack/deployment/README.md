@@ -4,7 +4,7 @@ description: Installing Agri Stack.
 
 # Deployment
 
-Agri Stack is installed from the OpenG2P Helm charts, through Rancher. These pages are the install steps. How the parts work together: [Architecture & Concepts](../architecture/README.md). Managing partners and keys once it runs: [Administration](../administration/README.md).
+Agri Stack is installed from the OpenG2P Helm charts, through Rancher. These pages are the install steps. How the parts work together: [Architecture](../architecture/README.md). Managing partners and keys once it runs: [Administration](../administration/README.md).
 
 ## Topology
 

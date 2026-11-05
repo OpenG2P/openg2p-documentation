@@ -4,7 +4,7 @@ description: Creating a use case and its file format.
 
 # Use-Case Configuration
 
-What a use case is, and how partners are given use cases: [Use Cases](../architecture/use-cases.md). In the [Composite](README.md), a use case is one YAML file; adding one needs no code. This page gives the steps, then the file format key by key. What the Composite does with the file at runtime: [Request Handling](request-handling.md). Adding a new registry as a source: [Adding a Data Source](adding-a-data-source.md).
+What a use case is, and how partners are given use cases: [Use Cases](../architecture/use-cases.md). In the [Composite](README.md), a use case is one YAML file; adding one needs no code. This page gives the steps, then the file format key by key. What the Composite does with the file at runtime: [Request Handling](request-handling.md). Adding a new registry as a source: [Adding a Registry](../registries/adding-a-registry.md).
 
 ## Creating a use case
 

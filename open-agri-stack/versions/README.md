@@ -19,7 +19,7 @@ description: Versions and source code.
 
 Alpha uses the `develop` versions of all its modules. The versions will be tagged later, after feedback and testing are incorporated. Each module's current version and change log: [OpenG2P Versions](https://openg2p.github.io/versions/index.html).
 
-What each module does: [Architecture & Concepts](../architecture/README.md).
+What each module does: [Architecture](../architecture/README.md).
 
 ### Installed from their own charts
 

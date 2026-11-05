@@ -2,7 +2,7 @@
 description: How Agri Stack is put together.
 ---
 
-# Architecture & Concepts
+# Architecture
 
 **Registries are distributed.** Agri Stack does not assume that all registries sit in one department or one system. Each department runs its own registry, in its own install and often its own cluster, for its own work, and stays in control of its data. The **Exchange** is one more install above them: it lets a partner onboard once and use one farmer consent across several registries, without centralising any data. A registry works the same with or without the Exchange.
 
@@ -27,7 +27,7 @@ Each department is its own install, with its registry and its own services:
 
 | Component | Role |
 | --- | --- |
-| Registry ([Farmer Registry](../../products/registry/farmer-registry/README.md), [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)) | The system of record; serves its partners through its partner API ([Registries](registries.md)) |
+| Registry ([Farmer Registry](../../products/registry/farmer-registry/README.md), [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)) | The system of record; serves its partners through its partner API ([Registries](../registries/README.md)) |
 | Consent Manager | Checks each consent, including the Exchange's consent tokens |
 | Partner Management | The department's partners, and what it releases to the Composite (the Composite's scope policy) |
 | Catalogue, Audit Manager | The same codes as every install (one country pack); who accessed the department's data |

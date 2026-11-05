@@ -214,4 +214,4 @@ The Crop Sown Registry is a thin extension of the Registry Platform. How domain 
 
 ## In Agri Stack
 
-In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack Composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack Exchange, alongside the Farmer Registry. Its role there: [Registries in Agri Stack](../../../open-agri-stack/architecture/registries.md). How it is set up for Agri Stack is in [Agri Stack → Deployment → Crop Sown Registry](../../../open-agri-stack/deployment/crop-sown-registry.md).
+In [Agri Stack](../../../open-agri-stack/README.md), the Crop Sown Registry is the crop department's registry. The Agri Stack Composite reads its crop seasons and season summaries, with consent tokens from the Agri Stack Exchange, alongside the Farmer Registry. Its role there: [Registries in Agri Stack](../../../open-agri-stack/registries/README.md). How it is set up for Agri Stack is in [Agri Stack → Deployment → Crop Sown Registry](../../../open-agri-stack/deployment/crop-sown-registry.md).

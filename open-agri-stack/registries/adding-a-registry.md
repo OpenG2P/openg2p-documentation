@@ -1,10 +1,10 @@
 ---
-description: Adding a registry to a use case.
+description: Joining a registry to Agri Stack.
 ---
 
-# Adding a Data Source
+# Adding a Registry
 
-A [data source](../architecture/use-cases.md#what-a-use-case-is) is one search of one registry in a use case. Adding a new registry as one needs **no code in the Composite**: the registry must speak DCI with consent, the department's PM and CM must accept the Composite, and the Composite gets a URL and a new `sources[]` entry. This guide uses a **Livestock Registry** (controller `livestock-registry`) added to `loan-profile` as an optional source.
+A registry joins Agri Stack by becoming a [data source](../architecture/use-cases.md#what-a-use-case-is) of a use case. This needs **no code in the Composite**: the registry must speak DCI with consent, the department's PM and CM must accept the Composite, and the Composite gets a URL and a new `sources[]` entry. This guide uses a **Livestock Registry** (controller `livestock-registry`) added to `loan-profile` as an optional source.
 
 {% hint style="info" %}
 The Livestock Registry is [planned](../roadmap/livestock-registry.md), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
@@ -112,10 +112,10 @@ response:
 
 * **`depends_on`:** leave it out if the registry can be searched by the partner's subject directly (then it is called in the first level, in parallel with the farmer). Keep it if the query needs another source's result.
 * **`requirement`:** `optional` for data that is useful but not essential; `mandatory` only if the use case is meaningless without it (a failure or missing grant then fails the whole request).
-* **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in Exchange mode they are the `requested_scopes` the consent tokens are limited to. See [data scopes](use-case-configuration.md#data-scopes).
+* **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in Exchange mode they are the `requested_scopes` the consent tokens are limited to. See [data scopes](../composite/use-case-configuration.md#data-scopes).
 * **Timeouts:** `timeout_ms` and `retries` per source; check that `execution.overall_timeout_ms` still covers the slowest path. In `loan-profile` it is 25000 ms, for two levels of 10000 ms; `herd` depends on the farmer, so it runs in the second level with the crop sources and adds no level.
 * **Version:** adding an optional source and new output fields is backward compatible: bump the minor version (`1.1.0`). A change that breaks the response (renamed or removed fields) needs a new major.
-* The template is rendered with sample input when the file loads; a template that doesn't render valid JSON stops the file from loading (the previous version keeps serving). The rules are in [query templates](use-case-configuration.md#query-templates).
+* The template is rendered with sample input when the file loads; a template that doesn't render valid JSON stops the file from loading (the previous version keeps serving). The rules are in [query templates](../composite/use-case-configuration.md#query-templates).
 
 ## Step 6 — Partners add a grant
 
