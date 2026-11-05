@@ -4,7 +4,7 @@ description: The department registries.
 
 # Registries in Agri Stack
 
-Each registry in Agri Stack belongs to a department and is its own install there. Two are integrated today; what each holds, its registers and its data scopes are documented with the product. A registry joins Agri Stack by becoming a data source of a use case ([Adding a Data Source](../composite/adding-a-data-source.md)); the [Livestock Registry](../design/livestock-registry.md) is designed as the next one.
+Each registry in Agri Stack belongs to a department and is its own install there. Two are integrated today; what each holds, its registers and its data scopes are documented with the product. A registry joins Agri Stack by becoming a data source of a use case ([Adding a Data Source](../composite/adding-a-data-source.md)); the [Livestock Registry](../roadmap/livestock-registry.md) is designed as the next one.
 
 | Registry | Department (example) | Holds |
 | --- | --- | --- |

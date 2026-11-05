@@ -11,6 +11,10 @@ The **Exchange** gives a partner (a bank, an insurer, an agritech) one consolida
 * **With consent.** The farmer consents to the data the use case reads, proving who they are with the national ID ([Consent](consent.md)).
 * **Departments keep control.** Each registry decides what it releases ([below](#composite-as-a-partner)).
 
+## The Composite
+
+The **Composite** is the Exchange's service that partners call. It puts together ("composes") one answer about a farmer from several registries: for a use case, it searches each registry the use case reads, with the farmer's consent, and combines the results into one signed response. It is not a general query engine across registries: it runs only the use cases published in it, and it keeps no farmer data. The Exchange's other components (Consent Manager, Partner Management, eSignet) are OpenG2P products used as they are; the Composite is the one built for Agri Stack ([Composite](../composite/README.md)).
+
 ## What it stores
 
 Consents, partners' keys and policies, and audit records; never registry data: the Composite passes each answer on and keeps nothing.

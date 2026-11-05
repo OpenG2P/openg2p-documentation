@@ -27,7 +27,7 @@ python -m openg2p_agri_composite.main run  # http://localhost:8000/docs
 * The partner's and the Composite's public keys must be in that PM (`PARTNER_BANK_A`, `PARTNER_AGRI_COMPOSITE`; the Composite's from `http://localhost:8000/.well-known/jwks.json`), and the partner needs a policy there for the use case (`loan-profile@1`).
 * With the console off (the default outside the chart) the service has no database; startup only loads the use cases. The chart turns the console on, which needs a database, IAM and Redis (see [Composite console](console.md)).
 * The consent mode is `exchange` by default: set `AGRI_COMPOSITE_CONSENT_EXCHANGE_CM_URL` to a reachable CM partner API (the default is the in-cluster service), or `AGRI_COMPOSITE_CONSENT_MODE=passthrough` to skip the Exchange CM.
-* Every setting is listed in [Deployment: Composite, environment settings](chart-settings.md#environment-settings).
+* Every setting is listed in [Deployment: Composite, environment settings](../deployment/composite-chart-settings.md#environment-settings).
 
 Then read it as a partner would:
 

@@ -45,7 +45,7 @@ Step by step: [replacing the demo key](../../consent-management/deployment/READM
 
 ### Edge rate limit
 
-The Composite chart limits calls to its use-case API (`/composite/v1/use-cases`) at the Istio ingress gateway, for all partners together, before they reach a pod. Other paths of the Composite, and other installs, are not limited. What it is: [Rate Limiting](../design/rate-limiting.md); the settings: [chart settings](../composite/chart-settings.md#scaling-and-rate-limits).
+The Composite chart limits calls to its use-case API (`/composite/v1/use-cases`) at the Istio ingress gateway, for all partners together, before they reach a pod. Other paths of the Composite, and other installs, are not limited. What it is: [Rate Limiting](../composite/rate-limiting.md); the settings: [chart settings](composite-chart-settings.md#scaling-and-rate-limits).
 
 1. In Rancher, **Upgrade** the Composite release (e.g. `agri-composite`), group **Rate Limits**.
 2. Turn **Edge Rate Limit** on and set **Edge Limit (Requests)** and **Edge Limit Interval** above the expected peak of all partners together. The limit is counted per gateway pod: two pods allow up to twice the number.

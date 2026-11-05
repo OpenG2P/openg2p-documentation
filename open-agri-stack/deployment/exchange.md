@@ -62,7 +62,7 @@ Chart **Agri Stack Composite** (`openg2p-agri-composite`), release e.g. `agri-co
 | Integration | Farmer Registry Search URL | `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` ([Farmer Registry](farmer-registry.md#check)) |
 | Integration | Crop Sown Registry Search URL | `https://partner-csr.dept1.openg2p.org/dci/registry/sync/search` ([Crop Sown Registry](crop-sown-registry.md#check)) |
 
-Keep the rest at the defaults (**Generate Signing Key** on). Production: [Production](production.md#composite). All options: [Composite chart settings](../composite/chart-settings.md).
+Keep the rest at the defaults (**Generate Signing Key** on). Production: [Production](production.md#composite). All options: [Composite chart settings](composite-chart-settings.md).
 
 ## Check
 

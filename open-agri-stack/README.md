@@ -49,7 +49,7 @@ The **catalogues** are the common vocabulary every registry and service uses: cr
 
 ## Agri Stack and OAN
 
-Agri Stack stands on its own: any authorised partner uses it through its API. A country that also runs an agricultural services network such as the Open Agri Network (OAN), built on Beckn, can make Agri Stack one of that network's providers, so partners on the network reach it with the same order mechanism they use for everything else. That is a proposal, described in [Interoperability with OAN (Beckn)](design/oan-interoperability.md).
+Agri Stack stands on its own: any authorised partner uses it through its API. A country that also runs an agricultural services network such as the Open Agri Network (OAN), built on Beckn, can make Agri Stack one of that network's providers, so partners on the network reach it with the same order mechanism they use for everything else. That is a proposal, described in [Interoperability with OAN (Beckn)](roadmap/oan-interoperability.md).
 
 <figure><img src="../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use cases of value to the farmer, for example access to credit, access to market, grievance, access to payment, and more. A use case for a farmer reaches Agri Stack through Beckn or Agri Stack's own API. Agri Stack has the Exchange for consented data sharing, the departments' registries and the public catalogues."><figcaption><p>Concept: Agri Stack with OAN on top (proposal)</p></figcaption></figure>
 

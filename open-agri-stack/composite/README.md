@@ -4,9 +4,9 @@ description: The partners' entry point.
 
 # Composite
 
-The **Composite** is the partners' entry point to Agri Stack. It is the Agri Stack–specific component of the [Exchange](../architecture/exchange.md); the Exchange's other components are OpenG2P products, documented with them: the [Consent Manager](../../consent-management/README.md) (with its partner portal), [Partner Management](../../platform/platform-services/partner-management/README.md) and eSignet for the farmer's national-ID login.
+The **Composite** is the service partners call to get data about a farmer from several registries in one request. It puts together ("composes") the answer: a partner (e.g. a bank) asks for a [use case](../architecture/use-cases.md), such as `loan-profile`, for one farmer; the Composite searches each department's registry the use case reads, with the farmer's consent, and returns the results combined into one response, signed with its own key. It runs only the use cases published in it and keeps no farmer data.
 
-A partner (e.g. a bank) sends one signed request for a [use case](../architecture/use-cases.md), such as `loan-profile`, about one farmer, with the farmer's consent. The Composite queries each departmental registry the use case reads and returns one signed response. How a request travels: [request flow](../architecture/request-flow.md).
+It is part of the Exchange, the install that partners onboard with: [the Composite in the architecture](../architecture/exchange.md#the-composite). How one request travels: [request flow](../architecture/request-flow.md).
 
 ## Key features
 
@@ -17,7 +17,9 @@ A partner (e.g. a bank) sends one signed request for a [use case](../architectur
 * **Signed both ways.** Partner requests are verified against Partner Management; every response, errors included, is signed with the Composite's key, published at `/.well-known/jwks.json`.
 * **Partial answers, reported.** Each source has a status (`ok`, `no_record`, `denied`, `unavailable`, `error`); an optional source can fail without failing the request.
 * **Stores no farmer data.** Logs, audit events and the console's call log carry IDs, statuses and timings only.
-* **Rate limited** per partner and use case, and optionally at the gateway ([rate limiting](../design/rate-limiting.md)).
+* **Rate limited** per partner and use case, and optionally at the gateway ([rate limiting](rate-limiting.md)).
+* **A staff console**, read-only: the use cases, the registries and their data scopes, the partners allowed each use case, and a log of calls ([console](console.md)).
+* **A partner API** to list and describe the use cases and to query one ([Composite API](api.md)).
 
 Installing it: [Deployment: Exchange](../deployment/exchange.md#composite). Source: [`composite/`](https://github.com/openg2p/agri-stack/tree/develop/composite) in the agri-stack repository.
 

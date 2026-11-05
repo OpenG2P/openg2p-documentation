@@ -12,15 +12,25 @@ redirects:
   products/registry/registry/developer-zone/api-documentation/1.1.0/partner-api: products/registry/registry/developer-zone/api-documentation/partner-api.md
   open-agri-stack/implementation: open-agri-stack/deployment/README.md
   open-agri-stack/exchange: open-agri-stack/composite/README.md
+  open-agri-stack/design: open-agri-stack/roadmap/README.md
+  open-agri-stack/design/rate-limiting: open-agri-stack/composite/rate-limiting.md
+  open-agri-stack/architecture/registries: open-agri-stack/architecture/registries.md
+  open-agri-stack/design/api-gateway: open-agri-stack/architecture/networking-and-gateway.md
+  open-agri-stack/design/data-sharing-gateway: open-agri-stack/roadmap/data-sharing-gateway.md
+  open-agri-stack/design/oan-interoperability: open-agri-stack/roadmap/oan-interoperability.md
+  open-agri-stack/design/livestock-registry: open-agri-stack/roadmap/livestock-registry.md
+  open-agri-stack/design/registry-data-sync: open-agri-stack/roadmap/registry-data-sync.md
+  open-agri-stack/composite/chart-settings: open-agri-stack/deployment/composite-chart-settings.md
+  open-agri-stack/architecture/api-gateway: open-agri-stack/architecture/networking-and-gateway.md
   open-agri-stack/exchange/composite: open-agri-stack/composite/README.md
   open-agri-stack/exchange/composite/creating-a-use-case: open-agri-stack/composite/use-case-configuration.md
   open-agri-stack/exchange/composite/use-case-configuration: open-agri-stack/composite/use-case-configuration.md
   open-agri-stack/exchange/composite/adding-a-data-source: open-agri-stack/composite/adding-a-data-source.md
   open-agri-stack/exchange/composite/api: open-agri-stack/composite/api.md
   open-agri-stack/exchange/composite/console: open-agri-stack/composite/console.md
-  open-agri-stack/exchange/composite/chart-settings: open-agri-stack/composite/chart-settings.md
+  open-agri-stack/exchange/composite/chart-settings: open-agri-stack/deployment/composite-chart-settings.md
   open-agri-stack/exchange/composite/running-locally: open-agri-stack/composite/running-locally.md
-  open-agri-stack/implementation/composite: open-agri-stack/deployment/composite.md
+  open-agri-stack/implementation/composite: open-agri-stack/deployment/exchange.md
   open-agri-stack/implementation/farmer-registry: open-agri-stack/deployment/farmer-registry.md
   open-agri-stack/implementation/crop-sown-registry: open-agri-stack/deployment/crop-sown-registry.md
   open-agri-stack/implementation/registry-platform: products/registry/registry/design/activity-register.md
@@ -58,17 +68,17 @@ redirects:
   open-agri-stack/guides/composite-console: open-agri-stack/composite/console.md
   open-agri-stack/guides/running-the-composite-locally: open-agri-stack/composite/running-locally.md
   open-agri-stack/configuration: open-agri-stack/deployment/README.md
-  open-agri-stack/configuration/composite: open-agri-stack/deployment/composite.md
+  open-agri-stack/configuration/composite: open-agri-stack/deployment/exchange.md
   open-agri-stack/configuration/farmer-registry: open-agri-stack/deployment/farmer-registry.md
   open-agri-stack/configuration/crop-sown-registry: open-agri-stack/deployment/crop-sown-registry.md
   open-agri-stack/configuration/exchange: open-agri-stack/deployment/exchange.md
   open-agri-stack/guides: open-agri-stack/README.md
   open-agri-stack/guides/deployment: open-agri-stack/deployment/README.md
-  open-agri-stack/guides/exchange-setup: open-agri-stack/deployment/after-install.md
+  open-agri-stack/guides/exchange-setup: open-agri-stack/deployment/exchange.md
   open-agri-stack/guides/testing-after-install: open-agri-stack/deployment/testing.md
   open-agri-stack/guides/partner-test: open-agri-stack/deployment/testing.md
-  open-agri-stack/guides/partner-guide: open-agri-stack/partner-guide.md
+  open-agri-stack/guides/partner-guide: open-agri-stack/partner-integration-guide.md
   open-agri-stack/guides/adding-a-data-source: open-agri-stack/composite/adding-a-data-source.md
-  open-agri-stack/guides/registry-to-registry-sync: open-agri-stack/design/registry-data-sync.md
+  open-agri-stack/guides/registry-to-registry-sync: open-agri-stack/roadmap/registry-data-sync.md
   open-agri-stack/open-items/catalogue-content: open-agri-stack/open-items/README.md
   products/registry/farmer-registry/deployment/helm-chart: products/registry/farmer-registry/deployment/README.md

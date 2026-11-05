@@ -14,7 +14,7 @@ A **use case** is a named, versioned definition of one kind of data request, pub
 
 * **Why:** its purpose (e.g. credit assessment), which the farmer's consent must match.
 * **About whom:** the farmer's ID it takes (the Farmer ID, or the national ID) and any parameters (e.g. a crop season).
-* **What:** the registries it reads and, from each, the [data scopes](../../products/registry/registry/design/data-scopes.md) it needs (and may optionally use).
+* **What:** the registries it reads, its **data sources**, and from each the [data scopes](../../products/registry/registry/design/data-scopes.md) it needs (and may optionally use). A data source is one search of one registry; `loan-profile` has three: the Farmer Registry, then two searches of the Crop Sown Registry. Adding a registry: [Adding a Data Source](../composite/adding-a-data-source.md).
 * **The answer:** how the data from the registries is put together into one response.
 
 A use case is configuration, not code: adding one is writing a file ([Use-Case Configuration](../composite/use-case-configuration.md)). It is versioned as `name@major`; a change that reads more data is a new major version, which partners must be assigned again and farmers must consent to again.

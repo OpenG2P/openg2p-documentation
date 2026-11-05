@@ -33,7 +33,7 @@ Standards for consent itself (consent receipts, data-subject rights, artefact se
 | Payload validation | RP (CSR activity types), Catalogue (MDS; list attribute schemas) | Activity types' payloads | [JSON Schema](https://json-schema.org/) | **Used** | Each activity type's payload is a JSON Schema; schema versions are kept per type. The Composite validates use-case files with strict pydantic models (`core/models.py`, unknown keys rejected), not JSON Schema. |
 | Plausibility rules | RP (activity registers; CSR's rules) | Each activity register's configuration file | [JSON Logic](https://jsonlogic.com/) | **Used** | Rules (warn or block) over the payload and the context's latest activities, run by a small built-in evaluator. Output records per format are Jinja templates (our own); DCI is one format. |
 | Field capture | RP (CSR), ODK Central | Crop sowing form | [ODK XForms](https://getodk.github.io/xforms-spec/) via ODK Central | **Used** | |
-| Network discovery | OAN network layer (not an OpenG2P component) | OAN network layer | [Beckn](https://becknprotocol.io/) | **Used** (outside the registries) | Only for discovering service providers and consumers; not for registry data today. Proposal: the Composite as a provider node ([Interoperability with OAN](../design/oan-interoperability.md)). |
+| Network discovery | OAN network layer (not an OpenG2P component) | OAN network layer | [Beckn](https://becknprotocol.io/) | **Used** (outside the registries) | Only for discovering service providers and consumers; not for registry data today. Proposal: the Composite as a provider node ([Interoperability with OAN](../roadmap/oan-interoperability.md)). |
 
 ## Security, identity and trust
 
@@ -128,8 +128,8 @@ For each dataset, the evaluation should record:
 | --- | --- | --- | --- | --- | --- |
 | Deployment | All services | All services | Kubernetes, Helm, OCI container images | **Used** | See the [OpenG2P deployment model](../../deployment/openg2p-deployment-model.md). |
 | Object storage | Garage (commons); RP, Catalogue (MDS), ODK, Novu, CM | All services | Amazon S3 API | **Used** | Garage replaced MinIO; services use the S3 API in-cluster at `commons-garage:3900`. CM keeps consent evidence in bucket `consent-evidence`. |
-| Service mesh and ingress | Istio, Nginx | Cluster | Istio, Nginx | **Used** | See [API Gateway](../design/api-gateway.md). |
-| Rate limits | Composite; Istio ingress gateway | The Composite's use-case API | HTTP `429 Too Many Requests` ([RFC 6585](https://www.rfc-editor.org/rfc/rfc6585)) | **Own** | Token buckets of our own design: per partner and use case in the Composite (Redis), and optionally Envoy's local rate limit at the gateway. See [Rate Limiting](../design/rate-limiting.md). |
+| Service mesh and ingress | Istio, Nginx | Cluster | Istio, Nginx | **Used** | See [API Gateway](networking-and-gateway.md). |
+| Rate limits | Composite; Istio ingress gateway | The Composite's use-case API | HTTP `429 Too Many Requests` ([RFC 6585](https://www.rfc-editor.org/rfc/rfc6585)) | **Own** | Token buckets of our own design: per partner and use case in the Composite (Redis), and optionally Envoy's local rate limit at the gateway. See [Rate Limiting](../composite/rate-limiting.md). |
 | Audit events | Audit Manager; RP, Catalogue (MDS), CM, Composite emit events | Audit Manager | [CloudEvents 1.0](https://cloudevents.io/) | **Used** | See [Audit Manager](../../platform/platform-services/audit-manager/README.md). |
 | Distributed tracing | Composite, RP, CM | Composite → registries → CM | [W3C Trace Context](https://www.w3.org/TR/trace-context/), [OpenTelemetry](https://opentelemetry.io/) | **To explore** | Today hops are linked by the request ID in logs and audit events; no `traceparent` is sent. |
 

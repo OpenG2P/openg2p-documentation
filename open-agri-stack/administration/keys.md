@@ -39,7 +39,7 @@ kubectl -n <Exchange namespace> create secret generic agri-composite-signing \
 kubectl -n <Exchange namespace> rollout restart deploy/agri-composite-api
 ```
 
-The chart leaves a Secret it did not create alone, and a `.p12` is used before a generated key. To rotate it, repeat with the new `.p12` and a new `kid`. Before a first install, create the Secret first and the chart never generates one. Settings: [Composite chart settings: signing key](../composite/chart-settings.md#signing-key).
+The chart leaves a Secret it did not create alone, and a `.p12` is used before a generated key. To rotate it, repeat with the new `.p12` and a new `kid`. Before a first install, create the Secret first and the chart never generates one. Settings: [Composite chart settings: signing key](../deployment/composite-chart-settings.md#signing-key).
 
 ### An older install
 

@@ -1,8 +1,8 @@
 ---
-description: API gateway functions in Agri Stack.
+description: Ingress, gateway functions, networking.
 ---
 
-# API Gateway
+# Networking and Gateway
 
 **Status: decided; built except where marked "to do".**
 
@@ -13,7 +13,7 @@ The functions of an API gateway are fulfilled by the ingress of the [OpenG2P dep
 | Single public entry point, TLS, routing | Nginx and the Istio ingress gateway, a VirtualService per service |
 | Partner authentication | Each service verifies the partner's signature over the request body against [Partner Management](../../platform/platform-services/partner-management/README.md) |
 | Access control | Each partner's use-case policies (one per use case) in the Exchange's Partner Management, checked by the Composite on every call; Istio `AuthorizationPolicy` to limit registries' partner APIs to the Composite (to do) |
-| Rate limits and quotas | A per-partner, per-use-case limit in the Composite, set in each use case and counted across pods in Redis; optionally an edge limit on the Composite's route at the Istio ingress gateway (off by default); daily quotas to do ([rate limiting](rate-limiting.md)) |
+| Rate limits and quotas | A per-partner, per-use-case limit in the Composite, set in each use case and counted across pods in Redis; optionally an edge limit on the Composite's route at the Istio ingress gateway (off by default); daily quotas to do ([rate limiting](../composite/rate-limiting.md)) |
 | Usage reports | Audit events from every hop, in the Audit Manager |
 | mTLS between services, timeouts, retries, circuit breaking | Istio |
 | Developer portal | The [Partner Integration Guide](../partner-integration-guide.md) and the Composite's describe endpoints |

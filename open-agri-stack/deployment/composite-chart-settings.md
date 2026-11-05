@@ -2,9 +2,9 @@
 description: Composite Helm chart settings.
 ---
 
-# Chart Settings
+# Composite Chart Settings
 
-Reference for the Composite chart (`openg2p-agri-composite`). Installing it: [Deployment: Exchange](../deployment/exchange.md#composite). The Rancher form shows the groups below; settings marked "values only" are set in **Edit YAML**.
+Reference for the Composite chart (`openg2p-agri-composite`). Installing it: [Deployment: Exchange](exchange.md#composite). The Rancher form shows the groups below; settings marked "values only" are set in **Edit YAML**.
 
 {% hint style="info" %}
 **Source:** the chart [`composite/charts/openg2p-agri-composite`](https://github.com/openg2p/agri-stack/tree/develop/composite/charts/openg2p-agri-composite) ([values](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/values.yaml), [Rancher questions](https://github.com/openg2p/agri-stack/blob/develop/composite/charts/openg2p-agri-composite/questions.yaml)).
@@ -30,7 +30,7 @@ Both the API and the console are served through the Istio `internal` gateway, li
 | `composite.consent.exchangeCmUrl` | `http://commons-services-cm-partner-api` (the CM in the same namespace) | Agri Stack exchange: Exchange Consent Manager URL. `/consent/v1/validate` is appended |
 | `composite.consent.exchangeCmTimeoutSeconds` | `5` | Agri Stack exchange: Exchange Consent Manager Timeout |
 
-Keep the mode `exchange`: the Composite presents the partner's consent (its `consent_id`, or a consent the partner signed), or asks the Exchange CM to look it up when the partner sent none, and gets one consent token per registry ([Composite as a partner](../architecture/exchange.md#composite-as-a-partner)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [consent mode](request-handling.md#consent-mode).
+Keep the mode `exchange`: the Composite presents the partner's consent (its `consent_id`, or a consent the partner signed), or asks the Exchange CM to look it up when the partner sent none, and gets one consent token per registry ([Composite as a partner](../architecture/exchange.md#composite-as-a-partner)). A partner-signed consent must have been issued within the CM's freshness window (300 seconds by default), so partners sign a fresh consent for each request. If the Exchange CM is unreachable, the request fails closed (503). Request and response details: [consent mode](../composite/request-handling.md#consent-mode).
 
 The other mode, `passthrough`, sends the partner's consent to each registry unchanged (it needs a partner-signed consent), so each registry's Partner Management needs a scope policy for every partner. It suits only a single install where the registries share the Composite's commons.
 
@@ -45,7 +45,7 @@ The other mode, `passthrough`, sends the partner's consent to each registry unch
 | `global.compositePartnerId` | `agri-composite` | Integration: Composite Partner ID. The `sender_id` towards registries; partners send it as `receiver_id`. Its key must be in every PM |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Integration: Partner Management URL. Partner keys and use-case policies, fetched as `PARTNER_<SENDER_ID>` |
 
-Each registry is a data controller ID mapped to its full DCI sync search URL. Partner Management holds no registry endpoints yet, so they are set here, and nothing about a registry is hard-coded. An empty URL makes that source fail (`error`); a use case whose sources name a controller not listed here does not load. The console reads each registry's data scope catalogue from the same host (`/partner/data_scopes`). A third registry is added under `composite.registries` in **Edit YAML** (the form shows the two that ship): [adding a data source](adding-a-data-source.md#step-4-register-the-endpoint-in-the-composite). Changing a registry setting rolls the pods.
+Each registry is a data controller ID mapped to its full DCI sync search URL. Partner Management holds no registry endpoints yet, so they are set here, and nothing about a registry is hard-coded. An empty URL makes that source fail (`error`); a use case whose sources name a controller not listed here does not load. The console reads each registry's data scope catalogue from the same host (`/partner/data_scopes`). A third registry is added under `composite.registries` in **Edit YAML** (the form shows the two that ship): [adding a data source](../composite/adding-a-data-source.md#step-4-register-the-endpoint-in-the-composite). Changing a registry setting rolls the pods.
 
 ## Use cases
 
@@ -58,7 +58,7 @@ Each registry is a data controller ID mapped to its full DCI sync search URL. Pa
 
 The chart renders `composite.useCases` into the ConfigMap `<release>-use-cases`, mounted at `/app/config/use-cases`. Running pods pick up a change within the reload interval (about a minute after the ConfigMap updates), without a restart. Each file is validated strictly when loaded; only `published` use cases are served. To manage use cases elsewhere (e.g. GitOps), point `composite.existingUseCasesConfigMap` at your own ConfigMap with keys `<name>.yaml` (and any `.j2` template files).
 
-Writing a use case and adding it: [Use-Case Configuration](use-case-configuration.md). The default, `loan-profile`: [the `loan-profile` use case](use-case-configuration.md#the-loan-profile-use-case).
+Writing a use case and adding it: [Use-Case Configuration](../composite/use-case-configuration.md). The default, `loan-profile`: [the `loan-profile` use case](../composite/use-case-configuration.md#the-loan-profile-use-case).
 
 ## Signing key
 
@@ -77,7 +77,7 @@ Replacing and rotating it: [Keys](../administration/keys.md#the-composites-key).
 
 ## Console
 
-On by default: the read-only staff [console](console.md). Off (`console.enabled: false`), nothing below is deployed, and the API serves the partner API only, with no database and no IAM.
+On by default: the read-only staff [console](../composite/console.md). Off (`console.enabled: false`), nothing below is deployed, and the API serves the partner API only, with no database and no IAM.
 
 | Value | Default | Form |
 | --- | --- | --- |
@@ -120,7 +120,7 @@ Browser origins allowed to call the Composite, comma-separated; empty for none. 
 * Each worker keeps its own pooled HTTP client, partner-key cache (300 seconds) and partner use-case policy cache (60 seconds, and never longer than PM's `Cache-Control`), each with last-known-good for 6 hours during a PM outage. A revoked grant can keep working until the policy cache expires.
 * The image runs as uid 1001 with a read-only root filesystem. Startup never calls a registry; a registry being down only affects requests.
 
-Rate limits ([design](../design/rate-limiting.md)):
+Rate limits ([design](../composite/rate-limiting.md)):
 
 | Value | Default | Form |
 | --- | --- | --- |

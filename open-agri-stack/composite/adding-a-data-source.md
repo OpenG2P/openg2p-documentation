@@ -4,10 +4,10 @@ description: Adding a registry to a use case.
 
 # Adding a Data Source
 
-A use case's data sources are registries. Adding one needs **no code in the Composite**: the registry must speak DCI with consent, the department's PM and CM must accept the Composite, and the Composite gets a URL and a new `sources[]` entry. This guide uses a **Livestock Registry** (controller `livestock-registry`) added to `loan-profile` as an optional source.
+A [data source](../architecture/use-cases.md#what-a-use-case-is) is one search of one registry in a use case. Adding a new registry as one needs **no code in the Composite**: the registry must speak DCI with consent, the department's PM and CM must accept the Composite, and the Composite gets a URL and a new `sources[]` entry. This guide uses a **Livestock Registry** (controller `livestock-registry`) added to `loan-profile` as an optional source.
 
 {% hint style="info" %}
-The Livestock Registry is [planned](../design/livestock-registry.md), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
+The Livestock Registry is [planned](../roadmap/livestock-registry.md), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
 {% endhint %}
 
 ## Overview

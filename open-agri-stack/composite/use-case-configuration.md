@@ -4,13 +4,13 @@ description: Creating a use case and its file format.
 
 # Use-Case Configuration
 
-A use case is one YAML file the [Composite](README.md) loads; adding one needs no code. This page gives the steps, then the file format key by key. What the Composite does with the file at runtime: [Request Handling](request-handling.md). Adding a new registry as a source: [Adding a Data Source](adding-a-data-source.md).
+What a use case is, and how partners are given use cases: [Use Cases](../architecture/use-cases.md). In the [Composite](README.md), a use case is one YAML file; adding one needs no code. This page gives the steps, then the file format key by key. What the Composite does with the file at runtime: [Request Handling](request-handling.md). Adding a new registry as a source: [Adding a Data Source](adding-a-data-source.md).
 
 ## Creating a use case
 
 1. **Decide what the partner needs:** the purpose (e.g. `credit-assessment`), how the farmer is identified ([subject ID types](#subject-id-types)) and any parameters, and the output fields. Then find the registries that hold that data and their [data scopes](#data-scopes): each registry's scope catalogue is on the console's **Registries** page.
 2. **Write the file.** Copy [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml) and change its name, version, title, purpose, inputs, [sources](#sources) and [response](#response-mapping-and-derived-values). Unknown keys stop the file from loading.
-3. **Put it into the Composite's configuration.** In Rancher, open the Composite app, **Edit YAML**, and add an entry under `composite.useCases` (`my-use-case: |`, then the file's text; templates inline), then upgrade. Or add `<name>.yaml` to your own ConfigMap ([chart settings: use cases](chart-settings.md#use-cases)). Running pods reload it within about 30 seconds.
+3. **Put it into the Composite's configuration.** In Rancher, open the Composite app, **Edit YAML**, and add an entry under `composite.useCases` (`my-use-case: |`, then the file's text; templates inline), then upgrade. Or add `<name>.yaml` to your own ConfigMap ([chart settings: use cases](../deployment/composite-chart-settings.md#use-cases)). Running pods reload it within about 30 seconds.
 4. **Check it loaded.** The console's **Use cases** page lists it, or shows the error if it failed; `GET /composite/v1/use-cases/<name>` describes it. Only `status: published` is served.
 5. **Grant it to partners.** In the Exchange's Partner Management, give each partner a use-case policy for `name@major` (e.g. `my-use-case@1`) with the use case's purpose: in a new partner's onboarding request, or **Add policy** on an onboarded one ([Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)).
 6. **Ask the departments.** Each department whose registry the use case reads widens the Composite's scope policy to the new scopes and purpose, or the registry withholds them ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)).
@@ -93,7 +93,7 @@ One entry per registry search.
 | Key | |
 | --- | --- |
 | `id` | Required, unique, matches `^[a-z][a-z0-9_]*$`. Named in `depends_on`, templates and mappings as `sources.<id>` |
-| `controller` | Required: the registry's data controller ID (e.g. `farmer-registry`). It must have an endpoint in the Composite's settings ([Deployment: registries](chart-settings.md#registries)), or the file does not load |
+| `controller` | Required: the registry's data controller ID (e.g. `farmer-registry`). It must have an endpoint in the Composite's settings ([Deployment: registries](../deployment/composite-chart-settings.md#registries)), or the file does not load |
 | `requirement` | `mandatory` (default) or `optional`: whether the source failing fails the request ([failure handling](request-handling.md#failure-handling)) |
 | `depends_on` | A source ID or a list of them. This source runs after them and its template sees their results; it is not called if one of them is not `ok`. No unknown IDs, no self-reference, no cycles |
 | `scopes`, `optional_scopes` | The registry's [data scopes](#data-scopes) the source uses. `request_scopes` is accepted as the earlier name of `scopes` |
@@ -153,12 +153,12 @@ A template is sandboxed Jinja that renders the query part of the DCI `search_cri
 | --- | --- |
 | `execution.overall_timeout_ms` | 100–300000; default from the service setting `DEFAULT_OVERALL_TIMEOUT_MS` (10000). Must cover the slowest chain of `depends_on` |
 | `execution.partial_response` | `allowed` (default): only a failing mandatory source fails the request. `denied`: any failing source does ([failure handling](request-handling.md#failure-handling)) |
-| `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted across all pods in Redis; per worker while Redis is unreachable ([rate limiting](../design/rate-limiting.md), [settings](chart-settings.md#scaling-and-rate-limits)) |
-| `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) ([audit](chart-settings.md#audit)) |
+| `limits.rate_per_partner` | e.g. `60/min`; units `s`, `min`, `hour` (also `sec`, `second`, `m`, `minute`, `h`). Counted across all pods in Redis; per worker while Redis is unreachable ([rate limiting](rate-limiting.md), [settings](../deployment/composite-chart-settings.md#scaling-and-rate-limits)) |
+| `audit.events` | Which audit events to send: `request`, `source_call`, `response` (default: all three) ([audit](../deployment/composite-chart-settings.md#audit)) |
 
-## Accepted for later
+## Keys not used yet
 
-These keys load but do nothing yet; each is logged once at load ([open items](../open-items/README.md#composite)):
+These keys are allowed in the file, but the Composite does not use them yet; each is logged once when the file loads ([open items](../open-items/README.md#composite)):
 
 * `owner`
 * `consent.collection` (`cm-originated`, `partner-embedded`) and `consent.mode` (`single`): how consent is checked is a service setting ([consent mode](request-handling.md#consent-mode))

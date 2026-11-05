@@ -36,7 +36,7 @@ Functional work, in order, for the first production release. Country data and re
 * **Standing permission for a purpose** — a Consent Manager rule for sharing on a mandate instead of consent (registry to registry, e.g. CSR checking a farmer is registered; a yes/no Farmer ID check before consent): one caller, one purpose, narrow scopes, legal basis recorded, every use logged. *Depends on:* the departments agreeing the legal basis.
 
 * **Partner onboarding expiry** — a partner stays active until disabled; an end date for a partner (or its use-case policies) and a renewal step are not built.
-* **Partner-level limits** — how often a partner may fetch data and how much (daily quotas, data volume) are not enforced; today only a per-use-case rate limit per partner exists ([rate limiting](../design/rate-limiting.md)), and the policy's `max_fetch_frequency` and `data_life` are recorded only.
+* **Partner-level limits** — how often a partner may fetch data and how much (daily quotas, data volume) are not enforced; today only a per-use-case rate limit per partner exists ([rate limiting](../composite/rate-limiting.md)), and the policy's `max_fetch_frequency` and `data_life` are recorded only.
 
 ## Composite
 
@@ -44,9 +44,9 @@ Functional work, in order, for the first production release. Country data and re
 * **JSON Schema per use case** — an endpoint serving each use case's JSON Schema (`response.schema`, accepted but not used today), and responses validated against it. *Design:* decided as stated; see [use-case configuration](../composite/use-case-configuration.md).
 * **Developer sandbox** — each published use case's schema, sample request and response, and a test harness. *Design:* not designed yet.
 * **Data-blind mode** — each registry encrypts its part to the partner's PM key; the Composite only bundles the parts. *Design:* not designed yet.
-* **Restrict the registries' partner APIs** — an Istio `AuthorizationPolicy` so only the Composite (and partners deliberately allowed direct access) can call them. *Design:* [API Gateway](../design/api-gateway.md); decided: Istio policy, no separate API gateway.
-* **Daily quotas** — `limits.daily_quota_per_partner` enforced, counted in the Redis that already holds the rate-limit buckets. *Design:* [rate limiting](../design/rate-limiting.md#later).
-* **API gateway product** — reconsider only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated. *Design:* decided: none for now ([API Gateway](../design/api-gateway.md)).
+* **Restrict the registries' partner APIs** — an Istio `AuthorizationPolicy` so only the Composite (and partners deliberately allowed direct access) can call them. *Design:* [API Gateway](../architecture/networking-and-gateway.md); decided: Istio policy, no separate API gateway.
+* **Daily quotas** — `limits.daily_quota_per_partner` enforced, counted in the Redis that already holds the rate-limit buckets. *Design:* [rate limiting](../composite/rate-limiting.md#later).
+* **API gateway product** — reconsider only if a partner portal, API keys, analytics or billing across many partner-facing APIs are needed, or a national API gateway is mandated. *Design:* decided: none for now ([API Gateway](../architecture/networking-and-gateway.md)).
 * **Composite key rotation without a gap** — the Composite's JWKS serving the next key before it signs with it (and the old one for a while after), so that rotating needs no quiet window; today registries may refuse its calls for up to 5 minutes ([Keys](../administration/keys.md#rotate-the-generated-key)). *Design:* not designed yet.
 * **Registry endpoints in PM** — instead of the Composite's `composite.registries`. *Design:* not designed yet.
 * **Crop sources in parallel with the farmer** — when the partner already sends a Farmer ID, search the Crop Sown Registry alongside the Farmer Registry. *Design:* see step 7 of the [request flow](../architecture/request-flow.md).
@@ -63,7 +63,7 @@ Functional work, in order, for the first production release. Country data and re
 
 ## Registries
 
-* **Sync farmer data into other registries** — read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. *Design:* [Registry Data Sync](../design/registry-data-sync.md). *Depends on:* standing permission for a purpose.
+* **Sync farmer data into other registries** — read-only mirror registers kept up to date by publish/subscribe from the Farmer Registry, set up by configuration. *Design:* [Registry Data Sync](../roadmap/registry-data-sync.md). *Depends on:* standing permission for a purpose.
 * **WebSub for registry outgestion** — point the registry platform's outgestion at the commons WebSub hub (`websub.<baseDomain>`) where push is wanted; consumers poll meanwhile. *Design:* decided as stated ([standards](../architecture/standards.md)).
 * **Land ownership events** — transfers, inheritance and tenure changes recorded as dated events (an activity register on land parcels, or events on the Farmer Registry's land records), with history and evidence. *Design:* not designed yet; the [activity register](../../products/registry/registry/features/activity-register.md) is the likely mechanism.
 * **Value-chain contributions** — cooperatives, input suppliers, buyers and certification bodies onboarded as partners that add or update records directly: activities already ([partner activity submission](../../products/registry/registry/features/activity-register.md#partner-activity-submission)); entity records through partner ingestion with change requests; registries for inputs used or produce transactions when needed. *Design:* not designed yet.
@@ -107,7 +107,7 @@ Functional work, in order, for the first production release. Country data and re
 
 ## Platform and build
 
-* **Data Sharing Gateway** — generic names in place of Agri ones (one coordinated release), stacks as packs (`agri-stack` holding content only), connectors per registry with the four levels of flexibility, use cases from criteria and a field picker. *Design:* [Data Sharing Gateway](../design/data-sharing-gateway.md) (setup at install is built).
+* **Data Sharing Gateway** — generic names in place of Agri ones (one coordinated release), stacks as packs (`agri-stack` holding content only), connectors per registry with the four levels of flexibility, use cases from criteria and a field picker. *Design:* [Data Sharing Gateway](../roadmap/data-sharing-gateway.md) (setup at install is built).
 * **Across departments** — *Design:* [across departments](../architecture/README.md).
   * **Remote shared services in registry charts:** a "shared services" question group with external URLs (catalogue, Exchange CM), and setup jobs that call service APIs instead of writing into another service's database (e.g. Certify credential configs);
   * **Gateway between departments** with mutual TLS (a client certificate per department) on top of signed requests, exposing only the service APIs others need; document site-to-site WireGuard as the alternative for a few departments;
