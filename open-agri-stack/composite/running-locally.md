@@ -4,7 +4,7 @@ description: Running the Composite locally.
 
 # Running the Composite Locally
 
-The service is in [`composite/backend`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend). It needs Python 3.11 or later (the image uses 3.12), [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) from `develop` (its `PartnerMgmtKeyStore`, for partner keys from PM, is not in a 1.2.x release yet) and `iam-core` from the [IAM](https://github.com/OpenG2P/iam) `develop` line (the console's staff login; its 1.4.x releases do not work with the framework's `develop`).
+The service is in [`composite/backend`](https://github.com/openg2p/agri-stack/tree/develop/composite/backend). It needs Python 3.11 or later (the image uses 3.12), [openg2p-fastapi-common](https://github.com/OpenG2P/openg2p-fastapi-common) from `develop` (crypto, including `PartnerMgmtKeyStore` for partner keys from PM, is in `openg2p_fastapi_common.crypto`) and `iam-core` from the [IAM](https://github.com/OpenG2P/iam) `develop` line (the console's staff login).
 
 ```bash
 cd composite/backend

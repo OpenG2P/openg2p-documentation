@@ -35,7 +35,7 @@ The longer designs are on their own pages: [Generic Exchange](generic-exchange.m
 * **Composite key rotation without a gap** — the Composite's JWKS serving the next key before it signs with it (and the old one for a while after); today registries may refuse its calls for up to 5 minutes after a rotation ([Keys](../administration/keys.md#rotate-the-generated-key)). *Design:* not designed yet.
 * **Partner end dates** — an end date for a partner or its use-case policies, and a renewal step; today a partner stays active until disabled. *Design:* not designed yet.
 * **Migrations run once** — as a Helm hook Job instead of in every API on start (extension migrations can collide). *Design:* decided as stated.
-* **Composite on a fastapi-common release** — its image builds openg2p-fastapi-common and iam-core from `develop`; release that layout, or move the Composite to a release. *Design:* decided as stated.
+* **Composite on a fastapi-common release** — its image builds openg2p-fastapi-common and iam-core from `develop`; pin released versions instead (fastapi-common's 1.2.x releases now have the same `crypto` layout as `develop`). *Design:* decided as stated.
 * **Pinned catalogue release in the staff UI** — the registry APIs honour `global.catalogueRelease`; the staff UI still reads the latest. *Design:* decided as stated.
 
 ## Phase 2 — Farmers, partners and the Open Agri Network
