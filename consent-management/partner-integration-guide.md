@@ -91,7 +91,7 @@ For each registry whose data you want, you need an **access policy** in Partner 
 
 Sharing requires the **beneficiary's consent** for the specific purpose and scopes. Consent is captured one of two ways:
 
-1. **Through the Consent Manager** (preferred) — your staff raise a consent request in the CM's **partner portal**; the beneficiary logs in with their national ID and signs a form, which CM staff verify ([consent collection](design/consent-collection.md)). The Consent Manager then holds the consent. You need not keep its ID: when you search the person by identifier without a consent, the CM finds it. **Skip to Step 7.**
+1. **Through the Consent Manager** (preferred) — your staff raise a consent request in the CM's **partner portal**; the beneficiary logs in with their national ID and signs a form, which a Consent Approver checks ([consent collection](design/consent-collection.md)). The Consent Manager then holds the consent. You need not keep its ID: when you search the person by identifier without a consent, the CM finds it. **Skip to Step 7.**
 2. **In your own system** — only if your policy allows it (Step 3): you obtain the beneficiary's consent through your channel and **assert** it in a consent object you sign (Steps 5–6). The Consent Manager can verify only your signature, not that the beneficiary agreed.
 
 Either way, the consent must stay within what the beneficiary agreed to **and** within the policy (Step 3). Misrepresenting consent is a compliance breach — the signed object + the issued receipt (Step 9) are the audit evidence.

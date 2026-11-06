@@ -10,11 +10,11 @@ description: Joining the Open Agri Network.
 
 <figure><img src="../../.gitbook/assets/open-agri-stack-oan-overview.svg" alt="OAN above Agri Stack. OAN holds use-case services of value to the farmer, for example access to credit, access to market, grievance, access to payment. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land). OAN asks for a use case for a farmer, through Beckn or Agri Stack's own API; the Composite searches each registry with its consent token."><figcaption><p>Concept: OAN and Agri Stack at a high level (the registries a country may run)</p></figcaption></figure>
 
-## Why
+## Beckn instead of the Composite's own API
 
 Agri Stack is foundational: layers above it, such as the Open Agri Network (OAN), are built on the [Beckn](https://becknprotocol.io/) protocol. Asking every partner to build a client specific to the Composite is a real barrier, while partners on OAN will implement Beckn anyway. If the Composite is a node on the network, a partner reaches Agri Stack with the same order mechanism it uses for everything else on OAN.
 
-## The idea
+## The Composite as a Beckn provider
 
 The Composite takes part in OAN as a **provider (BPP)**. A partner, as a consumer app (BAP), orders a use case for a farmer and receives the result as the order's fulfilment.
 
@@ -40,7 +40,7 @@ This fits because the Composite already works at the level of **use cases** (e.g
 * **beckn-onix in front of the Composite.** The Beckn reference implementation handles what a network participant needs: signing, registry lookups, gateway traffic and asynchronous callbacks. A thin adapter behind it maps Beckn messages to the Composite's existing use-case query. The Composite's engine, the consent lookup and the consent tokens stay as they are.
 * **Two front doors, one engine.** The current API stays, for partners outside OAN (for example a ministry system). Beckn is one interface, as DCI is one output format: designs stay standard-neutral.
 
-## What would need to be built or decided
+## Changes needed in Agri Stack
 
 * **Identity and keys.** A partner is a network participant (`subscriber_id`, its key in the network registry). Partner Management still holds it as a partner with its policy for each use case. Map `subscriber_id` to the Partner Management partner, and let Partner Management take the partner's key from the network registry, so an organisation is onboarded once.
 * **Asynchronous answers.** The result goes back through the partner's callback, so the Composite answers asynchronously. Natural in Beckn; new for the Composite.
@@ -61,15 +61,15 @@ This fits because the Composite already works at the level of **use cases** (e.g
 | What | How |
 | --- | --- |
 | An agreement with the Agri Stack operator | Legal and data-sharing terms: purposes, data retention. Outside any system |
-| Its partner record in the Exchange's Partner Management | Its key taken from its Beckn registry entry (if built; see [what would need to be built](#what-would-need-to-be-built-or-decided)), otherwise its public key supplied once |
+| Its partner record in the Exchange's Partner Management | Its key taken from its Beckn registry entry (if built; see [changes needed](#changes-needed-in-agri-stack)), otherwise its public key supplied once |
 | A grant for each use case it may order | Approved in Partner Management ([creating and changing policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)). Without it, orders are refused |
-| Partner-portal accounts for its staff | Created by the Exchange's administrator ([Partner Portal Users](../administration/partner-portal-users.md)) |
+| Partner-portal accounts for its staff | Created by the Exchange's administrator ([Partner Portal Users](../administration/managing-partners.md#partner-portal-accounts)) |
 
 ### Consent, by scenario
 
 | [Scenario](../architecture/consent.md) | What the partner does | Code beyond OAN? |
 | --- | --- | --- |
-| **1 · In person, with a form** (built) | Its staff use the **partner portal** (a web app): raise the request for a use case, the farmer logs in with the national ID on the partner's device, staff upload the signed form; Consent Manager staff approve | **No**: a browser |
+| **1 · In person, with a form** (built) | Its staff use the **partner portal** (a web app): raise the request for a use case, the farmer logs in with the national ID on the partner's device, staff upload the signed form; a Consent Approver approves | **No**: a browser |
 | **2 · In person, digital** (planned) | The same portal; the farmer approves on the Consent Manager's own screen | **No** |
 | **3 · Self-service** (planned) | The farmer approves in their own app or portal. The partner still raises the request: in the portal (no code), from its own system through the Consent Manager's API (code), or through Beckn XInput in the order flow (no extra code, if built) | Only if raised from its own system |
 | **Partner-signed consent** (only if its policy allows) | The partner collects consent in its own system and signs a consent object (JWS) for each order | **Yes**: the consent format and signing, outside OAN |

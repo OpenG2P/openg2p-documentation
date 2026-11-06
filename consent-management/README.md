@@ -42,7 +42,7 @@ The CM answers these once, for every registry.
 ## Two operating modes
 
 1. **Verify &amp; enforce (primary).** A partner calls a registry about a person. The registry asks the CM, which finds or verifies the consent, applies the partner's policy for that registry, and returns the **effective data scopes**. See [Verification & enforcement](design/verification-and-enforcement.md).
-2. **Originate (secondary).** Consent is collected through the CM itself: in person through the partner portal (a signed form checked by CM staff, optionally the subject's national-ID login), or through the origination API. See [Consent collection](design/consent-collection.md) and [Consent lifecycle](design/consent-lifecycle.md).
+2. **Originate (secondary).** Consent is collected through the CM itself: in person through the partner portal (a signed form checked by a Consent Approver, optionally the subject's national-ID login), or through the origination API. See [Consent collection](design/consent-collection.md) and [Consent lifecycle](design/consent-lifecycle.md).
 
 ## Design principles
 

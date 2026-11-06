@@ -229,10 +229,12 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
   auto-creates a Kubernetes Secret named `consent-manager` holding its `client_secret`;
 * a public client **`consent-manager-ui`** for the console;
 * the **`CONSENT_MANAGER_ADMIN`** client role required by the admin endpoints (the Access Log);
-* the **`CONSENT_MANAGER_APPROVER`** client role, which lets a user verify assisted consents
-  (approve or reject their evidence);
+* the **`CONSENT_MANAGER_APPROVER`** client role, for the **Consent Approver**: the person who
+  approves or rejects consent requests (only this role can), and revokes consents at the subject's request;
 * role mappings granting `CONSENT_MANAGER_ADMIN` and `CONSENT_MANAGER_APPROVER` to the `admin` user,
   and `CONSENT_MANAGER_ADMIN` to the client's own service account.
+
+The admin role is for automation and audit (the Access Log, service accounts); it cannot approve. One person may hold both roles; they are kept apart so a deployment can separate who approves from who audits.
 
 The service **validates tokens via JWKS only**. The generated `client_secret` is used for
 client-credentials tokens: by the staff API to read [Master Data code lists](#master-data-code-lists),
@@ -244,7 +246,7 @@ and by automation (e.g. the sanity suite) for the admin role. `/validate` needs 
 **In Rancher (commons-services):** the signing key, consent tokens (exchange and department roles), partner portal, national-ID login and required subject identifiers are all fields in the **Consent Manager** group of the commons-services form; no Edit YAML is needed. The values below are what those fields set.
 {% endhint %}
 
-The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; CM staff then check it in the CM console (**Consent Approvals**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
+The partner portal lets partner users (a partner's own employees) collect consent in person: create a request, upload the subject's signed form, submit it; a Consent Approver then checks it in the CM console (**Consent Approvals**) and the consent becomes active. See [consent collection](../design/consent-collection.md).
 
 | Value | Default | |
 | --- | --- | --- |
@@ -256,7 +258,7 @@ The partner portal lets partner users (a partner's own employees) collect consen
 
 The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner realm) and `CONSENT_MANAGER_EVIDENCE_*`.
 
-**Keycloak.** The chart's keycloak-init sets up the `partner` realm at install: the `consent-partner-portal` client (PKCE required), its **client roles** `PARTNER_OPERATOR` and `PARTNER_ADMIN` (a partner user needs one; the CM treats them alike), the `partner_id` user attribute and the mapper putting it into tokens. Partner users are created by hand in Keycloak ([Agri Stack: Partner Portal Users](../../open-agri-stack/administration/partner-portal-users.md)), or with [`deployment/scripts/setup-partner-realm.sh`](https://github.com/OpenG2P/consent-manager/blob/develop/deployment/scripts/setup-partner-realm.sh), which gives each the client role and a generated password kept in a Secret `partner-user-<username>` (on an older install it also adds the attribute and mapper):
+**Keycloak.** The chart's keycloak-init sets up the `partner` realm at install: the `consent-partner-portal` client (PKCE required), its **client roles** `PARTNER_OPERATOR` and `PARTNER_ADMIN` (a partner user needs one; the CM treats them alike), the `partner_id` user attribute and the mapper putting it into tokens. Partner users are created by hand in Keycloak ([Agri Stack: Partner Portal Users](../../open-agri-stack/administration/managing-partners.md#partner-portal-accounts)), or with [`deployment/scripts/setup-partner-realm.sh`](https://github.com/OpenG2P/consent-manager/blob/develop/deployment/scripts/setup-partner-realm.sh), which gives each the client role and a generated password kept in a Secret `partner-user-<username>` (on an older install it also adds the attribute and mapper):
 
 ```bash
 deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operator:bank-a:PARTNER_OPERATOR
@@ -266,7 +268,7 @@ A partner user's `partner_id` must be the partner's audience (e.g. `bank-a`, PM 
 
 ### Master Data code lists
 
-The portal's purposes and subject ID types come from Master Data code lists, as in Partner Management ([how](../design/consent-collection.md#purposes-and-subject-id-types)). Rancher: **Partner portal** group of this chart's form; through Commons Services, **Edit YAML** under `openg2p-consent-manager.masterData`.
+The portal's purposes and subject ID types come from Master Data code lists, as in Partner Management ([how](../partner-portal.md#purposes-and-subject-id-types)). Rancher: **Partner portal** group of this chart's form; through Commons Services, **Edit YAML** under `openg2p-consent-manager.masterData`.
 
 | Value (`masterData.*`) | Default | Env (`CONSENT_MANAGER_*`) |
 | --- | --- | --- |

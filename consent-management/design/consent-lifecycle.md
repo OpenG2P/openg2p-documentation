@@ -11,7 +11,7 @@ The **secondary** flow covers consent that the Consent Manager (CM) collects its
 
 There are two ways to originate a consent:
 
-* **The partner portal** (assisted, in person): a partner user raises the request, uploads the subject's signed form (and, if required, the subject logs in with national ID), and CM staff verify it. See [Consent collection](consent-collection.md).
+* **The partner portal** (assisted, in person): a partner user raises the request, uploads the subject's signed form (and, if required, the subject logs in with national ID), and a Consent Approver checks it. See [Consent collection](consent-collection.md).
 * **The origination API**, below: a client creates the request, the subject authenticates with an OIDC provider and approves. It runs on the beneficiary API, which is off by default. Endpoints: [Consent Lifecycle API](../api/consent-lifecycle-api.md).
 
 ## Origination
@@ -68,7 +68,7 @@ stateDiagram-v2
   pending --> denied: deny
   pending --> pending_verification: submit (partner portal)
   pending --> cancelled: cancel
-  pending_verification --> approved: staff verify
+  pending_verification --> approved: Consent Approver approves
   pending_verification --> rejected: staff reject
   pending_verification --> cancelled: cancel
   approved --> active: artefact issued

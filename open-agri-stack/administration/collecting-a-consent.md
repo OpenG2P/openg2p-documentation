@@ -6,7 +6,7 @@ description: Recording a farmer's consent.
 
 Records a farmer's consent for a use case in the Exchange's Consent Manager, collected in person by a partner's staff. Once approved, the partner queries the Composite for that farmer without sending a consent. Why consents work this way: [Consent](../architecture/consent.md) and [consent collection](../../consent-management/design/consent-collection.md).
 
-**Needs:** the partner onboarded with a policy for the use case ([Managing Partners](managing-partners.md)), and a partner portal account for the staff member ([Partner Portal Users](partner-portal-users.md)).
+**Needs:** the partner onboarded with a policy for the use case ([Managing Partners](managing-partners.md)), and a partner portal account for the staff member ([partner portal accounts](managing-partners.md#partner-portal-accounts)).
 
 ## Partner staff: record the consent
 
@@ -17,7 +17,7 @@ In the partner portal (`https://consent-partner-portal.<Exchange domain>`), logg
 3. **Authenticate with national ID**: the farmer logs in with eSignet in the popup.
 4. Upload the consent form the farmer signed, **Submit**.
 
-## Consent Manager staff: approve it
+## Consent Approver: approve it
 
 In the Exchange's CM console (`https://consent-manager.<Exchange domain>`), **Consent Approvals**: check the request, its form and the national-ID login, **Approve**. The consent is then active.
 

@@ -6,7 +6,7 @@ description: What comes next, by phase.
 
 What is still to be built in Agri Stack, in phases. Each item says what is to be done and where its design stands: a design page, the approach already decided, or "not designed yet". Country data and registry settings are set by the system integrator for each rollout and are not listed here.
 
-The longer designs are on their own pages: [Data Sharing Gateway](data-sharing-gateway.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md) and [Registry Data Sync](registry-data-sync.md).
+The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md) and [Registry Data Sync](registry-data-sync.md).
 
 ## Phase 1 — First production release
 
@@ -63,7 +63,8 @@ The longer designs are on their own pages: [Data Sharing Gateway](data-sharing-g
 
 ## Phase 3 — Many departments, other stacks, conveniences
 
-* **Data Sharing Gateway** — generic names in place of Agri ones (one coordinated release), stacks as packs (`agri-stack` holding content only), connectors per registry for other standards, use cases from criteria and a field picker. Setup at install is built. *Design:* [Data Sharing Gateway](data-sharing-gateway.md).
+* **Data from partners through the Composite** — partners (e.g. on OAN) send data back into Agri Stack through the Composite only, which routes it to the registries; partners make no arrangement with each registry. *Design:* open; everything is still to be designed.
+* **Generic Exchange** — generic names in place of Agri ones (one coordinated release), stacks as packs (`agri-stack` holding content only), connectors per registry for other standards, use cases from criteria and a field picker. *Design:* [Generic Exchange](generic-exchange.md).
 * **Across departments** —
   * shared services by URL in the registry charts (catalogue, Exchange Consent Manager), and setup jobs that call service APIs instead of writing into another service's database;
   * a gateway between departments with mutual TLS (a client certificate per department) on top of signed requests; site-to-site WireGuard documented as the alternative for a few departments;

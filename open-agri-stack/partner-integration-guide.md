@@ -60,7 +60,7 @@ You never call the registries or `/validate` yourself. The Composite checks that
 
 ## Step 1 — Generate your signing key
 
-You sign every **request envelope** with your key and, if your policy lets you sign your own consents, each **consent** too. Supported algorithms: **EdDSA** (Ed25519), **ES256** (EC P-256) and **RS256** (RSA). Keep the private key in a keystore (a `.p12` is recommended); share only the public key. Choose a stable `kid` (e.g. `bank-a-2026-01`) and put it in every JWS header.
+You sign every **request envelope** with your key and, if your policy lets you sign your own consents, each **consent** too. Supported algorithms: **EdDSA** (Ed25519), **ES256** (EC P-256 only) and **RS256** (RSA). The consent's `aud` and the envelope's `sender_id` must name the same partner: the Consent Manager checks the consent with the first's key, the Composite with the second's. Keep the private key in a keystore (a `.p12` is recommended); share only the public key. Choose a stable `kid` (e.g. `bank-a-2026-01`) and put it in every JWS header.
 
 Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [test script](#test-script) generates an EC P-256 key (ES256) for testing.
 
@@ -155,7 +155,7 @@ Example: `loan-profile`.
 }
 ```
 
-`consent_grants_needed` lists the registries your consent needs a grant for, and `consent_scopes` the data scopes of each grant: grant every `required` scope (and the `optional` ones you want). A grant for a **mandatory** source, with its required scopes, is needed or the request fails (`consent_scope_missing`); without them for an **optional** source, that source is reported `denied` and not called. Scopes beyond the use case's are never asked for.
+`consent_grants_needed` lists the registries your consent needs a grant for, and `consent_scopes` the data scopes of each grant: grant every `required` scope (and the `optional` ones you want). A **mandatory** source needs a grant with its required scopes, or the request fails: `consent_grant_missing` with no grant for its registry, `consent_scope_missing` with a grant that lacks a required scope; without them for an **optional** source, that source is reported `denied` and not called. Scopes beyond the use case's are never asked for.
 
 A data scope is a **named group of the registry's own fields**, `<controller>.<name>`, not a key of the record you get back: the registry filters each record to the scopes' fields before rendering it. Each registry publishes its catalogue (a label, a description and the fields of each scope) on its partner API (`/partner/data_scopes`); you are not a partner of the registries, so ask the operator, who sees every registry's catalogue in the Composite console. See [Data Scopes](../products/registry/registry/design/data-scopes.md).
 
@@ -171,9 +171,9 @@ It is either held by the Consent Manager or signed by you, and a query presents 
 | `message.consent_id` | The consent is held by the Exchange CM and you want a specific one. |
 | `message.consent_jws` | A consent you obtained and signed yourself ([step 5](#step-5-build-and-sign-the-consent)), only if your policy for the use case allows partner-signed consents. |
 
-The first two need the Composite's Exchange consent mode. The response names the consent used (`message.consent_id`).
+The first two need the Composite's Exchange consent mode. The response names the consent used (`message.consent_id`) when it is a consent held by the Consent Manager, or a signed consent with a single grant; for a signed consent with several grants it is left out.
 
-**A consent held in the Consent Manager.** Your staff record the farmer's consent in the Exchange's partner portal, and CM staff approve it ([Collecting a Consent](administration/collecting-a-consent.md)). You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)); you can download its [consent record](../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent), signed by the CM: in the portal, or through the CM's [partner portal API](../consent-management/api/README.md#partner-portal-endpoints) (`GET /consent/v1/partner-portal/consents/{id}/record`). See [consent](architecture/consent.md).
+**A consent held in the Consent Manager.** Your staff record the farmer's consent in the Exchange's partner portal, and a Consent Approver approves it ([Collecting a Consent](administration/collecting-a-consent.md)). You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)); you can download its [consent record](../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent), signed by the CM: in the portal, or through the CM's [partner portal API](../consent-management/api/README.md#partner-portal-endpoints) (`GET /consent/v1/partner-portal/consents/{id}/record`). See [consent](architecture/consent.md).
 
 **A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 5](#step-5-build-and-sign-the-consent)). The Exchange accepts it only if your policy for the use case allows partner-signed consents (off by default; otherwise `consent_denied`, reason `partner_consent_not_accepted`): the Consent Manager can verify your signature, not that the farmer agreed. What that means for you:
 
@@ -195,7 +195,7 @@ Skip this step for a consent held in the Consent Manager. The consent is a **com
 | `grants` | `[{"data_controller": <registry>, "data_scopes": [<scope IDs>]}]`, one per registry in `consent_grants_needed` | Each registry once; scope IDs from the use case's `consent_scopes` for that registry, within what the farmer agreed to |
 | `fetch_type` | `oneshot` | |
 | `validity` | `{"valid_from": …, "valid_until": …}` | Within your policy's `max_validity_duration` for the use case; the Composite rejects a consent outside its window |
-| `issued_at` | now (UTC) | Within **±300 seconds** of the Consent Manager's clock (its freshness window), so sign a **fresh consent for each request** and keep clocks in sync |
+| `issued_at` | now (UTC) | Within **±300 seconds** of the Consent Manager's clock (its freshness window, configurable) when the consent is first checked for a registry; re-sending the same consent later returns that first decision until it expires or is revoked. Keep clocks in sync |
 
 Example: `loan-profile`, for partner `bank-a`.
 
@@ -227,6 +227,7 @@ import json
 from jwt import PyJWS  # PyJWT
 
 def canonical(obj) -> bytes:
+    # Keys sorted, no spaces. Matches the services for strings and integers; avoid floats.
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
 
 consent_jws = PyJWS().encode(canonical(claims), private_key, algorithm="ES256", headers={"kid": "bank-a-2026-01"})
@@ -309,7 +310,7 @@ The response is an envelope signed by the Composite. Example (`loan-profile`):
 
 * `header.status` is `succ` or `rjct`; on `rjct`, `header.status_reason_code` and `status_reason_message` say why, and `message` carries `error: {code, message}` instead of `data`.
 * `message.request_id` is the Composite's ID for this request; quote it when reporting a problem (audit events are linked by it).
-* `message.consent_id` is the consent the Exchange Consent Manager used, also when it looked it up (Exchange mode).
+* `message.consent_id` is the consent the Exchange Consent Manager used, also when it looked it up (Exchange mode); absent for a signed consent with several grants.
 * `message.sources` has a status per source, and a `detail` when there is something to say:
 
 | Source status | Meaning |
@@ -317,7 +318,7 @@ The response is an envelope signed by the Composite. Example (`loan-profile`):
 | `ok` | The registry returned records |
 | `no_record` | The registry answered, with no matching record |
 | `denied` | The registry refused (consent, policy or subject check), or your consent has no grant for it (an optional source is then not called) |
-| `unavailable` | The registry could not be reached, timed out, or answered 408/429/5xx; or the overall timeout was reached |
+| `unavailable` | The registry could not be reached, timed out, or answered 408/429/5xx; the overall timeout was reached; or (optional source) the Exchange Consent Manager issued no consent token for its registry |
 | `error` | Any other failure (a rejected search, a malformed answer) |
 
 A source whose dependency is not `ok` is not called; it takes the dependency's status, with `detail: "not called: …"`. With `partial_response: allowed` (e.g. `loan-profile`), only a failing **mandatory** source fails the request; optional sources that fail just show their status, and their output fields are `null` (a source that answered with no record gives `[]` or `0`).
@@ -327,7 +328,7 @@ A source whose dependency is not `ok` is not called; it takes the dependency's s
 | HTTP | `error.code` | Meaning |
 | --- | --- | --- |
 | 200 | — | Success (some optional sources may still be `denied` / `unavailable` / `error`) |
-| 400 | `invalid_envelope`, `wrong_receiver`, `stale_request`, `invalid_use_case`, `invalid_input` | Bad envelope, wrong `receiver_id`, `message_ts` more than 300 s from now, bad `@major`, bad subject or parameters |
+| 400 | `invalid_envelope`, `wrong_receiver`, `stale_request`, `invalid_use_case`, `invalid_input`, `consent_id_needs_exchange` | Bad envelope, wrong `receiver_id`, `message_ts` more than 300 s from now, bad `@major`, bad subject or parameters (or both `consent_jws` and `consent_id` sent), a `consent_id` when the Composite is not in Exchange mode |
 | 401 | `signature_invalid` | The envelope signature does not verify against your PM key (or you are unknown in PM) |
 | 403 | `partner_not_allowed` | You have no policy for this use case (`name@major`) in Partner Management: ask the Exchange's partner manager ([step 2](#step-2-get-onboarded-in-partner-management)) |
 | 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the Composite before any registry is called (`consent_required`: no consent sent in passthrough mode; `consent_scope_missing`: a mandatory source's required scopes are not granted) |
@@ -340,7 +341,7 @@ A source whose dependency is not `ok` is not called; it takes the dependency's s
 | 404 | `unknown_use_case` | No published use case of that name / major |
 | 429 | `rate_limited` | Rate limit reached |
 | 502 / 503 / 504 | `source_error` / `source_unavailable` | A mandatory source failed: error / unavailable / timed out |
-| 500 | `signing_unavailable` | The Composite cannot sign (its key is missing); the body is unsigned |
+| 500 | `signing_unavailable` | The Composite cannot sign (its key is missing); the body is unsigned (`signature` empty). Every other answer, errors and `429` included, is signed |
 
 When a registry denies your consent, the reason in `sources.<id>.detail` comes from the Consent Manager's `reason_code`; see the table in the [Partner Integration Guide, step 8](../consent-management/partner-integration-guide.md).
 
@@ -361,7 +362,7 @@ The Composite publishes its public keys at `https://agri-composite.<namespace>.o
 
 ## Rate limits
 
-Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is counted across all Composite pods. The ingress gateway also limits all partners' traffic to the use-case API together; beyond that it answers `429` with the header `x-local-rate-limit: true` and a plain-text body. Back off and retry on either `429`. Daily quotas are [not built yet](roadmap/README.md).
+Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` allows **60 requests per minute**), and `429 rate_limited` is returned beyond it. The limit is counted across all Composite pods (in Redis; if Redis is unreachable, each worker counts on its own). An install may also limit all partners' traffic to the use-case API together at the ingress gateway (off by default); beyond that it answers `429` with the header `x-local-rate-limit: true` and a plain-text body. Back off and retry on either `429`. Daily quotas are [not built yet](roadmap/README.md).
 
 ## Worked example: `loan-profile`
 
@@ -380,7 +381,7 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 
 **What the Composite does:**
 
-1. Verifies your signature (`PARTNER_BANK_A`), checks that you have a policy for `loan-profile@1`, the parameters and the rate limit.
+1. Checks the envelope (`message_ts`, `receiver_id`, the use case), verifies your signature (`PARTNER_BANK_A`), checks that you have a policy for `loan-profile@1`, then the parameters and the rate limit.
 2. Checks the consent: your signature, subject `FAYDA_FAN 946053125409` = the request's, valid now, a grant for `farmer-registry` (mandatory) and `crop-sown-registry`. Then gets a consent token for each registry from the Exchange CM, which applies your policy for `loan-profile@1`.
 3. Calls the **Farmer Registry**: `reg_type: Farmer`, search `foundational_id $eq 946053125409`.
 4. Reads `FARMER_ID` from the farmer record, then calls the **Crop Sown Registry** twice in parallel: season summaries (`FARMER_SEASON_SUMMARY`, crop year 2019, Meher) and crop seasons (crop year 2019, Meher).
@@ -415,7 +416,7 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 
 * `land.total_size` is the sum of each parcel's `land_size`, in the parcels' unit (`farm_details[].measurement`).
 * `crops.total_area_sown_ha` sums `measures.area_sown_ha` over the crop seasons returned; with `crop_year` and `season` it is that season's.
-* Without `crop_year` and `season`, all of the farmer's seasons come back, newest first.
+* Without `crop_year` and `season`, the farmer's seasons come back newest first, up to 100 crop seasons and 20 season summaries; a full page is marked "the first N records only".
 
 If the farmer had not consented to the Crop Sown Registry (no grant), `season_summaries` and `crop_seasons` would be `denied` with `detail: "the consent has no grant for crop-sown-registry"`, `crops.*` would be `null`, and the request would still succeed. If the Farmer Registry denied the consent, the request would fail `403 source_denied`.
 
@@ -426,7 +427,7 @@ If the farmer had not consented to the Crop Sown Registry (no grant), `season_su
 ## Checklist
 
 * [ ] Your key is registered and **active** in the Exchange's PM under `PARTNER_<YOUR_ID>`; the JWS `kid` and `alg` match it.
-* [ ] An **active** use-case policy there for each use case you call (`name@major`), allowing its purpose and subject ID types, and your signing algorithm.
+* [ ] An **active** use-case policy there for each use case you call (`name@major`), allowing its purpose and subject ID types (and, if you sign consents, your signing algorithm).
 * [ ] For consents collected in the partner portal: the consent was made for the use case you call, for the farmer you name in `message.subject`.
 * [ ] For a consent you sign: your policy for the use case allows it; its `subject_id` equals `message.subject` (type and value); `aud` is your partner ID; the purpose is the use case's; one grant per registry, with the use case's `consent_scopes`; a new `jti` and a fresh `issued_at` each time.
 * [ ] `message_ts` fresh; clocks in sync.

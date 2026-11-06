@@ -13,7 +13,7 @@ The Consent Manager exposes a versioned REST API. This page holds the convention
 | Group | Page | API audience |
 | --- | --- | --- |
 | Verification | [Verification API](verification-api.md) | **partner**: registries and the Composite, in cluster |
-| Decision log, consent verification, consents, partner portal | [Staff endpoints](#staff-endpoints) | **staff**: CM staff (console) and partner users (partner portal) |
+| Decision log, consent verification, consents, partner portal | [Staff endpoints](#staff-endpoints) | **staff**: Consent Approvers and administrators (console) and partner users (partner portal) |
 | Origination | [Consent Lifecycle API](consent-lifecycle-api.md) | **beneficiary** (off by default) |
 | Subject rights (GDPR) | [Subject API](subject-api.md) | **beneficiary** (off by default) |
 
@@ -129,7 +129,7 @@ For partner users; every call is scoped to the user's `partner_id`. Base `/conse
 | `POST /consent-requests` | Create a request: `subject_id`, `subject_identifiers`, `purpose` and `grants`, or at an Exchange `use_case`; `validity` |
 | `GET /consent-requests`, `GET /consent-requests/{id}` | List (`status`, `limit`, `offset`) and read requests |
 | `POST`, `GET`, `DELETE /consent-requests/{id}/evidence[/{evidence_id}]` | Upload (PDF, JPEG, PNG; 10 MB), download and delete the signed form |
-| `POST /consent-requests/{id}/submit`, `…/cancel` | Submit for staff verification; cancel |
+| `POST /consent-requests/{id}/submit`, `…/cancel` | Submit for approval; cancel |
 | `GET /subject-auth`, `POST` / `GET /consent-requests/{id}/subject-auth`, `GET /subject-auth/callback` | The subject's national-ID login: settings, start, status, and the provider's redirect |
 | `GET /consents`, `GET /consents/{id}` | The partner's consents |
 | `GET /consents/{id}/receipt`, `GET /consents/{id}/record` | The receipt; the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) (ZIP) |

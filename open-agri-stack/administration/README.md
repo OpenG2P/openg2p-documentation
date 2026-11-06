@@ -8,11 +8,9 @@ The install sets up everything Agri Stack needs to run ([what the install sets u
 
 | Guide | What it does | Who |
 | --- | --- | --- |
-| [Managing Partners](managing-partners.md) | Onboard a partner, assign and remove its use cases, disable it | The Exchange's partner manager |
-| [Partner Portal Users](partner-portal-users.md) | Create and disable partner portal accounts for a partner's staff | The Exchange's Keycloak administrator |
-| [Collecting a Consent](collecting-a-consent.md) | Record a farmer's consent in the partner portal and approve it | Partner staff; the Exchange's CM staff |
-| [Releasing Data to the Composite](releasing-data-to-the-composite.md) | Set what a registry releases to the Composite; widen or narrow it as use cases change | Each department's partner manager |
-| [Onboarding the Composite](onboarding-the-composite.md) | Onboard the Composite in a department by hand, where the install did not | Each department's partner manager |
+| [Managing Partners](managing-partners.md) | Onboard a partner, give its staff partner portal accounts, assign and remove its use cases, disable it | The Exchange's partner manager; portal accounts, its Keycloak administrator |
+| [Collecting a Consent](collecting-a-consent.md) | Record a farmer's consent in the partner portal and approve it | Partner staff; a Consent Approver at the Exchange |
+| [Releasing Data to the Composite](releasing-data-to-the-composite.md) | Check the Composite is onboarded in the department (or onboard it); set what a registry releases to it; widen or narrow it as use cases change | Each department's partner manager |
 | [Keys](keys.md) | Replace or rotate a signing key; respond to a compromised key | Each install's operator |
 
 Where each one works:

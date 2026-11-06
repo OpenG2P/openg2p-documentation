@@ -56,7 +56,7 @@ Endpoints: [API Reference](../api/README.md). Which paths are reachable from out
 | **Signing** | partner | The CM's own key (`.p12`): signs receipts and consent tokens; publishes the JWKS |
 | **Artefacts and receipts** | partner · staff · beneficiary | Stores the canonical consent artefact and its CM-signed receipt |
 | **Exchange** | partner | Issues consent tokens (Exchange role) and accepts them (department role); opt-in |
-| **Assisted consent** | staff | Partner portal requests, evidence upload (object storage), the subject's national-ID login, staff verification, the partner's consent record |
+| **Assisted consent** | staff | Partner portal requests, evidence upload (object storage), the subject's national-ID login, approval by a Consent Approver, the partner's consent record |
 | **Origination and subject rights** | beneficiary | The origination API and `/my/*` |
 | **Decision log** | staff (view) | Append-only record of every decision |
 | **Expiry** | — | A CronJob that marks consents past `valid_until` as expired |

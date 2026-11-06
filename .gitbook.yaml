@@ -12,13 +12,16 @@ redirects:
   products/registry/registry/developer-zone/api-documentation/1.1.0/partner-api: products/registry/registry/developer-zone/api-documentation/partner-api.md
   open-agri-stack/implementation: open-agri-stack/deployment/README.md
   open-agri-stack/exchange: open-agri-stack/composite/README.md
+  open-agri-stack/roadmap/data-sharing-gateway: open-agri-stack/roadmap/generic-exchange.md
+  open-agri-stack/administration/onboarding-the-composite: open-agri-stack/administration/releasing-data-to-the-composite.md
+  open-agri-stack/administration/partner-portal-users: open-agri-stack/administration/managing-partners.md
   open-agri-stack/open-items: open-agri-stack/roadmap/README.md
   open-agri-stack/composite/adding-a-data-source: open-agri-stack/registries/adding-a-registry.md
   open-agri-stack/design: open-agri-stack/roadmap/README.md
   open-agri-stack/design/rate-limiting: open-agri-stack/composite/rate-limiting.md
   open-agri-stack/architecture/registries: open-agri-stack/registries/README.md
   open-agri-stack/design/api-gateway: open-agri-stack/architecture/networking-and-gateway.md
-  open-agri-stack/design/data-sharing-gateway: open-agri-stack/roadmap/data-sharing-gateway.md
+  open-agri-stack/design/data-sharing-gateway: open-agri-stack/roadmap/generic-exchange.md
   open-agri-stack/design/oan-interoperability: open-agri-stack/roadmap/oan-interoperability.md
   open-agri-stack/design/livestock-registry: open-agri-stack/roadmap/livestock-registry.md
   open-agri-stack/design/registry-data-sync: open-agri-stack/roadmap/registry-data-sync.md

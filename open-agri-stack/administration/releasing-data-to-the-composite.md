@@ -1,12 +1,33 @@
 ---
-description: Setting what a registry releases to the Composite.
+description: The Composite in a department, and what it gets.
 ---
 
 # Releasing Data to the Composite
 
 Each department decides what its registry releases to the Composite: the Composite's scope policy for the registry, in the department's own Partner Management. Until it exists the registry releases nothing to the Composite. Why and how it is applied: [Scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released) and [Data-Sharing Policies](../architecture/data-sharing-policies.md).
 
-Step 3 of the [install steps](../deployment/README.md#install-steps), and again whenever use cases change. The install has already onboarded the Composite (`PARTNER_AGRI_COMPOSITE`) in the department's Partner Management, with its key and no policy.
+Step 3 of the [install steps](../deployment/README.md#install-steps), and again whenever use cases change. Done by the department's partner manager, in the department's Partner Management (`https://partner-management.<department domain>`).
+
+## The Composite's entry
+
+The install onboards the Composite (`PARTNER_AGRI_COMPOSITE`) in the department's Partner Management, with its keys read from the Composite's JWKS URL and no policy, when Commons Services has **Exchange Role** set ([what the install sets up](../deployment/README.md#what-the-install-sets-up)). Check it is there:
+
+```bash
+curl -s https://partner-management-partner-api.<department domain>/keys/PARTNER_AGRI_COMPOSITE
+```
+
+It serves the same `kid` as `https://agri-composite.<Exchange domain>/.well-known/jwks.json`. If the partner is missing (the setting was off, or the entry was removed), onboard it by hand: **Requests → + Onboard partner**:
+
+| Field | Value |
+| --- | --- |
+| Partner ID | `PARTNER_AGRI_COMPOSITE` |
+| Name | e.g. `Agri Stack Composite` |
+| Public keys | None |
+| JWKS URL | `https://agri-composite.<Exchange domain>/.well-known/jwks.json` |
+| Read keys from this JWKS URL whenever they are needed | **On** |
+| Policies | None |
+
+**Submit request**, then approve it (another person, in production). If the partner exists but serves no key, Partner Management cannot reach the JWKS URL.
 
 ## What the Exchange asks for
 
@@ -20,7 +41,7 @@ For each use case, `consent_scopes` gives the registry's scopes (`required` and 
 
 ## Add the policy
 
-In the department's Partner Management (`https://partner-management.<department domain>`), partner **PARTNER_AGRI_COMPOSITE → Add policy → Data controller**:
+Partner **PARTNER_AGRI_COMPOSITE → Add policy → Data controller**:
 
 | Field | Value |
 | --- | --- |
