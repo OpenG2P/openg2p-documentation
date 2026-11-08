@@ -1,10 +1,10 @@
 ---
-description: Integrating a partner's system.
+description: For partners' developers: fetching a farmer's data from Agri Stack, with the farmer's consent.
 ---
 
-# Partner Integration Guide
+# Partner Guide: Fetching Farmer Data
 
-**For a partner's developers.** The Exchange's administrators onboarding partners: [Managing Partners](administration/managing-partners.md).
+**For a partner's developers:** how your system fetches a farmer's data from Agri Stack. You call one service, the **Composite**, which is part of the **Exchange**: the Agri Stack install partners deal with, with its own Partner Management (your keys and policies) and Consent Manager (farmers' consents). You never call a department's registry. For the Exchange's administrators onboarding partners: [Managing Partners](administration/managing-partners.md).
 
 You are a **partner**: a bank, MFI or agritech that needs farmer data held across several registries, for an approved use case such as `loan-profile`. You send **one signed request** with the farmer's identifier to the Composite, under **one consent** of the farmer, and get back **one signed response** with a status per registry.
 
@@ -16,7 +16,7 @@ This guide covers what is specific to Agri Stack. The consent object, its signin
 Endpoint reference (request and response schemas, error codes): [Composite API Reference](composite/api.md).
 {% endhint %}
 
-## How it fits together
+## How a request is answered
 
 The diagram shows the sample use case `loan-profile`, which reads the Farmer Registry and then the Crop Sown Registry; another use case reads its own registries in its own order.
 
@@ -62,7 +62,7 @@ You never call the registries or `/validate` yourself. The Composite checks that
 
 You sign every **request envelope** with your key and, if your policy lets you sign your own consents, each **consent** too. Supported algorithms: **EdDSA** (Ed25519), **ES256** (EC P-256 only) and **RS256** (RSA). The consent's `aud` and the envelope's `sender_id` must name the same partner: the Consent Manager checks the consent with the first's key, the Composite with the second's. Keep the private key in a keystore (a `.p12` is recommended); share only the public key. Choose a stable `kid` (e.g. `bank-a-2026-01`) and put it in every JWS header.
 
-Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [test script](#test-script) generates an EC P-256 key (ES256) for testing.
+Key generation is shown in the Consent Manager's [Partner Integration Guide, step 1](../consent-management/partner-integration-guide.md#step-1-generate-and-hold-your-signing-key). The [test script](#code-examples) generates an EC P-256 key (ES256) for testing.
 
 ## Step 2 — Get onboarded in Partner Management
 
@@ -79,8 +79,8 @@ Partner Management (PM) holds your public key and your policies; the Composite a
 | Purposes | `credit-assessment` | Per use case: its `purpose` |
 | Subject ID types | e.g. `FAYDA_FAN` (the national ID in the Ethiopia example), `FARMER_ID` | Per use case: its `input.subject.id_types` |
 | Signing algorithms | `ES256` | Your key's algorithm |
-| Longest consent validity | `P90D` | As agreed with the Exchange |
-| Partner-signed consents | Off | On (**May present its own signed consents**) only if you will sign consents yourself ([step 4](#step-4-collect-the-farmers-consent)) and the Exchange trusts your own consent collection |
+| Longest consent validity | `P90D` | As agreed with the Exchange's operator |
+| Partner-signed consents | Off | On (**May present its own signed consents**) only if you will sign consents yourself ([step 4](#step-4-collect-the-farmers-consent)) and the Exchange's operator trusts your own consent collection |
 
 You get **one use-case policy per use case**, with its purposes, subject ID types, algorithms and validity. It carries no data scopes: the use case brings its own, and each department's ceiling for the Composite still applies ([data-sharing policies](architecture/data-sharing-policies.md)).
 
@@ -90,7 +90,7 @@ You get **one use-case policy per use case**, with its purposes, subject ID type
 
 **The PM ID.** PM stores you as `PARTNER_<SENDER_ID>`, upper-cased with `-` replaced by `_`: partner `bank-a` is `PARTNER_BANK_A`. Every module looks your key and policies up under that ID. The Composite is itself a PM partner: `agri-composite` is `PARTNER_AGRI_COMPOSITE`.
 
-After approval, ask the partner manager to confirm. **Later changes** go through the partner manager too: another use case, or a new key (send the new public key and `kid`; old and new both work until the old one is revoked: [Keys: a partner's key](administration/keys.md#a-partners-key)).
+After approval, ask the partner manager to confirm. **Later changes** go through the partner manager too: another use case, or a new key (send the new public key and `kid`; old and new both work until the old one is revoked: [Keys: partner signing key](administration/keys.md#partner-signing-key)).
 
 ## Step 3 — Discover the use case
 
@@ -175,11 +175,11 @@ The first two need the Composite's Exchange consent mode. The response names the
 
 **A consent held in the Consent Manager.** Your staff record the farmer's consent in the Exchange's partner portal, and a Consent Approver approves it ([Collecting a Consent](administration/collecting-a-consent.md)). You then query without a consent, or with its ID ([step 6](#step-6-sign-the-request-envelope)); you can download its [consent record](../consent-management/design/consent-collection.md#the-partners-copy-of-a-consent), signed by the CM: in the portal, or through the CM's [partner portal API](../consent-management/api/README.md#partner-portal-endpoints) (`GET /consent/v1/partner-portal/consents/{id}/record`). See [consent](architecture/consent.md).
 
-**A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 5](#step-5-build-and-sign-the-consent)). The Exchange accepts it only if your policy for the use case allows partner-signed consents (off by default; otherwise `consent_denied`, reason `partner_consent_not_accepted`): the Consent Manager can verify your signature, not that the farmer agreed. What that means for you:
+**A consent you sign (`consent_jws`).** You obtain the consent from the farmer through your own channel and assert it in a consent object signed with your key (the "partner-embedded" flow, [step 5](#step-5-build-and-sign-the-consent)). The Exchange Consent Manager accepts it only if your policy for the use case allows partner-signed consents (off by default; otherwise `consent_denied`, reason `partner_consent_not_accepted`): the Consent Manager can verify your signature, not that the farmer agreed. What that means for you:
 
 * **Obtain real, informed consent** for the use case's purpose (e.g. `credit-assessment` for `loan-profile`) and for each registry's data, before you sign. Tell the farmer which registries hold the data being shared (e.g. the Farmer Registry and the Crop Sown Registry for `loan-profile`) and what each scope covers (its label and description in the registry's catalogue), as the CM consent screen would.
 * **Stay within the use case.** Grant per registry the use case's `consent_scopes` ([step 3](#step-3-discover-the-use-case)), within what the farmer agreed to, for the use case's purpose.
-* **Keep evidence** of how the consent was obtained, for audit and disputes: who consented, when, through which channel and how they were authenticated, for which purpose and which registries' data. The capture method and evidence accepted are part of your agreement with the Exchange when you are onboarded; follow what it requires.
+* **Keep evidence** of how the consent was obtained, for audit and disputes: who consented, when, through which channel and how they were authenticated, for which purpose and which registries' data. The capture method and evidence accepted are part of your agreement with the Exchange's operator when you are onboarded; follow what it requires.
 * **The signed consent and the Consent Manager's receipts are the audit trail.** CM issues a receipt per registry for your consent ([Partner Integration Guide, step 9](../consent-management/partner-integration-guide.md)). Misrepresenting consent is a compliance breach.
 
 ## Step 5 — Build and sign the consent
@@ -420,9 +420,9 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 
 If the farmer had not consented to the Crop Sown Registry (no grant), `season_summaries` and `crop_seasons` would be `denied` with `detail: "the consent has no grant for crop-sown-registry"`, `crops.*` would be `null`, and the request would still succeed. If the Farmer Registry denied the consent, the request would fail `403 source_denied`.
 
-## Test script
+## Code examples
 
-[`scripts/test_install.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.py) does all of the above as a test partner against an install: the consent (`make_consent`), the signed request (`build_query`) and the check of the Composite's signature (`verify_response`) are working examples in Python. Running it: [Testing](deployment/testing.md).
+The operator's install test, [`scripts/test_install.py`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.py), acts as a test partner and does all of the above. You don't run it (it needs admin access to the install), but three of its functions are working Python examples to copy: `make_consent` (the consent), `build_query` (the signed request) and `verify_response` (the check of the Composite's signature).
 
 ## Checklist
 

@@ -9,7 +9,7 @@ The **partner portal** is a web app where a partner's staff (e.g. at a bank bran
 ## How a consent is collected
 
 1. Partner staff raise a request (**New consent**): the subject, the purpose (at an Exchange, the use case) and the period.
-2. The subject logs in with their national ID on the spot ([national ID authentication](design/consent-collection.md#national-id-authentication-in-the-partner-portal)) and signs the consent form; staff upload it and submit.
+2. The subject logs in with their national ID on the spot ([national ID authentication](design/consent-collection.md#national-id-authentication-in-the-partner-portal)) and signs the paper consent form by hand; staff scan it, upload the scan and submit.
 3. The **Consent Approver** checks the request, the form and the national-ID login in the CM console (**Consent Approvals**), and approves or rejects it.
 4. Once approved, the consent is active; the partner downloads its receipt and its consent record.
 

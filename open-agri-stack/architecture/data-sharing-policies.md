@@ -61,7 +61,7 @@ In the registries, a scope is a registry **data scope**: a named group of the re
 | A partner gets another use case | The Exchange's partner manager: **Add policy** on the partner | The Exchange's PM |
 | A partner loses a use case | The Exchange's partner manager: **Revoke** that use case's policy | The Exchange's PM |
 | A new use case is published | The Agri Stack platform team ([creating a use case](../composite/use-case-configuration.md#creating-a-use-case)) | Not a policy change; partners still need it granted |
-| The Composite may read more from a registry (a new scope or purpose) | The department's partner manager: edits the Composite's scope policy ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md)) | The department's PM |
+| The Composite may read more from a registry (a new scope or purpose) | The department's partner manager: edits the Composite's scope policy ([Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md)) | The department's PM |
 | A farmer consents, or revokes | The farmer | The Exchange's CM |
 
 Policy changes are versioned and audited in PM, and take effect when approved; modules see them within their policy cache time (about a minute by default).

@@ -10,18 +10,6 @@ A registry joins Agri Stack by becoming a [data source](../architecture/use-case
 The Livestock Registry is [planned](../roadmap/livestock-registry.md), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
 {% endhint %}
 
-## Overview
-
-| Step | Where | Who |
-| --- | --- | --- |
-| [1. Registry prerequisites](#step-1-registry-prerequisites) | The registry | Registry team |
-| [2. Identities in Partner Management](#step-2-identities-in-partner-management) | PM | PM administrator |
-| [3. The Composite's scope policy in the department](#step-3-the-composites-scope-policy-in-the-department) | Department PM and CM | Department partner manager |
-| [4. Register the endpoint in the Composite](#step-4-register-the-endpoint-in-the-composite) | Composite Helm values | Agri Stack operator |
-| [5. Add the source to the use case](#step-5-add-the-source-to-the-use-case) | Use-case YAML | Use-case author |
-| [6. Partners add a grant](#step-6-partners-add-a-grant) | Partner's consent | Each partner |
-| [7. Test](#step-7-test) | Laptop / cluster | Operator |
-
 ## Step 1 — Registry prerequisites
 
 The registry must answer the Composite exactly as it answers a partner:
@@ -43,7 +31,7 @@ See the PM [API reference](../../platform/platform-services/partner-management/a
 
 The department that runs the new registry decides what it releases to the Composite ([data-sharing policies](../architecture/data-sharing-policies.md)). It needs:
 
-* **A scope policy for the Composite** in the department's PM: partner `PARTNER_AGRI_COMPOSITE`, data controller `livestock-registry`, with the scopes and purposes of the use cases that read the registry (e.g. `livestock-registry.animals`, `livestock-registry.owner_reference`; `credit-assessment`), the subject identifier types (`FAYDA_FAN`, `FARMER_ID`), the signing algorithms, the maximum validity and the fetch type ([scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released)). Steps: [Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md).
+* **A scope policy for the Composite** in the department's PM: partner `PARTNER_AGRI_COMPOSITE`, data controller `livestock-registry`, with the scopes and purposes of the use cases that read the registry (e.g. `livestock-registry.animals`, `livestock-registry.owner_reference`; `credit-assessment`), the subject identifier types (`FAYDA_FAN`, `FARMER_ID`), the signing algorithms, the maximum validity and the fetch type ([scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released)). Steps: [Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md).
 * **Trust of the Exchange CM** as a consent-token issuer, in the department's CM: **Exchange Role** department in the department's commons-services form (`global.agriStackExchange.role`; it trusts `agri-stack-exchange-cm` presented by `agri-composite` by default). See [Exchange consent tokens](../../consent-management/deployment/README.md#setting-up-a-department).
 
 Partners need nothing per registry: a partner with a policy for `loan-profile@1` in the Exchange's PM gets the new source with it, as far as its consent grants it ([step 6](#step-6-partners-add-a-grant)). A new major version (`loan-profile@2`) needs its own policy per partner in the Exchange's PM.

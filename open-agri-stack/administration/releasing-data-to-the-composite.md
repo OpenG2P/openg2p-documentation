@@ -1,16 +1,22 @@
 ---
-description: The Composite in a department, and what it gets.
+description: What a department's registry releases to the Composite.
 ---
 
-# Releasing Data to the Composite
+# Releasing Registry Data to the Composite
 
-Each department decides what its registry releases to the Composite: the Composite's scope policy for the registry, in the department's own Partner Management. Until it exists the registry releases nothing to the Composite. Why and how it is applied: [Scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released) and [Data-Sharing Policies](../architecture/data-sharing-policies.md).
+Each department decides what its registry releases to the Composite (the Exchange's service that partners query): the Composite's scope policy for the registry, in the department's own Partner Management. Until the department adds it, the registry releases nothing to the Composite. The department owns this policy: the Exchange's operator should hold no Partner Management admin rights in a department. Why and how it is applied: [Scope policy for the Composite](../architecture/data-sharing-policies.md#what-actually-gets-released) and [Data-Sharing Policies](../architecture/data-sharing-policies.md).
 
 Step 3 of the [install steps](../deployment/README.md#install-steps), and again whenever use cases change. Done by the department's partner manager, in the department's Partner Management (`https://partner-management.<department domain>`).
 
 ## The Composite's entry
 
-The install onboards the Composite (`PARTNER_AGRI_COMPOSITE`) in the department's Partner Management, with its keys read from the Composite's JWKS URL and no policy, when Commons Services has **Exchange Role** set ([what the install sets up](../deployment/README.md#what-the-install-sets-up)). Check it is there:
+Installing a department with **Exchange Role** `department` (in Commons Services) onboards the Composite as a partner in the department's Partner Management by default:
+
+* partner ID `PARTNER_AGRI_COMPOSITE`;
+* its public keys read from the Composite's JWKS URL whenever needed, so no key is entered by hand;
+* **no policy**: it releases nothing until you add one below.
+
+The install raises and approves this onboarding itself (actor `bootstrap` in the Partner Management audit). More: [what the install sets up](../deployment/README.md#what-the-install-sets-up). Check it is there:
 
 ```bash
 curl -s https://partner-management-partner-api.<department domain>/keys/PARTNER_AGRI_COMPOSITE
@@ -29,9 +35,9 @@ It serves the same `kid` as `https://agri-composite.<Exchange domain>/.well-know
 
 **Submit request**, then approve it (another person, in production). If the partner exists but serves no key, Partner Management cannot reach the JWKS URL.
 
-## What the Exchange asks for
+## What the use cases read from the registry
 
-The Composite lists each published use case and what it reads from each registry:
+The Composite lists each published use case and the scopes it reads from each registry:
 
 ```bash
 curl -s https://agri-composite.<Exchange domain>/composite/v1/use-cases
@@ -52,7 +58,7 @@ Partner **PARTNER_AGRI_COMPOSITE → Add policy → Data controller**:
 | Signing algorithms | `ES256` (the Composite's generated key) |
 | Maximum validity, Fetch type | e.g. `P90D`, `oneshot` |
 
-Submit, then approve the request (another person, in production). One policy per registry the department runs. Portal steps: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md).
+Submit, then have another person approve the request (Partner Management allows the same person; avoid it in production). Review a widening before approving it. One policy per registry the department runs. Portal steps: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md).
 
 **Check:** `curl -s https://partner-management-partner-api.<department domain>/policies/PARTNER_AGRI_COMPOSITE` lists the policy; a query through the Composite then gets the registry's data ([Testing](../deployment/testing.md)).
 

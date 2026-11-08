@@ -16,7 +16,7 @@ The functions of an API gateway are fulfilled by the ingress of the [OpenG2P dep
 | Rate limits and quotas | A per-partner, per-use-case limit in the Composite, set in each use case and counted across pods in Redis; optionally an edge limit on the Composite's route at the Istio ingress gateway (off by default); daily quotas to do ([rate limiting](../composite/rate-limiting.md)) |
 | Usage reports | Audit events from every hop, in the Audit Manager |
 | mTLS between services, timeouts, retries, circuit breaking | Istio |
-| Developer portal | The [Partner Integration Guide](../partner-integration-guide.md) and the Composite's describe endpoints |
+| Developer portal | The [Partner Guide: Fetching Farmer Data](../partner-integration-guide.md) and the Composite's describe endpoints |
 
 {% hint style="info" %}
 A gateway product is worth adding only if many partner-facing APIs from different teams need a common portal, keys, analytics or billing, or if a national API gateway is mandated. It would then sit in front of the Composite, unchanged.

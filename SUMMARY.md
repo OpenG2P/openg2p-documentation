@@ -635,9 +635,9 @@
   * [Administration](open-agri-stack/administration/README.md)
     * [Managing Partners](open-agri-stack/administration/managing-partners.md)
     * [Collecting a Consent](open-agri-stack/administration/collecting-a-consent.md)
-    * [Releasing Data to the Composite](open-agri-stack/administration/releasing-data-to-the-composite.md)
+    * [Releasing Registry Data to the Composite](open-agri-stack/administration/releasing-data-to-the-composite.md)
     * [Keys](open-agri-stack/administration/keys.md)
-  * [Partner Integration Guide](open-agri-stack/partner-integration-guide.md)
+  * [Partner Guide: Fetching Farmer Data](open-agri-stack/partner-integration-guide.md)
   * [Versions & Source Code](open-agri-stack/versions/README.md)
 
 ## Platform

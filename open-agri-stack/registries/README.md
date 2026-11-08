@@ -17,7 +17,7 @@ Each registry in Agri Stack belongs to a department and is its own install there
 
 * **Its own install.** Each department runs its registry with its own Partner Management, Consent Manager and data. Registries share identifiers, never code or databases: neither looks anything up in the other.
 * **It sees only the Composite.** No bank or other partner calls it through Agri Stack; the partner's ID comes with each request and is logged ([Composite as a partner](../architecture/exchange.md#composite-as-a-partner)).
-* **It decides what leaves it.** The department sets what its registry releases to the Composite, in its own Partner Management, and its Consent Manager applies it to every request ([Data-Sharing Policies](../architecture/data-sharing-policies.md#what-actually-gets-released), [Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md)).
+* **It decides what leaves it.** The department sets what its registry releases to the Composite, in its own Partner Management, and its Consent Manager applies it to every request ([Data-Sharing Policies](../architecture/data-sharing-policies.md#what-actually-gets-released), [Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md)).
 
 ## Farmer ID across registries
 

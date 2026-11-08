@@ -73,7 +73,7 @@ The Composite signs its calls to the registries and its answers to partners with
 * **Generated** (`generate: true`): on first install the chart creates the Secret with an EC P-256 key (`key.pem`) and a `kid` (`<partner ID>-<random>`), then reads it back on every upgrade, and keeps it on uninstall.
 * **Your own:** create the Secret before installing, with a `.p12` (`composite.p12`, `password`, and optionally `kid` and `algorithm`). The chart leaves a Secret it did not create alone, and a `.p12` is used before a generated key. `kid` blank: the certificate's SHA-256 thumbprint; `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).
 
-Replacing and rotating it: [Keys](../administration/keys.md#the-composites-key).
+Replacing and rotating it: [Keys](../administration/keys.md#composite-signing-key).
 
 ## Console
 

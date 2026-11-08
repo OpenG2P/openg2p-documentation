@@ -63,7 +63,7 @@ The install generates it. Where keys must come from your organisation's own key 
 
 ## Approvals
 
-Separate who raises and who approves Partner Management requests, at the Exchange and in each department ([Administration: approvals](../administration/README.md#approvals)).
+Separate who raises and who approves Partner Management requests, at the Exchange and in each department ([Managing Partners](../administration/managing-partners.md#onboard-a-partner), [Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md#add-the-policy)).
 
 ## Services that stay internal
 

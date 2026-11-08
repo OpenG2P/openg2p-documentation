@@ -42,7 +42,7 @@ Each install is a namespace on Kubernetes, installed with the OpenG2P Helm chart
 
 | Who | How they take part |
 | --- | --- |
-| Partner (bank, MFI, agritech) | Its system calls the Composite, or a registry directly; its staff use the partner portal ([Partner Integration Guide](../partner-integration-guide.md)) |
+| Partner (bank, MFI, agritech) | Its system calls the Composite, or a registry directly; its staff use the partner portal ([Partner Guide: Fetching Farmer Data](../partner-integration-guide.md)) |
 | Farmer | Gives consent, logging in with the national ID through eSignet ([Consent](consent.md)) |
 
 ## Data-sharing paths

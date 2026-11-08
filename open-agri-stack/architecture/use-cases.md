@@ -36,6 +36,6 @@ A farmer does not know what `loan-profile@1` means, so the consent is about the 
 
 ## Departments see data, not use cases
 
-A department's systems never deal with use cases. Its Partner Management and Consent Manager see only the Composite as a partner and, for each request, a consent token with the purpose, the farmer and the registry's data scopes. In the Composite's scope policy, each department decides the most its registry releases; its administrator reads the published use cases to decide it ([Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md)). A new use case, or one that reads more, gets that data only once the departments widen their policies.
+A department's systems never deal with use cases. Its Partner Management and Consent Manager see only the Composite as a partner and, for each request, a consent token with the purpose, the farmer and the registry's data scopes. In the Composite's scope policy, each department decides the most its registry releases; its administrator reads the published use cases to decide it ([Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md)). A new use case, or one that reads more, gets that data only once the departments widen their policies.
 
 **What is released for a request:** the use case's data ∩ what the farmer consented to ∩ what each department allows, worked through in [what actually gets released](data-sharing-policies.md#what-actually-gets-released).

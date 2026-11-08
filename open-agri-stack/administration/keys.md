@@ -8,13 +8,13 @@ Three kinds of signing key, each changed where it lives:
 
 | Key | Signs | Who trusts it, and how they get it |
 | --- | --- | --- |
-| The Composite's | Its calls to the registries, its answers to partners | Every Partner Management reads it from the Composite's JWKS URL when needed ([how](../architecture/exchange.md#composite-as-a-partner)) |
-| The Exchange Consent Manager's | The consent tokens for the registries | Each department's Consent Manager reads it from the Exchange CM's JWKS URL |
-| A partner's | Its requests and the consents it signs | The Exchange's Partner Management holds it, from the partner's onboarding |
+| Composite signing key | The Composite's calls to the registries and its answers to partners | Every Partner Management reads it from the Composite's JWKS URL when needed ([how](../architecture/exchange.md#composite-as-a-partner)) |
+| Exchange Consent Manager signing key | The consent tokens the Exchange CM issues for the registries | Each department's Consent Manager reads it from the Exchange CM's JWKS URL |
+| Partner signing key | The partner's requests and the consents it signs | The Exchange's Partner Management holds it, from the partner's onboarding |
 
-Nobody enters the Composite's or the Exchange CM's key anywhere: changing it where it lives is enough.
+Nobody enters the Composite signing key or the Exchange CM signing key anywhere: changing it where it lives is enough.
 
-## The Composite's key
+## Composite signing key
 
 The install generates it (Secret `agri-composite-signing`, kept on upgrades and uninstall) unless a Secret with your own key existed first.
 
@@ -43,23 +43,23 @@ The chart leaves a Secret it did not create alone, and a `.p12` is used before a
 
 ### An older install
 
-An install from before the generated key holds the Composite's key in each Partner Management itself (onboarded by the former setup script). There, rotating also needs, in **every** Partner Management, a key-update request on `PARTNER_AGRI_COMPOSITE` adding the new public key and `kid` (from the JWKS URL above), approved; then revoke the old `kid` after 5 minutes.
+An install from before the generated key holds the Composite signing key's public key in each Partner Management itself (onboarded by the former setup script). There, rotating also needs, in **every** Partner Management, a key-update request on `PARTNER_AGRI_COMPOSITE` adding the new public key and `kid` (from the JWKS URL above), approved; then revoke the old `kid` after 5 minutes.
 
-## The Exchange Consent Manager's key
+## Exchange Consent Manager signing key
 
 1. Create a Secret with the new `.p12` ([Production: the CM signing key](../deployment/production.md#exchange-consent-manager-signing-key)).
 2. In Commons Services of the Exchange: **Signing Key Secret** the new Secret, a new **Signing Key ID**; upgrade.
 
 The departments read the new key from the Exchange CM's JWKS URL. Consent tokens signed with the old key lapse within their lifetime (5 minutes).
 
-## A partner's key
+## Partner signing key
 
-The partner sends its new public key and `kid`. In the Exchange's Partner Management, on the partner: **Rotate / add keys** with the new key (a key-update request), approve. Old and new keys both work until the old `kid` is revoked: revoke it (**Rotate / add keys**, tick the old key) once the partner has switched. Partner's side: [Partner Integration Guide](../partner-integration-guide.md#step-2-get-onboarded-in-partner-management).
+The partner sends its new public key and `kid`. In the Exchange's Partner Management, on the partner: **Rotate / add keys** with the new key (a key-update request), approve. Old and new keys both work until the old `kid` is revoked: revoke it (**Rotate / add keys**, tick the old key) once the partner has switched. Partner's side: [Partner Guide: Fetching Farmer Data](../partner-integration-guide.md#step-2-get-onboarded-in-partner-management).
 
 ## A compromised key
 
 | Key | At once |
 | --- | --- |
-| The Composite's | Rotate it as above. An older install: also revoke the old `kid` in every Partner Management |
-| The Exchange CM's | Rotate it as above; tokens signed with it lapse within 5 minutes |
-| A partner's | Revoke its `kid` in the Exchange's Partner Management (or **Disable** the partner: [Managing Partners](managing-partners.md#disable-a-partner)), then add its new key |
+| Composite signing key | Rotate it as above. An older install: also revoke the old `kid` in every Partner Management |
+| Exchange CM signing key | Rotate it as above; tokens signed with it lapse within 5 minutes |
+| Partner signing key | Revoke its `kid` in the Exchange's Partner Management (or **Disable** the partner: [Managing Partners](managing-partners.md#disable-a-partner)), then add its new key |

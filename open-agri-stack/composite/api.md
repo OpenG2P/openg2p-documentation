@@ -2,7 +2,7 @@
 description: The Composite's endpoints.
 ---# Composite API Reference
 
-The endpoints of the [Composite](README.md), their request and response formats and error codes. How to use them, step by step (onboarding, keys, consent, signing the request, verifying the response): [Partner Integration Guide](../partner-integration-guide.md).
+The endpoints of the [Composite](README.md), their request and response formats and error codes. How to use them, step by step (onboarding, keys, consent, signing the request, verifying the response): [Partner Guide: Fetching Farmer Data](../partner-integration-guide.md).
 
 * **Base URL:** `https://<composite host>/composite/v1`
 * **Authentication:** a query is a signed envelope `{signature, header, message}`, verified against the partner's keys in Partner Management; every response is signed by the Composite. The console API needs a staff login.

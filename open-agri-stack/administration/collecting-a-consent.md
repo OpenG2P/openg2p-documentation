@@ -15,12 +15,12 @@ In the partner portal (`https://consent-partner-portal.<Exchange domain>`), logg
 1. **Consents → New consent**, choose the use case.
 2. Enter the farmer's national ID and, if known (or required by the install), the Farmer ID (`946053125409`, `FR-0007` in the sample data).
 3. **Authenticate with national ID**: the farmer logs in with eSignet in the popup.
-4. Upload the consent form the farmer signed, **Submit**.
+4. **Upload the signed paper form:** the farmer signs the printed consent form by hand; scan or photograph it and upload the file. **Submit**.
 
 ## Consent Approver: approve it
 
-In the Exchange's CM console (`https://consent-manager.<Exchange domain>`), **Consent Approvals**: check the request, its form and the national-ID login, **Approve**. The consent is then active.
+In the Exchange's CM console (`https://consent-manager.<Exchange domain>`), **Consent Approvals**: check the request, the scanned form and the national-ID login, **Approve**. The consent is then active.
 
 ## Check
 
-The consent shows as active in the CM console, and under **Consents** in the partner portal. A query by the partner for that farmer and use case, without a consent, now uses it: the response names it (`message.consent_id`). With the [test script](../deployment/testing.md): `test.consent: lookup` and `test.subject` the farmer.
+The consent shows as active in the CM console, and under **Consents** in the partner portal. The partner's queries for that farmer and use case now use it, without sending a consent. Trying it with the test script: [Testing](../deployment/testing.md).

@@ -48,7 +48,7 @@ Because each Partner Management reads the Composite's key when needed, the depar
 | --- | --- | --- |
 | 1 | Install the registries: Farmer Registry in `trial`, Crop Sown Registry in `dept1` | [Farmer Registry](farmer-registry.md), [Crop Sown Registry](crop-sown-registry.md) |
 | 2 | Install the Exchange in `agrix`: Commons Base, Commons Services, the Composite | [Exchange](exchange.md) |
-| 3 | In each department's Partner Management, add the Composite's scope policy for its registry. Until then the registry releases nothing to the Composite | [Releasing Data to the Composite](../administration/releasing-data-to-the-composite.md) |
+| 3 | In each department's Partner Management, add the Composite's scope policy for its registry. Until then the registry releases nothing to the Composite | [Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md) |
 | 4 | Run the test | [Testing](testing.md) |
 
 * Steps 1 and 2 can come in either order. Registries usually exist already; upgrading their Commons Services with **Exchange Role** `department` is then step 1.
