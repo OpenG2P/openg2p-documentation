@@ -1,5 +1,5 @@
 ---
-description: For partners' developers: fetching a farmer's data from Agri Stack, with the farmer's consent.
+description: "For partners' developers: fetching a farmer's data from Agri Stack, with the farmer's consent."
 ---
 
 # Partner Guide: Fetching Farmer Data
