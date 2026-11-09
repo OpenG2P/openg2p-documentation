@@ -117,14 +117,20 @@ With `approvalMode: awe`, the chart also:
 
 ## Public catalogue host
 
-The [public catalogue](public-catalogue.md) is off by default. Its values are
-under `masterDataAPI.catalogue.public`:
+The [public catalogue](public-catalogue.md) is off by default in the MDS chart
+and **on in Commons Services** (**Public Catalogue?**, with its own host
+`catalogue.<base domain>` on the internal gateway). Through the internal gateway
+it is reachable only on the internal network (WireGuard), on its own host and as
+`/public/` on the MDS host. To publish it on the internet, point a public DNS name
+and an internet-facing proxy at its host only; the internal routes keep working.
+Its values are under `masterDataAPI.catalogue.public` (in Commons Services,
+`masterData.masterDataAPI.catalogue.public`):
 
 | Value | Default | Meaning |
 |---|---|---|
 | `enabled` | `false` | Serve `/public`. While off, every `/public` path answers 404 |
 | `baseUrl` | `""` | Base of absolute links. Empty: taken from the request |
-| `rateLimitPerMinute` | `60` | Per client IP and API worker; `0` disables |
+| `rateLimitPerMinute` | `60` (`0` in Commons Services) | Per client IP and API worker; `0` disables. Behind proxies the client IP is unreliable: limit the public host as a whole at the internet-facing proxy instead |
 | `trustedProxyHops` | `1` | Proxies that append to `X-Forwarded-For` |
 | `cacheSeconds` | `300` | `Cache-Control` max-age |
 | `title`, `publisher` | `Master data catalogue`, `""` | DCAT catalogue title and publisher (empty: `catalogue.defaultOwnerOrg`) |
