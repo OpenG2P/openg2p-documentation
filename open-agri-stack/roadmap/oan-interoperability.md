@@ -100,7 +100,7 @@ This fits because the Composite already works at the level of **use cases** (e.g
 
 ## Catalogues and OAN
 
-**Beckn-compatible catalogue APIs are not needed.** Agri Stack's catalogues (Master Data Service) are public data, and their public API already follows open standards: a W3C DCAT catalogue to find datasets, SKOS for code lists, CSV, JSON and GeoJSON downloads, HTTP caching to notice changes, and licence URIs ([MDS standards at a glance](../../platform/platform-services/master-data-service/standards.md#at-a-glance-what-a-public-consumer-uses)). Anyone in the country, on OAN or not, reads them with ordinary open-data tools. Only the staff API (editing and approval) is MDS's own, and it stays internal.
+**Beckn-compatible catalogue APIs are not needed.** Agri Stack's catalogues (Master Data Service) are public data, and their public API already follows open standards: a W3C DCAT catalogue to find datasets, SKOS for datasets, CSV, JSON and GeoJSON downloads, HTTP caching to notice changes, and licence URIs ([MDS standards at a glance](../../platform/platform-services/master-data-service/standards.md#at-a-glance-what-a-public-consumer-uses)). Anyone in the country, on OAN or not, reads them with ordinary open-data tools. Only the staff API (editing and approval) is MDS's own, and it stays internal.
 
 **If OAN does want them on the network**, the suggested approach:
 

@@ -16,10 +16,10 @@ Administrative geography changes more often than it seems. Districts are split,
 merged, renamed, moved to another province, and their lines are redrawn. Each
 change touches data other systems hold: a registry records a person's district, a
 report counts people per district, a map draws the shapes. MDS records every
-change so that old codes still resolve and can be mapped to new ones.
+change so that old P-codes still resolve and can be mapped to new ones.
 
 The examples use Ethiopian P-codes (region `ET04` → zone `ET0412` → woreda
-`ET041203`). Kebele codes (one level below woreda) are illustrative.
+`ET041203`). Kebele P-codes (one level below woreda) are illustrative.
 
 ## How geography is represented
 
@@ -35,7 +35,7 @@ The examples use Ethiopian P-codes (region `ET04` → zone `ET0412` → woreda
 A **P-code** (place code) is a published identifier for an administrative area,
 such as `ET0101` for one zone. OCHA publishes them in its
 [Common Operational Datasets](https://cod.unocha.org/) so that every organisation
-uses the same code for the same area.
+uses the same P-code for the same area.
 
 * **P-codes usually nest.** A child's code starts with its parent's: `ET` →
   `ET01` → `ET0101` → `ET010101`. MDS does not enforce this (see
@@ -43,7 +43,7 @@ uses the same code for the same area.
 * **The P-code is the identifier.** A unit's id is its P-code; no second internal
   id is minted.
 
-So the code a registry stores on a record, the key of the map shape and the
+So the P-code a registry stores on a record, the key of the map shape and the
 column a report groups by are the same value. Nothing needs translating.
 
 ### Versions and retired units
@@ -52,7 +52,7 @@ A geography version has the same lifecycle, effective date and latest / pinned /
 as-of reads as any dataset version; see [Concepts](concepts.md#versions).
 
 **Units are never deleted.** When a woreda ceases to exist, the next version keeps
-it as **retired**, with the date it ended. A record holding the old code still
+it as **retired**, with the date it ended. A record holding the old P-code still
 resolves, the old shape is still in the old version's boundary files, and the
 crosswalk says what replaced it. Reads leave retired units out unless asked to
 include them.
@@ -63,7 +63,7 @@ include them.
 |---|---|---|
 | `CREATE` | New units, not from existing ones | New units active |
 | `RETIRE` | Units cease to exist; nothing replaces them | Units retired |
-| `RENAME` | Same unit and code, new name | Name changed |
+| `RENAME` | Same unit and P-code, new name | Name changed |
 | `RECODE` | Same unit, new P-code | Old code retired, new code active |
 | `SPLIT` | One unit becomes two or more | Old unit retired (or kept as one of the parts); new units active |
 | `MERGE` | Two or more units become one | Old units retired (except a surviving one); new unit active |
@@ -100,14 +100,14 @@ the parts of the split; it stays active with a new boundary.
 
 ### Example 2: two kebeles are merged
 
-Kebeles `ET04120305` and `ET04120306` are merged and keep the code `ET04120305`.
+Kebeles `ET04120305` and `ET04120306` are merged and keep the P-code `ET04120305`.
 Record a `MERGE` from both to `ET04120305`. `ET04120306` is retired; `ET04120305`
-stays active with a larger boundary. With a new code instead, both old codes are
+stays active with a larger boundary. With a new P-code instead, both old P-codes are
 retired and the new one created.
 
 ### Example 3: a zone is renamed
 
-Zone `ET0412` gets a new name; its code stays. Record a `RENAME`. No record is
+Zone `ET0412` gets a new name; its P-code stays. Record a `RENAME`. No record is
 affected, and a read at an older version still returns the old name, which is
 what a historical report should print.
 
@@ -115,10 +115,10 @@ what a historical report should print.
 
 Woreda `ET041205` moves from zone `ET0412` to `ET0415`. A country can:
 
-* **keep the code**: change the parent and record a `REPARENT`. Records are
-  unaffected, but the code prefix no longer names the parent; or
+* **keep the P-code**: change the parent and record a `REPARENT`. Records are
+  unaffected, but the P-code prefix no longer names the parent; or
 * **recode**: add `ET041509` under `ET0415`, retire `ET041205` and record a
-  `RECODE`. Nesting holds, but records with the old code must be mapped through
+  `RECODE`. Nesting holds, but records with the old P-code must be mapped through
   the crosswalk.
 
 {% hint style="warning" %}
@@ -169,7 +169,7 @@ geo/<country>/v<version>/<level>.geojson      e.g. geo/ETH/v3/woreda.geojson
   change points at the earlier version's file; nothing is copied.
 * So a map for version 2 and a map for version 3 can sit side by side.
 
-## Making a change
+## Making a geography change
 
 Geography changes follow the same draft → submit → approve flow as any dataset;
 see [Change Control and Approvals](change-control.md). In the
@@ -180,7 +180,7 @@ has the steps. A country pack can also bring geography changes; see
 
 ## When a new geography version is published
 
-Publishing does **not** change any data a consumer holds: recorded codes still
+Publishing does **not** change any data a consumer holds: recorded entry codes and P-codes still
 resolve. What each kind of consumer should do is on
 [For Consumers](consumers.md#geography-changes).
 

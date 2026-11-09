@@ -70,7 +70,7 @@ admin portal, not free text, and the API rejects anything else:
 | Onboard / Add policy | Registry | Select + *Other…* (when [catalogue sources](#catalogue-sources) are configured) | The configured registries |
 | Onboard / Add policy | Use case | Select + *Other…* (when a use_cases source is configured) | The source's use cases |
 | Onboard / Add / Edit policy | Allowed scopes | Checkbox list (when the registry's catalogue source is configured) | The source's scopes |
-| Onboard / Add / Edit policy | Purposes / Subject ID types | Checkbox list (when the [Master Data list](#master-data-code-lists) loaded) | The list's active codes |
+| Onboard / Add / Edit policy | Purposes / Subject ID types | Checkbox list (when the [Master Data list](#master-data-datasets) loaded) | The list's active codes |
 | Onboard / Add / Edit policy | Signing algorithms | Checkbox list, new policies pre-filled from the partner's keys | The key algorithms the deployment allows |
 | Onboard / Add / Edit policy | Fetch type | Select | `oneshot`, `periodic` |
 
@@ -176,7 +176,7 @@ subject ID types, algorithms and limits are set per use case.
 
 | Field | Meaning |
 | --- | --- |
-| `allowed_purposes` | Purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-code-lists) is configured. |
+| `allowed_purposes` | Purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-datasets) is configured. |
 | `allowed_subject_id_types` | ID types the partner may identify a person by. Empty = any. Codes of `SUBJECT_ID_TYPE` when configured. |
 | `allowed_signing_algs` | Algorithms the partner may sign with. At least one, from PM's key algorithms (`EdDSA`, `ES256`, `RS256`) as narrowed by `crypto_allowed_algorithms`. Default `EdDSA`, `ES256`. One that matches none of the partner's active (or, on onboarding, proposed) keys is accepted with a warning. |
 | `max_validity_duration` | Longest consent the partner may ask for (ISO-8601, e.g. `P1Y`). Empty = no limit. |
@@ -262,12 +262,12 @@ With sources configured:
 With no sources (the default), scopes and use cases are free text and not
 checked.
 
-### Master Data code lists
+### Master Data datasets
 
-Purposes and subject ID types come from the country's code lists in the Master
+Purposes and subject ID types come from the country's datasets in the Master
 Data Service (MDS): `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` by default
 (`mds_purpose_list_code`, `mds_subject_id_type_list_code`; see
-[Deployment](deployment.md#master-data-code-lists)). PM reads the latest version
+[Deployment](deployment.md#master-data-datasets)). PM reads the latest version
 of each (`POST /catalogue/get_list_values`) with a client-credentials token of its
 own Keycloak client: a service account, not the staff user's token, so a user's
 data policies cannot narrow the shared cache (`mds_cache_ttl`, default 300 s).

@@ -21,7 +21,7 @@ Anyone in the country can find and read the public catalogues with ordinary open
 | Need | Standard | Where |
 | --- | --- | --- |
 | Find what data exists | W3C DCAT 3, JSON-LD (DCAT-AP style) | `GET /public/catalog`: harvestable by CKAN and national open-data portals |
-| Read a code list | W3C SKOS concept scheme, JSON-LD | `GET /public/datasets/{code}/skos` |
+| Read a dataset | W3C SKOS concept scheme, JSON-LD | `GET /public/datasets/{code}/skos` |
 | Download | CSV, JSON; GeoJSON (RFC 7946) for boundaries | Per dataset version and per geography level ([downloads](public-catalogue.md#what-it-offers)) |
 | Notice changes | DCAT `modified` dates; HTTP caching (`ETag`, `Last-Modified`) | Every public response. The change feed and its WebSub notifications are for authenticated consumers only ([consumers](consumers.md)) |
 | Licence | Creative Commons / Open Data Commons URIs | `licence_uri` on each dataset and the geography |
@@ -71,7 +71,7 @@ These apply to the opt-in [public catalogue](public-catalogue.md)
 
 ## Mappings to international schemes
 
-Codes stay the country's own; a mapping to an international scheme is a typed
+Entry codes stay the country's own; a mapping to an international scheme is a typed
 field of the entry (see
 [Design Decisions](design-decisions.md#mapping-to-international-standards)).
 

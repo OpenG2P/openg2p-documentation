@@ -27,7 +27,7 @@ A stack (Agri Stack, a later Health stack) is a set of choices on top of the Exc
 
 URLs stay chart values, since they differ per install. A country copies the packs and edits them; its own registries, names and fields are system integrator work. Farmer Registry and Crop Sown Registry are references, not prescriptions.
 
-**What sets one stack apart from another:** its use cases, its catalogue and code lists, its reference registries, and the standards its registries speak. None of it is code in the Exchange.
+**What sets one stack apart from another:** its use cases, its catalogue datasets, its reference registries, and the standards its registries speak. None of it is code in the Exchange.
 
 ### Repositories
 

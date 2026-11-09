@@ -18,34 +18,23 @@ can always say exactly which version it used. MDS is generic: it serves any sect
 (social protection, agriculture, health, …). The examples on these pages use one
 country pack (Ethiopia) and a few sectors.
 
-<figure><img src="../../../.gitbook/assets/master-data-service-overview.svg" alt="Master Data Service in three layers. Interfaces: the Admin UI for catalogue administrators, which uses the Staff API; the Staff API for registries and other services; the opt-in Public API for open-data portals and anyone; a change feed to subscribed systems. Functions: the country pack loader, change control, effective dates, access control. Data: datasets and geography. It relies on IAM, AWE, the Audit Manager, an object store and PostgreSQL."><figcaption><p>What MDS holds, what it does, and who uses it</p></figcaption></figure>
-
-## What it holds
-
-MDS holds reference data, plus sample people for demos:
-
-| | What it is | Example |
-|---|---|---|
-| **Datasets** | A country's own lists. A dataset holds **entries**: each a code and labels, and optionally typed fields that refer to other datasets. Each dataset has a **theme** (Core, or a sector) | Gender, units of measure, disability type; a seed variety with its crop and maturity days |
-| **Geography** | The administrative hierarchy: levels, every unit with its code (P-code), and its boundaries | Country → region → zone → woreda |
-| **Releases** | Named sets of pinned dataset and geography versions | "2027.1" for a census round |
-| **Sample people** | A few dozen made-up people and households from the country pack, for **testing and demos only** | — |
+<figure><img src="../../../.gitbook/assets/master-data-service-overview.svg" alt="Master Data Service in three layers. Interfaces: the Admin UI for catalogue administrators, which uses the Staff API; the Staff API for registries and other services; the opt-in Public API for open-data portals and anyone; a change feed to subscribed systems. Functions: the country pack loader, change control, effective dates, access control. Data: datasets and geography, versioned, with releases pinning sets of versions. It relies on IAM, the Audit Manager and PostgreSQL, and optionally on AWE and an object store."><figcaption><p>What MDS holds, what it does, and who uses it</p></figcaption></figure>
 
 MDS holds no partners (see [Partner Management](../partner-management/README.md))
 and no registry records. All data first arrives from a **country pack**; see
-[Country Packs](country-packs.md).
+[Country Packs](country-packs.md). What it holds: [Concepts](concepts.md#what-mds-holds).
 
 ## Key features
 
 | Feature | In one line | More |
 |---|---|---|
-| **Versioned datasets and geography** | Every dataset, and the geography, has numbered versions. A consumer reads the latest, pins a version, or reads as of a date | [Concepts](concepts.md#reading-latest-pinned-as-of-release) |
+| **Versioned datasets and geography** | Every dataset, and the geography, has numbered versions. A consumer reads the latest, pins a version, or reads as of a date | [Concepts](concepts.md#which-version-a-read-returns) |
 | **Effective dates and staged changes** | A version can be approved now and take effect on a future date | [Concepts](concepts.md#effective-dates) |
 | **Change control with approvals** | Edits go into a draft, which is submitted and approved by another person (maker-checker) or through the Approval Workflow Engine | [Change Control](change-control.md) |
-| **Codes fixed once published** | Labels can change; codes cannot. A recode is a retire plus an add. Entries are retired, never deleted | [Concepts](concepts.md#codes-are-fixed-once-published) |
+| **Entry codes and P-codes fixed once published** | Labels can change; entry codes and P-codes cannot. A recode is a retire plus an add. Entries are retired, never deleted | [Concepts](concepts.md#entry-codes-and-p-codes-are-fixed-once-published) |
 | **Typed fields and references** | Entries can carry typed fields, a parent (hierarchy) and references to other datasets (cross-classification) | [Concepts](concepts.md#typed-fields) |
 | **Multilingual labels** | Labels per language for datasets, entries and units | [Concepts](concepts.md#datasets-and-entries) |
-| **Geography with boundary changes** | Splits, merges and renames are recorded as change events. A crosswalk maps old codes to new. Boundaries are kept per version | [Geography](geography.md) |
+| **Geography with boundary changes** | Splits, merges and renames are recorded as change events. A crosswalk maps old P-codes to new units. Boundaries are kept per version | [Geography](geography.md) |
 | **Change feed** | Every change is in an ordered feed; new and effective versions are also pushed to subscribers | [For Consumers](consumers.md#following-changes) |
 | **Public catalogue (opt-in)** | Datasets marked public can be read anonymously, with downloads, DCAT and SKOS, each with its [data licence](public-catalogue.md#data-licence) | [Public Catalogue](public-catalogue.md) |
 | **Audit** | Every change and every API call is sent to the Audit Manager | [Change Control](change-control.md#audit) |

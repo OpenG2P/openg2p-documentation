@@ -237,7 +237,7 @@ With `keycloak-init.enabled` (default `true`), the chart provisions, in the conf
 The admin role is for automation and audit (the Access Log, service accounts); it cannot approve. One person may hold both roles; they are kept apart so a deployment can separate who approves from who audits.
 
 The service **validates tokens via JWKS only**. The generated `client_secret` is used for
-client-credentials tokens: by the staff API to read [Master Data code lists](#master-data-code-lists),
+client-credentials tokens: by the staff API to read [Master Data datasets](#master-data-datasets),
 and by automation (e.g. the sanity suite) for the admin role. `/validate` needs no token.
 
 ## Partner portal and consent evidence — optional
@@ -266,9 +266,9 @@ deployment/scripts/setup-partner-realm.sh --namespace <ns> --user bank-a-operato
 
 A partner user's `partner_id` must be the partner's audience (e.g. `bank-a`, PM partner `PARTNER_BANK_A`).
 
-### Master Data code lists
+### Master Data datasets
 
-The portal's purposes and subject ID types come from Master Data code lists, as in Partner Management ([how](../partner-portal.md#purposes-and-subject-id-types)). Rancher: **Partner portal** group of this chart's form; through Commons Services, **Edit YAML** under `openg2p-consent-manager.masterData`.
+The portal's purposes and subject ID types come from Master Data datasets, as in Partner Management ([how](../partner-portal.md#purposes-and-subject-id-types)). Rancher: **Partner portal** group of this chart's form; through Commons Services, **Edit YAML** under `openg2p-consent-manager.masterData`.
 
 | Value (`masterData.*`) | Default | Env (`CONSENT_MANAGER_*`) |
 | --- | --- | --- |

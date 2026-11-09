@@ -1,7 +1,8 @@
 ---
 description: >-
   The ideas behind MDS in plain language: datasets, entries and typed fields,
-  the geography, versions and effective dates, fixed codes and retired entries,
+  the geography, versions and effective dates, fixed entry codes and P-codes,
+  retired entries,
   reading latest, pinned, as of a date or by release, the change feed,
   visibility and licence
 ---
@@ -13,13 +14,16 @@ developer needs are in [API Reference: Data model](api-reference.md#data-model).
 
 ## What MDS holds
 
-MDS holds two kinds of reference data: **datasets** and the **geography**.
+MDS holds two kinds of reference data, **datasets** and the **geography**, plus
+**[catalogue releases](#catalogue-release)** (named sets of their versions) and,
+for testing and demos only, a few dozen made-up **sample people** from the
+[country pack](country-packs.md).
 
 | | A dataset | The geography |
 |---|---|---|
 | **How many** | Many: gender, disability type, benefit type, units of measure, crops… | One per country |
 | **Shape** | A list of entries, optionally a hierarchy | A hierarchy of levels (e.g. region → zone → woreda) |
-| **Codes** | Chosen by the country | P-codes |
+| **Code of each item** | **Entry code**, chosen by the country (e.g. `MALE`) | **P-code**, one per unit (e.g. `ET0101`) |
 | **Extra content** | Optional typed fields | Boundaries (map shapes) per level |
 | **How it changes** | Entries added, changed, retired (or brought back) | Units added, retired, split, merged, renamed or moved, recorded as change events |
 | **Versioned** | Each dataset on its own | All levels together as one version |
@@ -34,10 +38,18 @@ must change together.
 A dataset is a list; each item in it is an **entry**, for example *Female* in the
 Gender dataset.
 
-Each entry has a **code** and a **label**. The code is what systems store (a
-registry records `F`, not *Female*); the label is what people see, with a label
+Each entry has an **entry code** and a **label**. The entry code is what systems
+store (a registry records `F`, not *Female*); the label is what people see, with a label
 per language where needed (*Maize*, *በቆሎ*, *Boqqolloo*). Datasets and geography
 units have labels per language in the same way.
+
+MDS uses three kinds of code; these pages always name which one:
+
+| Code | Identifies | Example | API field |
+|---|---|---|---|
+| **Entry code** | An entry in a dataset; what records store | `MALE` | `value_code` |
+| **Dataset code** | A dataset | `GENDER` | `list_code` |
+| **P-code** | A geography unit | `ET0101` | `pcode` |
 
 Each dataset has a **theme** (core, agriculture, …) that groups it in the admin
 UI and the public catalogue, and a **publisher**: the department responsible for
@@ -48,7 +60,7 @@ same dataset, as crop categories contain crops.
 
 ### Typed fields
 
-Some datasets need more than a code and a label. A benefit type has an amount and
+Some datasets need more than an entry code and a label. A benefit type has an amount and
 a payment frequency; a seed variety has a crop, maturity days and a release year.
 Their entries carry **typed fields**. Each dataset can declare the rules its
 fields must follow (which fields exist, which are required, their types and
@@ -102,25 +114,25 @@ Effective dates let a consumer check a record against the data **of its date**
 run a report for a past period that gives the same answer next year, and prepare
 for a change before it takes effect.
 
-### Codes are fixed once published
+### Entry codes and P-codes are fixed once published
 
-Records hold codes, so once an entry has been published its **code never
-changes**. Its labels, typed fields, parent and order can change in any later
-version. To **recode**, retire the old entry and add a new one with the new code;
-the old code still resolves. Geography follows the same rule: a new P-code is a
+Records hold entry codes and P-codes, so once an entry has been published its
+**entry code never changes**. Its labels, typed fields, parent and order can change in any later
+version. To **recode**, retire the old entry and add a new one with the new entry code;
+the old entry code still resolves. Geography follows the same rule: a new P-code is a
 new unit, linked to the old one by a recode event.
 
 ### Retired entries
 
 An entry that should no longer be used is **retired** in the next version, not
 deleted. It stays in that version and every later one, so a record holding its
-code still shows a label ("Season: Summer (retired)"), and a consumer reading an
+entry code still shows a label ("Season: Summer (retired)"), and a consumer reading an
 older version sees it as it was. Lists for new data entry leave retired entries
 out; a screen showing an existing record includes them. Geography units are
 retired the same way. What a consumer should do with them is on
 [For Consumers](consumers.md#retired-entries).
 
-## Reading: latest, pinned, as of, release
+## Which version a read returns
 
 Every read says which version it wants:
 
@@ -131,7 +143,7 @@ Every read says which version it wants:
 * **Release**: the version a named [catalogue release](#catalogue-release) pins.
 
 Every answer says which version it came from. Which read to use is covered in
-[For Consumers](consumers.md#latest-pinned-or-as-of).
+[For Consumers](consumers.md#choosing-which-version-to-read).
 
 ### Catalogue release
 

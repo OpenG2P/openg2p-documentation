@@ -29,7 +29,7 @@ renamed. Systems that build on the data need to know which version they used:
 * **A programme defines entitlements against a dataset.** A cash transfer for
   "households with a member with a severe disability" names a set of entries. If
   the dataset changes under it, the programme's eligibility changes too.
-* **A registry records codes.** A person recorded in district `ET041203` in 2026
+* **A registry records entry codes and P-codes.** A person recorded in district `ET041203` in 2026
   must still resolve after that district is split in 2027, and a report must be
   able to say where those people belong now.
 * **Two services must agree.** A registry and a payment system that read the same
@@ -81,17 +81,17 @@ What counts as **breaking** for reference data is narrow:
 
 | Change | Breaking? | Why |
 |---|---|---|
-| An entry is **retired** | Yes, for new data | The code is no longer valid for new records. Old records keep it |
-| An entry is **recoded** | Yes | In MDS this is retire + add: see [Codes](#codes-fixed-once-published-labels-per-language) |
-| An entry's **meaning** changes (same code, different thing) | Yes | Records that hold the code now mean something else. Avoid it: retire and add a new code |
+| An entry is **retired** | Yes, for new data | The entry code is no longer valid for new records. Old records keep it |
+| An entry is **recoded** | Yes | In MDS this is retire + add: see [Entry codes](#entry-codes-fixed-once-published-labels-per-language) |
+| An entry's **meaning** changes (same entry code, different thing) | Yes | Records that hold the entry code now mean something else. Avoid it: retire and add a new entry code |
 | A new entry | No | Additive |
-| A new or corrected label, or a label in another language | No | Codes are unchanged |
+| A new or corrected label, or a label in another language | No | Entry codes are unchanged |
 | New or changed typed fields | Usually no | Unless a consumer's rule reads that field |
 
 For several datasets that must stay consistent with each other, a
 [catalogue release](concepts.md#catalogue-release) pins a named set of versions.
 
-**For consumers:** [Pin in configuration](consumers.md#pin-in-configuration).
+**For consumers:** [Keeping pinned versions in configuration](consumers.md#keeping-pinned-versions-in-configuration).
 
 ## Effective dates per version
 
@@ -119,7 +119,7 @@ version is pending, a new version cannot take effect before it. An urgent
 correction then has to wait for the pending date, or take effect on it; see
 [Admin Guide: schedule a change](admin-guide.md#schedule-a-change-for-a-future-date).
 
-**For consumers:** [Latest, pinned or as of](consumers.md#latest-pinned-or-as-of).
+**For consumers:** [Choosing which version to read](consumers.md#choosing-which-version-to-read).
 
 ## No expiry date on entries
 
@@ -139,10 +139,10 @@ publish from the version's `effective_from`.
 * **One mechanism, not two.** With both expiry dates and retirement, the two
   could disagree. Retirement goes through a draft and an approval; an expiry date
   on an entry would be a second way to change what is current.
-* **Retired entries stay resolvable.** A record that holds a retired code still
+* **Retired entries stay resolvable.** A record that holds a retired entry code still
   shows its label, in every later version.
 * **Geography is different because records keep pointing at old units.** A
-  person recorded in woreda `ET041203` in 2026 still holds that code after the
+  person recorded in woreda `ET041203` in 2026 still holds that P-code after the
   woreda is split in 2027. `valid_from` and `valid_to` say when each unit existed,
   and the [crosswalk](geography.md#the-crosswalk) says what replaced it.
 
@@ -155,13 +155,13 @@ publish from the version's `effective_from`.
 * **Within a dataset, a single-parent hierarchy.** A hierarchical dataset gives
   each entry at most one parent (`parent_code`). MDS checks that the parent exists
   and is active, and that there are no cycles.
-* **Across datasets, links through typed fields.** A field can hold a code of
-  another dataset: a benefit type's frequency is a code of the Payment frequency
-  dataset; a seed variety's crop is a code of the Crops dataset. See
+* **Across datasets, links through typed fields.** A field can hold an entry code of
+  another dataset: a benefit type's frequency is an entry code of the Payment frequency
+  dataset; a seed variety's crop is an entry code of the Crops dataset. See
   [Typed fields](concepts.md#typed-fields).
 * **Cross-classification as a list of references.** An entry that belongs to
   several groups lists them in a field, such as `"groups": ["CEREAL", "FODDER"]`,
-  each a code of a Crop groups dataset. It does not get several parents. See
+  each an entry code of a Crop groups dataset. It does not get several parents. See
   [Lists of references](api-reference.md#lists-of-references).
 
 ### Why
@@ -171,34 +171,34 @@ publish from the version's `effective_from`.
   a fodder crop would be counted under both, and the totals would not add up.
 * **Other classifications are fields, with their own datasets.** "Crop group",
   "agro-ecological zone" or "benefit category" are classifications in their own
-  right. As datasets they have their own codes, labels, versions and owners.
+  right. As datasets they have their own entry codes, labels, versions and owners.
   Referring to them keeps each one maintained in one place.
-* **References are checked.** Every referenced code, single or in a list, must be
+* **References are checked.** Every referenced entry code, single or in a list, must be
   an active entry of the referenced dataset's version in effect.
 
 **For consumers:** [Hierarchies and groupings in reports](consumers.md#hierarchies-and-groupings-in-reports).
 
-## Codes fixed once published, labels per language
+## Entry codes fixed once published, labels per language
 
 ### Choice
 
-* An entry's **code** cannot change once the entry has been published.
+* An entry's **entry code** cannot change once the entry has been published.
 * Its **labels** (one per language), typed fields, parent and sort order can
   change in any later version.
-* A **recode** is: retire the old entry, add a new one with the new code.
+* A **recode** is: retire the old entry, add a new one with the new entry code.
 
 MDS enforces this on every write path, including the database and the
 country-pack loader. See
-[Codes are fixed once published](concepts.md#codes-are-fixed-once-published) and
+[Entry codes and P-codes are fixed once published](concepts.md#entry-codes-and-p-codes-are-fixed-once-published) and
 [API errors](api-reference.md#errors).
 
 ### Why
 
-* **Registries store codes.** A changed code would leave records holding a code
+* **Registries store entry codes.** A changed entry code would leave records holding a code
   that no longer exists, or quietly change what they mean.
 * **Labels are for people.** Correcting a spelling or adding an Amharic or Afaan
   Oromo label changes nothing that is stored.
-* **Retire + add keeps history honest.** The old code stays resolvable, the diff
+* **Retire + add keeps history honest.** The old entry code stays resolvable, the diff
   shows a retirement and an addition, and a consumer can see that something
   breaking happened.
 * **Geography already works this way.** A unit ID (P-code) is the unit's key. A
@@ -211,7 +211,7 @@ country-pack loader. See
 
 ### Choice
 
-* **Codes stay the country's own.** MDS does not replace a country's codes with
+* **Entry codes stay the country's own.** MDS does not replace a country's entry codes with
   an international scheme.
 * **A mapping is a typed field of the entry.** When a country pack provides one,
   the dataset declares a field for it, and each entry carries the international
@@ -230,12 +230,12 @@ country-pack loader. See
 | UCUM unit codes | `ucum_code` | Units of measure |
 | Harmonized System (HS) codes | `hs_code` | Traded commodities, inputs |
 
-* **Geography already uses an international scheme as its codes.** Unit IDs are
+* **Geography already uses an international scheme as its codes (P-codes).** Unit IDs are
   OCHA COD-AB **P-codes**, so they match other datasets that use the same P-codes.
 
 ### Why
 
-* **Registries, laws and forms use the country's codes.** Replacing them would
+* **Registries, laws and forms use the country's own entry codes.** Replacing them would
   break existing records and systems.
 * **International schemes do not map one-to-one.** A national crop may map to one
   FAO item, to several, or to none. A field can hold that, including a list, and
@@ -247,7 +247,7 @@ country-pack loader. See
 What is built and what is only a convention is on
 [Standards](standards.md#mappings-to-international-schemes).
 
-**For consumers:** [International codes](consumers.md#international-codes).
+**For consumers:** [Reporting to international bodies](consumers.md#reporting-to-international-bodies).
 
 ## Approval workflow and audit history
 

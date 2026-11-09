@@ -27,8 +27,8 @@ Good to know:
 
 * You can edit only the open draft, and only while it is in `DRAFT`. A dataset
   has at most one open draft: if someone else has one open, work in it or wait.
-* The code of a published entry is read-only (see
-  [Recode an entry](#recode-an-entry)). The code of an entry added in this draft
+* The entry code of a published entry is read-only (see
+  [Recode an entry](#recode-an-entry)). The entry code of an entry added in this draft
   can still change.
 * A field that refers to another dataset offers only that dataset's published
   version in effect, never its draft. Publish the referenced dataset first (see
@@ -47,16 +47,16 @@ Good to know:
 
 ## Recode an entry
 
-A published code never changes. To replace it:
+A published entry code never changes. To replace it:
 
 1. Open the dataset's draft.
 2. **Retire** the old entry.
-3. **Add entry** with the new code (and the same label, if unchanged).
-4. In the change note, say it is a recode, from which code to which.
+3. **Add entry** with the new entry code (and the same label, if unchanged).
+4. In the change note, say it is a recode, from which entry code to which.
 5. Submit for approval.
 
-Records that hold the old code keep it; map them if needed. See
-[Codes are fixed once published](concepts.md#codes-are-fixed-once-published).
+Records that hold the old entry code keep it; map them if needed. See
+[Entry codes and P-codes are fixed once published](concepts.md#entry-codes-and-p-codes-are-fixed-once-published).
 
 ## Add a dataset
 
@@ -67,7 +67,7 @@ Good to know:
   free JSON.
 * In **Edit dataset details**, some details apply at once (see
   [Settings that apply at once](change-control.md#settings-that-apply-at-once));
-  code, label, labels by language and the hierarchy flag go into the draft.
+  dataset code, label, labels by language and the hierarchy flag go into the draft.
 * A dataset that was never published can be deleted. A published one cannot;
   retire its entries instead.
 
@@ -106,7 +106,7 @@ Good to know:
      parents, then **Retire** the old unit;
    * **merge**: move the children to the surviving (or new) unit, then retire the
      others;
-   * **rename**: **Edit** the unit's name; the code stays.
+   * **rename**: **Edit** the unit's name; the P-code stays.
 3. Under **Data → Boundaries**, click **Upload GeoJSON** for each level whose
    shapes changed.
 4. Under **Lineage → Change events**, click **Record change event**: choose the
@@ -123,7 +123,7 @@ Good to know:
   units by `properties.pcode`. The shapes are not previewed. A published
   version's boundaries cannot be replaced.
 * **Boundaries** appears only when the deployment has a boundary store.
-* Use **Lineage → Crosswalk** to check how an old code maps to the new units.
+* Use **Lineage → Crosswalk** to check how an old P-code maps to the new units.
 
 See [Geography and Boundary Changes](geography.md).
 

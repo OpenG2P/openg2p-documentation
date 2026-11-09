@@ -86,6 +86,6 @@ it. See [Standards](standards.md#catalogue-metadata-public-catalogue).
 ### SKOS concept schemes
 
 Each public dataset can be read as a SKOS concept scheme (JSON-LD): one concept
-per active entry, with its code, labels per language and parent. A concept's
-address does not include the version, so a code keeps the same address across
+per active entry, with its entry code, labels per language and parent. A concept's
+address does not include the version, so an entry code keeps the same address across
 versions. See [Standards](standards.md#datasets-and-entries).

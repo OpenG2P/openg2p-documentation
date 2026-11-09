@@ -85,8 +85,8 @@ helm install partner-management openg2p/partner-management \
 | `staffPortalUi.image.tag` | `develop` | UI image tag. |
 | `staffPortalApi.catalogueSources` | `[]` | Where policy forms get their choices; see [Catalogue sources](#catalogue-sources). |
 | `staffPortalApi.catalogueCacheTtl`, `staffPortalApi.catalogueFetchTimeout` | `300`, `3` | Seconds a fetched catalogue is reused; per-source fetch timeout. |
-| `staffPortalApi.masterData.url` | `http://commons-services-master-data-api` | Master Data Service for purposes and subject ID types; `""` = free text. See [Master Data code lists](#master-data-code-lists). |
-| `staffPortalApi.masterData.purposeListCode`, `.subjectIdTypeListCode` | `CONSENT_PURPOSE`, `SUBJECT_ID_TYPE` | The code lists; `""` = free text for that field. |
+| `staffPortalApi.masterData.url` | `http://commons-services-master-data-api` | Master Data Service for purposes and subject ID types; `""` = free text. See [Master Data datasets](#master-data-datasets). |
+| `staffPortalApi.masterData.purposeListCode`, `.subjectIdTypeListCode` | `CONSENT_PURPOSE`, `SUBJECT_ID_TYPE` | The datasets; `""` = free text for that field. |
 | `staffPortalApi.masterData.cacheTtl`, `.timeout` | `300`, `5` | Seconds a list is reused; request timeout. |
 
 ### Catalogue sources
@@ -122,11 +122,11 @@ staffPortalApi:
 In Rancher, **Catalogue Sources** is a text field: paste the same list as YAML
 (or JSON). It reaches the API as `PARTNER_MANAGER_CATALOGUE_SOURCES` (JSON).
 
-### Master Data code lists
+### Master Data datasets
 
 On by default: the policy form's **Purposes** and **Subject ID types** are
 checklists of the country's Master Data lists, and requests are checked against
-them ([how](functional-specifications.md#master-data-code-lists)). The
+them ([how](functional-specifications.md#master-data-datasets)). The
 staff-portal-api reads them with a client-credentials token of this release's own
 Keycloak client (`global.authClientId`, secret `global.authClientSecret`, token
 URL from `global.keycloakIssuerUrl`), so that client's service account must be

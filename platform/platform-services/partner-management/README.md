@@ -50,8 +50,8 @@ shared platform-services layer), deployed as `commons-services-pm-*`. See
   [Access policies](functional-specifications.md#access-policies).
 * **Policy choices** — optionally, the policy form offers registries' data scope
   catalogues and an Exchange's use cases ([catalogue sources](functional-specifications.md#catalogue-sources)),
-  and purposes and subject ID types from the Master Data code lists `CONSENT_PURPOSE`
-  and `SUBJECT_ID_TYPE` ([Master Data code lists](functional-specifications.md#master-data-code-lists)),
+  and purposes and subject ID types from the Master Data datasets `CONSENT_PURPOSE`
+  and `SUBJECT_ID_TYPE` ([Master Data datasets](functional-specifications.md#master-data-datasets)),
   and checks requests against them.
 * **Key and policy fetch** — unauthenticated internal APIs return a partner's
   active public keys by `partner_id` (and optionally `kid`), plus a per-partner

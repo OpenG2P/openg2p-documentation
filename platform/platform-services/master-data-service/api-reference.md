@@ -98,7 +98,7 @@ in `response_error_message`. Check the status, not only the HTTP code. HTTP 401,
 | `G2P-CAT-403` | Maker ≠ checker refused, or no bearer token to forward to AWE |
 | `G2P-CAT-404` | Dataset, entry, version, unit, release or draft not found |
 | `G2P-CAT-409` | State conflict: a draft is already open, wrong draft status, approval runs through AWE, no boundary store, a boundary key used by another version, or a write to a published (immutable) row (message starts `immutable:`) |
-| `G2P-CAT-CODE-IMMUTABLE` | The code of an entry that is in a published version cannot change. Retire the entry and add a new one instead. Returned by `upsert_draft_values`, `/attributes/update_attribute_value`, submit and approve; the database refuses it on publish too, and the country-pack loader stops a dataset's load with it |
+| `G2P-CAT-CODE-IMMUTABLE` | The entry code of an entry that is in a published version cannot change. Retire the entry and add a new one instead. Returned by `upsert_draft_values`, `/attributes/update_attribute_value`, submit and approve; the database refuses it on publish too, and the country-pack loader stops a dataset's load with it |
 | `G2P-CAT-502` | AWE could not be reached |
 | `G2P-CAT-500` | Unexpected error |
 | `G2P-ATTR-*`, `G2P-GEO-*` | The same, from the original `/attributes` and `/geo` endpoints |
@@ -117,7 +117,7 @@ Every such response has a `version` object (`version_no`, `status`,
 `base_version_no`, `effective_from`, `published_at`, `is_latest`, notes, and who
 created, submitted and decided it); see [Version statuses](#version-statuses).
 Reading a dataset that the named release does not pin is an error. See
-[Concepts](concepts.md#reading-latest-pinned-as-of-release).
+[Concepts](concepts.md#which-version-a-read-returns).
 
 ### Names in the API
 
@@ -215,7 +215,7 @@ stateDiagram-v2
   may publish it is on
   [Change Control](change-control.md#releases).
 
-### Taking effect
+### When a version takes effect
 
 `effective_from` can be set when the draft is created, edited later
 (`update_list_draft`), given on submit, or overridden on approval. When a
@@ -228,12 +228,12 @@ like any other.
 ### Retired entries and recodes
 
 * Reads leave retired entries out unless `include_retired: true`.
-  `get_list_value` resolves a code and returns retired entries too.
+  `get_list_value` resolves an entry code and returns retired entries too.
 * Retiring an entry that has active children fails unless `cascade: true`.
 * An entry added in the open draft and never published is removed when retired.
-  Upserting a retired code in a draft brings it back (`ACTIVE`).
-* An entry only in the open draft, never published, may still change its code.
-  A change to a published code is refused with `G2P-CAT-CODE-IMMUTABLE` (see
+  Upserting a retired entry code in a draft brings it back (`ACTIVE`).
+* An entry only in the open draft, never published, may still change its entry code.
+  A change to a published entry code is refused with `G2P-CAT-CODE-IMMUTABLE` (see
   [Errors](#errors)).
 
 ### Typed fields schema
@@ -278,7 +278,7 @@ An entry of `SEED_VARIETY` then looks like:
 
 #### Lists of references
 
-An array whose `items` carry `x-list-ref` holds **several** codes of another
+An array whose `items` carry `x-list-ref` holds **several** entry codes of another
 dataset, like `agro_ecological_zones` above. This is how an entry is
 cross-classified: a crop keeps one parent in its own hierarchy and lists its
 groups in a field:
@@ -300,18 +300,18 @@ groups in a field:
 { "value_code": "MAIZE", "display": "Maize", "attributes": { "groups": ["CEREAL", "FODDER"] } }
 ```
 
-* Every code in the array is checked, like a single reference; the error names
-  the missing codes. The rest of the schema applies too (`minItems`,
+* Every entry code in the array is checked, like a single reference; the error names
+  the missing entry codes. The rest of the schema applies too (`minItems`,
   `uniqueItems`, …).
 * Reads return the array as stored. `attribute_filters` matches entries whose
-  array contains the given codes: `{"groups": ["FODDER"]}` finds `MAIZE`.
+  array contains the given entry codes: `{"groups": ["FODDER"]}` finds `MAIZE`.
 
 See [Design decisions](design-decisions.md#classification-hierarchy) for why
 cross-classification is a field rather than a second parent.
 
 #### Which version a reference is checked against
 
-An `x-list-ref` code must be an **`ACTIVE`** entry of the referenced dataset's
+An `x-list-ref` entry code must be an **`ACTIVE`** entry of the referenced dataset's
 version **in effect**:
 
 * normally, the latest published version in effect now;
@@ -321,7 +321,7 @@ version **in effect**:
   **pinned in the release**, if it pins one.
 
 **Drafts never count** (see [Concepts: typed fields](concepts.md#typed-fields)). A
-failure is `G2P-CAT-400`, naming the referenced dataset, the missing codes and the
+failure is `G2P-CAT-400`, naming the referenced dataset, the missing entry codes and the
 version checked.
 
 ### Change log entries
@@ -385,7 +385,7 @@ reject work only in `permission` approval mode. See
 | `POST /catalogue/get_lists` | Authenticated | All datasets |
 | `POST /catalogue/get_list` | Authenticated | One dataset at a version |
 | `POST /catalogue/get_list_values` | Authenticated | Entries (values) of a dataset at a version |
-| `POST /catalogue/get_list_value` | Authenticated | One entry by code at a version |
+| `POST /catalogue/get_list_value` | Authenticated | One entry by entry code at a version |
 | `POST /catalogue/get_list_versions` | Authenticated | Version history of a dataset |
 | `POST /catalogue/get_list_diff` | Authenticated | Differences between two versions |
 | `POST /catalogue/create_list` | `referenceData:create` | Create a dataset |
@@ -673,10 +673,10 @@ staff UI fills dropdowns from them).
 | Endpoint | What it does |
 |---|---|
 | `add_attribute` | Creates the dataset with an empty draft (version 1). It appears in `get_all_attributes` at once, with `current_version_no: null` and no entries |
-| `update_attribute` | Changes the code, label or hierarchy flag in the draft |
+| `update_attribute` | Changes the dataset code, label or hierarchy flag in the draft |
 | `delete_attribute` | Deletes a dataset never published. A published dataset is never deleted: all its entries are retired in the draft. Existing entries block it unless `cascade` is set |
 | `add_attribute_value` | Adds the entry to the draft |
-| `update_attribute_value` | Changes the entry in the draft. A published entry's code is refused (`G2P-CAT-CODE-IMMUTABLE`) |
+| `update_attribute_value` | Changes the entry in the draft. A change to a published entry's entry code is refused (`G2P-CAT-CODE-IMMUTABLE`) |
 | `delete_attribute_value` | Retires the entry in the draft (removes it if new in the draft); refused while it has active children |
 | `add_geo_level`, `update_geo_level`, `delete_geo_level` | Change the levels in the geography draft; a level is removed only if it has no child levels and no units |
 | `add_geo_level_value`, `update_geo_level_value`, `delete_geo_level_value` | Add, change or retire the unit in the geography draft |

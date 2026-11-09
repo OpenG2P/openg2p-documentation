@@ -28,7 +28,7 @@ At an Exchange CM (a CM in the [exchange role](design/exchange-consent-tokens.md
 
 ## Purposes and subject ID types
 
-The portal offers purposes and subject ID types from the country's **Master Data** code lists (by default `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE`), the lists Partner Management uses in policies, so a request and its policy use the same codes. The CM reads them with its own service account and caches them; the portal gets them from `GET /consent/v1/partner-portal/request-settings`. Settings: [Deployment](deployment/README.md#master-data-code-lists).
+The portal offers purposes and subject ID types from the country's **Master Data** datasets (by default `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE`), the lists Partner Management uses in policies, so a request and its policy use the same codes. The CM reads them with its own service account and caches them; the portal gets them from `GET /consent/v1/partner-portal/request-settings`. Settings: [Deployment](deployment/README.md#master-data-datasets).
 
 * **List loaded:** the form offers a dropdown, and a request naming a value outside the list is refused (`400`). At an Exchange only the subject ID type is checked; the purpose is the use case's.
 * **No list** (not in the country's Master Data, Master Data unreachable, or not configured): free text, and requests are accepted. Master Data never blocks a request.

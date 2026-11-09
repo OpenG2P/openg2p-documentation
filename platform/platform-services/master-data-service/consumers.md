@@ -21,7 +21,7 @@ operations are in the [API Reference](api-reference.md).
 | **Registry seed scripts** | Datasets, geography, sample people | At **install**, through the same API |
 | **Staff portal screens** | Geography units, level by level | At **runtime**, for cascading address dropdowns |
 | **PBMS, Bridge, SPAR** | Geography lookups | At runtime |
-| **Partner Management** | The code lists `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` (purposes and subject ID types a partner's access policy may name) | At **runtime**, with its own service account, cached; a list the pack lacks, or MDS down, leaves the policy form free text. See [Master Data code lists](../partner-management/functional-specifications.md#master-data-code-lists) |
+| **Partner Management** | The datasets `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` (purposes and subject ID types a partner's access policy may name) | At **runtime**, with its own service account, cached; a list the pack lacks, or MDS down, leaves the policy form free text. See [Master Data datasets](../partner-management/functional-specifications.md#master-data-datasets) |
 | **Maps** | Boundary files per level and version | The boundary read, or the public download when the geography is public |
 | **Open-data portals, other websites** | Public datasets and geography | The opt-in [public catalogue](public-catalogue.md), anonymous |
 
@@ -29,22 +29,22 @@ operations are in the [API Reference](api-reference.md).
 **Registries depend on MDS at runtime for data entry.** A registry's dropdowns
 read datasets and geography from MDS. While MDS is unavailable they are empty, so
 new records cannot be completed. Records already stored are unaffected: they hold
-the codes.
+the entry codes and P-codes.
 {% endhint %}
 
 How the registry platform itself reads MDS is in
 [Country data & seeding](../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#how-the-registry-reads-mds).
 
-## Latest, pinned or as of
+## Choosing which version to read
 
 Every read says which version it wants (see
-[Concepts](concepts.md#reading-latest-pinned-as-of-release)). Choose by what the data is
+[Concepts](concepts.md#which-version-a-read-returns)). Choose by what the data is
 used for:
 
 | Use | Read | Why |
 |---|---|---|
 | Data-entry dropdowns for new records | `latest` | New records should use the current entries |
-| Displaying an existing record | `latest` with `include_retired: true` | The record's code must still show a label, even if retired |
+| Displaying an existing record | `latest` with `include_retired: true` | The record's entry code must still show a label, even if retired |
 | A programme's eligibility or entitlement rules | **Pinned** version (or a release) | The rules were defined against that version and must not change silently |
 | A report for a past period | `as_of` the period's date, or pinned to the version used | Reproducible: run it again next year and get the same answer |
 | A survey, programme cycle or national report that needs everything consistent | A **catalogue release** | All datasets and the geography at one agreed set of versions |
@@ -53,7 +53,7 @@ used for:
 future-dated version can already be published. Check `effective_from` and
 `is_latest` in the response.
 
-## Pin in configuration
+## Keeping pinned versions in configuration
 
 A pin belongs in configuration, where it can be reviewed, not in code:
 
@@ -76,22 +76,22 @@ records may need mapping.
 
 ## Store the version with the record
 
-Where a record stores a code, also store **which version the code came from**, or
-at least the geography version for unit codes. For example, an entitlement record
+Where a record stores an entry code or a P-code, also store **which version it
+came from**, or at least the geography version for P-codes. For example, an entitlement record
 might hold `crop: MAIZE` with `catalogue_versions: { "CROP_COMMODITY": 4, "geo": 3 }`,
 or a record might hold the release code it was created under.
 
 That lets you later:
 
-* resolve the code exactly as it was meant (`get_list_value` at that version);
-* map a unit code to current geography with the
+* resolve the entry code exactly as it was meant (`get_list_value` at that version);
+* map a P-code to current geography with the
   [crosswalk](geography.md#the-crosswalk), which needs the from-version;
 * explain an old decision.
 
 If storing a version per record is not possible, the record's date and an `as_of`
 read are the fallback.
 
-## Cache by version
+## Caching labels per version
 
 **A published version never changes.** So:
 
@@ -101,7 +101,7 @@ read are the fallback.
   new was published (or for a short time), then re-read. The `version` object in
   the response tells you which version you got, so the cache can be keyed by it;
 * boundary files under a version key are immutable and can be cached the same way;
-* cache labels by version: they may change in a later version. Codes do not.
+* cache labels by version: they may change in a later version. Entry codes and P-codes do not.
 
 The original `/attributes` and `/geo` reads are cached inside MDS, per API
 worker, so after a publish other workers may serve the previous data for a short
@@ -141,14 +141,14 @@ current, and use the time to prepare), and when it **takes effect**
   recorded. Read with `include_retired: true` (or `get_list_value`) to show it.
 * A registry's coded-value check should validate **new** values against `latest` and
   accept existing values that are retired.
-* A stored code always resolves, in every later version (as `RETIRED` if it was
+* A stored entry code or P-code always resolves, in every later version (as `RETIRED` if it was
   retired).
 * To know whether an entry was current on a date, read the dataset **as of** that
   date. For a geography unit, its `valid_from` and `valid_to` answer directly.
 
 ## Hierarchies and groupings in reports
 
-* **Store the most specific code**: the crop or variety, the benefit type, not
+* **Store the most specific entry code**: the crop or variety, the benefit type, not
   its group.
 * **Roll up** by following `parent_code` up the tree for the main hierarchy. Use
   typed fields for other groupings, for example `attribute_filters:
@@ -156,9 +156,9 @@ current, and use the time to prepare), and when it **takes effect**
 * A report that groups by a list-of-references field must expect an entry in more
   than one group.
 
-## International codes
+## Reporting to international bodies
 
-* Store and exchange the country's codes.
+* Store and exchange the country's own entry codes and P-codes.
 * To report to an international body (ISCED, ICD-10, FAOSTAT, …), read the
   mapping field of each entry, at the version the report uses, and translate on
   output.
@@ -170,9 +170,9 @@ When a new geography version is published, nothing a consumer holds changes:
 
 | Consumer | What to do |
 |---|---|
-| **Registries** | **Keep the recorded code**; it still resolves. Store the geography version with the record if you can. Do not rewrite records automatically |
+| **Registries** | **Keep the recorded P-code**; it still resolves. Store the geography version with the record if you can. Do not rewrite records automatically |
 | **Data entry** | Use `latest`: new units appear and retired ones disappear from the effective date. Show existing records with retired units included |
-| **Current reporting** | Map old codes to current units through the [crosswalk](geography.md#the-crosswalk). Splits need the record's location or a review |
+| **Current reporting** | Map old P-codes to current units through the [crosswalk](geography.md#the-crosswalk). Splits need the record's location or a review |
 | **Aggregates and dashboards** | **Recompute** per-unit figures against the new version; never mix versions |
 | **Historical reports** | Read the geography as of the report date, or pinned to the version used |
 | **Maps** | Rebuild with the new boundary files; keep the old build for historical views |
@@ -186,7 +186,7 @@ A split cannot be resolved by MDS alone; see
 * [ ] Read through the `/catalogue` APIs, not MDS's database.
 * [ ] Decide per use whether you need latest, a pin, as-of, or a release; put pins in
       configuration.
-* [ ] Store the version (or release) used alongside records that hold codes.
+* [ ] Store the version (or release) used alongside records that hold entry codes or P-codes.
 * [ ] Cache by version number; follow the change feed with a stored cursor.
 * [ ] Show retired entries on existing records; hide them in new-entry dropdowns.
 * [ ] Have a plan for geography splits affecting your records.

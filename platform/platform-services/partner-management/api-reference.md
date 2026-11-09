@@ -57,7 +57,7 @@ Validation (rejected with `400`, code `G2P-REQ-102`):
 * `keys_from_jwks_url` — needs `jwks_url`; `keys` may then be empty ([keys from a JWKS URL](functional-specifications.md#keys-from-a-jwks-url)).
 
 Policies are also checked against the [catalogue sources](functional-specifications.md#catalogue-sources)
-and the [Master Data code lists](functional-specifications.md#master-data-code-lists),
+and the [Master Data datasets](functional-specifications.md#master-data-datasets),
 if configured (`PM-POLICY-400` for an unknown scope, use case, purpose or subject
 ID type; see [`GET /catalogue`](#get-catalogue)). A signing algorithm that matches
 none of the proposed keys adds a `warnings` entry.
@@ -119,7 +119,7 @@ Errors:
   pending for that key; approve or reject it first. Other keys are not blocked.
 * `PM-POLICY-400` — a scope or use case is not in its configured
   [catalogue source](functional-specifications.md#catalogue-sources), or a purpose
-  or subject ID type not in its [Master Data list](functional-specifications.md#master-data-code-lists)
+  or subject ID type not in its [Master Data list](functional-specifications.md#master-data-datasets)
   (the message names them).
 * `G2P-REQ-102` — a policy field is invalid (e.g. both or neither of
   `data_controller` / `use_case`, scopes missing for a data controller or given
@@ -197,7 +197,7 @@ policy's `allowed_signing_algs` may contain.
 The choices for policy forms, one entry per configured
 [catalogue source](functional-specifications.md#catalogue-sources) (cached
 `catalogue_cache_ttl` seconds), then one per
-[Master Data list](functional-specifications.md#master-data-code-lists):
+[Master Data list](functional-specifications.md#master-data-datasets):
 
 ```json
 {

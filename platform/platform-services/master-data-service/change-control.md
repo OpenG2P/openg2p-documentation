@@ -31,7 +31,7 @@ and [Releases](api-reference.md#releases).
 * A draft starts as a copy of the **highest published version**. The first edit
   opens one if none is open.
 * In a draft you can add, change and retire entries, and change the dataset's
-  versioned details (code, labels, hierarchy, schema). For geography: levels,
+  versioned details (dataset code, labels, hierarchy, schema). For geography: levels,
   units, change events and boundary files.
 * Some details are administrative and apply at once, outside the draft; see
   [Settings that apply at once](#settings-that-apply-at-once).
@@ -48,7 +48,7 @@ Submitting freezes the draft and asks for approval. The submitter gives a
 
 MDS checks the whole draft again: labels, the entry hierarchy, every entry against
 the schema, references to other datasets (against their published versions; see
-[Typed fields](concepts.md#typed-fields)), fixed codes, and for geography
+[Typed fields](concepts.md#typed-fields)), fixed entry codes, and for geography
 the levels, units and change events. A draft with no changes is refused. For
 geography, MDS also adds automatic change events for changes left without one; see
 [Change events](geography.md#change-events).
