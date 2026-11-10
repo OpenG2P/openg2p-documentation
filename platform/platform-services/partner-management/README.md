@@ -55,7 +55,12 @@ shared platform-services layer), deployed as `commons-services-pm-*`. See
   and checks requests against them.
 * **Key and policy fetch** — unauthenticated internal APIs return a partner's
   active public keys by `partner_id` (and optionally `kid`), plus a per-partner
-  JWKS view, and its active access policies.
+  JWKS view, and its active access policies. They are served by PM's
+  **partner API** (host `partner-management-partner-api.<base domain>`), named
+  for what it serves (partners' keys and policies), not for who calls it:
+  partners never call it; registries, the Consent Manager and the Composite do.
+  It is not a registry's partner API (e.g. `partner-fr.<base domain>` for the
+  Farmer Registry), which partners call to search the registry.
 
 ## Scope of the first version
 
