@@ -63,7 +63,7 @@ The registries' sample data describe the same people: person `ETH-IND-0007` is f
 
 ## A consent collected by hand
 
-By default the script signs the consent as the test partner (`test.consent: sign`). To test with a consent collected in the partner portal instead, first collect it ([Collecting a Consent](../administration/collecting-a-consent.md)), then run the script with `test.consent: lookup` (or `id:<consent ID>`) and `test.subject` that farmer.
+By default the script signs the consent as the test partner (`test.consent: sign`). That consent is sent with the query and stored by the Exchange CM, but it was not collected in the partner portal, so the portal's **Consents** list does not show it: its use is in the Exchange CM console under **Decisions** (partner `bank-a`, one entry per registry, with the consent ID; open it from there). To test with a consent collected in the partner portal instead, first collect it ([Collecting a Consent](../administration/collecting-a-consent.md)), then run the script with `test.consent: lookup` (or `id:<consent ID>`) and `test.subject` that farmer.
 
 ## Where to look
 

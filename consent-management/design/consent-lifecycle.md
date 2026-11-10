@@ -27,10 +27,10 @@ sequenceDiagram
   App->>IdP: subject authenticates (OTP / biometric)
   IdP-->>App: ID token
   App->>CM: POST /consent-requests/{id}/authenticate {id_token}
-  CM->>IdP: JWKS; check signature and claims
+  CM->>IdP: JWKS, check signature and claims
   CM->>CM: AuthContext (token hash, claims)
   App->>CM: POST /consent-requests/{id}/approve {granted_scopes or grants}
-  CM->>CM: effective = granted ∩ policy; artefact (active) + signed receipt
+  CM->>CM: effective = granted ∩ policy, artefact (active) + signed receipt
   CM-->>App: the consent
 ```
 

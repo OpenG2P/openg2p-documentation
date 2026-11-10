@@ -31,7 +31,7 @@ sequenceDiagram
   P->>PM: onboarding request (partner ID + public key + policy), approved by PM staff
   Note over P,R: Per data fetch
   Note over P,CM: Consent collected through the CM (or signed by you, if allowed)
-  P->>R: call the registry data API (signed request; your consent object, or none)
+  P->>R: call the registry data API (signed request, your consent object, or none)
   R->>CM: POST /consent/v1/validate (your object, or the person searched + its own data_controller)
   CM->>PM: read your policy for this registry (+ your public key, for your own object)
   CM-->>R: decision = permit + effective_data_scopes (or deny + reason)

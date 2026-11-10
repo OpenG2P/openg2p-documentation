@@ -68,7 +68,7 @@ sequenceDiagram
     B->>C: request (+ consent signed by bank-a, or none)
     C->>X: POST /validate {consent_jws or none, consent_partner_id, partner_id: agri-composite, issue_receipts: true, use_case, purpose, requested_scopes}
     X->>X: no consent sent → look up bank-a's consent for subject + use case
-    X->>X: bank-a has a policy for the use case; each grant ∩ the use case's scopes
+    X->>X: bank-a has a policy for the use case, each grant ∩ the use case's scopes
     X-->>C: permit + receipts {farmer-registry: token JWS, crop-sown-registry: token JWS}
     C->>R: DCI search, sender_id agri-composite, consent = FR consent token
     R->>D: POST /validate {consent_jws: token, data_controller, partner_id: agri-composite}

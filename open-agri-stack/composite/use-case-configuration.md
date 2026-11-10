@@ -88,7 +88,7 @@ A parameter the use case does not declare is rejected. Templates see every decla
 
 ## Sources
 
-One entry per registry search. A search asks for **one record type** (`dci.reg_record_type`), so a use case that needs two kinds of record from the same registry has a source for each. `loan-profile` has one Farmer Registry source (the farmer record, `Farmer`) and two Crop Sown Registry sources: `season_summaries` (the registry's per-season summaries, `ActivityAggregate`) and `crop_seasons` (each crop season's current state, `CropSeason`). Both crop sources go to the same registry API (DCI search); they differ in the record type they ask for. Being separate, each has its own status, scopes and timeout, and they run in parallel.
+A **source** is one search the Composite makes in a registry, for **one record type** (`dci.reg_record_type`), e.g. the farmer record in the Farmer Registry. A use case lists its sources under `sources`; a registry can appear in more than one when the use case needs several of its record types. `loan-profile` has one Farmer Registry source (the farmer record, `Farmer`) and two Crop Sown Registry sources: `season_summaries` (the registry's per-season summaries, `ActivityAggregate`) and `crop_seasons` (each crop season's current state, `CropSeason`). Both crop sources go to the same registry API (DCI search); they differ in the record type they ask for. Being separate, each has its own status, scopes and timeout, and they run in parallel.
 
 | Key | |
 | --- | --- |
