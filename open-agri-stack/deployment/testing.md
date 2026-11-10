@@ -48,7 +48,7 @@ It needs Python 3, the hostnames of the installs, and the admin credentials: rea
 | --- | --- | --- |
 | 1 | Install | Reads the use case from the Composite (its registries, scopes, purpose) and the Composite's public key; checks that each department's Partner Management serves that key. Read only |
 | 2 | Departments | In each department the use case reads, makes sure the Composite's scope policy covers what the use case asks: raises a policy request if not (widening, never narrowing), approves it, waits until Partner Management serves it |
-| 3 | Partner key | The test partner's signing key (EC P-256), kept in `test.state_dir` (default `~/.agri-stack-test/<Exchange domain>`) and reused |
+| 3 | Partner key | The test partner's signing key (EC P-256), kept in `test.state_dir` (default `~/.agri-stack-test/<Exchange domain>`) and reused. A run from another computer (another state directory) has no such key: it makes its own and adds it to the partner in PM, beside the earlier ones, which stay active until revoked; so the test partner may show several keys |
 | 4 | Partner | Onboards the test partner in the Exchange's Partner Management with its key and its policy for the use case (allowing partner-signed consents when the script signs one), or adds what is missing; approves; waits until served |
 | 5 | Portal user | With `exchange.partner_portal.enabled`: user `<partner>-operator` in the realm `partner`, password kept in Secret `partner-user-<partner>-operator` |
 | 6 | Query | A consent for the farmer with a grant per registry, the signed query to the Composite, and the response signature checked against the Composite's key served by Partner Management |
