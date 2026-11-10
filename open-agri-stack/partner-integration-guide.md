@@ -329,7 +329,7 @@ When a registry denies your consent, the reason in `sources.<id>.detail` comes f
 
 ## Step 9 — Verify the Composite's signature
 
-Verify every response before you use it. The `signature` is a detached JWS over the canonical JSON of the response's `{header, message}`, signed with the Composite's key (`PARTNER_AGRI_COMPOSITE` in PM; the JWS header carries its `kid`):
+Verify every response before you use it. The `signature` is a detached JWS over the canonical JSON of the response's `{header, message}`, signed with the Composite's key (the JWS header carries its `kid`; the public key is at the Composite's JWKS URL, below):
 
 ```python
 import base64

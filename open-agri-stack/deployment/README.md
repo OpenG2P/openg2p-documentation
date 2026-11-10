@@ -34,7 +34,7 @@ Each namespace has its own domain on the `internal` gateway (`*.trial.openg2p.or
 | What | Done by |
 | --- | --- |
 | The Composite's signing key (Secret `agri-composite-signing`) and its public keys at `https://agri-composite.<Exchange domain>/.well-known/jwks.json` | The Composite chart |
-| The Composite onboarded in the Exchange's and each department's Partner Management, its keys read from that URL, with no policy | Commons Services (Partner Management), from **Exchange Role** |
+| The Composite onboarded in each department's Partner Management, its keys read from that URL, with no policy | Commons Services (Partner Management), from **Exchange Role** |
 | Trust between the Consent Managers: the Exchange CM issues consent tokens, each department CM accepts them | Commons Services (Consent Manager), from **Exchange Role** |
 | The partner portal's Keycloak realm, client, roles and `partner_id` attribute | Commons Services (Consent Manager), with **Partner Portal?** |
 

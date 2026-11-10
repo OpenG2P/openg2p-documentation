@@ -13,7 +13,7 @@ description: Versions and source code.
 * The Exchange: the Composite, Partner Management, and the Consent Manager with its partner portal. Partners use it through use cases, with the farmer's consent.
 * Two reference registries: the Farmer Registry and the Crop Sown Registry.
 * One use case: `loan-profile`.
-* Setup at install: the Composite's key, its onboarding in every Partner Management, and the partner portal realm.
+* Setup at install: the Composite's key, its onboarding in each department's Partner Management, and the partner portal realm.
 
 ## Modules
 

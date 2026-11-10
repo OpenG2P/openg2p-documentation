@@ -12,6 +12,15 @@ So:
 * a field can be renamed in the registry without touching any consent or policy;
 * a scope can be narrowed at any time, and widening it never reaches consents given before.
 
+Scopes are used only when a partner reads the registry (partner API), for four things:
+
+* **Consent:** a farmer consents to scopes, with labels a person understands ("Land parcels"), never to field names.
+* **The department's limit:** the registry's scope policy for a partner in PM lists the most it releases to that partner, whatever a consent grants: only `consent ∩ policy` is released. A sharing without consent (a [mandate](../../../../open-agri-stack/roadmap/README.md), or [searches across subjects](#enforcement)) is limited by scopes the same way.
+* **Releasing only what is needed:** every record is filtered to the allowed scopes' fields before it is sent.
+* **A published catalogue:** partners, PM and the Composite read what the registry can share and what each scope means; use cases and policies name scopes, so the registry can change its fields without breaking them.
+
+Staff access does not use scopes: in the staff portal, what a user sees is set by IAM roles and data policies.
+
 ## Scope IDs
 
 A scope ID is `<consent_data_controller>.<name>`, for example `farmer-registry.land` or `crop-sown-registry.crop_season`.
@@ -109,7 +118,7 @@ A section scope follows its section: when a section's widgets change, the scope 
 The catalogue holds field references, never values.
 
 * **Partner API:** `POST /partner/data_scopes` with a signed partner envelope (`header`, `message`, `signature`, checked like every other partner call). The unsigned `GET /partner/data_scopes` is **on in the chart by default**: the catalogue holds no data, partners need it anyway, and Partner Management, which has no signing key, reads it to offer scopes as a checklist when policies are written. A deployment that wants its field names private turns it off (**Allow Unsigned Read of Data Scope Catalogue**, `global.partnerDataScopesPublicGetEnabled`): the GET then answers HTTP 403 pointing to the POST, and PM falls back to free text.
-* **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for the staff UI.
+* **Staff API:** `GET /data_scopes` (and `POST /data_scopes/get_data_scopes`), for staff tools; the registry's staff portal has no page for it yet.
 
 ```json
 {
@@ -137,6 +146,15 @@ The catalogue holds field references, never values.
 ```
 
 `fields` is what the catalogue says; `resolved_fields` is the concrete field list (sections expanded) that enforcement uses.
+
+## Where to see them
+
+* **The Composite console** (Agri Stack): **Registries**, one registry: every scope with its label, its fields, and the use-case sources that need it (required) or may use it (optional). See [Composite console](../../../../open-agri-stack/composite/console.md).
+* **Partner Management:** when a scope policy is written, the registry's scopes are offered as a checklist (read from the registry's catalogue).
+* **The registry's API:** `GET /partner/data_scopes` (above), as JSON.
+* **The registry's own docs:** a page per registry lists the scopes it ships, e.g. [Farmer Registry](../../farmer-registry/data-scopes.md).
+
+The registry's staff portal has no data-scopes page.
 
 ## Who uses scope IDs
 

@@ -42,7 +42,7 @@ The other mode, `passthrough`, sends the partner's consent to each registry unch
 | `composite.registries.crop-sown-registry.url` | Empty (required) | Integration: Crop Sown Registry Search URL |
 | `composite.registries.<controller>.partnerId` | Empty | Values only. The registry's PM partner ID: when set, the registry's response signature is verified against `PARTNER_<ID>` in the Exchange PM |
 | `composite.registries.<controller>.receiverId` | Empty: the controller ID | Values only. The `header.receiver_id` sent to it |
-| `global.compositePartnerId` | `agri-composite` | Integration: Composite Partner ID. The `sender_id` towards registries; partners send it as `receiver_id`. Its key must be in every PM |
+| `global.compositePartnerId` | `agri-composite` | Integration: Composite Partner ID. The `sender_id` towards registries; partners send it as `receiver_id`. Its key must be in each department's PM |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Integration: Partner Management URL. Partner keys and use-case policies, fetched as `PARTNER_<SENDER_ID>` |
 
 Each registry is a data controller ID mapped to its full DCI sync search URL. Partner Management holds no registry endpoints yet, so they are set here, and nothing about a registry is hard-coded. An empty URL makes that source fail (`error`); a use case whose sources name a controller not listed here does not load. The console reads each registry's data scope catalogue from the same host (`/partner/data_scopes`). A third registry is added under `composite.registries` in **Edit YAML** (the form shows the two that ship): [adding a registry](../registries/adding-a-registry.md#step-4-register-the-endpoint-in-the-composite). Changing a registry setting rolls the pods.
@@ -68,7 +68,7 @@ Writing a use case and adding it: [Use-Case Configuration](../composite/use-case
 | `composite.signingKey.secretName` | `agri-composite-signing` | Signing key: Signing Key Secret |
 | `composite.signingKey.pemKey`, `p12Key`, `passwordKey`, `kidKey`, `algorithmKey` | `key.pem`, `composite.p12`, `password`, `kid`, `algorithm` | Values only: the keys in the Secret |
 
-The Composite signs its calls to the registries and its answers to partners with this key, and serves its public key at `/.well-known/jwks.json`, where every Partner Management reads it.
+The Composite signs its calls to the registries and its answers to partners with this key, and serves its public key at `/.well-known/jwks.json`, where each department's Partner Management reads it.
 
 * **Generated** (`generate: true`): on first install the chart creates the Secret with an EC P-256 key (`key.pem`) and a `kid` (`<partner ID>-<random>`), then reads it back on every upgrade, and keeps it on uninstall.
 * **Your own:** create the Secret before installing, with a `.p12` (`composite.p12`, `password`, and optionally `kid` and `algorithm`). The chart leaves a Secret it did not create alone, and a `.p12` is used before a generated key. `kid` blank: the certificate's SHA-256 thumbprint; `algorithm: auto` takes it from the key type (EC → ES256, Ed25519 → EdDSA, RSA → RS256).

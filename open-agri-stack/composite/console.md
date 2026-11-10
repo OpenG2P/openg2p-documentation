@@ -23,7 +23,7 @@ The console shows how the Composite is set up and what it has been doing. It is 
 | **Registry** | The registry the search goes to (`controller`) |
 | **If it can't answer** | **Fail the request** (`mandatory`) or **Continue without it** (`optional`); the source's status tells the partner |
 | **Runs after** | `depends_on`: the sources whose result this search needs |
-| **Required scopes**, **Optional scopes** | Data scopes the consent must grant, or may leave out (their fields are then `null`) |
+| **Required scopes**, **Optional scopes** | The registry's [data scopes](use-case-configuration.md#data-scopes) the source reads. Required: the consent must grant them (and the department's scope policy for the Composite allow them), or a mandatory source fails the request and an optional one is reported `denied`. Optional: may be left out; their fields are then `null`. The registry returns only the fields of the scopes allowed |
 | **Output fields** | What the partner gets: the `mapping` fields and the `derived` values |
 
 ## Access
