@@ -13,7 +13,7 @@ How a partner manager stops a partner from using any service, and lets it back i
 1. **Partners**, open the partner.
 2. Click **Disable**.
 
-The partner's status becomes `disabled`. Nothing is deleted: its keys, policies and history stay, and the change is recorded in its **History** (`partner.disabled`).
+The partner's status becomes `disabled`. Nothing is deleted: its keys, policies and history stay, and the change is recorded in its **History** (`partner.disabled`). It stays in the **Partners** list, marked disabled: Partner Management never deletes a partner, so that its history and the decisions made with it can still be traced.
 
 ## What happens
 
