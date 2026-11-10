@@ -18,7 +18,7 @@ The endpoints of the [Composite](README.md), their request and response formats 
 | `POST` | `/composite/v1/use-cases/{use_case}/query` | Query a use case for one subject | Request and response |
 | `GET` | `/composite/v1/admin/...` | Console API (staff, read-only) | Staff login |
 
-`{use_case}` is `name` (for example `loan-profile`) or `name@major` (for example `loan-profile@1`). Without a major version, the highest published one is used. The `X-Use-Case-Major` header can name the major version instead.
+These three endpoints serve every use case: `{use_case}` is a path parameter, not a separate API per use case. Publishing a use case creates no endpoint and needs no code or deployment of the API: once its file is loaded, it is listed by `GET /composite/v1/use-cases` and answered at `/composite/v1/use-cases/<its name>/query`, for partners with a policy for it. `{use_case}` is `name` (for example `loan-profile`) or `name@major` (for example `loan-profile@1`). Without a major version, the highest published one is used. The `X-Use-Case-Major` header can name the major version instead.
 
 ## Error codes
 

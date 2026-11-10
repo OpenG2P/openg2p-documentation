@@ -26,6 +26,18 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 In every scenario the farmer proves who they are with the national ID; an SMS is only ever a notification afterwards. The steps, the partner portal and the gaps are in the Consent Manager's [consent collection](../../consent-management/design/consent-collection.md).
 
+## Two ways a consent reaches the Exchange
+
+| | Consent held by the Exchange CM (the main path) | Consent signed by the partner |
+| --- | --- | --- |
+| Collected by | The Exchange CM: partner staff in the partner portal (scenario 1), or the CM's own screens (scenarios 2 and 3, planned) | The partner, through its own channel (its app, branch or forms), outside the Exchange |
+| What the partner sends to the Composite | Nothing (the Exchange CM finds the consent), or its consent ID | The consent object it signed (`consent_jws`) |
+| Allowed | Always | Only if the partner's use-case policy allows partner-signed consents (**May present its own signed consents**; off by default) |
+| What the CM can check | The farmer's national-ID login, the signed form, a Consent Approver's check | The partner's signature only, not that the farmer agreed: the partner keeps the evidence and answers for it |
+| In the partner portal | Listed under **Consents** | Not listed; stored by the Exchange CM when first used, and usable afterwards by its ID or by lookup |
+
+Both go to the Composite's same query API; the Exchange CM turns either into the registries' consent tokens. All three scenarios above are the first path. The second exists for partners the Exchange trusts with their own consent collection; the [install test](../deployment/testing.md) uses it by default because it needs no person. Partner's side: [Partner Guide, step 4](../partner-integration-guide.md#step-4-collect-the-farmers-consent).
+
 ## Key features
 
 | Feature | In brief | Details |

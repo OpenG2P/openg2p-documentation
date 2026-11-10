@@ -142,4 +142,6 @@ Every evaluation, permit or deny, writes an immutable **decision log** entry wit
 
 A consent the CM holds already has its artefact and receipt; a permit on it is logged and returns them.
 
+Once stored, a partner-signed consent is used like a consent the CM holds: by its `consent_id`, or found by [lookup](#use-case-mode) when the partner sends no consent, until it expires or is revoked. It differs in what is behind it: no request, no signed form, no national-ID login, no Consent Approver (its assurance is the partner's signature only), and the partner portal does not list it (the console's **Access Log** shows its use).
+
 Two registries validating one multi-grant consent each get their own decision, artefact and receipt; revoking one leaves the other in force. Revocation applies at once on the next `/validate`; an enforcement point that caches decisions checks [consent status](../api/verification-api.md).
