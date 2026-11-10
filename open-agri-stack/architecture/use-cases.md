@@ -38,4 +38,13 @@ A farmer does not know what `loan-profile@1` means, so the consent is about the 
 
 A department's systems never deal with use cases. Its Partner Management and Consent Manager see only the Composite as a partner and, for each request, a consent token with the purpose, the farmer and the registry's data scopes. In the Composite's scope policy, each department decides the most its registry releases; its administrator reads the published use cases to decide it ([Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md)). A new use case, or one that reads more, gets that data only once the departments widen their policies.
 
+**Why a purpose as well as a use case.** The use case is the Exchange's technical bundle (which registries, which data, what answer); the purpose is the reason the data is wanted, and it is what the rest of the system works with:
+
+* **The law:** consent is given for a purpose (purpose limitation, in data-protection laws such as DPDP and GDPR); the farmer agrees to "credit assessment", not to `loan-profile@1`.
+* **The departments:** they never see use cases; their policy for the Composite lists the purposes they release data for, and their CM refuses any other.
+* **Other ways in:** a partner reading a registry directly, without the Exchange, has no use case either; the purpose is the same concept everywhere in OpenG2P.
+* **Stability:** several use cases, and every version of one, can share a purpose, so a department's policy need not change for each.
+
+The purposes are a country list (Master Data's `CONSENT_PURPOSE`), so the Exchange, the departments and partners use the same codes; a use case names one of them.
+
 **What is released for a request:** the use case's data ∩ what the farmer consented to ∩ what each department allows, worked through in [what actually gets released](data-sharing-policies.md#what-actually-gets-released).

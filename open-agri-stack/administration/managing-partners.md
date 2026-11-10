@@ -17,7 +17,7 @@ The partner's own steps: [Partner Guide: Fetching Farmer Data](../partner-integr
 
 ## Assign or remove a use case
 
-* **Assign another use case:** on the partner's page, **Add policy** → **Use case**, choose it, fill in the limits, submit, approve.
+* **Assign another use case:** on the partner's page, **Add policy** → **Use case**, enter it (`name@major`, e.g. `loan-profile@1`), submit, approve. Only the use case is required: the purposes, subject ID types, longest consent and partner-signed consents are optional limits (empty means the use case's own, with no further limit), and the signing algorithm is pre-filled from the partner's keys.
 * **Remove a use case:** **Revoke** on that use case's policy, give a reason, approve. The partner's requests and consents for that use case are refused from then on; its other use cases are unaffected.
 
 Steps and fields: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md).

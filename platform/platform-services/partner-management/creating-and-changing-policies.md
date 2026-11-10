@@ -13,13 +13,13 @@ The partner's PM ID is its ID upper-cased, `-` replaced by `_`, prefixed `PARTNE
 
 ## Filling in a policy
 
-| Field | Enter | Empty means | Checked by |
+| Field | Enter | Empty means | Enforced by (service) |
 | --- | --- | --- | --- |
 | **Policy for** | **Registry** for a scope policy (a partner of one registry); **Use case** for one use case of an Exchange (one policy per use case) | — | — |
 | **Registry** | Not free text: the registry's **Consent Data Controller** setting, exactly (e.g. `farmer-registry`), which is also the prefix of its scope IDs. A mismatch means the policy is never found and every request is denied | Not allowed (scope policy) | — |
 | **Allowed scopes** | Full scope IDs from the registry's catalogue, e.g. `farmer-registry.land`: listed on the registry's **Data Scopes** page (e.g. [Farmer Registry](../../../products/registry/farmer-registry/data-scopes.md), [Crop Sown Registry](../../../products/registry/crop-sown-registry/data-scopes.md)), or read live from its partner API. Only these can ever be released, whatever the consent says | Not allowed | The registry's Consent Manager |
 | **Use case** | A published use case as `name@major`, e.g. `loan-profile@1`. A new major version needs its own policy | Not allowed | The Exchange's Composite and Consent Manager |
-| **Purposes** | The codes the partner may give as a consent's purpose (`purpose.code`). When configured, a checklist of the country's dataset `CONSENT_PURPOSE` in the Master Data Service; otherwise free text agreed with the partner, e.g. `credit-assessment`. A use-case policy needs its use case's purpose (shown under the selected use case) | Any purpose | Consent Manager |
+| **Purposes** | The codes the partner may give as a consent's purpose (`purpose.code`). When configured, a checklist of the country's dataset `CONSENT_PURPOSE` in the Master Data Service; otherwise free text agreed with the partner, e.g. `credit-assessment`. For a use case, leave it empty: the use case's own purpose applies (shown under the selected use case) | Any purpose | Consent Manager |
 | **Subject ID types** | The ID types the partner's consents may name the person by (`subject_id.type`). When configured, a checklist of the country's dataset `SUBJECT_ID_TYPE` in the Master Data Service; otherwise free text, spelt as the registries and partners use them, e.g. `FAYDA_FAN`, `FARMER_ID` in Agri Stack | Any type | Consent Manager |
 | **Signing algorithms** | Pre-filled from the partner's keys (its active keys, or on onboarding the keys entered above): EC P-256 → `ES256`, Ed25519 → `EdDSA`, RSA → `RS256`. Add a second one only while the partner moves to a key of another type; one with no key is accepted with a warning | Not allowed | Consent Manager (a consent signed otherwise is refused) |
 | **Max consent validity** | ISO-8601 duration, e.g. `P90D`, `P1Y` | No limit | Consent Manager |
@@ -28,7 +28,9 @@ The partner's PM ID is its ID upper-cased, `-` replaced by `_`, prefixed `PARTNE
 | **Data life** | How long the partner may keep the data, ISO-8601, e.g. `P30D` | — | Recorded only (a contractual term) |
 | **May present its own signed consents** | Tick only for a partner that collects consent in its own trusted system: the Consent Manager then accepts consents the partner signed itself. It cannot verify the person agreed, only the partner's signature | Off: the partner uses consents held by the Consent Manager | Consent Manager (a partner-signed consent is refused when off) |
 
-"Recorded" fields are kept with the policy and the consent for audit; no module enforces them yet.
+For a **use case**, only the use case and the signing algorithm are needed. The purposes, subject ID types, validity, fetch type, data life and partner-signed consents are under **Optional limits**, folded: the use case already defines its purpose and subject ID types, so these only narrow what this partner may do with it.
+
+**Enforced by** names the service that applies the field on every request, automatically; it is not a person's check (a Consent Approver checks a consent request collected in the partner portal, not the policy). "Recorded" fields are kept with the policy and the consent for audit; no module enforces them yet.
 
 If the deployment has [catalogue sources](functional-specifications.md#catalogue-sources), **Registry** and **Use case** are lists of the configured registries and the exchange's published use cases (**Other…** for any other), **Allowed scopes** a checklist of the registry's scopes, and **Set purposes from selected use case** fills **Purposes**. If a source (or the Master Data Service) cannot be read, its error is shown and the field is free text; the request then carries a warning for the approver. A dataset the country does not have is free text, without a warning.
 
