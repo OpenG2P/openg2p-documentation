@@ -83,6 +83,21 @@ effect, and the geography when it is public, each with its licence, theme, versi
 and one download per format. CKAN's DCAT harvester and other portals can harvest
 it. See [Standards](standards.md#catalogue-metadata-public-catalogue).
 
+It is metadata, not data: it says what exists and where to get it, for portals and
+harvesters rather than applications. Even with one dataset it is long, because
+JSON-LD spells every term out:
+
+| Part | What it is |
+|---|---|
+| `@context` | The vocabularies the terms come from (DCAT, Dublin Core `dct:`, SKOS, …); the same in every response |
+| The catalogue (`dcat:Catalog`) | Its title, description, last change and home page |
+| `dcat:themeTaxonomy` | The themes (core, agriculture, …) as a small SKOS scheme |
+| `dcat:dataset` | One entry per public dataset: identifier, title, dates, theme, version, licence (when set) |
+| `dcat:distribution` | Per dataset, one entry per format (CSV, JSON, SKOS), each with its download URL and media type |
+
+The entries themselves are not in it: an application reads them from
+`/public/datasets/{code}/entries`, or a download.
+
 ### SKOS concept schemes
 
 Each public dataset can be read as a SKOS concept scheme (JSON-LD): one concept

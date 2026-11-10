@@ -21,6 +21,16 @@ appears only for a user with the matching permission (see
 approve or reject a draft you created, last edited or submitted, nor publish a
 release you created or whose members you last set. Ask someone else.
 
+## Two kinds of change: Start new version and Dataset settings
+
+| | **Start new version** (on the version bar) | **Dataset settings** (top right of the dataset) |
+|---|---|---|
+| Changes | The data: entries (add, change, retire, recode), and the dataset's code, label, labels by language, hierarchy flag and schema | The dataset's administrative details: description, publisher, theme, visibility (public or private) and licence |
+| How | A published version is fixed, so a change is made in a new version: an editable copy (a **draft**) of the version in effect, e.g. version 2 from version 1. You edit it, **Submit**, and another person approves it; it is then published and replaces the old one (see [Versions](concepts.md#versions)). While it is open, **Go to draft** takes you to it | Saved and applied **at once**, with no draft and no approval ([Settings that apply at once](change-control.md#settings-that-apply-at-once)) |
+| Consumers see it | Only once published (and in effect, for a future-dated version) | At once |
+
+**Dataset settings** has two parts: **Settings (apply at once)**, the details above, and **Name and structure**: the dataset's code, label, labels by language and hierarchy flag, which are part of the data, so they are saved into the draft and published on approval. Every change of either kind is recorded and sent to the Audit Manager.
+
 ## Add or change an entry
 
 Good to know:
@@ -65,9 +75,9 @@ Good to know:
 * A new dataset opens on its first draft (version 1). Define its typed fields on
   **Schema** and click **Save schema to draft**; without a schema, fields are
   free JSON.
-* In **Edit dataset details**, some details apply at once (see
+* In **Dataset settings**, the settings apply at once (see
   [Settings that apply at once](change-control.md#settings-that-apply-at-once));
-  dataset code, label, labels by language and the hierarchy flag go into the draft.
+  the name and structure (dataset code, label, labels by language, hierarchy flag) go into the draft.
 * A dataset that was never published can be deleted. A published one cannot;
   retire its entries instead.
 
@@ -100,7 +110,7 @@ Good to know:
 
 ## Change geography (split, merge, rename)
 
-1. Open **Geography**. Click **Open draft** and give a change note.
+1. Open **Geography**. Click **Start new version** and give a change note.
 2. Under **Data**, edit the units:
    * **split**: add the new units, move the old unit's children to their new
      parents, then **Retire** the old unit;
@@ -144,9 +154,14 @@ See [Country Packs](country-packs.md).
 
 ## Make a dataset public
 
+**Which datasets are public:** in the dataset list, a public dataset carries a
+**Public** badge; a dataset without one is private (the default). A dataset's
+own page shows **Public** or **Private** in its header, and the geography's page
+shows its own badge.
+
 Good to know:
 
-* Visibility and licence are in **Edit dataset details** (for the geography:
+* Visibility and licence are in **Dataset settings** (for the geography:
   **Publication settings**). They apply at once; no approval is needed.
 * Nothing is served until the deployment switches the public catalogue on; the
   dialog says so when it is off. See [Public Catalogue](public-catalogue.md).
