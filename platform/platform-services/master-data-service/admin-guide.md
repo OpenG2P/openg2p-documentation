@@ -21,6 +21,11 @@ appears only for a user with the matching permission (see
 approve or reject a draft you created, last edited or submitted, nor publish a
 release you created or whose members you last set. Ask someone else.
 
+The install gives the role `MASTER_DATA_ADMIN` only to the `admin` user. For
+anyone to approve, create a second user in Keycloak's `staff` realm and give
+them the `master-data` client role `MASTER_DATA_APPROVER` (approves only) or
+`MASTER_DATA_ADMIN`.
+
 ## Two kinds of change: Start new version and Dataset settings
 
 | | **Start new version** (on the version bar) | **Dataset settings** (top right of the dataset) |

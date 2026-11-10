@@ -115,6 +115,15 @@ With `approvalMode: awe`, the chart also:
   `MASTER_DATA_APPROVER`; self-approval is forbidden. The stages can be changed
   in AWE afterwards.
 
+### Turning it on
+
+1. Set `approvalMode: awe` and `awe.baseUrl` to AWE's in-cluster address. In
+   Commons Services this is `http://commons-services-awe`; Commons does not set
+   it for you.
+2. Upgrade. The post-upgrade seed Job registers the policies.
+3. In Keycloak, give the approvers the client role `MASTER_DATA_APPROVER`.
+4. Approve drafts in the AWE portal, not in MDS.
+
 ## Public catalogue host
 
 The [public catalogue](public-catalogue.md) is off by default in the MDS chart
