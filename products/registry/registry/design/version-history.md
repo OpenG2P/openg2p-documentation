@@ -113,19 +113,20 @@ ORM history classes may inherit full domain columns, but many history **schemas*
 
 When a change request is approved, the approval transaction:
 
-1. Inserts one history row per non-`NO_CHANGE` item in the change payload (`G2PRegisterHistoryService.insert_into_register_history`).
-2. Upserts or deletes the live register row(s).
-3. Promotes supporting documents (see Document history).
-4. Updates change-request status / timestamps.
+1. Updates change-request status / timestamps.
+2. Upserts or deletes the live register row(s). `NO_CHANGE` payload items are not written to the live table.
+3. Inserts history rows (`G2PRegisterHistoryService.insert_into_register_history`) from the live table after that apply.
+4. Promotes supporting documents (see Document history). `NO_CHANGE` rows are not reconciled.
 
-For each payload item:
+History is written after the live apply so each snapshot is the committed row. For each payload item that is stored:
 
-1. Validate / filter through `G2PRegisterHistorySchema{Mnemonic}`.
-2. Keep non-null schema fields.
-3. Overlay CR metadata: new `history_record_id`, `internal_record_id` from the payload, `tab_id` / `section_id`, `change_request_id`, source, primary-section flag, created/approved stamps.
-4. Stamp `subject_internal_record_id = change_request.internal_record_id`.
+1. Copy domain columns that exist on the history class from the live row. A `DELETE` row keeps bookkeeping columns only.
+2. Overlay CR metadata: new `history_record_id`, `internal_record_id` from the payload, `tab_id` / `section_id`, `change_request_id`, source, primary-section flag, created/approved stamps.
+3. Stamp `subject_internal_record_id = change_request.internal_record_id`.
 
-`NO_CHANGE` payload items and `PROGRAM_REGISTER` targets are skipped. Rejected change requests do not write history.
+On a **list section** (`is_list`), `NO_CHANGE` rows are included. Each one is a copy of that live row, stamped with this change request, so the version is the whole section and not only the edited row. On a **form section**, `NO_CHANGE` is skipped so the subject row is not written twice. `PROGRAM_REGISTER` targets are skipped. Rejected change requests do not write history.
+
+A list payload that is only `NO_CHANGE` is rejected at create. `NO_CHANGE` rows must not carry nested `documents`.
 
 ```mermaid
 sequenceDiagram
@@ -135,14 +136,13 @@ sequenceDiagram
     participant PG as PostgreSQL
 
     Approver->>CRS: approve_change_request
-    CRS->>HS: insert_into_register_history
-    loop Each payload item except NO_CHANGE
-        HS->>HS: validate via history schema
-        HS->>PG: INSERT g2p_register_history_*
-    end
-    CRS->>PG: upsert / delete live register row(s)
-    CRS->>PG: document history + live section documents
     CRS->>PG: update change request status
+    CRS->>PG: upsert / delete live rows, skip NO_CHANGE
+    CRS->>HS: insert_into_register_history
+    loop ADD, UPDATE, DELETE, and list-section NO_CHANGE
+        HS->>PG: INSERT g2p_register_history_* from the live row
+    end
+    CRS->>PG: document history + live section documents
 ```
 
 #### Intake form ingest
@@ -165,7 +165,7 @@ Intake history forces:
 
 #### Deletes and subject scoping
 
-For `DELETE` actions, a history row is still written (often with only identifiers and CR metadata; domain columns may be null). The live row is then removed.
+For `DELETE` actions, a history row is still written with bookkeeping columns only. The version read omits that blank row. The live row is removed before the history insert.
 
 After a child record is deleted, a live hierarchy walk can no longer discover that child’s history. `subject_internal_record_id` keeps deleted children (and deeper descendants) visible when querying version history for the master subject.
 
@@ -209,6 +209,7 @@ Staff Portal register-data APIs expose version history for a subject record with
 | `POST /register-data/get_number_of_versions`  | Count of unique **non-null** `change_request_id` values under the subject for the tab’s sections, plus last-updated metadata. |
 | `POST /register-data/get_version_dates`       | Distinct history `created_at` dates for the subject.                                                                          |
 | `POST /register-data/get_versions_for_a_date` | Per section, change requests on that date (deduped by `change_request_id`), enriched with AWE `request_id` when present.      |
+| `POST /register-data/get_version_section_data` | History rows for one `change_request_id` or `submission_id` on one section. Blank `DELETE` rows are omitted. A list-section version includes the unchanged rows snapshotted at approval. The rows are register state and do not carry `edit_action`. |
 | `POST /register-data/get_record_history`      | History rows for one `internal_record_id` on that register’s history table (policy-gated).                                    |
 
 Subject discovery prefers `subject_internal_record_id == subject`, with a legacy fallback that walks the live hierarchy for unstamped rows.
@@ -223,9 +224,10 @@ Permission: `registerHistory:view`.
 
 The Version History surface on a record page:
 
-1. Loads version dates for the subject.
-2. Lets the user pick a date and see sections with committed changes.
-3. Selects a change request (`selectedVersionId` = `change_request_id`) and opens CR / approval-task detail.
+1. Loads version dates for the subject (`get_version_dates`).
+2. Lets the user pick a date and see sections with committed changes (`get_versions_for_a_date`).
+3. Selects a change request or intake submission and renders that section from `get_version_section_data`. The table shows the snapshotted rows. It does not colour them by `edit_action`.
+4. Shows the approval tasks for that version’s AWE request beside the section when one exists.
 
 ### Building a domain register with history
 
