@@ -127,18 +127,33 @@ Background-task database:
 
 `<release>` is the Helm release name. These defaults are shared consistently across `postgres-init`, `odoo.externalDatabase`, and the background-task/portal components, so change them only if you must reuse pre-existing databases — and change all references together.
 
-## Social Registry (NSR) Connection
+## Registry Connections
 
-The background-task workers, beat producers, and the Staff Portal API read beneficiary data from the Social Registry (NSR) database. The connection is described by these `global` keys:
+The Celery workers and the Staff Portal API read beneficiary data from the registers (`farmer`, `household`, `disability`). Each register has its own connector and connection string, so registers can live in different databases or different registry installations. The Rancher form shows one group per register (**Farmer Register**, **Household Register**, **Disability Register**):
 
 | Key | Default | Description |
 | --- | --- | --- |
-| `global.registryDB` | `registry` | NSR database name. |
-| `global.registryDBUser` | `registry_user` | NSR database user. |
-| `global.registryDBSecret` | `registry` | Kubernetes secret holding the NSR user password. |
-| `global.registryDBUserPasswordKey` | `registry-db-user` | Key within that secret. |
+| `global.registers.<register>.connector` | `db` | `db` reads the registry database directly; `dci` calls the registry's Partner API. |
+| `global.registers.<register>.connectionString` | `postgresql://registry_user:CHANGE_ME@<postgresqlHost>:5432/registry` | `db`: `postgresql://user:pass@host:5432/dbname` (percent-encode the password). `dci`: the full search URL, `http(s)://host[:port]/dci/registry/sync/search` with optional `reg_type`, `reg_record_type`, `timeout` and `ssl_verify` query parameters. Leave empty if no program uses the register. |
 
-The defaults match what the `openg2p-nsr` chart provisions when it is installed with the release name **`registry`** (its DB, user and secret are all derived from that release name). If NSR was installed under a different release name, override all four keys — they are surfaced in the Rancher form under the **Registry** group (**Registry DB**, **Registry DB User**, **Registry DB Secret with User Password**, **Registry DB Secret Key with User Password**).
+Example, with the farmer register in a Farmer Registry database and the household register on another registry's Partner API:
+
+```yaml
+global:
+  registers:
+    farmer:
+      connector: db
+      connectionString: postgresql://farmer_registry_user:secret@commons-postgresql:5432/farmer_registry
+    household:
+      connector: dci
+      connectionString: http://household-registry-partner-api/dci/registry/sync/search
+```
+
+* For `db`, the user needs `SELECT` on the register's table or view ([Registry Database Contract](../developer-zone/tech-guides/registry-database-contract.md)).
+* For `dci`, PBMS sends unsigned requests without consent, so turn `global.partnerSignatureValidationEnabled` and `global.consentEnforcementEnabled` off on that registry, and keep its Partner API reachable only from inside the cluster.
+* Choose a register's connector before programs use it: beneficiary lists built with one connector store different registrant IDs from the other.
+
+Details: [Registry Connector](../developer-zone/tech-guides/registry-connectors/README.md).
 
 ## Portal APIs
 
