@@ -91,7 +91,7 @@ What counts as **breaking** for reference data is narrow:
 For several datasets that must stay consistent with each other, a
 [catalogue release](concepts.md#catalogue-release) pins a named set of versions.
 
-**For consumers:** [Keeping pinned versions in configuration](consumers.md#keeping-pinned-versions-in-configuration).
+**For consumers:** [Pinning a version in your service's settings](consumers.md#pinning-a-version-in-your-services-settings).
 
 ## Effective dates per version
 

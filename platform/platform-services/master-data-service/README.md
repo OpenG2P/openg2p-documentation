@@ -35,7 +35,7 @@ and no registry records. All data first arrives from a **country pack**; see
 | **Typed fields and references** | Entries can carry typed fields, a parent (hierarchy) and references to other datasets (cross-classification) | [Concepts](concepts.md#typed-fields) |
 | **Multilingual labels** | Labels per language for datasets, entries and units | [Concepts](concepts.md#datasets-and-entries) |
 | **Geography with boundary changes** | Splits, merges and renames are recorded as change events. A crosswalk maps old P-codes to new units. Boundaries are kept per version | [Geography](geography.md) |
-| **Change feed** | Every change is in an ordered feed; new and effective versions are also pushed to subscribers | [For Consumers](consumers.md#following-changes) |
+| **Change feed** | Every change is in an ordered feed; new and effective versions are also pushed to subscribers | [For Consumers](consumers.md#learning-about-new-versions-the-change-feed) |
 | **Public catalogue (opt-in)** | Datasets marked public can be read anonymously, with downloads, DCAT and SKOS, each with its [data licence](public-catalogue.md#data-licence) | [Public Catalogue](public-catalogue.md) |
 | **Audit** | Every change and every API call is sent to the Audit Manager | [Change Control](change-control.md#audit) |
 | **Access rules per staff member** | Some reads are filtered by rules set per staff member in IAM (for example, which geography units they see) | [API Reference](api-reference.md#authentication-and-permissions) |

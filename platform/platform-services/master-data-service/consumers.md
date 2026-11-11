@@ -1,29 +1,32 @@
 ---
 description: >-
-  Who reads MDS and how, and how services should read datasets and geography:
-  latest, pinned or as-of reads, caching, the change feed, pinning in
-  configuration, storing the version used, retired entries, reports and
-  geography changes
+  For teams whose services read MDS: who reads it today, and for each topic what
+  to know and what to do (which version to read, pinning, storing the version,
+  caching, learning about new versions, retired entries, reports and geography
+  changes), with a checklist
 ---
 
 # For Consumers
 
-This page is for teams building on MDS: registries, PBMS, reporting and any other
-service that reads datasets or geography. Open-data portals and other websites
-without a token use the [public catalogue](public-catalogue.md) instead. The
-operations are in the [API Reference](api-reference.md).
+This page is for teams whose services read MDS: registries, Partner Management,
+reporting and any other service that reads datasets or geography. Each topic says
+first **what to know** (how MDS behaves) and then **what to do** (what your
+service should do). The ideas are explained in [Concepts](concepts.md); the
+operations are in the [API Reference](api-reference.md). Open-data portals and
+other websites without a token use the [public catalogue](public-catalogue.md)
+instead.
 
 ## Who reads MDS, and how
 
-| Consumer | What it takes | How |
+| Consumer | What it reads | When and how |
 |---|---|---|
-| **Registries** (social, farmer, …) | Datasets and geography | At **runtime**, through the catalogue API: versioned, cached, following the change feed. The staff UI fills its dropdowns from the original `/attributes` and `/geo` reads, and a form's geography levels from the catalogue. The registry keeps no copy |
+| **Registries** (farmer, social, …) | Datasets and geography | At **runtime**, through the [catalogue API](api-reference.md#staff-api), with its own service account. The registry's staff portal fills its dropdowns (datasets) and its cascading address fields (geography, level by level) from MDS. The registry keeps no copy |
 | **Registry seed scripts** | Datasets, geography, sample people | At **install**, through the same API |
-| **Staff portal screens** | Geography units, level by level | At **runtime**, for cascading address dropdowns |
-| **PBMS, Bridge, SPAR** | Geography lookups | At runtime |
-| **Partner Management** | The datasets `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` (purposes and subject ID types a partner's access policy may name) | At **runtime**, with its own service account, cached; a list the pack lacks, or MDS down, leaves the policy form free text. See [Master Data datasets](../partner-management/functional-specifications.md#master-data-datasets) |
+| **Partner Management** | The datasets `CONSENT_PURPOSE` and `SUBJECT_ID_TYPE` (purposes and subject ID types a partner's access policy may name) | At **runtime**, with its own service account, cached. A dataset the pack lacks, or MDS down, leaves the policy form free text. See [Master Data datasets](../partner-management/functional-specifications.md#master-data-datasets) |
 | **Maps** | Boundary files per level and version | The boundary read, or the public download when the geography is public |
 | **Open-data portals, other websites** | Public datasets and geography | The opt-in [public catalogue](public-catalogue.md), anonymous |
+
+Other services (PBMS, G2P Bridge, SPAR) do not read MDS today.
 
 {% hint style="warning" %}
 **Registries depend on MDS at runtime for data entry.** A registry's dropdowns
@@ -37,51 +40,72 @@ How the registry platform itself reads MDS is in
 
 ## Choosing which version to read
 
-Every read says which version it wants (see
-[Concepts](concepts.md#which-version-a-read-returns)). Choose by what the data is
-used for:
+**What to know.** Every read names the version it wants: latest (the default), a
+version number, as of a date, or a [catalogue release](concepts.md#catalogue-release)
+(see [Which version a read returns](concepts.md#which-version-a-read-returns)).
+Every answer says which version it came from. `latest` is the version in effect
+**now**, not the highest number: a higher, future-dated version can already be
+published (see `effective_from` and `is_latest` in the response).
+
+**What to do.** Choose by what the data is used for:
 
 | Use | Read | Why |
 |---|---|---|
 | Data-entry dropdowns for new records | `latest` | New records should use the current entries |
 | Displaying an existing record | `latest` with `include_retired: true` | The record's entry code must still show a label, even if retired |
-| A programme's eligibility or entitlement rules | **Pinned** version (or a release) | The rules were defined against that version and must not change silently |
-| A report for a past period | `as_of` the period's date, or pinned to the version used | Reproducible: run it again next year and get the same answer |
+| A programme's eligibility or entitlement rules | A **version number**, or a **catalogue release** | The rules were defined against that version and must not change silently |
+| A report for a past period | `as_of` the period's date, or the version number used | Reproducible: run it again next year and get the same answer |
 | A survey, programme cycle or national report that needs everything consistent | A **catalogue release** | All datasets and the geography at one agreed set of versions |
 
-`latest` is the version in effect **now**, not the highest number: a higher,
-future-dated version can already be published. Check `effective_from` and
-`is_latest` in the response.
+The parameters are in [Choosing a version](api-reference.md#choosing-a-version).
 
-## Keeping pinned versions in configuration
+## Pinning a version in your service's settings
 
-A pin belongs in configuration, where it can be reviewed, not in code:
+**What to know.** To *pin* is to make your service read a fixed version (a
+version number or a catalogue release) instead of `latest`. The pin is a setting
+of **your service**, not of MDS: MDS keeps every published version, and each
+consumer decides which one it reads. Moving a pin later, to a newer version, is a
+change to your service.
 
-```yaml
-catalogue:
-  release: "2027.1"            # pin everything at once, or
-  datasets:
-    DISABILITY_TYPE: 7         # pin individual datasets
-    CROP_COMMODITY: latest
-  geography: 3
-```
+The registry, for example, can pin every MDS read to one catalogue release with
+the Helm value `global.catalogueRelease` (empty: `latest`). A dataset the release
+does not name is then read at its latest version.
 
-Moving a pin is a deliberate change: read the [diff](api-reference.md#datasets) (`get_list_diff`)
-between the pinned and the new version, check what it does to your rules, then
-change the configuration. Retired entries in the diff are the signal to review
-(what counts as breaking is in
-[Design Decisions](design-decisions.md#versioning-per-dataset-with-plain-version-numbers)).
-A retirement and an addition together may be a recode: check the change note, as
-records may need mapping.
+**What to do.**
+
+1. Keep the pin in your service's configuration (Helm values or environment), not
+   in code, so it is visible and reviewed. A service with its own settings might
+   use:
+
+   ```yaml
+   catalogue:
+     release: "2027.1"            # pin everything at once, or
+     datasets:
+       DISABILITY_TYPE: 7         # pin individual datasets by version number
+       CROP_COMMODITY: latest
+     geography: 3
+   ```
+
+2. Before moving a pin to a newer version, compare the two versions with
+   [`get_list_diff`](api-reference.md#datasets): entries added, changed and
+   retired. Check what the changes do to your rules, then change the setting.
+3. Treat **retired entries** in the comparison as the signal to review (what
+   counts as breaking is in
+   [Design Decisions](design-decisions.md#versioning-per-dataset-with-plain-version-numbers)).
+   A retirement and an addition together may be a recode: check the change note,
+   as records may need mapping.
 
 ## Store the version with the record
 
-Where a record stores an entry code or a P-code, also store **which version it
-came from**, or at least the geography version for P-codes. For example, an entitlement record
-might hold `crop: MAIZE` with `catalogue_versions: { "CROP_COMMODITY": 4, "geo": 3 }`,
-or a record might hold the release code it was created under.
+**What to know.** An entry code always resolves, in every later version, but its
+label and fields can change from version to version, and a P-code can be split or
+merged in a later geography.
 
-That lets you later:
+**What to do.** Where a record stores an entry code or a P-code, also store
+**which version it came from**, or at least the geography version for P-codes. For
+example, an entitlement record might hold `crop: MAIZE` with
+`catalogue_versions: { "CROP_COMMODITY": 4, "geo": 3 }`, or the release code it was
+created under. That lets you later:
 
 * resolve the entry code exactly as it was meant (`get_list_value` at that version);
 * map a P-code to current geography with the
@@ -91,102 +115,133 @@ That lets you later:
 If storing a version per record is not possible, the record's date and an `as_of`
 read are the fallback.
 
-## Caching labels per version
+## Caching
 
-**A published version never changes.** So:
+**What to know.**
 
-* a response for a **specific version number** can be cached **indefinitely**,
-  keyed by dataset (or geography) and version number;
-* a `latest` response should be cached only until the change feed says something
-  new was published (or for a short time), then re-read. The `version` object in
-  the response tells you which version you got, so the cache can be keyed by it;
-* boundary files under a version key are immutable and can be cached the same way;
-* cache labels by version: they may change in a later version. Entry codes and P-codes do not.
+* **A published version never changes**, nor do boundary files under a version.
+* A `latest` read changes when a new version is published or takes effect.
+* Labels may change in a later version; entry codes and P-codes do not.
+* Inside MDS, some of the original `/attributes` and `/geo` reads are cached per
+  API worker (which ones: [Original endpoints](api-reference.md#original-endpoints)),
+  so after a publish other workers may serve the previous data for a short time
+  (the intervals are on [Deployment](deployment.md#settings-at-install)). The
+  `/catalogue` reads are not cached.
 
-The original `/attributes` and `/geo` reads are cached inside MDS, per API
-worker, so after a publish other workers may serve the previous data for a short
-time (the intervals are set on [Deployment](deployment.md#settings-at-install)).
-The `/catalogue` reads are not cached.
+**What to do.**
 
-## Following changes
+* Cache a read of a **version number** without expiry, keyed by dataset (or
+  geography) and version number. Cache labels by version.
+* Cache a `latest` read until the [change feed](#learning-about-new-versions-the-change-feed)
+  says something was published or took effect (or for a short time), then read it
+  again. Key the cache by the `version` object in the response.
+* Cache boundary files by version the same way.
 
-Do not poll datasets to notice changes. Use the **change feed**:
+## Learning about new versions: the change feed
 
-1. Keep the last `event_id` you processed (start with `0`).
-2. Call [`get_changes`](api-reference.md#change-feed-and-configuration) with it as the
-   `cursor`, process the events in order, and store the new cursor.
+**What to know.** MDS records every step of every version in its change log, and
+serves it as a **change feed** (`get_changes`): events in order, each with an
+increasing `event_id`. It also pushes new and effective versions and published
+releases to the deployment's WebSub hub, if one is set. WebSub delivers **at least
+once**: the same event may arrive twice. A version with a **future
+`effective_from`** is announced twice: when it is **published**
+(`*.version.published`) and when it **takes effect** (`*.version.effective`).
+
+**What to do.**
+
+1. Do not poll datasets to notice changes. Keep the last `event_id` you processed
+   (start with `0`).
+2. Call [`get_changes`](api-reference.md#change-feed-and-configuration) with it as
+   the `cursor`, process the events in order, and store the new cursor. A service
+   that was down catches up from its last cursor.
 3. On a `*.version.published` or `*.version.effective` event for a dataset or the
-   geography you use: drop `latest` caches, and, if you pin, flag that a newer
-   version exists for someone to review.
-
-Events are ordered and the cursor is monotonic, so a consumer that was down simply
-catches up from its last cursor.
-
-MDS also publishes new and effective versions and published releases to the
-deployment's WebSub hub, so a consumer can subscribe to be told immediately, and
-use `get_changes` to fill any gaps. The topics are in the
-[API Reference](api-reference.md#change-feed-and-configuration). Notifications are delivered
-**at least once**: the same event may arrive twice, so de-duplicate on its
-`event_id`.
-
-A version with a **future `effective_from`** is announced twice: when it is
-**published** (`*.version.published`; check `effective_from` before treating it as
-current, and use the time to prepare), and when it **takes effect**
-(`*.version.effective`, on the change feed and on the `*.effective` WebSub topic).
+   geography you use: drop `latest` caches and, if you pin, flag that a newer
+   version exists for someone to review. On `*.version.published`, check
+   `effective_from` before treating the version as current.
+4. To be told at once, also subscribe to the WebSub topics (in the
+   [API Reference](api-reference.md#change-feed-and-configuration)); de-duplicate
+   on `event_id`, and use `get_changes` to fill any gaps.
 
 ## Retired entries
 
-* **Do not offer retired entries for new data.** Reads leave them out by default.
+**What to know.** A retired entry stays in its dataset, marked retired, in every
+later version (see [Retired entries](concepts.md#retired-entries)). Reads leave it
+out unless asked; a stored entry code or P-code always resolves (as `RETIRED` if it
+was retired). A geography unit carries `valid_from` and `valid_to`.
+
+**What to do.**
+
+* **Do not offer retired entries for new data.**
 * **Do not reject records that hold a retired entry.** The entry was valid when
   recorded. Read with `include_retired: true` (or `get_list_value`) to show it.
-* A registry's coded-value check should validate **new** values against `latest` and
-  accept existing values that are retired.
-* A stored entry code or P-code always resolves, in every later version (as `RETIRED` if it was
-  retired).
+* Validate **new** values against `latest`, and accept existing values that are
+  retired.
 * To know whether an entry was current on a date, read the dataset **as of** that
   date. For a geography unit, its `valid_from` and `valid_to` answer directly.
 
 ## Hierarchies and groupings in reports
 
-* **Store the most specific entry code**: the crop or variety, the benefit type, not
-  its group.
-* **Roll up** by following `parent_code` up the tree for the main hierarchy. Use
-  typed fields for other groupings, for example `attribute_filters:
-  {"groups": ["FODDER"]}` to find every fodder crop.
+**What to know.** A dataset may have one main hierarchy (`parent_code`), and
+[typed fields](concepts.md#typed-fields) can hold other groupings, including lists
+of references, so an entry can be in more than one group.
+
+**What to do.**
+
+* **Store the most specific entry code**: the crop or variety, the benefit type,
+  not its group.
+* **Roll up** by following `parent_code` up the tree. Use typed fields for other
+  groupings, for example `attribute_filters: {"groups": ["FODDER"]}` to find every
+  fodder crop.
 * A report that groups by a list-of-references field must expect an entry in more
   than one group.
 
 ## Reporting to international bodies
 
+**What to know.** Records hold the country's own entry codes and P-codes. A
+dataset can carry a mapping field to an international classification (ISCED,
+ICD-10, FAOSTAT, …), which may be empty or have several values.
+
+**What to do.**
+
 * Store and exchange the country's own entry codes and P-codes.
-* To report to an international body (ISCED, ICD-10, FAOSTAT, …), read the
-  mapping field of each entry, at the version the report uses, and translate on
-  output.
-* Expect gaps: an entry may have no mapping, or several.
+* To report, read each entry's mapping field at the version the report uses, and
+  translate on output. Expect gaps.
 
 ## Geography changes
 
-When a new geography version is published, nothing a consumer holds changes:
+**What to know.** When a new geography version is published, nothing a consumer
+holds changes: recorded P-codes still resolve. Splits, merges and renames are
+recorded as change events, and the [crosswalk](geography.md#the-crosswalk) maps old
+units to new. A split cannot be resolved by MDS alone; see
+[Geography: when a new geography version is published](geography.md#when-a-new-geography-version-is-published).
+
+**What to do.**
 
 | Consumer | What to do |
 |---|---|
-| **Registries** | **Keep the recorded P-code**; it still resolves. Store the geography version with the record if you can. Do not rewrite records automatically |
+| **Registries** | **Keep the recorded P-code**. Store the geography version with the record if you can. Do not rewrite records automatically |
 | **Data entry** | Use `latest`: new units appear and retired ones disappear from the effective date. Show existing records with retired units included |
-| **Current reporting** | Map old P-codes to current units through the [crosswalk](geography.md#the-crosswalk). Splits need the record's location or a review |
+| **Current reporting** | Map old P-codes to current units through the crosswalk. Splits need the record's location or a review |
 | **Aggregates and dashboards** | **Recompute** per-unit figures against the new version; never mix versions |
-| **Historical reports** | Read the geography as of the report date, or pinned to the version used |
+| **Historical reports** | Read the geography as of the report date, or at the version number used |
 | **Maps** | Rebuild with the new boundary files; keep the old build for historical views |
-| **Programmes and anything pinned** | **Re-pin deliberately** anything that selects units (programmes, campaigns), after reviewing the eligibility rules |
-
-A split cannot be resolved by MDS alone; see
-[Geography: when a new geography version is published](geography.md#when-a-new-geography-version-is-published).
+| **Programmes and anything pinned** | **Move the pin deliberately** for anything that selects units (programmes, campaigns), after reviewing the eligibility rules |
 
 ## Checklist for a new consumer
 
-* [ ] Read through the `/catalogue` APIs, not MDS's database.
-* [ ] Decide per use whether you need latest, a pin, as-of, or a release; put pins in
-      configuration.
-* [ ] Store the version (or release) used alongside records that hold entry codes or P-codes.
-* [ ] Cache by version number; follow the change feed with a stored cursor.
-* [ ] Show retired entries on existing records; hide them in new-entry dropdowns.
-* [ ] Have a plan for geography splits affecting your records.
+* [ ] Get a service account (a Keycloak client in the `staff` realm) and read
+      through the [Staff API](api-reference.md#staff-api) (`/catalogue`), never
+      MDS's database. See [Authentication and permissions](api-reference.md#authentication-and-permissions).
+* [ ] Decide per use whether you read latest, a version number, as of a date, or a
+      catalogue release ([Choosing which version to read](#choosing-which-version-to-read));
+      keep pins in your service's settings ([Pinning](#pinning-a-version-in-your-services-settings)).
+* [ ] Store the version (or release) used with records that hold entry codes or
+      P-codes ([Store the version with the record](#store-the-version-with-the-record)).
+* [ ] Cache by version number ([Caching](#caching)); follow the change feed with
+      a stored cursor ([`get_changes`](api-reference.md#change-feed-and-configuration)).
+* [ ] Show retired entries on existing records; hide them in new-entry dropdowns
+      ([Retired entries](#retired-entries)).
+* [ ] Have a plan for geography splits affecting your records
+      ([Geography changes](#geography-changes), [the crosswalk](geography.md#the-crosswalk)).
+* [ ] For anonymous or public use, use the [Public API](api-reference.md#public-api)
+      instead.

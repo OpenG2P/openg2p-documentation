@@ -33,6 +33,12 @@ self-contained list that one department maintains. The geography is one connecte
 structure: splitting a woreda moves its kebeles and redraws the map, so its levels
 must change together.
 
+One MDS install is **one catalogue**: all its datasets, its geography and its
+releases belong to it, and its [public catalogue](public-catalogue.md) describes
+it as one DCAT catalogue. Several catalogues (for example one per ministry) need
+several MDS installs; within one, datasets can be told apart by publisher and
+theme.
+
 ## Datasets and entries
 
 A dataset is a list; each item in it is an **entry**, for example *Female* in the
@@ -137,15 +143,23 @@ retired the same way. What a consumer should do with them is on
 Every read says which version it wants:
 
 * **Latest** (the default): the newest published version that has taken effect.
-* **Pinned**: one version by number, whatever has been published since.
+* **Pinned**: one version by its number (`version: 2` reads version 2), whatever
+  has been published since.
 * **As of a date**: the version that was in effect at that moment, for example to
   check a record dated 30 June 2026 against the data of that day.
-* **Release**: the version a named [catalogue release](#catalogue-release) pins.
+* **Catalogue release**: the version that a named
+  [catalogue release](#catalogue-release) gives for this dataset (or the
+  geography).
 
 Every answer says which version it came from. Which read to use is covered in
 [For Consumers](consumers.md#choosing-which-version-to-read).
 
 ### Catalogue release
+
+In MDS, **release** always means a catalogue release: a release of the
+catalogue, not of one dataset. A dataset changes by publishing a new
+[version](#versions); a catalogue release then names, under one code, which
+version of each dataset to use together.
 
 Most consumers pin one or two datasets. Some need **everything** to be
 consistent: a programme cycle, a survey, a national report. A **catalogue
@@ -160,7 +174,9 @@ version of the geography:
 | Geography | version 3 |
 
 A release is put together as a draft and, once published, never changes. Reading
-by release gives each dataset at the version the release names.
+by release gives each dataset at the version the release names. A release need
+not name every dataset: reading a dataset it does not name by that release is
+refused (`G2P-CAT-404`). Name every dataset the consumers of the release use.
 
 ## Change log and change feed
 
@@ -169,7 +185,7 @@ version taking effect) is recorded in an append-only **change log**. It is the
 audit trail, and it is also the **change feed**: a consumer asks for everything
 after the last event it saw, and so learns what was published or took effect.
 MDS can also push new and effective versions to subscribers. How to follow it is
-on [For Consumers](consumers.md#following-changes); how events are delivered is on
+on [For Consumers](consumers.md#learning-about-new-versions-the-change-feed); how events are delivered is on
 [Change Control: audit](change-control.md#audit).
 
 ## Visibility and licence

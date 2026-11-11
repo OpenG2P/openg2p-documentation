@@ -12,7 +12,8 @@ spec covers every endpoint. It is generated from the code by
 `master-data-api/scripts/generate_openapi.py` into
 [`docs/openapi/openapi-master-data.json`](https://github.com/OpenG2P/master-data-service/blob/develop/docs/openapi/openapi-master-data.json).
 A running instance also serves its own spec at `/openapi.json`, with interactive
-docs at `/docs`.
+docs at `/docs`. The `/public` paths appear there only while the public
+catalogue is enabled.
 
 ## Audiences
 
@@ -94,14 +95,15 @@ in `response_error_message`. Check the status, not only the HTTP code. HTTP 401,
 
 | Code | Meaning |
 |---|---|
-| `G2P-CAT-400` | Validation failed: bad entry, schema or `x-list-ref`; no changes to submit; `effective_from` earlier than the latest published version's |
+| `G2P-CAT-400` | Validation failed: bad entry, schema or `x-list-ref`; no changes to submit; `effective_from` earlier than the latest published version's; more than one of `version`, `as_of`, `release` |
 | `G2P-CAT-403` | Maker ≠ checker refused, or no bearer token to forward to AWE |
-| `G2P-CAT-404` | Dataset, entry, version, unit, release or draft not found |
+| `G2P-CAT-404` | Dataset, entry, version, unit, release or draft not found; the named release does not pin the dataset or a geography version |
 | `G2P-CAT-409` | State conflict: a draft is already open, wrong draft status, approval runs through AWE, no boundary store, a boundary key used by another version, or a write to a published (immutable) row (message starts `immutable:`) |
 | `G2P-CAT-CODE-IMMUTABLE` | The entry code of an entry that is in a published version cannot change. Retire the entry and add a new one instead. Returned by `upsert_draft_values`, `/attributes/update_attribute_value`, submit and approve; the database refuses it on publish too, and the country-pack loader stops a dataset's load with it |
 | `G2P-CAT-502` | AWE could not be reached |
 | `G2P-CAT-500` | Unexpected error |
-| `G2P-ATTR-*`, `G2P-GEO-*` | The same, from the original `/attributes` and `/geo` endpoints |
+| `G2P-ATTR-*`, `G2P-GEO-*` | The same, from the original `/attributes` and `/geo` endpoints (`-400`, `-404`, `-409`). Their writes can also return `G2P-CAT-*` codes. An unexpected error there has the code `500` |
+| `G2P-SMP-500` | Unexpected error in the `/samples` endpoints |
 
 ### Choosing a version
 
@@ -116,7 +118,8 @@ Every read that returns versioned data takes **at most one** of:
 Every such response has a `version` object (`version_no`, `status`,
 `base_version_no`, `effective_from`, `published_at`, `is_latest`, notes, and who
 created, submitted and decided it); see [Version statuses](#version-statuses).
-Reading a dataset that the named release does not pin is an error. See
+Giving more than one is `G2P-CAT-400`. Reading a dataset (or the geography)
+that the named release does not pin is `G2P-CAT-404`. See
 [Concepts](concepts.md#which-version-a-read-returns).
 
 ### Names in the API
@@ -332,7 +335,8 @@ Each change-log entry has a monotonically increasing `event_id`, an `event_type`
 `subject_type` (`list`, `geo` or `release`), a `subject_id`, the version number,
 the `actor` (stable user id or a system name), `actor_name`, the time and
 details. Every event goes to the Audit Manager, whoever wrote it: the API, the
-country-pack loader, or the database itself (`*.version.effective`). `get_changes`
+country-pack loader, or the database itself (`*.version.effective`,
+`*.version.migrated`). `get_changes`
 reads the log with a cursor (the last `event_id` seen). Delivery is at least
 once; see [Change Control: audit](change-control.md#audit).
 
@@ -379,6 +383,17 @@ one (a copy of the highest published version) if none is open. Approve and
 reject work only in `permission` approval mode. See
 [Concepts](concepts.md) and
 [Change control](change-control.md).
+
+* `get_lists` returns never-published datasets too, unless
+  `include_unpublished: false`.
+* `get_list_values` is paged and filtered by `ATTRIBUTE` data policies. It
+  filters on `parent_code` (`""` for the top level), `attribute_filters` and
+  `search` (code or label).
+* `get_list_diff` compares `from_version` (default: the base of `to_version`)
+  with `to_version` (a number, `"latest"` or `"draft"`; default `"latest"`).
+* `approve_draft` and `reject_draft` take an optional `version_no` (a guard: the
+  submitted version being decided), `decision_note` (required to reject) and,
+  to approve, `effective_from` to override the date.
 
 | Operation | Permission | Summary |
 |---|---|---|
@@ -580,7 +595,7 @@ filtered by `GEO` data policies. See
 
 ### Releases
 
-A release pins a set of published dataset versions and at most one geography
+These are **catalogue releases**, not the publishing of a dataset. A release pins a set of published dataset versions and at most one geography
 version. A published release is immutable. Its publisher must be neither its
 creator nor whoever last set its members. See
 [Concepts: catalogue release](concepts.md#catalogue-release).
@@ -622,13 +637,15 @@ creator nor whoever last set its members. See
 
 `get_changes` reads the append-only change log after a cursor (the last
 `event_id` processed), oldest first. Call again with `next_cursor` while
-`has_more` is true. `newest: true` returns the newest events instead, for an
-activity view. See [For consumers](consumers.md#following-changes).
+`has_more` is true. `limit` is 100 by default, at most 1000. Filter by
+`subject_type`, `subject_id` (a list id, `geography` or a release code) and
+`event_types`. `newest: true` returns the newest events instead, for an activity
+view. See [For consumers](consumers.md#learning-about-new-versions-the-change-feed).
 
 | Subject | Event types |
 |---|---|
-| Datasets | `list.created`, `list.updated`, `list.deleted` (never-published only), `list.draft.created`, `list.draft.updated`, `list.draft.metadata_changed`, `list.draft.values_changed`, `list.draft.values_retired`, `list.draft.submitted`, `list.approval.requested`, `list.draft.approved`, `list.draft.rejected`, `list.draft.discarded`, `list.version.published`, `list.version.effective` |
-| Geography | `geo.draft.created`, `geo.draft.updated`, `geo.draft.levels_changed`, `geo.draft.level_removed`, `geo.draft.units_changed`, `geo.draft.units_retired`, `geo.change.recorded`, `geo.change.deleted`, `geo.draft.boundary_uploaded`, `geo.draft.submitted`, `geo.approval.requested`, `geo.draft.approved`, `geo.draft.rejected`, `geo.draft.discarded`, `geo.settings.updated`, `geo.version.published`, `geo.version.effective` |
+| Datasets | `list.created`, `list.updated`, `list.deleted` (never-published only), `list.draft.created`, `list.draft.updated`, `list.draft.metadata_changed`, `list.draft.values_changed`, `list.draft.values_retired`, `list.draft.submitted`, `list.approval.requested`, `list.draft.approved`, `list.draft.rejected`, `list.draft.discarded`, `list.version.published`, `list.version.effective`, `list.version.migrated` (version 1 made from pre-catalogue data at migration) |
+| Geography | `geo.draft.created`, `geo.draft.updated`, `geo.draft.levels_changed`, `geo.draft.level_removed`, `geo.draft.units_changed`, `geo.draft.units_retired`, `geo.change.recorded`, `geo.change.deleted`, `geo.draft.boundary_uploaded`, `geo.draft.submitted`, `geo.approval.requested`, `geo.draft.approved`, `geo.draft.rejected`, `geo.draft.discarded`, `geo.settings.updated`, `geo.version.published`, `geo.version.effective`, `geo.version.migrated` |
 | Releases | `release.created`, `release.members_set`, `release.published`, `release.deleted` |
 
 When a WebSub hub is configured, MDS also publishes to these topics (prefix
@@ -659,10 +676,12 @@ When a WebSub hub is configured, MDS also publishes to these topics (prefix
 The `/attributes` and `/geo` endpoints serve existing consumers (the registry
 staff UI fills dropdowns from them).
 
-* **Reads** return the **current published** state, cached per API worker, and
-  filtered by the caller's data policy. `/attributes` reads add
-  `current_version_no` and `list_versions`. For other versions use the
-  `/catalogue` reads.
+* **Reads** return the **current published** state. `get_all_attributes`,
+  `get_attribute_values` and `get_geo_level_values` are cached per API worker;
+  `get_all_geo_levels` is not cached. `get_attribute_values` and
+  `get_geo_level_values` are filtered by the caller's data policy.
+  `get_all_attributes` adds `current_version_no`; `get_attribute_values` adds
+  `list_versions`. For other versions use the `/catalogue` reads.
 * **Writes** do not change published data: they edit the open **draft**
   (opening one from the highest published version if none is open), which must
   then be submitted and approved. They return the changed object, not the draft,
@@ -773,8 +792,10 @@ demo share the same people. They are not reference data: not versioned, not
 approved. A production deployment should not load them.
 {% endhint %}
 
-Any authenticated caller. Paged. Empty unless the deployment loaded the pack's
-samples.
+Any authenticated caller. Paged (1000 per page by default). Empty unless the
+deployment loaded the pack's samples. Optional filters: `household_id`
+(individuals only), `geo_pcode`, `country`. An unexpected error is
+`G2P-SMP-500`.
 
 | Operation | Permission | Summary |
 |---|---|---|
@@ -801,18 +822,30 @@ their **published** versions. Plain JSON (JSON-LD for DCAT and SKOS); errors are
 limited per client IP. See [Public catalogue](public-catalogue.md).
 
 * **Version:** `version` (a published version number, or `latest`, the default)
-  or `as_of` (date-time). `version=draft` is refused (400). Retired entries and
-  units are left out unless `include_retired=true`. Entries and units are paged
-  (`page_size` up to 5000).
-* **Caching:** `If-None-Match` gives 304; `Last-Modified` is the version's
-  publication time and `If-Modified-Since` is honoured;
-  `Cache-Control: public, max-age=<seconds>`.
+  or `as_of` (date-time), not both (400). `version=draft` is refused (400).
+  There is no `release` selector. A version number that is not published, or no
+  version in effect, is 404.
+* **Retired:** `entries`, `download.csv`, `download.json`, `geography/units` and
+  `units.csv` leave retired entries and units out unless `include_retired=true`.
+  One entry (`entries/{entry_code}`) is returned even when retired. SKOS has
+  active entries only.
+* **Paging:** `entries` and `geography/units` take `page` (from 1) and
+  `page_size` (default 1000, at most 5000); the response has `total`, `page`
+  and `page_size`. Filters: `parent_code` on entries, `level` (mnemonic or id)
+  and `parent` (unit id) on units; `""` means the top level.
+* **Fields:** entries are `code`, `label`, `labels`, `parent_code`,
+  `sort_order`, `attributes`, `roles`, `status`; units are `unit_id`, `name`,
+  `names`, `level`, `parent_unit_id`, `status`, `valid_from`, `valid_to`.
+* **Caching:** every response has an `ETag`; `If-None-Match` gives 304.
+  `Last-Modified` is the version's publication time and `If-Modified-Since` is
+  honoured. `Cache-Control: public, max-age=<seconds>` (300 by default).
+  Boundaries carry a weak `ETag`.
 * **Rate limit:** per client IP and API worker; the limit per minute is also the
   burst. Over it, 429 with `Retry-After`. The client IP is read from
   `X-Forwarded-For`, counting the trusted proxy hops from the right. The limits
   are set on [Deployment](deployment.md#public-catalogue-host).
-* **Audit:** anonymous failures (404, 429) are sent to the Audit Manager;
-  successes are not.
+* **Audit:** anonymous failures (400, 404, 429 and any other non-2xx answer but
+  304) are sent to the Audit Manager; successes are not.
 * **Links** in DCAT, SKOS and JSON are absolute: based on the configured public
   base URL when set, else on the request (`X-Forwarded-Proto`,
   `X-Forwarded-Host`). Plain labels in SKOS and DCAT are tagged with the
@@ -824,9 +857,9 @@ limited per client IP. See [Public catalogue](public-catalogue.md).
 | Dataset CSV | `code`, `label`, `label_<lang>` per language, `parent_code`, `sort_order`, `status`, `attributes` (JSON), `roles` (JSON) |
 | Dataset JSON | As `entries`, for the whole version |
 | Units CSV | `unit_id`, `name`, `name_<lang>` per language, `level`, `parent_unit_id`, `status`, `valid_from`, `valid_to` |
-| Boundaries GeoJSON | The version's boundary file for the level, as loaded, streamed from the object store |
+| Boundaries GeoJSON | The version's boundary file for the level, as loaded, streamed from the object store. 404 when no boundary store is configured or the level has no boundary |
 
-Downloads are named like `CROP_COMMODITY-v4.csv` and
+Downloads are named like `CROP_COMMODITY-v4.csv`, `geography-v2-woreda.csv` and
 `geography-v2-woreda.geojson`, and are generated or streamed on request; no
 bucket is made public.
 
@@ -920,11 +953,17 @@ In `awe` approval mode, AWE posts its decision here
 envelope, but an HMAC signature, as in the
 [registry's AWE integration](../approval-workflow-engine/integration-with-registry.md):
 `X-Approval-Signature: sha256=HMAC_SHA256(secret, "<X-Approval-Timestamp>." + body)`,
-with `X-Approval-Timestamp` (within 300 s) and `X-Approval-Event-Id`. The body is
-AWE's webhook event. `request_approved` publishes the version;
-`request_rejected` and `request_cancelled` mark it `REJECTED`. The decision is
-recorded with the actor AWE reports (or `awe`). Idempotent on `event_id`; answers
-401 for a bad signature and 422 for an event that cannot be applied.
+with `X-Approval-Timestamp` (unix seconds, within 300 s by default) and
+`X-Approval-Event-Id` (must match the body's `event_id`). The body is AWE's
+webhook event (`event_id`, `event_type`, `request_id`, `artifact_type`,
+`artifact_id`, `status`, `stage_order`, `actor`, `occurred_at`).
+`request_approved` publishes the version; `request_rejected` and
+`request_cancelled` mark it `REJECTED`; other event types are recorded and
+acknowledged. The decision is recorded with the actor AWE reports (or `awe`).
+The answer is `{event_id, applied, message}`. Idempotent on `event_id`: a repeat
+answers `applied: true` with `message: "duplicate"`. Answers 401 for a bad
+signature, 422 for an event that cannot be applied and 500 for an unexpected
+error.
 
 | | Datasets | Geography |
 |---|---|---|

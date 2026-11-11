@@ -34,7 +34,7 @@ and [Releases](api-reference.md#releases).
   versioned details (dataset code, labels, hierarchy, schema). For geography: levels,
   units, change events and boundary files.
 * Some details are administrative and apply at once, outside the draft; see
-  [Settings that apply at once](#settings-that-apply-at-once).
+  [Details that change without a new version](#details-that-change-without-a-new-version).
 * Entries are checked against the dataset's schema as they are written, so errors
   show while editing.
 * Consumers do not see a draft unless they ask for it.
@@ -101,17 +101,29 @@ The change is then announced on the change feed, to the Audit Manager and, if
 configured, to WebSub. A version with a future effective date is announced again
 when it **takes effect**.
 
-## Settings that apply at once
+## Details that change without a new version
 
-Some details are administrative: they are not part of a version and apply as soon
-as they are saved, without approval. They are a dataset's description, publisher,
-theme, visibility and licence, and the geography's visibility and licence. Each
-change is still recorded in the change log and sent to the Audit Manager.
+Not everything about a dataset is versioned. Its **description, publisher,
+theme, visibility and licence** describe the dataset rather than its data, so
+changing them needs no draft and no approval: the change applies when saved
+(**Dataset settings → Settings (apply at once)** in the Admin UI). The same holds
+for the geography's visibility and licence. Each change is still recorded in the
+change log and sent to the Audit Manager.
+
+Everything else (entries, the dataset code, labels, the hierarchy flag and the
+schema) is part of the data and changes only through a new version.
 
 ## Permissions
 
-Permissions are held under the `master-data` Keycloak client and registered with
-IAM by the chart. Reads need only a signed-in user.
+The install sets these up; nothing is created by hand:
+
+* **Keycloak** gets the two roles below as client roles of the `master-data`
+  client, and the `admin` user gets `MASTER_DATA_ADMIN`.
+* **IAM** gets the permissions and which role carries which, registered by the
+  chart's IAM registration Job. MDS checks the permissions; a user has them
+  through their role.
+
+Reads need only a signed-in user.
 
 | Permission | Allows |
 |---|---|
@@ -140,7 +152,7 @@ MDS sends two kinds of events to the [Audit Manager](../audit-manager/README.md)
 
 Every change is first written to MDS's own **change log**, append-only, in the
 same transaction as the change. The change log feeds the
-[change feed](consumers.md#following-changes) and is the **outbox** for delivery:
+[change feed](consumers.md#learning-about-new-versions-the-change-feed) and is the **outbox** for delivery:
 events are sent after the change commits, and a relay in the API retries, at a
 regular interval (see [Deployment](deployment.md#settings-at-install)), any that
 were not accepted. Delivery is therefore **at
@@ -152,5 +164,20 @@ Manager as CloudEvents; see [Standards](standards.md#events-and-notifications).
 | Every change | Yes | — |
 | A version published, a version taking effect, a release published | Yes | Yes |
 
-The event types and the WebSub topics are in the
+In the Audit Manager, the two kinds are told apart by `source`: catalogue changes
+come from `/openg2p/master-data`, API calls from `/openg2p/master-data-api`. A
+catalogue change, for example a draft of the `GENDER` dataset submitted:
+
+| Column | Value |
+|---|---|
+| `source` | `/openg2p/master-data` |
+| `type` | `org.openg2p.master_data.list.draft.submitted` |
+| `subject` | `list/GENDER/v2` |
+| `actor_type`, `actor_id` | `user`, the user's id (the token's `sub`) |
+| `resource_type`, `resource_id` | `master_data.list`, `GENDER` |
+| `action`, `outcome` | `list.draft.submitted`, `success` |
+| `details` | `{"actor": {"name": "Admin User"}, "context": {"module": "master-data-catalogue", "change_log_event_id": 220}, "details": {"list_code": "GENDER", "approval_mode": "permission", …}, "resource": {"version_no": 2}}` |
+
+`change_log_event_id` is the event's id in MDS's change log. The event types and
+the WebSub topics are in the
 [API Reference](api-reference.md#change-feed-and-configuration).

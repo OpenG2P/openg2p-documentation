@@ -11,14 +11,61 @@ its catalogue **openly readable** by other websites and open-data portals (a
 national data portal, CKAN, a ministry site) through an anonymous, read-only API,
 with downloads and standard metadata they can harvest.
 
-Everything public is **opt-in, and off by default**, twice over:
+## What it offers
 
-1. The deployment switches the public catalogue on. While it is off, nothing is
-   served. An operator turns it on in the MDS chart and, to reach it from
-   outside, gives it its own host; the settings are on
+| | |
+|---|---|
+| **Datasets** | Each public dataset with its entries, at the latest version, a pinned version or as of a date |
+| **Geography** | Levels and units, and each level's boundaries |
+| **Releases** | Published releases, with their public members only |
+| **Downloads** | CSV and JSON per dataset version; CSV and GeoJSON per geography level |
+| **DCAT** | A catalogue description that open-data portals can harvest |
+| **SKOS** | Each dataset as a concept scheme |
+
+Responses can be cached (they carry `ETag` and `Last-Modified`), can be read from
+any website (CORS), and can be rate limited (see [Deployment: public catalogue host](deployment.md#public-catalogue-host)). Every operation, with its
+parameters, is in the [API Reference: Public API](api-reference.md#public-api).
+
+### DCAT catalogue
+
+The DCAT catalogue (JSON-LD) lists each public dataset with a published version in
+effect, and the geography when it is public, each with its licence, theme, version
+and one download per format. CKAN's DCAT harvester and other portals can harvest
+it. See [Standards](standards.md#catalogue-metadata-public-catalogue).
+
+It is metadata, not data: it says what exists and where to get it, for portals and
+harvesters rather than applications. Even with one dataset it is long, because
+JSON-LD spells every term out:
+
+| Part | What it is |
+|---|---|
+| `@context` | The vocabularies the terms come from (DCAT, Dublin Core `dct:`, SKOS, …); the same in every response |
+| The catalogue (`dcat:Catalog`) | Its title, description, last change and home page |
+| `dcat:themeTaxonomy` | The themes (core, agriculture, …) as a small SKOS scheme |
+| `dcat:dataset` | One entry per public dataset: identifier, title, dates, theme, version, licence (when set) |
+| `dcat:distribution` | Per dataset, one entry per format (CSV, JSON, SKOS), each with its download URL and media type |
+
+The entries themselves are not in it: an application reads them from
+`/public/datasets/{code}/entries`, or a download.
+
+### SKOS concept schemes
+
+Each public dataset can be read as a SKOS concept scheme (JSON-LD): one concept
+per active entry, with its entry code, labels per language and parent. A concept's
+address does not include the version, so an entry code keeps the same address across
+versions. See [Standards](standards.md#datasets-and-entries).
+
+## What is public
+
+Two switches decide what is served:
+
+1. **The deployment** switches the public catalogue on. While it is off, nothing is
+   served. It is off by default in the MDS chart and on in Commons Services, on
+   its own host `catalogue.<base domain>`, reachable on the internal network only
+   until an operator publishes that host on the internet; see
    [Deployment: public catalogue host](deployment.md#public-catalogue-host).
-2. An administrator marks each dataset, and the geography, **public**. Everything
-   is **private** by default, including what a country pack loads.
+2. **An administrator** marks each dataset, and the geography, **public**.
+   Everything is **private** by default, including what a country pack loads.
 
 Whatever the settings, only **published versions** are shown. Drafts, private
 datasets, the change feed, who made or approved a version, and the sample people
@@ -60,47 +107,3 @@ catalogue and its downloads, as open-data catalogues (DCAT) expect.
 Staff data policies do not apply to the public catalogue: marking a dataset public
 is the decision to show all of it.
 {% endhint %}
-
-## What it offers
-
-| | |
-|---|---|
-| **Datasets** | Each public dataset with its entries, at the latest version, a pinned version or as of a date |
-| **Geography** | Levels and units, and each level's boundaries |
-| **Releases** | Published releases, with their public members only |
-| **Downloads** | CSV and JSON per dataset version; CSV and GeoJSON per geography level |
-| **DCAT** | A catalogue description that open-data portals can harvest |
-| **SKOS** | Each dataset as a concept scheme |
-
-Responses can be cached (they carry `ETag` and `Last-Modified`), can be read from
-any website (CORS), and are rate limited per client. Every operation, with its
-parameters, is in the [API Reference: Public API](api-reference.md#public-api).
-
-### DCAT catalogue
-
-The DCAT catalogue (JSON-LD) lists each public dataset with a published version in
-effect, and the geography when it is public, each with its licence, theme, version
-and one download per format. CKAN's DCAT harvester and other portals can harvest
-it. See [Standards](standards.md#catalogue-metadata-public-catalogue).
-
-It is metadata, not data: it says what exists and where to get it, for portals and
-harvesters rather than applications. Even with one dataset it is long, because
-JSON-LD spells every term out:
-
-| Part | What it is |
-|---|---|
-| `@context` | The vocabularies the terms come from (DCAT, Dublin Core `dct:`, SKOS, …); the same in every response |
-| The catalogue (`dcat:Catalog`) | Its title, description, last change and home page |
-| `dcat:themeTaxonomy` | The themes (core, agriculture, …) as a small SKOS scheme |
-| `dcat:dataset` | One entry per public dataset: identifier, title, dates, theme, version, licence (when set) |
-| `dcat:distribution` | Per dataset, one entry per format (CSV, JSON, SKOS), each with its download URL and media type |
-
-The entries themselves are not in it: an application reads them from
-`/public/datasets/{code}/entries`, or a download.
-
-### SKOS concept schemes
-
-Each public dataset can be read as a SKOS concept scheme (JSON-LD): one concept
-per active entry, with its entry code, labels per language and parent. A concept's
-address does not include the version, so an entry code keeps the same address across
-versions. See [Standards](standards.md#datasets-and-entries).
