@@ -14,17 +14,10 @@ SQL, allowlists, and related-register loading are specified in
 
 | Endpoint | Delivery |
 | --- | --- |
-| `POST /dci/sync/search` | Runs the search and returns the signed envelope. |
-| `POST /dci/async/search` | Validates the request, returns an acknowledgement, then publishes an `on-search` envelope. |
+| `POST /dci/registry/sync/search` | Runs the search and returns the signed envelope. |
+| `POST /dci/registry/async/search` | Validates the request, returns an acknowledgement, then publishes an `on-search` envelope. |
 
 Both endpoints use the same decoder, signature check, and consent check.
-
-{% hint style="warning" %}
-Older generated OpenAPI files use `/dci/registry/sync/search`. Current source
-registers `/dci/sync/search` and `/dci/async/search`. Confirm the target
-`/openapi.json` before integrating.
-{% endhint %}
-
 OpenAPI is served at `/docs` and `/openapi.json` on a running Partner API.
 
 ## What the operator must supply
@@ -334,7 +327,7 @@ HTTP 422. Sync correlation ids are hexadecimal UUIDs without hyphens.
 
 ## Asynchronous search
 
-`POST /dci/async/search` takes the same request. The HTTP body is only an
+`POST /dci/registry/async/search` takes the same request. The HTTP body is only an
 acknowledgement:
 
 ```json
@@ -380,7 +373,7 @@ sequenceDiagram
     participant Hub as WebSub hub
     participant Callback as Partner callback
 
-    Partner->>API: POST /dci/async/search
+    Partner->>API: POST /dci/registry/async/search
     API->>API: Verify signature and consent
     API->>API: Resolve PARTNER topic
     API-->>Partner: ACK and correlation_id

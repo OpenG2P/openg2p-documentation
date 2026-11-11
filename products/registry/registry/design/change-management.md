@@ -61,10 +61,10 @@ Multiple verifications can be configured per section. All required verifications
 
 When a change request is approved, the following operations are executed within a single transaction:
 
-1. **Insert into history table** - for each non-`NO_CHANGE` item in the change payload, write a snapshot to the domain-specific history table (`G2PRegisterHistoryService`), stamped with `change_request_id` and `subject_internal_record_id`.
-2. **Upsert into register table** - the approved values are written to the domain-specific register table. For new records this is an insert; for updates it is an upsert. `DELETE` removes the live row after the history row is written.
-3. **Promote supporting documents** - write `g2p_register_document_history` and upsert live `g2p_register_section_documents` for target record ids from the payload.
-4. **Update change request status** - approval status, `approved_at`, and `approved_by` are updated on the change request.
+1. **Update change request status** - approval status, `approved_at`, and `approved_by` are updated on the change request.
+2. **Upsert into register table** - the approved values are written to the domain-specific register table. For new records this is an insert; for updates it is an upsert. `DELETE` removes the live row. `NO_CHANGE` items are not applied.
+3. **Insert into history table** - write a snapshot to the domain-specific history table (`G2PRegisterHistoryService`), stamped with `change_request_id` and `subject_internal_record_id`. `ADD`, `UPDATE`, and `DELETE` are always written (`DELETE` is bookkeeping columns only). On a list section, each `NO_CHANGE` row is also copied from the live table so the version is the whole section. On a form section, `NO_CHANGE` is skipped.
+4. **Promote supporting documents** - write `g2p_register_document_history` and upsert live `g2p_register_section_documents` for target record ids from the payload. `NO_CHANGE` rows are skipped.
 
 {% hint style="info" %}
 Intake form approval / ingest writes history with `change_request_id` null and `submission_id` set. See Version History.

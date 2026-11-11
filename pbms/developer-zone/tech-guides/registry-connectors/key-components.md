@@ -1,207 +1,94 @@
 # Key Components
 
-The `RegistryInterface` defines methods for summary, eligibility and entitlement computation, registry access, and query construction. See the attached Key details of the same are mentioned below
+A register is served by two small classes, one per connector, built on shared base classes. Callers
+never pass SQL: they pass Odoo domains (`pbms_domain`, for example
+`[('gender', '=', 'FEMALE'), ('estimated_age', '>=', 18)]`) and beneficiary-list IDs, and the base
+classes compile them to SQL (`db`) or a DCI expression (`dci`).
 
-### Computations
+| Component | File | Role |
+| --------- | ---- | ---- |
+| `RegistryInterface` | `interface/registry_interface.py` | The contract every register implements |
+| `RegistryDB` | `computations/_base.py` | Implements the registry methods with SQL on the register's SQLAlchemy `model` |
+| `RegistryDCI` | `computations/_base.py` | Implements the registry methods with DCI sync search on the Partner API |
+| `<Register>Summaries` | `computations/_summary.py` | The register's summary statistics, shared by its DB and DCI classes |
+| `RegistryConnection` | `connection.py` | Decodes a register's connector and connection string |
+| `REGISTERS` | `registers.py` | Maps each register to its `(DB, DCI)` classes |
+| `RegistryFactory` | `factory/registry_factory.py` | Returns the right class for a register, built with its connection |
 
-**`get_summary`**
+## RegistryInterface
 
-**Purpose:** Asynchronously retrieves summary statistics for a given beneficiary list.\
-Used primarily in background tasks or async workflows.
+### Summaries
 
-**Arguments:**
+Implemented once per register by its `<Register>Summaries` mixin.
 
-* `beneficiary_list_id (str)`: The ID of the beneficiary list to summarize.
-* `bg_task_session (AsyncSession)`: Async SQLAlchemy session for background operations.
-* `formated (bool, optional)`: Whether to return formatted summary data. Defaults to `False`.
+| Method | Type | Purpose |
+| ------ | ---- | ------- |
+| `get_summary(beneficiary_list_id, bg_task_session, formated=False)` | Async | Read the list's summary (staff portal API) |
+| `get_summary_sync(beneficiary_list_id, bg_task_session)` | Sync | Same, for Celery tasks |
+| `compute_eligibility_statistics(beneficiary_list_details, base_summary, bg_task_session)` | Sync | Compute and store eligibility statistics (for example age quartiles) |
+| `compute_entitlement_statistics(beneficiary_list_id, bg_task_session)` | Sync | Compute and store entitlement statistics (for example by gender) |
 
-**Returns:**\
-`BeneficiaryListSummaryPayload` — Contains computed summary metrics for the list.
+### Registry methods
 
-***
+Implemented by `RegistryDB` and `RegistryDCI`; a register does not write them.
 
-**`get_summary_sync`**
+| Method | Type | Purpose |
+| ------ | ---- | ------- |
+| `iter_eligible_ids(rules, batch_size)` | Sync | Yield batches of registrant IDs matching `(pbms_domain, set_operator)` rules |
+| `iter_priority_ids(priority_domains, enrolled_ids, fallback_rules, batch_size)` | Sync | Yield batches of priority registrant IDs |
+| `entitlement_multipliers(registrant_ids, pbms_domain, multiplier_field=None)` | Sync | Return `{registrant_id: multiplier}` for registrants the domain matches |
+| `fetch_by_ids(registrant_ids)` | Sync | Load registrant rows, used by the summaries |
+| `search_beneficiaries(bg_task_session, beneficiary_list_id, target_registry, search_domain, page, page_size, order_by)` | Async | Paginated search within a beneficiary list |
 
-**Purpose:** Retrieves summary statistics synchronously for a beneficiary list (non-async execution).
+## RegistryDB
 
-**Arguments:**
+Set two class attributes:
 
-* `beneficiary_list_id (str)`: The beneficiary list identifier.
-* `bg_task_session (Session)`: SQLAlchemy synchronous session.
+* `model`: the SQLAlchemy model of the register's table or view (see the
+  [Registry Database Contract](../registry-database-contract.md)).
+* `payload`: the pydantic schema returned in search results.
 
-**Returns:** `BeneficiaryListSummaryPayload`
+Registrant IDs are the model's `internal_record_id`.
 
-***
+## RegistryDCI
 
-**`compute_eligibility_statistics`**
+Set:
 
-**Purpose:** Computes and updates eligibility statistics for a given list of beneficiaries.
+* `payload`: the pydantic schema returned in search results.
+* `reg_type`, `reg_record_type`: the DCI register and record type sent to the Partner API.
+* `match_field`: the field the Partner API filters on to find a registrant. Its value is the
+  registrant ID PBMS stores.
+* `fields`: the fields PBMS can filter on. They must be in the registry's allowed search fields.
+* `flat(record)`: a static method that maps one DCI `reg_record` onto the register's column names. It
+  must return `match_field`, and the names must match the DB model so that domains work on both
+  connectors.
 
-**Arguments:**
+`computations/_dci_records.py` has helpers for `flat()`: `text`, `code`, `as_bool`, `as_int`,
+`identifier_of_type` and `age_from_birth_date`.
 
-* `beneficiary_list_details (List[BeneficiaryListDetails])`: Details of beneficiaries in the list.
-* `base_summary`: Type or class of base\_summary - e.g., `BeneficiaryListSummary` or custom model implementation
-* `sr_session (Session)`: Session connected to the source registry database.
-* `bg_task_session (Session)`: Session connected to the PBMS background task database.
+## RegistryConnection
 
-**Returns:** None - Updates the summary table in place.
+Built by `config.get_connection(register)` from `REGISTRY_ADAPTERS_<REGISTER>_CONNECTOR` and
+`REGISTRY_ADAPTERS_<REGISTER>_CONNECTION_STRING`. `RegistryConnection.parse()` decodes the string into:
 
-***
+* `db`: driver, username, password, host, port and database name; `sync_url()` and `async_url()` build
+  the SQLAlchemy URLs.
+* `dci`: `search_url`, `reg_type`, `reg_record_type`, `partner_api_timeout` and
+  `partner_api_ssl_verify`.
 
-**`compute_entitlement_statistics`**
+An empty or invalid string raises `RegistryConnectionError`, which the factory turns into a
+`BGTaskException` for that register only. Formats are in the [Registry Connector](README.md#configuration) overview.
 
-**Purpose:** Calculates entitlement statistics for the given beneficiary list and updates the relevant fields.
+## Data models and schemas
 
-**Arguments:**
-
-* `beneficiary_list_id (str)`: ID of the beneficiary list.
-* `bg_task_session (Session)`: Background task DB session.
-* `sr_session (Session)`: Registry DB session.
-
-**Returns:** None - Updates the computed statistics in database
-
-***
-
-### Registry Methods
-
-**`get_registrants_by_ids`**
-
-**Purpose:** Fetches registrant records from the registry database based on their IDs.
-
-**Arguments:**
-
-* `registrant_ids (List[str])`: List of registrant IDs to fetch.
-* `sr_session (Session)`: Registry database session.
-
-**Returns:** `List[G2PRegistry]` - List of registry entries.
-
-***
-
-**`get_is_registant_entitled`**
-
-**Purpose:** Checks whether a specific registrant is entitled based on a dynamically generated SQL query.
-
-**Arguments:**
-
-* `registrant_id (str)`: ID of the registrant.
-* `sql_query (str)`: SQL query representing eligibility rules.
-* `sr_session (Session)`: Registry session.
-
-**Returns:** `bool` - `True` if entitled, otherwise `False`.
-
-***
-
-**`get_entitlement_multiplier`**
-
-**Purpose:** Retrieves the multiplier value used in entitlement computation for a specific registrant.
-
-**Arguments:**
-
-* `multiplier (str)`: Field or SQL expression to compute multiplier.
-* `registrant_id (str)`: ID of the registrant.
-* `sr_session (Session)`: Registry session.
-
-**Returns:** `int` - The computed multiplier value.
-
-***
-
-**`search_beneficiaries`**
-
-**Purpose:** Searches for beneficiaries based on a search query and pagination parameters.
-
-**Arguments:**
-
-* `bg_task_session (AsyncSession)`: Async background session.
-* `sr_session (AsyncSession)`: Async registry session.
-* `beneficiary_list_id (str)`: Beneficiary list identifier.
-* `target_registry (str)`: Registry name or identifier.
-* `search_query`: _\[Placeholder: Expected structure or type, e.g., dict or SQL clause]_
-* `page (int)`: Page number for pagination (default: `1`).
-* `page_size (int)`: Results per page (default: `10`).
-* `order_by (str)`: Sorting order (default: `"internal_record_id asc"`).
-
-**Returns:** `BeneficiarySearchResponsePayload` - Paginated list of beneficiaries matching the query.
-
-***
-
-### SQL Query Constructors (Utility Methods)
-
-These helper methods generate SQL Alchemy-compatible `TextClause` objects to perform parameterized queries on registry data.&#x20;
+* `G2PRegistry` (`openg2p_pbms_models`): base SQLAlchemy model of a register, supplies
+  `internal_record_id`.
+* `BeneficiaryListSummary` (`openg2p_bg_task_models`): base SQLAlchemy model of a summary table.
+* `G2PRegistryPayload` and `BeneficiaryListSummaryPayload` (`schema/` in this package): base search-result
+  and summary schemas.
+* `BeneficiaryListDetails` and `BeneficiarySearchResponsePayload` (`openg2p_bg_task_models`): beneficiary
+  list rows and search responses.
 
 {% hint style="info" %}
-Custom implementations can directly use these methods by passing `target_registry`, given that table naming conventions are followed for registries.
-{% endhint %}
-
-**`construct_multiplier_sql_query`**
-
-**Purpose:** Constructs a query to retrieve multiplier values for entitlement calculations.
-
-**Arguments:**
-
-* `multiplier (str)`: Column name representing the multiplier.
-* `target_registry (str)`: Registry name.
-
-**Returns:** `TextClause` - SQL query for retrieving multiplier values.
-
-***
-
-**`construct_beneficiary_search_sql_query`**
-
-**Purpose:** Builds a SQL query for paginated beneficiary search with dynamic filters.
-
-**Arguments:**
-
-* `registrant_ids (List[str])`: List of registrant IDs to include.
-* `target_registry (str)`: Target registry table.
-* `where_clause (str)`: Additional SQL conditions.
-* `order_by (str)`: Sorting criteria.
-* `page_size (int)`: Number of records per page.
-* `page (int)`: Page number.
-
-**Returns:** `Tuple[TextClause, Dict[str, Any]]` - Query and its parameters.
-
-***
-
-**`construct_beneficiary_search_count_sql_query`**
-
-**Purpose:** Builds a SQL query to count total search results (for pagination).
-
-**Arguments:**
-
-* `registrant_ids (List[str])`: List of registrant IDs.
-* `target_registry (str)`: Registry table name.
-* `where_clause (str)`: SQL filtering conditions.
-
-**Returns:** `Tuple[TextClause, Dict[str, Any]]` - Count query and parameters.
-
-***
-
-**`construct_get_is_registrant_entitled_sql_query`**
-
-**Purpose:** Generates a SQL query to check if a registrant meets entitlement conditions.
-
-**Arguments:**
-
-* `registrant_id (str)`: The registrant’s unique ID.
-* `target_registry (str)`: Registry name.
-* `sql_query (str)`: Base eligibility SQL.
-
-**Returns:** `TextClause` - SQL query ready for execution with parameters.
-
-***
-
-### Data Models, Schemas and Dependencies
-
-To implement this interface, the following models and schemas are typically imported from the G2P [PBMS](https://github.com/OpenG2P/pbms/tree/develop/core/openg2p-pbms-models) and [PBMS Background Task](https://github.com/OpenG2P/pbms/tree/develop/core/openg2p-bg-task-models) ecosystem:
-
-* `G2PRegistry`: Core registry ORM model.
-* `BeneficiaryListDetails`: Details of beneficiaries linked to lists.
-* `BeneficiaryListSummaryPayload`: Schema for summary statistics.
-* `BeneficiarySearchResponsePayload`: Schema for search results.
-* `Disbursement`: Disbursement data schema.
-
-_Additional dependencies include `sqlalchemy`, `sqlalchemy.ext.asyncio`, and `abc` for abstract base class definition._
-
-{% hint style="info" %}
-New data models and schemas created during custom implementation are expected to inherit their corresponding parent model/schema
+New models and schemas inherit their base model or schema.
 {% endhint %}

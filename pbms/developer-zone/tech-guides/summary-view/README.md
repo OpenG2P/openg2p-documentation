@@ -16,7 +16,7 @@ The programmatic flow is as follows
 * Fetch configuration parameters `staff_portal_api_url`, `keymanager_sign_application_id` for formulating  a request.
 * Construct an API request payload with `beneficiary_list_id` and `target_registry`
 * Sign the payload using the `keymanager.provider` service and issues a POST request to the `/summary` endpoint of pbms staff portal api
-* Parse the [JSON response](../registry-connectors/example-implementation-workflow.md#create-custom-schema-schemas-and-model-definitions-models), which includes two major parts:
+* Parse the [JSON response](../registry-connectors/example-implementation-workflow.md#3-add-the-summary-model-schema-and-computation), which includes two major parts:
   * `beneficiary_list_summary`: general summary fields for the list
   * `registry_summary`: optional type-specific fields
 * Iterate over the keys of both summaries (skipping excluded keys like `id` and `target_registry`). For each key:
