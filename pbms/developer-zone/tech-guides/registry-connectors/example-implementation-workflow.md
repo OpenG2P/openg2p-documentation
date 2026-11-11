@@ -1,96 +1,194 @@
 # Example Implementation Workflow
 
-The [`RegistryFarmer` class](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/computations/registry_farmer.py) demonstrates a **custom implementation** of the `RegistryInterface`, tailored for integrating with a [**Farmer Registry**](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/models/registry_farmer.py) data source.
+This walks through adding a register to the
+[pbms-connectors](https://github.com/OpenG2P/pbms-connectors) repo, using a `student` register as the
+example. The shipped [`farmer`](https://github.com/OpenG2P/pbms-connectors/blob/develop/extensions/registry-adapters/src/openg2p_bg_task_registry_adapters/computations/farmer.py),
+[`household`](https://github.com/OpenG2P/pbms-connectors/blob/develop/extensions/registry-adapters/src/openg2p_bg_task_registry_adapters/computations/household.py)
+and [`disability`](https://github.com/OpenG2P/pbms-connectors/blob/develop/extensions/registry-adapters/src/openg2p_bg_task_registry_adapters/computations/disability.py)
+registers follow the same pattern.
 
-Below is the typical workflow for building a similar registry connector:
+Paths below are relative to `extensions/registry-adapters/src/openg2p_bg_task_registry_adapters/` unless
+they start with `odoo/` or `helm/`.
 
-## Define a Custom Registry Class and Update Factory
+## 1. Add the register type
 
-Create a class (e.g., `RegistryFarmer`) that **inherits from** `RegistryInterface`.\
-This ensures the connector implements all abstract methods required by the PBMS framework — including summaries, searches, and entitlement computations.
+Add the value to `G2PRegistryType` in both enums. The values must match.
 
 ```python
-# /computations/registry_farmer.py
-class RegistryFarmer(RegistryInterface):
+# models/enum.py, and odoo/g2p_registry_type_addon/models/registry_type.py
+class G2PRegistryType(Enum):
+    FARMER = "farmer"
+    HOUSEHOLD = "household"
+    DISABILITY = "disability"
+    STUDENT = "student"
 ```
 
-Update the `/factory/registry_factory.py` file to include this new registry class
+In the Odoo file also add the model to `G2PTargetModelMapping.MODEL_MAPPING`
+(`"student": "g2p.register.students"`). The Odoo side is covered in [Registry Add-ons](../registry-addons/README.md).
 
-<pre class="language-python"><code class="lang-python"># /factory/registry_factory.py
-class RegistryFactory:
-    """Get the appropriate summary computation class based on the registrant type"""
+## 2. Add the register model and search schema
 
-    @staticmethod
-    def get_registry_class(
-        target_registry,
-    ) -> RegistryInterface:
-<strong>        if target_registry == G2PRegistryType.FARMER.value:
-</strong><strong>            return RegistryFarmer()
-</strong>
-        # add multiple interfaces using elif blocks 
-
-        else:
-            raise BGTaskException(code=BGTaskErrorCodes.INVALID_REQUEST)
-</code></pre>
-
-## Create Custom Schema (`/schemas`) and Model Definitions (`/models`)
-
-Define a pydantic schema to structure registry-specific summary data. Each registry schema extends its base schema to ensure the payload integrates seamlessly with existing response models.
+The SQLAlchemy model describes the register's table or view in the registry database
+([Registry Database Contract](../registry-database-contract.md)). The `db` connector selects every
+column it declares.
 
 ```python
-# /schemas/beneficiary_list_summary_farmer.py
+# models/registry_student.py
+from openg2p_pbms_models.models import G2PRegistry
+from sqlalchemy import Integer, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+
+class G2PStudentRegistry(G2PRegistry):
+    __tablename__ = "g2p_register_students"
+
+    functional_record_id: Mapped[str] = mapped_column(String, nullable=True)
+    first_name: Mapped[str] = mapped_column(String, nullable=True)
+    gender: Mapped[str] = mapped_column(String, nullable=True)
+    grade: Mapped[int] = mapped_column(Integer, nullable=True)
+```
+
+```python
+# schema/registry_student.py
 from typing import Optional
-from pydantic import BaseModel
-from .beneficiary_list_summary import BeneficiaryListSummaryPayload
 
-class BeneficiaryListSummaryFarmer(BaseModel):
-    # ... registry-specific stats ...
-    # computaion logic is expected in registry connector implementation
+from .registry import G2PRegistryPayload
 
-class BeneficiaryListSummaryFarmerPayload(BeneficiaryListSummaryPayload):
-    registry_summary: BeneficiaryListSummaryFarmer
+
+class G2PStudentRegistryPayload(G2PRegistryPayload):
+    functional_record_id: Optional[str] = None
+    first_name: Optional[str] = None
+    gender: Optional[str] = None
+    grade: Optional[int] = None
 ```
 
-Extend the base SQLAlchemy model `BeneficiaryListSummary` to persist registry-specific statistics. The inheritance ensures all common fields (e.g., `beneficiary_list_id`, timestamps) are available automatically.
+Export both from `models/__init__.py` and `schema/__init__.py`.
+
+## 3. Add the summary model, schema and computation
+
+Each register stores its own summary statistics. Extend the base summary model and schema:
 
 ```python
-# /models/beneficiary_list_summary_farmer.py
+# models/beneficiary_list_summary_student.py
 from openg2p_bg_task_models.models import BeneficiaryListSummary
-from sqlalchemy import JSON, Float, String
+from sqlalchemy import Float, String
 from sqlalchemy.orm import mapped_column
 
-class BeneficiaryListSummaryFarmer(BeneficiaryListSummary):
-    __tablename__ = "beneficiary_list_summary_farmer"
 
-    land_holding_mean = mapped_column(Float, default=0)
-    annual_income_mean = mapped_column(Float, default=0)
-    average_entitlement_female = mapped_column(JSON, nullable=True)
-    average_entitlement_male = mapped_column(JSON, nullable=True)
-    # ... other numeric/statistical columns ...
-    # computaion logic is expected in registry connector implementation
+class BeneficiaryListSummaryStudent(BeneficiaryListSummary):
+    __tablename__ = "beneficiary_list_summary_student"
+
+    grade_mean = mapped_column(Float, default=0)
+    grade_units = mapped_column(String, nullable=True)
 ```
 
-After new model creation you are expected to update the migration script in [`migrate.py`](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/migrate.py) with the new models.
+```python
+# schema/beneficiary_list_summary_student.py
+from typing import Optional
 
-Similarly, `/models` and `/schema` should also be populated by adding the registry views created as models and related payloads. These models will be used in lookup from the registry database. [`registry_type.py`](https://github.com/OpenG2P/pbms/blob/develop/extensions/openg2p-bg-task-registry-adapters/src/openg2p_bg_task_registry_adapters/models/registry_type.py) should house all the target model mappings.
+from pydantic import BaseModel
 
-<pre class="language-python"><code class="lang-python"># /schema/registry_farmer.py
-<strong>class G2PFarmerRegistryPayload(G2PRegistryPayload):
-</strong><strong>
-</strong>    ## ... add fields from registry view defined ...
-</code></pre>
+from .beneficiary_list_summary import BeneficiaryListSummaryPayload
 
-<pre class="language-python"><code class="lang-python"># /models/registry_farmer.py
-<strong>class G2PFarmerRegistry(G2PRegistry):
-</strong>    __tablename__ = "g2p_register_farmer"    # table name in registry view
 
-    ## ... add fields from registry view defined ...
-</code></pre>
+class BeneficiaryListSummaryStudent(BaseModel):
+    grade_mean: Optional[str] = None
 
-Implement the computation and registry methods, you can use the SQL utility methods provided in the interface by passing `target_registry` string to get a `TextClause` SQL query. Refer the Code Anatomy for Registry Connector Interface below to populate your custom interface with the current interface template.
 
-<table data-full-width="false"><thead><tr><th>Method Name</th><th width="82">Type</th><th>Purpose</th><th width="148">Key Arguments</th><th>Returns</th><th>Implementation Notes</th></tr></thead><tbody><tr><td><code>get_summary</code></td><td>Async</td><td>Retrieves summary statistics for a given beneficiary list asynchronously.</td><td><code>beneficiary_list_id: str</code>, <code>bg_task_session: AsyncSession</code>, <code>formated: bool</code></td><td><code>BeneficiaryListSummaryPayload</code></td><td>Used in API calls; fetches formatted summary metrics from summary table.</td></tr><tr><td><code>get_summary_sync</code></td><td>Sync</td><td>Same as <code>get_summary</code> but executed synchronously (for Celery or background tasks).</td><td><code>beneficiary_list_id: str</code>, <code>bg_task_session: Session</code></td><td><code>BeneficiaryListSummaryPayload</code></td><td>Ideal for heavy computation where async isn’t needed.</td></tr><tr><td><code>compute_eligibility_statistics</code></td><td>Sync</td><td>Computes eligibility-based summary metrics for beneficiaries.</td><td><code>beneficiary_list_details: List[BeneficiaryListDetails]</code>, <code>base_summary</code>, <code>sr_session</code>, <code>bg_task_session</code></td><td>None</td><td>Uses NumPy for percentile and mean computations; updates summary model.</td></tr><tr><td><code>compute_entitlement_statistics</code></td><td>Sync</td><td>Computes entitlement statistics (e.g., payment distribution by gender).</td><td><code>beneficiary_list_id: str</code>, <code>bg_task_session: Session</code>, <code>sr_session: Session</code></td><td>None</td><td>Groups entitlements by <code>benefit_code_id</code>; calculates mean, Q1, Q2, Q3.</td></tr><tr><td><code>get_registrants_by_ids</code></td><td>Sync</td><td>Fetches registrant data from the registry database.</td><td><code>registrant_ids: List[str]</code>, <code>sr_session: Session</code></td><td><code>List[G2PRegistry]</code></td><td>Uses chunked loading (<code>yield_per(500)</code>) for performance on large datasets.</td></tr><tr><td><code>get_is_registant_entitled</code></td><td>Sync</td><td>Checks if a registrant satisfies entitlement criteria using a SQL query.</td><td><code>registrant_id: str</code>, <code>sql_query: str</code>, <code>sr_session: Session</code></td><td><code>bool</code></td><td>Constructs validated dynamic SQL using <code>construct_get_is_registrant_entitled_sql_query</code>.</td></tr><tr><td><code>get_entitlement_multiplier</code></td><td>Sync</td><td>Retrieves multiplier value for entitlement scaling.</td><td><code>multiplier: str</code>, <code>registrant_id: str</code>, <code>sr_session: Session</code></td><td><code>int</code></td><td>Executes a SQL query; defaults to <code>1</code> if not found or multiplier is <code>"none"</code>.</td></tr><tr><td><code>search_beneficiaries</code></td><td>Async</td><td>Performs paginated and filtered beneficiary searches.</td><td><code>bg_task_session: AsyncSession</code>, <code>sr_session: AsyncSession</code>, <code>beneficiary_list_id: str</code>, <code>target_registry: str</code>, <code>search_query</code>, <code>page</code>, <code>page_size</code>, <code>order_by</code></td><td><code>BeneficiarySearchResponsePayload</code></td><td>Builds dynamic SQL queries with <code>construct_beneficiary_search_sql_query</code> and applies caching.</td></tr><tr><td><code>construct_multiplier_sql_query</code></td><td>Utility</td><td>Builds SQL query to fetch multiplier column from registry table.</td><td><code>multiplier: str</code>, <code>target_registry: str</code></td><td><code>TextClause</code></td><td>Returns a prepared SQLAlchemy <code>text()</code> object.</td></tr><tr><td><code>construct_beneficiary_search_sql_query</code></td><td>Utility</td><td>Constructs SQL for paginated search with WHERE and ORDER BY.</td><td><code>registrant_ids: List[str]</code>, <code>target_registry: str</code>, <code>where_clause: str</code>, <code>order_by: str</code>, <code>page_size: int</code>, <code>page: int</code></td><td><code>(TextClause, Dict[str, Any])</code></td><td>Replaces curly quotes in filters; dynamically injects pagination params.</td></tr><tr><td><code>construct_beneficiary_search_count_sql_query</code></td><td>Utility</td><td>Builds SQL query to count total search results.</td><td><code>registrant_ids: List[str]</code>, <code>target_registry: str</code>, <code>where_clause: str</code></td><td><code>(TextClause, Dict[str, Any])</code></td><td>Mirrors main query but replaces <code>SELECT *</code> with <code>SELECT COUNT(*)</code>.</td></tr><tr><td><code>construct_get_is_registrant_entitled_sql_query</code></td><td>Utility</td><td>Prepares validated entitlement SQL query with a dynamic <code>WHERE</code> clause.</td><td><code>registrant_id: str</code>, <code>target_registry: str</code>, <code>sql_query: str</code></td><td><code>TextClause</code></td><td>Validates SQL starts with <code>SELECT</code>; appends correct registry table reference.</td></tr></tbody></table>
+class BeneficiaryListSummaryStudentPayload(BeneficiaryListSummaryPayload):
+    registry_summary: BeneficiaryListSummaryStudent
+```
 
-After pushing this custom adapter code to GitHub, you can proceed to create a custom Docker image for your setup. Simply follow the existing [Docker creation guide](../../pbms-docker.md#background-tasks) for **PBMS Background Tasks**, updating the path for the extensions package.
+Add the summary model to `get_models()` in `migrate.py` so its table is created in the bg-task
+database.
 
-This approach ensures your environment remains consistent with the PBMS deployment standards while allowing flexibility to integrate your custom logic and components seamlessly.
+Then add a `StudentSummaries` mixin in `computations/_summary.py` with `get_summary`,
+`get_summary_sync`, `compute_eligibility_statistics` and `compute_entitlement_statistics`. Read
+registrants with `self.fetch_by_ids(ids)`, which works on both connectors, and reuse the helpers there
+(`apply_quartiles`, `gendered_entitlement_values`). `FarmerSummaries` is the fullest example.
+
+## 4. Add the DB and DCI classes
+
+One file per register, with two small classes on the shared base classes
+([Key Components](key-components.md)):
+
+```python
+# computations/student.py
+from ..dci import identifier_value
+from ..models import G2PStudentRegistry
+from ..schema import G2PStudentRegistryPayload
+from ._base import RegistryDB, RegistryDCI
+from ._dci_records import as_int, code, text
+from ._summary import StudentSummaries
+
+
+class StudentDB(StudentSummaries, RegistryDB):
+    model = G2PStudentRegistry
+    payload = G2PStudentRegistryPayload
+
+
+class StudentDCI(StudentSummaries, RegistryDCI):
+    payload = G2PStudentRegistryPayload
+    reg_type = "Student"
+    reg_record_type = "Student"
+    match_field = "functional_record_id"
+    fields = {"functional_record_id", "first_name", "gender", "grade"}
+
+    @staticmethod
+    def flat(record: dict) -> dict:
+        demographic = record.get("demographic_info") or {}
+        name = demographic.get("name") or {}
+        return {
+            "functional_record_id": identifier_value(record, ("member_identifier",)),
+            "first_name": text(name.get("given_name")),
+            "gender": code(demographic.get("sex")),
+            "grade": as_int(record.get("grade")),
+        }
+```
+
+`flat()` maps the registry's DCI record (as rendered by its outgoing template) onto the same column
+names as the DB model, so the same eligibility domains work on both connectors. Export both classes
+from `computations/__init__.py`.
+
+## 5. Register it
+
+Add the pair to `registers.py`. The factory needs no change.
+
+```python
+# registers.py
+REGISTERS = {
+    G2PRegistryType.FARMER.value: (FarmerDB, FarmerDCI),
+    G2PRegistryType.HOUSEHOLD.value: (HouseholdDB, HouseholdDCI),
+    G2PRegistryType.DISABILITY.value: (DisabilityDB, DisabilityDCI),
+    G2PRegistryType.STUDENT.value: (StudentDB, StudentDCI),
+}
+```
+
+## 6. Add the chart settings
+
+In `helm/openg2p-pbms/values.yaml`, add the register's defaults and its two environment variables to
+the shared `registryAdapterEnv` block (used by the Celery workers and the staff portal API):
+
+```yaml
+global:
+  registers:
+    student:
+      connector: db
+      connectionString: 'postgresql://registry_user:CHANGE_ME@{{ .Values.global.postgresqlHost }}:5432/registry'
+
+# in the registryAdapterEnv block
+REGISTRY_ADAPTERS_STUDENT_CONNECTOR: '{{ .Values.global.registers.student.connector }}'
+REGISTRY_ADAPTERS_STUDENT_CONNECTION_STRING: '{{ tpl .Values.global.registers.student.connectionString $ }}'
+```
+
+Then copy a register block in `helm/openg2p-pbms/questions.own.yaml` so Rancher shows a "Student
+Register" group.
+
+`test/test_register_config.py` fails CI if the two enums, `registers.py`, `values.yaml` and
+`questions.own.yaml` disagree.
+
+## 7. Build and deploy
+
+Merging to `develop` builds and publishes the `openg2p-pbms-odoo`, `openg2p-pbms-celery` and
+`openg2p-pbms-staff-api` images and the `openg2p-pbms` chart as `0.0.0-develop.<n>`. Install it with the
+register's connector and connection string set (see [Configuration](README.md#configuration)).
