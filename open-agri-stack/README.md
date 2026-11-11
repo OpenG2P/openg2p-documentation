@@ -45,7 +45,7 @@ More can be added as a country needs them. All registries identify the farmer by
 
 ### Catalogues
 
-The **catalogues** are the common vocabulary every registry and service uses: crops, seed varieties, inputs, livestock, locations, land. They are defined once for the country and are public. More: [Master Data Service](../platform/platform-services/master-data-service/README.md).
+The **catalogues** are the common vocabulary every registry and service uses: crops, seed varieties, farm inputs (fertilisers, pest control, machinery, irrigation), livestock, locations, land. They are defined once for the country and are public. More: [Master Data Service](../platform/platform-services/master-data-service/README.md).
 
 ## Agri Stack and OAN
 
