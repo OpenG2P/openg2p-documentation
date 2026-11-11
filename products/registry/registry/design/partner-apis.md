@@ -32,7 +32,7 @@ flowchart TB
 
     subgraph partner_api [Partner API]
         ING["POST /partner/ingest_data"]
-        DCI["POST /dci/sync/search<br/>POST /dci/async/search"]
+        DCI["POST /dci/registry/sync/search<br/>POST /dci/registry/async/search"]
         AUD[AuditMiddleware]
     end
 
@@ -61,11 +61,11 @@ See Platform and extension model for how the extension package is loaded into AP
 
 Boot sequence (`main.py` → `app.py`) initialises core, extensions, ping, ingestion, and DCI modules:
 
-<table><thead><tr><th width="256">Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>G2PIngestController</code></td><td><code>POST /partner/ingest_data</code></td></tr><tr><td><code>RequestResponseHelper</code> (ingestion)</td><td>Parses HTTP body; builds G2P responses; renders MinIO Jinja templates</td></tr><tr><td><code>G2PIngestControllerService</code> / <code>G2PIngestService</code></td><td>Persists raw data; returns <code>correlation_id</code></td></tr><tr><td><code>G2PDciController</code></td><td><code>POST /dci/sync/search</code> and <code>POST /dci/async/search</code></td></tr><tr><td><code>G2PDciService</code></td><td>DCI adaptation, register search, and outbound-template rendering</td></tr><tr><td><code>PartnerRegisterSearch</code></td><td>Allowlisted SQL search and batched related-register loading</td></tr><tr><td><code>DciKeymanagerHelper</code></td><td>Detached JWS verification and signing</td></tr><tr><td><code>AuditMiddleware</code></td><td>Optional CloudEvents to Audit Manager</td></tr><tr><td><code>PingInitializer</code></td><td><code>GET /ping</code> health probe</td></tr></tbody></table>
+<table><thead><tr><th width="256">Component</th><th>Responsibility</th></tr></thead><tbody><tr><td><code>G2PIngestController</code></td><td><code>POST /partner/ingest_data</code></td></tr><tr><td><code>RequestResponseHelper</code> (ingestion)</td><td>Parses HTTP body; builds G2P responses; renders MinIO Jinja templates</td></tr><tr><td><code>G2PIngestControllerService</code> / <code>G2PIngestService</code></td><td>Persists raw data; returns <code>correlation_id</code></td></tr><tr><td><code>G2PDciController</code></td><td><code>POST /dci/registry/sync/search</code> and <code>POST /dci/registry/async/search</code></td></tr><tr><td><code>G2PDciService</code></td><td>DCI adaptation, register search, and outbound-template rendering</td></tr><tr><td><code>PartnerRegisterSearch</code></td><td>Allowlisted SQL search and batched related-register loading</td></tr><tr><td><code>DciKeymanagerHelper</code></td><td>Detached JWS verification and signing</td></tr><tr><td><code>AuditMiddleware</code></td><td>Optional CloudEvents to Audit Manager</td></tr><tr><td><code>PingInitializer</code></td><td><code>GET /ping</code> health probe</td></tr></tbody></table>
 
 ### API surface
 
-<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/sync/search</code></td><td>Run DCI search and return results synchronously</td></tr><tr><td><code>POST</code></td><td><code>/dci/async/search</code></td><td>Acknowledge DCI search and publish results through WebSub</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction; see <a href="activity-register.md#partner-api">Activity Register Design</a></td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); also an unsigned <code>GET</code>, on by default in the chart</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
+<table><thead><tr><th width="107">Method</th><th width="265">Path</th><th>Summary</th></tr></thead><tbody><tr><td><code>POST</code></td><td><code>/partner/ingest_data</code></td><td>Accept partner payload into ingestion pipeline</td></tr><tr><td><code>POST</code></td><td><code>/dci/registry/sync/search</code></td><td>Run DCI search and return results synchronously</td></tr><tr><td><code>POST</code></td><td><code>/dci/registry/async/search</code></td><td>Acknowledge DCI search and publish results through WebSub</td></tr><tr><td><code>POST</code></td><td><code>/partner/activity/append_activities</code>, <code>/partner/activity/correct_activities</code></td><td>Partner activity submission and correction; see <a href="activity-register.md#partner-api">Activity Register Design</a></td></tr><tr><td><code>POST</code></td><td><code>/partner/data_scopes</code></td><td>Data scope catalogue (signed); also an unsigned <code>GET</code>, on by default in the chart</td></tr><tr><td><code>GET</code></td><td><code>/ping</code></td><td>Liveness / readiness probe</td></tr></tbody></table>
 
 {% hint style="info" %}
 OpenAPI is served at `/docs` and `/openapi.json` when the service is running.
@@ -182,8 +182,8 @@ The Partner API exposes synchronous and asynchronous search over the same signed
 
 | Endpoint | Result delivery |
 | --- | --- |
-| `POST /dci/sync/search` | Returns the signed search response directly. |
-| `POST /dci/async/search` | Returns an ACK with `correlation_id`, then publishes a signed `on-search` envelope through the caller's WebSub topic. |
+| `POST /dci/registry/sync/search` | Returns the signed search response directly. |
+| `POST /dci/registry/async/search` | Returns an ACK with `correlation_id`, then publishes a signed `on-search` envelope through the caller's WebSub topic. |
 
 Both calls decode into the same core search. The DCI wire format, query
 grammars, and asynchronous acknowledgement are specified separately from the
@@ -201,12 +201,6 @@ asks its Consent Manager to find the consent it holds for the partner and that s
 [Core register search](partner-register-search/core-search.md)
 {% endcontent-ref %}
 
-{% hint style="warning" %}
-Older generated OpenAPI files may show `/dci/registry/sync/search`. Current
-controller source uses `/dci/sync/search` and `/dci/async/search`. Confirm the
-deployed contract at `/openapi.json`.
-{% endhint %}
-
 ***
 
 ## Authentication and signature verification
@@ -218,7 +212,7 @@ Management holds for that partner.
 
 | Endpoint | What is signed | Verified |
 | --- | --- | --- |
-| `POST /dci/sync/search`, `POST /dci/async/search` | `{header, message}` | yes; the async ACK itself is unsigned |
+| `POST /dci/registry/sync/search`, `POST /dci/registry/async/search` | `{header, message}` | yes; the async ACK itself is unsigned |
 | `POST /partner/ingest_data` | the object at the data model's `key_path_for_signature_payload` | yes |
 | `POST /partner/activity/append_activities` | `{header, message}` | yes |
 | `POST /partner/activity/correct_activities` | `{header, message}` | yes |
@@ -310,8 +304,8 @@ Two parallel error models — ingest (G2P envelope) and DCI (search envelope). C
 | Endpoint                    | Business error HTTP | Error location                                      |
 | --------------------------- | ------------------- | --------------------------------------------------- |
 | `/partner/ingest_data`      | Usually `200`       | `response_header.response_status = ERROR`           |
-| `/dci/sync/search`         | Usually `200`       | `header.status = rjct`; may empty `search_response` |
-| `/dci/async/search`        | Usually `200`       | `message.ack_status = ERR`                           |
+| `/dci/registry/sync/search`         | Usually `200`       | `header.status = rjct`; may empty `search_response` |
+| `/dci/registry/async/search`        | Usually `200`       | `message.ack_status = ERR`                           |
 
 {% hint style="warning" %}
 **HTTP 422** applies when Pydantic rejects the body before the controller (`HTTPValidationError` with `detail[]`). Unhandled controller exceptions map to code `"500"` in envelopes.

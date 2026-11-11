@@ -31,7 +31,7 @@ On a register record in the Staff Portal:
 1. Open **Version History**.
 2. Choose a date that has committed changes.
 3. Review sections and change requests for that date.
-4. Open a change request to see the approved payload and approval context.
+4. Open a version to see the section as it was committed. A list section shows every row from that approval, including rows that were not edited. Approval tasks for that version sit beside the section.
 
 ### How it relates to change management
 

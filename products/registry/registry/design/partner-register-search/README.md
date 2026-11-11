@@ -45,8 +45,8 @@ flowchart TB
 | `PartnerRegisterSearch` | `openg2p-registry-core` | Compile an allowlisted clause, page the root register, and load related rows in batches. |
 | Register classes and Jinja templates | Domain extension and object storage | Supply the tables and the external payload shape. |
 
-DCI is the only adapter shipped today. `POST /dci/sync/search` and
-`POST /dci/async/search` both decode into the same core search. The difference
+DCI is the only adapter shipped today. `POST /dci/registry/sync/search` and
+`POST /dci/registry/async/search` both decode into the same core search. The difference
 is delivery: the synchronous call returns the envelope, and the asynchronous
 call publishes it to WebSub after an acknowledgement.
 
