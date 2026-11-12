@@ -99,7 +99,7 @@ standard. DCI is one output format among possible others.
 geography, land) lives in the [Master Data Service](../platform/platform-services/master-data-service/README.md),
 defined by the country; international classifications are optional mappings.
 Beckn is not used for the registry data layer: its sources are fixed. It belongs
-to the network layer above, for discovering providers. IUDX is not used.
+to the network layer above, for discovering providers.
 
 **Why.** One versioned catalogue that every registry and service reads. See
 [Interoperability with OAN (Beckn)](roadmap/oan-interoperability.md).
