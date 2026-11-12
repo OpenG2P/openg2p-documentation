@@ -618,6 +618,7 @@
     * [Composite API Reference](open-agri-stack/composite/api.md)
     * [Composite Console](open-agri-stack/composite/console.md)
     * [Running the Composite Locally](open-agri-stack/composite/running-locally.md)
+  * [Design Decisions](open-agri-stack/design-decisions.md)
   * [Roadmap](open-agri-stack/roadmap/README.md)
     * [Generic Exchange](open-agri-stack/roadmap/generic-exchange.md)
     * [Interoperability with OAN (Beckn)](open-agri-stack/roadmap/oan-interoperability.md)
