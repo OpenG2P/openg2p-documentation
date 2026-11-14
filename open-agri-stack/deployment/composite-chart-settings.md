@@ -22,6 +22,15 @@ Reference for the Composite chart (`openg2p-agri-composite`). Installing it: [De
 
 Both the API and the console are served through the Istio `internal` gateway, like the registries' partner APIs. The API answers at `/composite/v1/…`, `/ping` and `/docs` (OpenAPI UI).
 
+**The internal API is not public.** `/composite/v1/internal/…` (the [consent templates](../composite/api.md#internal-consent-templates) the Exchange CM reads) is reached only at the in-cluster Service (`http://agri-composite-api`). Two guards keep it off the public host:
+
+| Guard | How |
+| --- | --- |
+| VirtualService | The first route, `internal-not-public`, answers `404` for `/composite/v1/internal` with an Istio `directResponse` (Istio 1.15 or later). With `rewriteUri` set, the chart blocks the public path that would reach it, and refuses a rewrite that routes the host into it |
+| Backend | A request carrying `x-forwarded-host` (set by the gateway) is answered `404` |
+
+The [install test](testing.md) checks the path is `404` on the public URL.
+
 ## Consent mode and the Exchange CM
 
 | Value | Default | Form |
@@ -102,9 +111,9 @@ With the console on, the chart runs Jobs that create the database and its user i
 
 | Value | Default | Form |
 | --- | --- | --- |
-| `composite.corsAllowOrigins` | `https://consent-partner-portal.<Base Domain>` | Agri Stack exchange: Allowed Browser Origins (CORS) |
+| `composite.corsAllowOrigins` | empty | Agri Stack exchange: Allowed Browser Origins (CORS) |
 
-Browser origins allowed to call the Composite, comma-separated; empty for none. The default is the Exchange CM's partner portal, which reads the published use cases. The chart renders it into `AGRI_COMPOSITE_CORS_ALLOW_ORIGINS` as a JSON list.
+Browser origins allowed to call the Composite, comma-separated; empty for none. No browser calls the Composite by default: the Exchange CM's partner portal gets its consent templates from the CM, which reads them in the cluster. The chart renders it into `AGRI_COMPOSITE_CORS_ALLOW_ORIGINS` as a JSON list.
 
 ## Scaling and rate limits
 

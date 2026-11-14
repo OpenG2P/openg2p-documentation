@@ -11,8 +11,9 @@ The Consent Manager keeps two kinds of structures:
 
 * **Stored entities** — the records it owns (consent requests, artefacts, receipts, logs).
   Partners and policies live in Partner Management: records name the partner by its **audience**
-  (e.g. `bank-a`) and the policy applied by `policy_ref` (`data_controller:farmer-registry` or
-  `use_case:loan-profile@1`), `policy_version` and `policy_id` (PM's id of that version).
+  (e.g. `bank-a`) and the policy applied by `policy_ref` (`data_controller:farmer-registry`), `policy_version` and `policy_id` (PM's id of that
+  version). Terms sent by a token presenter, or a consent template, are recorded as
+  `policy_ref: template:loan-profile@1`, with no `policy_id` or `policy_version`.
 * **Exchanged documents** — JSON-LD documents passed in and out: the consent object a partner
   signs, and the artefact and receipt the CM issues. (The origination flow also takes a standard
   OIDC ID token; the CM keeps only its hash and claims, in the AuthContext.)
@@ -58,16 +59,16 @@ the approved grants. A department CM stores one per accepted **consent token**.
 | consent_request_id | UUID | The request it was made from (originated) |
 | policy_version | int | Version of the partner's policy in Partner Management evaluated at issue |
 | policy_id | str | PM's id of that policy version |
-| policy_ref | str | The policy's key, `kind:key`: `data_controller:farmer-registry` or `use_case:loan-profile@1`. On an originated consent with several grants, set only when all grants share one policy (a consent by use case) |
-| use_case | str | Exchange role: the use case (`name@major`) the consent serves — a consent made by use case, or a partner-signed one validated in use-case mode. Null otherwise |
+| policy_ref | str | The policy's key, `kind:key`: `data_controller:farmer-registry`, or `template:loan-profile@1` (no PM policy: a consent template, or terms sent by a token presenter). On an originated consent with several grants, set only when all grants share one reference (a consent made from a template) |
+| template | str | Exchange role: the consent template code (e.g. `loan-profile@1`) the consent was made from, or that a token presenter sent with a partner-signed one. A label for display and audit; the purpose and grants are what the consent is for. Null otherwise |
 | status | enum | `active`, `revoked`, `expired` |
 | created_at / revoked_at / expired_at | datetime | Append-only |
 
 **Lookup indexes.** They serve consent by lookup with one index
 range per request, whatever the number of consents:
 
-* `ix_consent_artefacts_lookup`, partial on `status = 'active'` (`partner_id`, `subject_id_type`, `subject_id_value`, `use_case`,
-  `valid_until DESC`) — [with a use case](verification-and-enforcement.md#use-case-mode);
+* `ix_consent_artefacts_purpose_lookup`, partial on `status = 'active'` (`partner_id`, `subject_id_type`, `subject_id_value`,
+  `purpose ->> 'code'`, `valid_until DESC`) — [caller-terms mode](verification-and-enforcement.md#caller-terms-mode);
 * `ix_consent_artefacts_controller_lookup`, partial likewise (`partner_id`, `subject_id_type`, `subject_id_value`,
   `controller_id`, `valid_until DESC`) —
   [at a registry](verification-and-enforcement.md#consent-by-lookup-at-a-registry). An originated
@@ -113,7 +114,7 @@ the CM's `GET /.well-known/jwks.json`, without Partner Management. Document: [be
 
 | Entity | Key fields |
 | --- | --- |
-| **ConsentRequest** (origination, partner portal) | id, subject, subject_identifiers, controller_id (null when several grants), partner_id (the partner's audience), requested_scopes (union), grants (`[{data_controller, data_scopes, policy_version, policy_id, policy_ref}]` or null), use_case, purpose, validity, method (`assisted`), status (`pending`, `pending_verification`, `approved`, `denied`, `rejected`, `cancelled`, `expired`), verification (who, when, note), timestamps |
+| **ConsentRequest** (origination, partner portal) | id, subject, subject_identifiers, controller_id (null when several grants), partner_id (the partner's audience), requested_scopes (union), grants (`[{data_controller, data_scopes, policy_version, policy_id, policy_ref}]` or null), template (a label), purpose, validity, method (`assisted`), status (`pending`, `pending_verification`, `approved`, `denied`, `rejected`, `cancelled`, `expired`), verification (who, when, note), timestamps |
 | **ConsentEvidence** (partner portal) | id, consent_request_id, kind (signed form), filename, content type, size, sha256, storage key (object store), uploaded by/at |
 | **SubjectAuthSession** (partner portal) | A national-ID login in progress: state, nonce, PKCE verifier, status, expiry (5 minutes), the resulting auth context |
 | **RevocationRecord** | revocation_id, consent_id, originated_by (`subject`/`controller`/`partner`), reason, revoked_by (the staff user, when staff revoked it on the subject's request), created_at |

@@ -4,13 +4,13 @@ description: Policies that control data sharing.
 
 # Data-Sharing Policies
 
-Access policies say what a partner may ask for. In Agri Stack they are all held and approved in **Partner Management (PM)**, next to the partners' keys; the Consent Manager (CM) holds only consents, and reads policies from PM when it validates one. What a policy contains (its fields, versions and statuses, and how it is changed) is defined once, in Partner Management: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies). This page explains how Agri Stack uses them.
+Access policies say what a partner may ask for. In Agri Stack they are all held and approved in **Partner Management (PM)**, next to the partners' keys; the Consent Manager (CM) holds only consents. In a department the CM reads the scope policy from PM when it validates a consent; at the Exchange only the Composite reads the use-case policies, and the CM applies what the Composite sends. What a policy contains (its fields, versions and statuses, and how it is changed) is defined once, in Partner Management: [access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies). This page explains how Agri Stack uses them.
 
 ## Two policies
 
 Agri Stack uses both kinds of [access policy](../../platform/platform-services/partner-management/functional-specifications.md#two-kinds-of-policy) that Partner Management offers, one at the Exchange and one in each department:
 
-* **The partner's use-case policy, at the Exchange.** Which use case a partner may call, for example `loan-profile@1`, and with what limits: the purposes, farmer ID types and signing algorithms allowed, and the longest a consent may last. One policy per partner and use case, in the Exchange's Partner Management, approved by the Exchange's partner manager ([example policy](../../platform/platform-services/partner-management/api-reference.md#post-partners-requests-policy)). It lists no data: the use case defines that.
+* **The partner's use-case policy, at the Exchange.** Which use case a partner may call, for example `loan-profile@1`, and with what limits: the farmer ID types and signing algorithms allowed, the longest a consent may last, and whether the partner may present consents it signed. It lists no purposes: granting a use case grants its purpose ([decision #9](../design-decisions.md#9-a-use-case-policy-does-not-list-purposes)). One policy per partner and use case, in the Exchange's Partner Management, approved by the Exchange's partner manager ([example policy](../../platform/platform-services/partner-management/api-reference.md#post-partners-requests-policy)). It lists no data: the use case defines that.
 * **The Composite's scope policy, in each department.** Which of the registry's data the department allows the Composite to receive, for which purposes and farmer ID types. One policy per registry, in the department's Partner Management, approved by the department's partner manager ([how a registry applies it](#what-actually-gets-released)).
 
 {% hint style="info" %}
@@ -24,11 +24,11 @@ Four things together decide what a partner gets:
 | | What it decides | Owned by | Kept in |
 | --- | --- | --- | --- |
 | **Use case** | The data read from each registry (required and optional), the purpose and the response | The Agri Stack platform team | The [Composite](../composite/README.md), as configuration (e.g. [`loan-profile.yaml`](https://github.com/OpenG2P/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml)) |
-| **Partner's use-case policy** | Whether the partner may call the use case, and its limits | The Exchange's partner manager | The Exchange's Partner Management |
+| **Partner's use-case policy** | Whether the partner may call the use case, and its limits. Read only by the Composite | The Exchange's partner manager | The Exchange's Partner Management |
 | **Composite's scope policy** | The most each registry releases to the Composite | Each department's partner manager | The department's Partner Management |
-| **Consent** | The farmer's agreement to share the use case's data with this partner | The farmer | The Exchange's Consent Manager ([consent](consent.md)) |
+| **Consent** | The farmer's agreement to share data with this partner, for a purpose, with scopes per registry | The farmer | The Exchange's Consent Manager ([consent](consent.md)) |
 
-A consent is asked for one use case. In the partner portal, staff choose one of the partner's use cases; the request takes that use case's purpose and data, within its use-case policy's limits (farmer ID types, longest validity), and the consent can be used only for that use case. A consent the partner signs itself is accepted only if the use-case policy allows it.
+The Consent Manager knows no use cases. The Composite publishes each use case granted to a partner as a [consent template](consent.md#consent-templates): the use case's purpose and scopes per registry, with the use-case policy's limits (farmer ID types, longest validity, partner-signed consents allowed). In the partner portal, staff choose one of the partner's templates; the consent records its purpose and scopes, and the template code as a label. Any use case with that purpose can use the consent. A consent the partner signs itself is accepted only if the use-case policy allows it: the Composite sends that limit to the Exchange CM at validate.
 
 ## What actually gets released
 
@@ -37,7 +37,7 @@ Through the Composite (path B in the [architecture](README.md#data-sharing-paths
 **released = the use case's scopes (if the partner has a use-case policy for it) ∩ what the farmer consented to ∩ the Composite's scope policy in the department**
 
 * **The Composite** refuses a partner that has no use-case policy for the use case.
-* **The Exchange's CM** validates the consent against the partner's policy for that use case (purpose, subject ID type, signing algorithm, validity) and puts, for each registry, the consent's grant ∩ the use case's scopes into that registry's signed **consent token**.
+* **The Exchange's CM** validates the consent against what the Composite sends: the use case's purpose and scopes, and the use-case policy's limits (subject ID type, signing algorithm, validity, partner-signed consents). It reads no policy. It puts, for each registry, the consent's grant ∩ the use case's scopes into that registry's signed **consent token**.
 * **Each registry's own CM** checks the consent token and intersects it with the Composite's scope policy for that registry, read from the department's PM, and refuses it (`purpose_not_allowed`) if the policy does not list its purpose. A department therefore always decides what leaves its registry, and for which purposes.
 
 The department never sees the use case's name: the consent token carries the **purpose** (a code from the country's `CONSENT_PURPOSE` dataset, e.g. `credit-assessment`), not `loan-profile`. So the department's policy lists purposes, and several use cases with the same purpose are covered by one entry. The purpose is the use case's own, declared in its file and shown by the Composite (`purpose` in the use case's description).
@@ -76,7 +76,7 @@ Every hop refuses when it cannot find a policy that allows the request:
 | Hop | No policy | PM cannot be read |
 | --- | --- | --- |
 | Composite | `403 partner_not_allowed`: no policy for the use case | The last answer is used for a while (up to six hours by default), then `503 partner_policy_unavailable` |
-| Exchange CM | No policy for the use case: the consent is denied (`use_case_not_granted`), so the call fails with `consent_denied` | As the Composite, then denied with `policy_unavailable` (`consent_denied`) |
+| Exchange CM | Reads no use-case policy: the Composite has refused the partner already. A consent outside the terms the Composite sends is denied (`consent_denied`) | Does not read policies. Consent templates: the Composite answers `503` when PM cannot be read, and the partner portal cannot make a consent (`503`) |
 | Department CM | No scope policy for the Composite: the source is `denied` | As the Composite, then the source is `denied` |
 
 Partners are matched to PM by convention: `bank-a` → `PARTNER_BANK_A` ([partner ID convention](../../platform/platform-services/partner-management/functional-specifications.md#partner-id-convention)). How the CM evaluates a policy at validate time: [verification & enforcement](../../consent-management/design/verification-and-enforcement.md). How modules read policies from PM and cache them: [PM integration](../../platform/platform-services/partner-management/integration.md).

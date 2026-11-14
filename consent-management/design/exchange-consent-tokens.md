@@ -1,7 +1,7 @@
 ---
 description: >-
   Agri Stack Exchange — one Consent Manager codebase in two roles: the Exchange
-  CM issues signed consent tokens (checking the partner's policy for the use case), a
+  CM issues signed consent tokens (applying the terms the Composite sends), a
   department CM accepts them from a trusted issuer and applies the Composite's
   scope policy in its own Partner Management. Opt-in, off by default.
 ---
@@ -52,7 +52,7 @@ Tokens cost almost nothing extra: the Composite calls the Exchange CM to check t
 
 | Role | Install | Configured by | What it does |
 | --- | --- | --- | --- |
-| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent against the partner's policy **for the use case** (one per use case) in the Exchange's Partner Management ([use-case mode](verification-and-enforcement.md#use-case-mode)) and, when a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
+| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent against the **terms the Composite sends**: the use case's purpose, the scopes it asks for and the limits of the partner's use-case policy ([caller-terms mode](verification-and-enforcement.md#caller-terms-mode)). It reads no use case and no use-case policy. When a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
 | **Department CM** | `trial`, `dept1` | `trusted_receipt_issuers` | Accepts a consent token from a trusted issuer on `/validate`, checks it, applies the **presenter's scope policy** in the department's Partner Management (the department ceiling), and returns its normal decision to the registry. |
 
 The registry is unchanged: it calls its **own** CM `/validate` with the consent JWS it received (now
@@ -66,9 +66,10 @@ sequenceDiagram
     participant R as Farmer Registry (trial)
     participant D as Department CM (trial)
     B->>C: request (+ consent signed by bank-a, or none)
-    C->>X: POST /validate {consent_jws or none, consent_partner_id, partner_id: agri-composite, issue_receipts: true, use_case, purpose, requested_scopes}
-    X->>X: no consent sent → look up bank-a's consent for subject + use case
-    X->>X: bank-a has a policy for the use case, each grant ∩ the use case's scopes
+    C->>C: bank-a is granted the use case (policy in the Exchange PM)
+    C->>X: POST /validate {consent_jws or none, consent_partner_id, partner_id: agri-composite, issue_receipts: true, purpose, requested_scopes, limits, template}
+    X->>X: no consent sent → look up bank-a's consent for subject + purpose
+    X->>X: purpose matches, limits apply, each grant ∩ requested_scopes
     X-->>C: permit + receipts {farmer-registry: token JWS, crop-sown-registry: token JWS}
     C->>R: DCI search, sender_id agri-composite, consent = FR consent token
     R->>D: POST /validate {consent_jws: token, data_controller, partner_id: agri-composite}
@@ -99,7 +100,7 @@ Exchange CM's **public host**; it is the one path of the partner API published o
 | `partner` | The partner that obtained the consent (the consent's `aud`, e.g. `bank-a`) |
 | `sub` | The subject, `{"type": "FAYDA_FAN", "value": "…"}` — same shape as the consent's `subject_id` |
 | `purpose` | Purpose code |
-| `scopes` | Data scope IDs for this registry: the consent's grant ∩ the use case's `requested_scopes` (in use-case mode) or ∩ the partner's scope policy for this registry at the Exchange |
+| `scopes` | Data scope IDs for this registry: the consent's grant ∩ the Composite's `requested_scopes` (in caller-terms mode) or ∩ the partner's scope policy for this registry at the Exchange |
 | `consent_issued_at` | When the farmer's consent was issued (ISO-8601). Registries use it as "consent time" for data-scope versions |
 | `consent_exp` | Consent expiry (epoch seconds) |
 | `iat`, `nbf`, `exp` | Token times (epoch seconds); `exp` = min(consent expiry, now + `receipt_ttl_seconds`, default 300) |
@@ -119,16 +120,15 @@ Exchange CM's **public host**; it is the one path of the partner API published o
    department CM then matches against the `sender_id` the registry verified on the signed DCI
    request: a consent token is only usable by the presenter it was issued to.
 2. **Consent** — the partner-signed `consent_jws`, a consent the CM holds by `consent_id`, or, with
-   neither, the one it finds for the partner, subject and use case
-   ([consent by lookup](verification-and-enforcement.md#use-case-mode); none → `consent_not_found`).
+   neither, the one it finds for the partner, subject and purpose
+   ([consent by lookup](verification-and-enforcement.md#caller-terms-mode); none → `consent_not_found`).
    The partner therefore never has to handle the Exchange's consent IDs.
 3. **Validation** — each granted controller (or only `data_controller`, if sent) is validated
    as a registry's call would be (for a partner-signed consent: signature via Partner Management and
    replay; for any consent: status and validity). The policy
-   is the partner's policy **for that use case** when the Composite sends `request_context.use_case`
-   (none → `use_case_not_granted`; effective scopes = grant ∩ `requested_scopes`), otherwise the partner's
-   scope policy for that controller in the Exchange's Partner Management
-   ([use-case mode](verification-and-enforcement.md#use-case-mode)). Each writes its artefact and
+   is the **terms the Composite sends** when it sends `request_context.purpose` (purpose, limits;
+   effective scopes = grant ∩ `requested_scopes`; [caller-terms mode](verification-and-enforcement.md#caller-terms-mode)),
+   otherwise the partner's scope policy for that controller in the Exchange's Partner Management. Each writes its artefact and
    decision log as usual.
 4. **Consent tokens** — if every controller permits, one token per controller is signed and recorded
    (`issued_receipts`), and the response carries `receipts: {data_controller: JWS}`. If any

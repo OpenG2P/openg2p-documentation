@@ -23,7 +23,7 @@ The subject's consents (right of access). Optional `status` (`active`, `revoked`
       "partner_id": "bank-a", "controller_id": "farmer-registry",
       "purpose": { "code": "share_farm_profile", "text": "Share farmer profile with Partner A" },
       "effective_data_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
-      "use_case": null, "policy_version": 3, "policy_id": "7d0c9a52-…",
+      "template": null, "policy_version": 3, "policy_id": "7d0c9a52-…",
       "policy_ref": "data_controller:farmer-registry",
       "status": "active", "source": "originated",
       "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z",

@@ -167,16 +167,20 @@ Each policy has exactly one **key**, `data_controller` or `use_case`:
 | Kind | Key | Grants | Used by |
 | --- | --- | --- | --- |
 | **Scope policy** | `data_controller`: the registry's data controller ID (e.g. `farmer-registry`) | `allowed_data_scopes` — the registry's scopes the partner may receive (required, non-empty) | The Consent Manager of that registry, for every consent and query from the partner |
-| **Use-case policy** | `use_case`: one published use case as `name@major` (e.g. `loan-profile@1`) | That use case; `allowed_data_scopes` must be empty | An Exchange: its Composite and its Consent Manager |
+| **Use-case policy** | `use_case`: one published use case as `name@major` (e.g. `loan-profile@1`) | That use case and its purpose; `allowed_data_scopes` and `allowed_purposes` must be empty | An Exchange's Composite, which passes the limits to its Consent Manager |
 
-A partner of an Exchange has one use-case policy per use case, so purposes,
-subject ID types, algorithms and limits are set per use case.
+A partner of an Exchange has one use-case policy per use case, so subject ID
+types, algorithms and limits are set per use case. A use-case policy has no
+purposes: granting a use case grants its purpose. A request that gives purposes
+for a use-case policy is refused (`400`, `G2P-REQ-102`); an empty list is accepted
+and stored as `[]`, and `GET /policies` serves `"allowed_purposes": []` for every
+use-case policy.
 
 ### Fields
 
 | Field | Meaning |
 | --- | --- |
-| `allowed_purposes` | Purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-datasets) is configured. |
+| `allowed_purposes` | Scope policies only: purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-datasets) is configured. Always empty for a use-case policy. |
 | `allowed_subject_id_types` | ID types the partner may identify a person by. Empty = any. Codes of `SUBJECT_ID_TYPE` when configured. |
 | `allowed_signing_algs` | Algorithms the partner may sign with. At least one, from PM's key algorithms (`EdDSA`, `ES256`, `RS256`) as narrowed by `crypto_allowed_algorithms`. Default `EdDSA`, `ES256`. One that matches none of the partner's active (or, on onboarding, proposed) keys is accepted with a warning. |
 | `max_validity_duration` | Longest consent the partner may ask for (ISO-8601, e.g. `P1Y`). Empty = no limit. |
@@ -248,7 +252,7 @@ With sources configured:
 * **The portal** offers the configured registries as the data controller (plus
   *Other…* for one without a source) and its scopes as a checkbox list, and the
   source's use cases as a select, with their labels and descriptions (a use case
-  also with its purpose, which can fill **Purposes**). A source that cannot be read shows its
+  also with its purpose, shown for information). A source that cannot be read shows its
   error and the field falls back to free text.
 * **Requests are checked** (onboarding and policy): every scope of a scope policy
   whose data controller has a source, and the use case of a use-case policy

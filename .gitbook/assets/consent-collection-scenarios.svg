@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-label="Three ways a farmer gives a bank consent, each with a national-ID login. 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record. 2, in person, digital (planned): after the national-ID login the farmer approves the request on the Consent Manager's screen; the consent is active at once and the farmer gets an SMS with a way to revoke. 3, self-service (planned): the farmer logs in to a portal or app, approves or declines, and can revoke later; the bank queries and the consent is looked up.">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="930" viewBox="0 0 1400 930" role="img" aria-label="Three ways a farmer gives a bank consent, each with a national-ID login. 1, in person with a form (built): staff raise the request in the partner portal from a consent template, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record. 2, in person, digital (planned): after the national-ID login the farmer approves the request on the Consent Manager's screen; the consent is active at once and the farmer gets an SMS with a way to revoke. 3, self-service (planned): the farmer logs in to a portal or app, approves or declines, and can revoke later; the bank queries and the consent is looked up.">
 <style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .h1{font-size:22px;font-weight:700} .sub{font-size:13px;fill:#56625B}
@@ -43,8 +43,8 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <text class="pc" x="54" y="288">Staff raise a consent request</text>
   <text class="pc" x="54" y="304">in the partner portal: the</text>
   <text class="pc" x="54" y="320">farmer's national ID, Farmer</text>
-  <text class="pc" x="54" y="336">ID, the use case (data per</text>
-  <text class="pc" x="54" y="352">registry).</text>
+  <text class="pc" x="54" y="336">ID, a consent template (data</text>
+  <text class="pc" x="54" y="352">per registry).</text>
   <!-- 1.2 -->
   <rect class="panel" x="262" y="140" width="200" height="232" rx="10"/>
   <circle cx="282" cy="160" r="11" fill="#1B231F"/><text class="num" x="282" y="164" text-anchor="middle">2</text>
@@ -126,7 +126,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
   <svg x="114" y="485" width="34" height="52" viewBox="0 0 40 60" overflow="visible"><g fill="#2F6FA8"><circle cx="20" cy="11" r="9"/><path d="M4,58 C4,36 10,25 20,25 C30,25 36,36 36,58 Z"/><rect x="23" y="34" width="8" height="10" rx="1.5" fill="#FFFFFF"/></g></svg><svg x="154" y="500" width="54" height="38" viewBox="0 0 60 42" overflow="visible"><rect x="8" y="2" width="44" height="30" rx="3" fill="#3B4640"/><rect x="11" y="5" width="38" height="24" rx="1.5" fill="#E1EEF0"/><rect x="15" y="9" width="20" height="3" fill="#3C7C88"/><rect x="15" y="15" width="30" height="2.5" fill="#9AB9BF"/><rect x="15" y="20" width="24" height="2.5" fill="#9AB9BF"/><path d="M2,34 L58,34 L54,40 L6,40 Z" fill="#56625B"/></svg>
   <text class="pt" x="54" y="568">At the bank, digitally</text>
   <text class="pc" x="54" y="588">Staff raise the request (national ID,</text>
-  <text class="pc" x="54" y="604">Farmer ID, use case): digital approval.</text>
+  <text class="pc" x="54" y="604">Farmer ID, template): digital approval.</text>
   <rect class="panel" x="312" y="455" width="250" height="180" rx="10"/>
   <circle cx="332" cy="475" r="11" fill="#1B231F"/><text class="num" x="332" y="479" text-anchor="middle">2</text>
   <svg x="350" y="480" width="38" height="56" viewBox="0 0 40 60" overflow="visible"><g fill="#E39B4E"><circle cx="20" cy="11" r="9"/><path d="M4,58 C4,36 10,25 20,25 C30,25 36,36 36,58 Z"/></g></svg>

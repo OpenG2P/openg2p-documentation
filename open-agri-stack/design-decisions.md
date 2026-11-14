@@ -1,10 +1,9 @@
 ---
 description: >-
   Why Agri Stack is designed the way it is, and the design changes under
-  discussion: the Exchange and the Composite, independent registries, policies in
+  discussion: the Exchange and the Composite (the Account Aggregator pattern), independent registries, policies in
   Partner Management and consent in the Consent Manager, how departments trust the
-  Composite, standards, and the proposal to make the Consent Manager unaware of
-  use cases
+  Composite, standards, and a Consent Manager unaware of use cases
 ---
 
 # Design Decisions
@@ -17,14 +16,14 @@ entry has a **status**: *Decided* (built, or agreed and being built) or *Propose
 | # | Decision | Status |
 | --- | --- | --- |
 | 1 | [Registries are independent; the Exchange composes](#1-registries-are-independent-the-exchange-composes) | Decided |
-| 2 | [The Composite keeps no farmer data](#2-the-composite-keeps-no-farmer-data) | Decided |
+| 2 | [The Account Aggregator pattern, with a Composite that keeps no data](#2-the-account-aggregator-pattern-with-a-composite-that-keeps-no-data) | Decided |
 | 3 | [Policies in Partner Management, consent in the Consent Manager](#3-policies-in-partner-management-consent-in-the-consent-manager) | Decided |
 | 4 | [A use case defines its data; partners are granted use cases](#4-a-use-case-defines-its-data-partners-are-granted-use-cases) | Decided |
 | 5 | [Departments trust the Composite, within a ceiling](#5-departments-trust-the-composite-within-a-ceiling) | Decided |
 | 6 | [Standard-neutral: DCI is one format](#6-standard-neutral-dci-is-one-format) | Decided |
 | 7 | [Reference data in MDS; Beckn only at the network layer](#7-reference-data-in-mds-beckn-only-at-the-network-layer) | Decided |
-| 8 | [The Consent Manager is unaware of use cases](#8-the-consent-manager-is-unaware-of-use-cases) | Proposed |
-| 9 | [A use-case policy does not list purposes](#9-a-use-case-policy-does-not-list-purposes) | Proposed |
+| 8 | [The Consent Manager is unaware of use cases](#8-the-consent-manager-is-unaware-of-use-cases) | Decided |
+| 9 | [A use-case policy does not list purposes](#9-a-use-case-policy-does-not-list-purposes) | Decided |
 
 ## Decided
 
@@ -40,14 +39,38 @@ a use case needs and combines the answers.
 answer about a farmer without dealing with each department. See
 [Exchange](architecture/exchange.md).
 
-### 2. The Composite keeps no farmer data
+### 2. The Account Aggregator pattern, with a Composite that keeps no data
 
-**Decision.** The Composite passes each answer on and stores nothing from the
-registries. The Exchange stores consents, partners' keys and policies, and audit
-records.
+**Decision.** The Exchange follows the pattern of India's Account Aggregator
+framework (DEPA): one consent from the person covers several data providers, the
+exchange in the middle holds no data, and each provider enforces access itself.
+Agri Stack's providers are the departments' registries, each checking the consent
+token at its own Consent Manager. Like an Account Aggregator, the Exchange stores no
+data from the providers: it keeps consents, partners' keys and policies, and audit
+records, as an Account Aggregator keeps consent artefacts and logs. The difference
+is that an Account Aggregator is **data-blind**: the data is encrypted end to end
+for the requester, so it cannot read what it passes on, and the requester gets
+each provider's data separately and combines it itself. The Composite reads the
+registries' answers to **combine** them into one signed response for the
+partner, and keeps none of them.
 
-**Why.** A copy of registry data at the Exchange would be a second system of
-record to protect and keep in step. See
+**Why.**
+
+* **Fits access to credit.** Account Aggregator was built for lenders getting a
+  person's data from many providers with one consent, which is Agri Stack's main
+  use case (a bank's loan profile of a farmer).
+* **One consent, many registries.** The farmer consents once; the partner does not
+  deal with each department.
+* **Providers stay in control.** Each registry decides what it releases; the
+  Exchange cannot widen it.
+* **Combining over data-blind routing.** A data-blind router is easier to trust,
+  but every partner would then have to combine the results itself. A use case
+  defines one answer (for example, a loan profile), so the Composite combines it,
+  and keeps no copy: it would otherwise be a second system of record to protect.
+
+Account Aggregator itself is a framework, not software to deploy; its consent
+artefact semantics are used by the Consent Manager
+([Standards](architecture/standards.md)). See
 [What it stores](architecture/exchange.md#what-it-stores).
 
 ### 3. Policies in Partner Management, consent in the Consent Manager
@@ -104,11 +127,9 @@ to the network layer above, for discovering providers.
 **Why.** One versioned catalogue that every registry and service reads. See
 [Interoperability with OAN (Beckn)](roadmap/oan-interoperability.md).
 
-## Proposed
-
 ### 8. The Consent Manager is unaware of use cases
 
-*Proposed 2026-11-12, from a design review. Nothing is changed yet.*
+*Proposed 2026-11-12, from a design review. Decided and implemented 2026-11-12; not yet deployed.*
 
 **What the review observed.**
 
@@ -122,21 +143,21 @@ to the network layer above, for discovering providers.
   case (`name@major`), so the CM depends on an Agri Stack concept, while in the
   departments a consent is for a purpose and data scopes.
 
-**Proposal.** Only the Composite and Partner Management know what a use case is;
+**Decision.** Only the Composite and Partner Management know what a use case is;
 the Consent Manager is a generic consent service, the same at the Exchange and in
 the departments.
 
 | Component | Holds and does |
 | --- | --- |
-| **Composite** | The use case definitions: purpose, registries, scopes. Checks that the partner is granted the use case and applies the use-case policy's limits. At validate, sends the CM the use case's purpose and scopes per registry |
+| **Composite** | The use case definitions: purpose, registries, scopes. Checks that the partner is granted the use case (the only grant check, `403 partner_not_allowed`). At validate, sends the CM the use case's purpose, the scopes and the use-case policy's limits. Publishes each use case granted to a partner as a consent template, at an internal endpoint |
 | **Partner Management** | Partners' keys, and which partners may use which use cases (use-case policies). To PM, a use case is an item from the Composite's catalogue |
 | **Consent Manager** | Consents for a purpose and scopes per registry, as in the departments. At validate: checks that the consent's purpose is the purpose it was sent, intersects the scopes sent with the consent's scopes, and issues consent tokens for the intersection. Reads neither the Composite nor use-case policies |
 
 **The partner portal stays in the Consent Manager**, generic: it offers **consent
-templates** (a name, a purpose and the scopes per registry) read from a source set
-at install. At the Exchange the source is the Composite, which publishes each use
-case as a template; in a department, the registry's data scopes. A consent may keep
-the template's name as a label, for display only. Partner Management already reads
+templates** (a code, a title, a purpose, the scopes per registry and limits) read from
+a source set at install. At the Exchange the source is the Composite, which publishes each use
+case as a template; in a department, the registry's data scopes. A consent keeps
+the template's code as a label, for display only; lookup is by purpose. Partner Management already reads
 its grantable items from a catalogue source in the same way.
 
 **Options considered.**
@@ -146,37 +167,47 @@ its grantable items from a catalogue source in the same way.
 | The CM decides the grant; the Composite stops reading policies | Removes the duplicate policy read | The CM still depends on use cases and on the Composite |
 | The Composite decides the grant; the CM checks only the consent, but still makes consents for a use case | Removes the duplicate policy read | The CM still depends on use cases and on the Composite |
 | Consents for use cases made through the Composite, not the CM's portal | CM generic | A department has no Composite: the portal must stay in the CM |
-| **The CM is generic, with consent templates** (this proposal) | Removes both cycles; one CM everywhere | Larger change |
+| **The CM is generic, with consent templates** (chosen) | Removes both cycles; one CM everywhere | Larger change |
 
-**Impact.**
+**What was built.**
 
-* **Consent Manager:** `validate` in use-case mode takes the purpose and scopes
-  from the caller; the use-case grant check and the reads of the Composite and of
-  use-case policies go; the partner portal and assisted entry offer templates; a
-  consent records purpose and scopes. Only the Composite calls the use-case mode
-  today.
-* **Composite:** publishes use cases as templates; its PM policy read becomes the
-  only grant check; applies the use-case policy's limits (subject ID types,
-  longest validity, partner-signed consents allowed).
+* **Consent Manager:** "use-case mode" became **caller-terms mode**: a configured
+  token presenter (the Composite) sends `request_context {subject_id, purpose,
+  requested_scopes, limits, template}`; the CM checks the consent's purpose, the
+  limits and grant ∩ requested scopes, and reads no policy. `use_case_not_granted`
+  went; `caller_terms_not_allowed` refuses terms from any other caller. Decisions
+  record `policy_ref: template:<code>`. The CM reads templates from
+  `consent_template_source_url` (chart `global.agriStackExchange.consentTemplateSourceUrl`,
+  was `compositeApiUrl`) and fails closed (`503`). The consent's `use_case` field
+  became `template`, a label (startup migration); lookup is by purpose. The
+  partner portal's tab is **Consent templates**; `partnerPortal.compositeUrl` went.
+* **Composite:** the PM policy read is the only grant check. New refusals before
+  calling the CM: `403 consent_scope_missing`, `500 use_case_misconfigured`. New
+  internal endpoint `GET /composite/v1/internal/consent-templates?partner=`, kept off
+  the public host (VirtualService `directResponse` 404, and the backend refuses
+  gateway requests). CORS is empty by default: no browser calls the Composite.
 * **Registries:** no change. They use the scope mode, with the policy from the
-  department's PM.
-* **Still open:** how the limits on consent creation (longest validity,
-  partner-signed consents allowed) reach the CM's portal without the CM reading
-  use-case policies, for example as part of the template.
+  department's PM. Consent tokens are unchanged.
+* **Formerly open, solved:** the limits on consent creation (subject ID types,
+  longest validity, partner-signed consents allowed) travel in the template, for
+  the portal, and in the validate request's `limits`, for each query. The CM still
+  reads no use-case policy.
 
 ### 9. A use-case policy does not list purposes
 
-*Proposed 2026-11-12, from the same review.*
+*Proposed 2026-11-12, from the same review. Decided and implemented 2026-11-12; not yet deployed.*
 
 **Observation.** The partner sends a use case; the use case has a purpose; the
 Exchange PM grants the use case to the partner. Listing allowed purposes in the
 use-case policy repeats what the use case already says.
 
-**Proposal.** Granting a use case grants its purpose: the use-case policy has no
+**Decision.** Granting a use case grants its purpose: the use-case policy has no
 purposes. The allowed purposes stay in the departments' scope policies, where there
 is no use case. Today the list is already optional ("Optional limits" in Partner
 Management).
 
-**Impact.** Partner Management's use-case policy form and API drop the purposes;
-the Composite and the Exchange CM stop checking them. Existing use-case policies
-that list purposes need a clean-up.
+**What was built.** Partner Management refuses purposes on a use-case policy
+(`400 G2P-REQ-102`; `[]` is accepted); its form shows none; a startup migration
+step clears them on existing use-case policies, and `/policies` serves
+`allowed_purposes: []`. The Composite does not check them; the Exchange CM checks
+the consent's purpose against the use case's purpose that the Composite sends.

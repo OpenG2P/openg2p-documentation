@@ -34,7 +34,19 @@ Details: [Data model](data-model.md), [Exchange consent tokens](exchange-consent
 | **The stored consent never changes.** The partner's downloadable consent record only adds to it. | The consent stays the single source of truth; the record is a copy the partner can prove. | [Consent collection](consent-collection.md#the-partners-copy-of-a-consent) |
 | **Across installs, a short-lived consent token per controller** instead of passing the consent on. The controller's CM checks it offline and applies the policy its own PM holds for the presenter. | A controller sees only what concerns it, for one query; a stolen token is useless to anyone else. | [Exchange consent tokens](exchange-consent-tokens.md) |
 | **Access policies are in Partner Management.** The CM reads the active policy (cached, fail closed) and records it on every decision. | Policies describe the partner agreement; the CM, the Composite and the registries read the same ones. | [Partner Management integration](partner-management-integration.md) |
-| **At an Exchange, partners are granted use cases, not registry scopes.** One policy per use case. | A partner asks for an outcome (e.g. a loan profile); which registries answer it is the Exchange's business. | [Use-case mode](verification-and-enforcement.md#use-case-mode) |
+| **The CM knows no use cases.** At an Exchange, the caller (the Composite) sends the terms at `/validate`: purpose, scopes, limits ([caller-terms mode](verification-and-enforcement.md#caller-terms-mode)). Consents are made from **consent templates** read from a template source. | One generic CM at the Exchange and in the departments. The use case and the partner's grant are the Composite's and Partner Management's. | [Consent templates](#consent-templates) |
+
+## Consent templates
+
+A **consent template** is what a consent can be made from: a code, a title, a purpose, the scopes per registry (required and optional) and limits (subject ID types, longest validity, partner-signed consents allowed). The CM reads templates per partner from a **template source** set at install (`consent_template_source_url`). The partner portal, assisted entry and the lifecycle API offer them in the Exchange role.
+
+| Question | Answer |
+| --- | --- |
+| What is a consent for? | A purpose and scopes per registry, as everywhere. |
+| What is the template code on a consent? | A label, for display only. No decision uses it. |
+| How is a consent found when the caller sends none? | By partner, subject and **purpose**: the most recent active one. |
+| Where do templates come from at the Agri Stack Exchange? | The Composite publishes each use case granted to the partner as a template ([Consent](../../open-agri-stack/architecture/consent.md#consent-templates)). |
+| Source down? | No consent can be made from a template (`503`, fail closed). |
 
 ## Pages
 
@@ -42,7 +54,7 @@ Details: [Data model](data-model.md), [Exchange consent tokens](exchange-consent
 | --- | --- |
 | [Architecture](architecture.md) | The PDP/PEP model, API audiences, components. |
 | [Data model](data-model.md) | Stored entities and the JSON-LD documents: consent object, artefact, receipt. |
-| [Verification &amp; enforcement](verification-and-enforcement.md) | The primary flow: the three ways to present a consent, the validation pipeline, how a policy is applied, use-case mode, consent by lookup. |
+| [Verification &amp; enforcement](verification-and-enforcement.md) | The primary flow: the three ways to present a consent, the validation pipeline, how a policy is applied, caller-terms mode, consent by lookup. |
 | [Partner Management integration](partner-management-integration.md) | How the CM reads keys and policies from PM: partner IDs, calls, caching, failing closed. |
 | [Registry integration](registry-integration.md) | The PEP side: where the consent sits in a DCI search, subject and field enforcement, registry settings. |
 | [Exchange consent tokens](exchange-consent-tokens.md) | Agri Stack Exchange (opt-in): the Exchange CM issues tokens; a department CM accepts them. |

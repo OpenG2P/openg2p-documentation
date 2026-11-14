@@ -17,8 +17,8 @@ The partner's own steps: [Partner Guide: Fetching Farmer Data](../partner-integr
 
 ## Assign or remove a use case
 
-* **Assign another use case:** on the partner's page, **Add policy** → **Use case**, enter it (`name@major`, e.g. `loan-profile@1`), submit, approve. Only the use case is required: the purposes, subject ID types, longest consent and partner-signed consents are optional limits (empty means the use case's own, with no further limit), and the signing algorithm is pre-filled from the partner's keys.
-* **Remove a use case:** **Revoke** on that use case's policy, give a reason, approve. The partner's requests and consents for that use case are refused from then on; its other use cases are unaffected.
+* **Assign another use case:** on the partner's page, **Add policy** → **Use case**, enter it (`name@major`, e.g. `loan-profile@1`), submit, approve. Only the use case is required. A use-case policy lists no purposes: granting the use case grants its purpose. Subject ID types, longest consent and partner-signed consents are optional limits (empty means no further limit), and the signing algorithm is pre-filled from the partner's keys. The limits also appear in the use case's consent template in the partner portal.
+* **Remove a use case:** **Revoke** on that use case's policy, give a reason, approve. The Composite refuses the partner's requests for that use case from then on, and the partner portal no longer offers its consent template; its other use cases are unaffected, including those with the same purpose, which can still use its consents.
 
 Steps and fields: [Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md).
 
@@ -29,7 +29,7 @@ To stop a partner altogether, for example when its agreement ends:
 1. **Disable it in Partner Management:** the partner's page → **Disable** ([Disabling and Enabling a Partner](../../platform/platform-services/partner-management/disabling-a-partner.md)).
 2. **Disable its staff's partner portal accounts** ([partner portal accounts](#partner-portal-accounts)). Disabling the partner already stops their requests from going anywhere; this also stops them logging in.
 
-Every service then refuses the partner: the Composite refuses its queries, the Exchange Consent Manager issues no consent tokens for it, and the partner portal offers its staff no use case. Its consents stay recorded but can no longer be used. A partner that also calls a registry directly is refused there only if it is disabled in that department's Partner Management too. This applies once the services' caches expire: within about a minute for policies and five minutes for keys ([what happens](../../platform/platform-services/partner-management/disabling-a-partner.md#what-happens)).
+Every service then refuses the partner: the Composite refuses its queries (so no consent tokens are issued for it), and the partner portal offers its staff no consent template. Its consents stay recorded but can no longer be used. A partner that also calls a registry directly is refused there only if it is disabled in that department's Partner Management too. This applies once the services' caches expire: within about a minute for policies and five minutes for keys ([what happens](../../platform/platform-services/partner-management/disabling-a-partner.md#what-happens)).
 
 ## Enable it again
 
@@ -45,6 +45,6 @@ Partner staff who collect farmers' consents log in to the [partner portal](../..
 2. **Credentials → Set password**: a password the user changes at first login (**Temporary** on).
 3. **Role mapping → Assign role → Filter by clients**: `consent-partner-portal` **PARTNER_OPERATOR** (or **PARTNER_ADMIN**; the Consent Manager treats them alike today).
 
-The portal then offers the user only the use cases assigned to that partner. Without the **Partner ID** attribute, or with a role from another client, the user can log in but every request is refused.
+The portal then offers the user only the consent templates of the use cases assigned to that partner. Without the **Partner ID** attribute, or with a role from another client, the user can log in but every request is refused.
 
 **Disable or remove an account.** The user → **Enabled** off; or **Action → Delete**. The consents the user collected stay with the partner.

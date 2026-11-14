@@ -253,7 +253,6 @@ The partner portal lets partner users (a partner's own employees) collect consen
 | `partnerPortal.enabled` | `false` | The portal (`consent-partner-portal.<baseDomain>`), the partner realm in Keycloak, and evidence storage |
 | `partnerPortal.requiredSubjectIdentifiers` | `[]` | Other identifiers every request must carry besides the subject ID, e.g. `[FARMER_ID]` in Agri Stack; kept as entered, not checked ([identifiers and demographics](../design/consent-collection.md#identifiers-and-demographics)) |
 | `partnerPortal.consentRecordJwksUrl` | the partner API's `/.well-known/jwks.json` on `consent-manager-partner.<baseDomain>` | Named in the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) partners download, to check the CM's signature (`CONSENT_MANAGER_CONSENT_RECORD_JWKS_URL`) |
-| `partnerPortal.compositeUrl` | empty | Optional: a Composite URL; the portal then shows its use cases and pre-fills requests from them (the Composite must allow the portal's origin: `composite.corsAllowOrigins`) |
 | `evidence.*` | Garage at `http://commons-garage:3900`, bucket `consent-evidence`, keys from Secret `commons-minio` | Uploaded files (PDF, JPEG, PNG; up to 10 MB each); the commons Garage init job creates the bucket |
 
 The staff API gets `CONSENT_MANAGER_PARTNER_AUTH_ISSUER` / `_JWKS_URL` (partner realm) and `CONSENT_MANAGER_EVIDENCE_*`.
@@ -320,20 +319,22 @@ and query; a department CM accepts them. How the two roles work:
 | `issuer` | `RECEIPT_ISSUER` | exchange | **Token Issuer ID** — stamped as `iss` on consent tokens (e.g. `agri-stack-exchange-cm`). Empty = no tokens |
 | `receiptPresenters` | `RECEIPT_PRESENTERS` (JSON list) | exchange | Callers (`partner_id` / DCI `sender_id`) **Token Presenters** — allowed to request consent tokens, e.g. `agri-composite`. List or comma-separated string |
 | `receiptTtlSeconds` | `RECEIPT_TTL_SECONDS` | exchange | **Token Lifetime (seconds)** — consent-token lifetime, capped by the consent's expiry (default 300) |
-| `compositeApiUrl` | `COMPOSITE_API_URL` | exchange | **Composite API URL** — where the CM reads a use case's purpose and scopes for consents made by use case (partner portal, lifecycle API). Empty = `defaultCompositeApiUrl`, `http://agri-composite-api` (the Composite in this namespace). Unreachable: such consents cannot be made (`503`) |
+| `consentTemplateSourceUrl` | `CONSENT_TEMPLATE_SOURCE_URL` | exchange | **Consent Template Source URL** — the in-cluster URL of the template collection the CM reads the [consent templates](../design/README.md#consent-templates) offered to each partner from (`GET <url>?partner=<id>`, `GET <url>/<code>?partner=<id>`), for consents made in the partner portal, assisted entry and the lifecycle API. Empty = `defaultConsentTemplateSourceUrl`, `http://agri-composite-api/composite/v1/internal/consent-templates` (the Composite in this namespace). Unreachable: no consent can be made from a template (`503`) |
 | `trustedReceiptIssuers` | `TRUSTED_RECEIPT_ISSUERS` (JSON list) | department | `[{issuer, jwks_url, presenter, status_url?}]`. `jwks_url` is the Exchange CM partner API's `/.well-known/jwks.json`; status (if checked) is read from `<same base>/consent/v1/receipts/{jti}/status` unless `status_url` (with `{jti}`) is given |
 | `trustedIssuer.{issuer, jwksUrl, presenter}` | (added to the list above) | department | One trusted issuer as plain fields — what Rancher sets (**Trusted Token Issuer ID**, **Trusted Issuer JWKS URL**, **Trusted Token Presenter**); empty fields take the defaults above |
 | `receiptStatusCheck` | `RECEIPT_STATUS_CHECK` | department | **Token Status Check** — `never` (default) or `always`: also check each token's status at the Exchange CM, one runtime call per token ([why it is off](../design/exchange-consent-tokens.md#why-a-consent-token)); `always` needs the Exchange to route its status endpoint (`partnerApi.exposeReceiptStatus`) |
 
 Consent-token issuing uses the **signing key** above (same `kid`, same JWKS): the demo key works for a
 demo, but give a production Exchange CM its own `.p12`. With the exchange role and the partner
-portal on, the national-ID login is always on, required subject identifiers default to `FARMER_ID`, and
-the Composite URL to `https://agri-composite.<this domain>`. Further backend settings, defaulted: `receipt_status_cache_ttl_seconds`
+portal on, the national-ID login is always on, and required subject identifiers default to `FARMER_ID`.
+Further backend settings, defaulted: `consent_template_fetch_timeout_seconds` (3),
+`consent_template_cache_ttl_seconds` (60, capped by the source's `Cache-Control: max-age`), `receipt_status_cache_ttl_seconds`
 (10), `receipt_jwks_cache_ttl_seconds` (300), `receipt_jwks_refresh_cooldown_seconds` (10),
 `receipt_fetch_timeout_seconds` (3).
 
 **Exchange (`agrix`)** — role `exchange`. Each partner (e.g. `bank-a`) needs one policy per use case
-it calls in the Exchange's Partner Management. Everything is in the commons-services form (see the
+it calls in the Exchange's Partner Management; the Composite reads it, not the CM. The CM reads
+consent templates from the Composite. Everything is in the commons-services form (see the
 Agri Stack [deployment guide](../../open-agri-stack/deployment/exchange.md)).
 
 ### Setting up a department

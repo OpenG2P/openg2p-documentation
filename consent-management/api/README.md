@@ -56,13 +56,13 @@ Each audience is a separate Deployment of the same image ([Architecture](../desi
 | `audience_mismatch` | `aud` is not the partner, or the grant is not for the policy's controller; for a consent token, `aud` is not `data_controller` |
 | `controller_not_granted` | The consent has no grant for `data_controller` (or a single-registry consent names another controller) |
 | `subject_mismatch` | `request_context.subject_id` has the type of the consent's subject (or one of its identifiers) but another value |
-| `subject_not_allowed` | The subject's ID type is not allowed by the policy |
-| `purpose_not_allowed` | Purpose outside the policy, or (use-case mode) not the use case's purpose |
-| `use_case_not_granted` | Use-case mode: the partner has no active policy for `request_context.use_case`, or a stored consent was given for another use case |
-| `consent_not_found` | Consent by lookup: no active, valid consent of that partner for the subject and use case (without a use case: with a grant for `data_controller`) |
+| `subject_not_allowed` | The subject's ID type is not allowed by the policy (or the `limits`) |
+| `purpose_not_allowed` | Purpose outside the policy, or (caller-terms mode) not `request_context.purpose` |
+| `caller_terms_not_allowed` | `request_context.limits` or `.template` from a caller that is not a configured token presenter |
+| `consent_not_found` | Consent by lookup: no active, valid consent of that partner for the subject and purpose (caller-terms mode) or with a grant for `data_controller` (at a registry) |
 | `partner_consent_not_accepted` | A partner-signed consent whose policy does not set `allow_partner_consents` |
-| `scope_exceeds_policy` | No requested scope is permitted (empty effective scopes); in use-case mode, no `requested_scopes` |
-| `validity_exceeds_policy` | Validity longer than the policy's `max_validity_duration` |
+| `scope_exceeds_policy` | No requested scope is permitted (empty effective scopes); in caller-terms mode, no `requested_scopes` |
+| `validity_exceeds_policy` | Validity longer than the policy's (or the `limits`') `max_validity_duration` |
 | `expired` | The consent (or consent token) is outside its validity |
 | `not_yet_valid` | A stored consent whose validity has not started |
 | `revoked` | The consent has been revoked |
@@ -93,7 +93,7 @@ The decision log (console **Access Log**). Role `CONSENT_MANAGER_ADMIN`. Filters
 ]
 ```
 
-`policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied (all null when none was read). The console shows it as "Registry farmer-registry · v4" or "Use case loan-profile@1 · v1", linked to the partner in Partner Management.
+`policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied (all null when none was read; `template:<code>` with the other two null for terms sent by the Composite or a consent template). The console shows it as "Registry farmer-registry · v4", linked to the partner in Partner Management, or "Consent template loan-profile@1".
 
 ### Consent verification (console **Consent Approvals**)
 
@@ -113,7 +113,7 @@ A consent by ID, and its revocation when the subject asks the operating organisa
 
 | Endpoint | Does |
 | --- | --- |
-| `GET /consent/v1/consents/{id}` | The consent: partner, subject, purpose, grants with their policy reference, validity, assurance, use case, `source`, `receipt_id`, the request it came from (`consent_request_id`) and its evidence (download through that verification), and `revocations` |
+| `GET /consent/v1/consents/{id}` | The consent: partner, subject, purpose, grants with their policy reference, validity, assurance, consent template (a label), `source`, `receipt_id`, the request it came from (`consent_request_id`) and its evidence (download through that verification), and `revocations` |
 | `GET /consent/v1/consents/{id}/receipt` | The signed receipt |
 | `POST /consent/v1/consents/{id}/revocations` | `{reason}` (required): revokes it on the subject's request, as the subject's own revocation; records the staff user. `409` if not active |
 
@@ -124,9 +124,9 @@ For partner users; every call is scoped to the user's `partner_id`. Base `/conse
 | Endpoint | Does |
 | --- | --- |
 | `GET /me` | The user, partner and roles |
-| `GET /access` | What the partner may ask for: its scope policies, or at an Exchange one entry per use-case policy (with the use case from the Composite) |
-| `GET /request-settings` | What a new request needs: `consent_by` (`scopes` or `use_case`), required subject identifiers, national-ID login settings, and the Master Data lists `purposes` and `subject_id_types` (null = free text) |
-| `POST /consent-requests` | Create a request: `subject_id`, `subject_identifiers`, `purpose` and `grants`, or at an Exchange `use_case`; `validity` |
+| `GET /access` | What the partner may ask for: its scope policies (`consent_by: "scopes"`), or at an Exchange the consent templates offered to it (`consent_by: "template"`, `templates[]`: code, title, purpose, grants per registry, limits) |
+| `GET /request-settings` | What a new request needs: `consent_by` (`scopes` or `template`), required subject identifiers, national-ID login settings, and the Master Data lists `purposes` and `subject_id_types` (null = free text) |
+| `POST /consent-requests` | Create a request: `subject_id`, `subject_identifiers`, `purpose` and `grants`, or at an Exchange `template` (optional `grants` choose within its scopes); `validity` |
 | `GET /consent-requests`, `GET /consent-requests/{id}` | List (`status`, `limit`, `offset`) and read requests |
 | `POST`, `GET`, `DELETE /consent-requests/{id}/evidence[/{evidence_id}]` | Upload (PDF, JPEG, PNG; 10 MB), download and delete the signed form |
 | `POST /consent-requests/{id}/submit`, `…/cancel` | Submit for approval; cancel |

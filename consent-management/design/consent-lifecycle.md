@@ -34,7 +34,7 @@ sequenceDiagram
   CM-->>App: the consent
 ```
 
-1. **Create request** — names the subject, the partner (its audience), the purpose, and the scopes for one registry or a **grant per registry**. Each grant is checked against the partner's policy for that registry in Partner Management, so an impossible request is refused at once. A CM in the Exchange role takes requests **by use case** instead, checked against the partner's policy for that use case.
+1. **Create request** — names the subject, the partner (its audience), the purpose, and the scopes for one registry or a **grant per registry**. Each grant is checked against the partner's policy for that registry in Partner Management, so an impossible request is refused at once. A CM in the Exchange role takes requests **by consent template** instead: the template must be offered to the partner by the template source, and its purpose, scopes and limits apply.
 2. **Authenticate** — the subject's ID token is checked against the identity provider's JWKS (`iss`, `aud`, `exp`); the token's subject must be the request's. Only the token's **hash** and claims are kept, in an `AuthContext` ([Security & trust](security-and-trust.md#id-token-validation-origination)).
 3. **Approve** — the subject grants all or part of the requested scopes; for a grants request, per registry, and may decline a registry. Each grant is narrowed to the partner's current policy. The CM stores the artefact (`source = originated`, `active`) and signs its receipt.
 4. **Deny** — the request becomes `denied`. No artefact or receipt is created.

@@ -52,7 +52,8 @@ Endpoints: [API Reference](../api/README.md). Which paths are reachable from out
 | --- | --- | --- |
 | **Verification** | partner | `/validate`: finds or verifies the consent, applies the policy, returns the decision |
 | **Policy evaluation** | all | Applies the partner's PM policy to a consent; computes the effective scopes. Deterministic |
-| **PM client** | all | Reads partner keys and policies from PM; caches them per pod |
+| **PM client** | all | Reads partner keys and scope policies from PM; caches them per pod |
+| **Template client** | staff · beneficiary | Exchange role: reads the consent templates offered to a partner from the template source; caches them per pod; fails closed |
 | **Signing** | partner | The CM's own key (`.p12`): signs receipts and consent tokens; publishes the JWKS |
 | **Artefacts and receipts** | partner · staff · beneficiary | Stores the canonical consent artefact and its CM-signed receipt |
 | **Exchange** | partner | Issues consent tokens (Exchange role) and accepts them (department role); opt-in |

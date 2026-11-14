@@ -31,7 +31,7 @@ The subject proves who they are with their **national ID** (e.g. through eSignet
 
 ### 1. In person, with a form (subject at the partner's office, or the partner's user in the field)
 
-1. A partner user creates the consent request in the partner portal: the use case (or purpose and registries), the subject's ID, the validity.
+1. A partner user creates the consent request in the partner portal: at an Exchange the consent template (elsewhere the purpose and registries), the subject's ID, the validity.
 2. The subject logs in with their national ID on the spot (OTP to the phone registered with the ID, or biometrics); the CM records the authentication. Required when the install turns it on, always at an Exchange ([below](#national-id-authentication-in-the-partner-portal)).
 3. The subject signs a consent form; the partner user uploads it as evidence and submits the request.
 4. A **Consent Approver** (a CM user with the role `CONSENT_MANAGER_APPROVER`) checks the form against the subject and the request (console **Consent Approvals**) and approve it. Only then is the consent active.

@@ -12,7 +12,7 @@ What a use case is, and how partners are given use cases: [Use Cases](../archite
 2. **Write the file.** Copy [`composite/use-cases/loan-profile.yaml`](https://github.com/openg2p/agri-stack/blob/develop/composite/use-cases/loan-profile.yaml) and change its name, version, title, purpose, inputs, [sources](#sources) and [response](#response-mapping-and-derived-values). Unknown keys stop the file from loading.
 3. **Put it into the Composite's configuration.** In Rancher, open the Composite app, **Edit YAML**, and add an entry under `composite.useCases` (`my-use-case: |`, then the file's text; templates inline), then upgrade. Or add `<name>.yaml` to your own ConfigMap ([chart settings: use cases](../deployment/composite-chart-settings.md#use-cases)). Running pods reload it within about 30 seconds.
 4. **Check it loaded.** The console's **Use cases** page lists it, or shows the error if it failed; `GET /composite/v1/use-cases/<name>` describes it. Only `status: published` is served.
-5. **Grant it to partners.** In the Exchange's Partner Management, give each partner a use-case policy for `name@major` (e.g. `my-use-case@1`) with the use case's purpose: in a new partner's onboarding request, or **Add policy** on an onboarded one ([Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)).
+5. **Grant it to partners.** In the Exchange's Partner Management, give each partner a use-case policy for `name@major` (e.g. `my-use-case@1`); granting the use case grants its purpose, so the policy lists none: in a new partner's onboarding request, or **Add policy** on an onboarded one ([Creating and Changing Policies](../../platform/platform-services/partner-management/creating-and-changing-policies.md)).
 6. **Ask the departments.** Each department whose registry the use case reads widens the Composite's scope policy to the new scopes and purpose, or the registry withholds them ([Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md#when-use-cases-change)).
 7. **Test.** Set `test.use_case` (and `test.parameters`) in the [test](../deployment/testing.md)'s configuration and run it, then read each source's status in the response ([source statuses](request-handling.md#source-statuses)).
 
@@ -48,7 +48,7 @@ Partners call a use case as **`name@major`** (e.g. `loan-profile@1`); without a 
 | Key | |
 | --- | --- |
 | `policy` | Informational label |
-| `purpose` | Sent to the Exchange CM with `name@major`: the consent's purpose must match it, and the partner's policy for the use case must allow it |
+| `purpose` | Required at the Exchange (else `500 use_case_misconfigured`). Sent to the Exchange CM at validate: the consent's purpose must match it. It is also the purpose of the use case's [consent template](../architecture/consent.md#consent-templates) |
 | `consent.required` | Default `true`. `false`: the Exchange CM is not called and registries get no consent token. How the consent is presented and checked: [consent mode](request-handling.md#consent-mode) |
 
 ## Inputs
@@ -109,8 +109,9 @@ Each source names the data scopes it uses, from its registry's catalogue (signed
 * **`scopes` (required):** the partner's consent must grant every one. Missing for a **mandatory** source: the request fails (`403 consent_scope_missing`). Missing for an **optional** source: it is not called and reported `denied`.
 * **`optional_scopes`:** may be left out of the consent; the fields they cover then come back `null`.
 * **Nothing else is asked for.** The Composite asks the Exchange CM for consent tokens limited to these scopes, so each registry returns no other field.
+* **The consent template.** The required and optional scopes per registry are what the use case's [consent template](../architecture/consent.md#consent-templates) offers in the partner portal.
 * A scope ID is `<controller>.<name>` and must belong to the source's registry. It may not be listed twice, nor in both lists.
-* A source with neither list has no scope check: its registry's consent token carries every scope the consent grants for that registry.
+* A source with neither list has no scope check: its registry's consent token carries every scope the consent grants for that registry. Such a use case cannot use a consent the Exchange CM holds (a `consent_id`, or none sent): `500 use_case_misconfigured`.
 * A grant with no `data_scopes` (including a legacy consent with `data_controller` only) grants no scopes, so it fails a source with required scopes.
 * The describe endpoint lists each source's scopes and, per registry, `consent_scopes: {required, optional}`: what to grant in the consent, and what each department's scope policy for the Composite must allow. A scope one source requires and another lists as optional is required.
 

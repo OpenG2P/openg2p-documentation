@@ -89,7 +89,6 @@ policies.
   "policies": [
     {
       "use_case": "loan-profile@1",
-      "allowed_purposes": ["credit-assessment"],
       "allowed_signing_algs": ["EdDSA", "ES256"],
       "max_validity_duration": "P1Y",
       "fetch_type": "oneshot",

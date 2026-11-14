@@ -53,10 +53,10 @@ The letters in the diagram:
 
 **B — distributed registries, through the Composite** (the OAN layer). The partner onboards once, in the Exchange, and uses one consent for several registries. The Composite runs only approved use cases (each a configuration file, such as `loan-profile`); there is no general query engine across registries.
 
-1. **Consent request.** The partner asks for the farmer's consent at the Exchange's Consent Manager, for example from the partner portal.
+1. **Consent request.** The partner asks for the farmer's consent at the Exchange's Consent Manager, for example from the partner portal, from a consent template (a use case granted to the partner, published by the Composite).
 2. **Consent.** The farmer gives it through one of several mechanisms ([consent](consent.md#how-a-farmer-gives-consent)), always proving who they are with the national ID (eSignet). Once it is active, the partner can use it.
 3. **Query.** The partner's system sends a signed query to the Composite with the consent's ID, or with none (the Exchange's Consent Manager finds it), or, if its policy allows, a consent the partner signed.
-4. **Consent tokens.** The Composite asks the Exchange's Consent Manager for one signed consent token per registry, with only the scopes the use case needs.
+4. **Consent tokens.** The Composite checks the partner's use-case policy, then asks the Exchange's Consent Manager for one signed consent token per registry, sending the use case's purpose, the scopes it needs and the policy's limits.
 5. **Search.** The Composite searches each registry with its consent token, through that department's ingress.
 6. **Check.** Each registry checks its consent token at its **own** Consent Manager, which trusts the Exchange's consent tokens: it checks them offline with the Exchange CM's public keys and never calls the Exchange, and applies the Composite's scope policy (in its Partner Management).
 

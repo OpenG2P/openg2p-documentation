@@ -45,7 +45,7 @@ Give **exactly one** of:
   "partner_id": "bank-a", "controller_id": "farmer-registry",
   "purpose": { "code": "share_farm_profile", "text": "..." },
   "requested_scopes": ["farmer-registry.personal_details", "farmer-registry.main_crops"],
-  "grants": null, "use_case": null, "status": "pending",
+  "grants": null, "template": null, "status": "pending",
   "valid_from": "2025-05-01T12:00:00Z", "valid_until": "2026-05-01T12:00:00Z",
   "created_at": "2025-05-01T11:55:00Z" }
 ```
@@ -57,18 +57,27 @@ For a grants request `controller_id` is null (several grants), `requested_scopes
 data_controller '…'`) or the partner has no active policy for a requested controller; `503` if
 Partner Management cannot be reached.
 
-**By use case (exchange role).** On a CM in the [exchange role](../design/exchange-consent-tokens.md),
-a request **must** name a `use_case` (`name@major`) and nothing else to share (without it: `400`;
-with `grants`, `data_controller` or `requested_scopes` beside it: `422`). The partner must have a
-policy for that use case in Partner Management (else `422` `use_case_not_granted`). The grants and
-the purpose are the use case's, read from the Composite; `purpose`, if sent, must be the use case's.
-That policy's purposes, subject ID types and longest validity apply. On approval each grant is
-narrowed to the use case's scopes at that time; the consent serves only that use case. `503` if the
-Composite cannot be reached. Outside the exchange role, `use_case` is refused (`422`).
+**From a consent template (exchange role).** On a CM in the [exchange role](../design/exchange-consent-tokens.md),
+a request **must** name a consent `template` (its code, e.g. `loan-profile@1`) offered to the partner by
+the template source ([consent templates](../design/README.md#consent-templates)).
+
+| Rule | Result |
+| --- | --- |
+| No `template` | `400` |
+| `data_controller` or `requested_scopes` beside it | `422` |
+| Template not offered to the partner | `422` `template_not_offered` |
+| `grants` sent | Scopes chosen within the template's (required ∪ optional); required scopes stay; a registry with required scopes cannot be left out; a scope outside it: `422` |
+| No `grants` | All of the template's scopes |
+| `purpose` sent | Must be the template's |
+| Limits | The template's subject ID types and longest validity apply; its longest validity is also the default validity |
+| Approval | Each grant is narrowed to the template's scopes at that time (the template must still be offered) |
+| The consent | Records the purpose and grants; the template code is a label (`template`) |
+| Template source unreachable | `503` |
+| `template` outside the exchange role | `422` |
 
 ```json
 { "subject_id": { "type": "FAYDA_FAN", "value": "1234567890" },
-  "partner_id": "bank-a", "use_case": "loan-profile@1" }
+  "partner_id": "bank-a", "template": "loan-profile@1" }
 ```
 
 ## `GET /consent-requests/{request_id}`

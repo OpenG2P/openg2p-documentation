@@ -30,12 +30,13 @@ An error from a query is a signed envelope too. `header.status` is `rjct`, and `
 | 400 | `invalid_envelope`, `wrong_receiver`, `stale_request`, `invalid_use_case`, `invalid_input`, `consent_id_needs_exchange` | Bad envelope, wrong `receiver_id`, `message_ts` more than 300 s from now, bad `@major`, bad subject or parameters (or both `consent_jws` and `consent_id` sent), a `consent_id` when the Composite is not in Exchange mode |
 | 401 | `signature_invalid` | The envelope signature does not verify against your PM key (or you are unknown in PM) |
 | 403 | `partner_not_allowed` | You have no policy for this use case (`name@major`) in Partner Management: ask the Exchange's partner manager ([Partner Guide, step 2](../partner-integration-guide.md#step-2-get-onboarded-in-partner-management)) |
-| 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the Composite before any registry is called (`consent_required`: no consent sent in passthrough mode; `consent_scope_missing`: a mandatory source's required scopes are not granted) |
-| 403 | `consent_denied` | The Exchange Consent Manager denied the consent; its reason code is in the message (e.g. `consent_not_found`: you sent none and it holds none for this farmer and use case; `partner_consent_not_accepted`: you signed the consent but your policy does not allow it; `use_case_not_granted`, `purpose_not_allowed`, `policy_unavailable`) |
+| 403 | `consent_required`, `consent_malformed`, `consent_signature_invalid`, `consent_subject_mismatch`, `consent_not_yet_valid`, `consent_expired`, `consent_grant_missing`, `consent_scope_missing` | A consent problem found by the Composite before any registry is called (`consent_required`: no consent sent in passthrough mode; `consent_scope_missing`: a mandatory source's required scopes are not granted, or the consent grants none of the use case's scopes) |
+| 403 | `consent_denied` | The Exchange Consent Manager denied the consent; its reason code is in the message (e.g. `consent_not_found`: you sent none and it holds none for this farmer and the use case's purpose; `partner_consent_not_accepted`: you signed the consent but your policy does not allow it; `purpose_not_allowed`: the consent is for another purpose; `subject_not_allowed`, `validity_exceeds_policy`: outside your policy's limits) |
 | 403 | `consent_receipt_missing` | The Exchange Consent Manager issued no consent token for a mandatory source's registry |
 | 403 | `source_denied` | A mandatory source was denied (e.g. by the Consent Manager at the registry) |
 | 404 | `unknown_use_case` | No published use case of that name / major |
 | 429 | `rate_limited` | Rate limit reached |
+| 500 | `use_case_misconfigured` | The use case cannot be served at the Exchange: it names no purpose, or (a `consent_id` or no consent) a source names no data scopes. Fix the use case file |
 | 500 | `signing_unavailable` | The Composite cannot sign (its key is missing); the body is unsigned (`signature` empty). Every other answer, errors and `429` included, is signed |
 | 502 | `consent_exchange_error` | The Exchange Consent Manager rejected the call or gave an unreadable answer |
 | 502 / 503 / 504 | `source_error` / `source_unavailable` | A mandatory source failed: error / unavailable / timed out |
@@ -59,6 +60,35 @@ When a registry denies a consent, the reason in `message.sources.<id>.detail` co
 {% openapi-operation spec="agri-composite-api" path="/composite/v1/use-cases/{use_case}/query" method="post" %}
 [OpenAPI agri-composite-api](https://raw.githubusercontent.com/OpenG2P/agri-stack/develop/composite/docs/openapi/openapi-composite.json)
 {% endopenapi-operation %}
+
+## Internal: consent templates
+
+Read by the Exchange Consent Manager, in the cluster only ([consent templates](../architecture/consent.md#consent-templates)). Not on the public host, not signed, no login, not in the OpenAPI document.
+
+| Method | Path | What it does |
+| --- | --- | --- |
+| `GET` | `/composite/v1/internal/consent-templates?partner=<id>` | The use cases granted to the partner (`bank-a`), as consent templates |
+| `GET` | `/composite/v1/internal/consent-templates/{code}?partner=<id>` | One of them (`code` = `name@major`) |
+
+```json
+{"templates": [{
+  "code": "loan-profile@1", "title": "Loan profile", "description": "…",
+  "purpose": "credit-assessment",
+  "scopes": {"farmer-registry": {"required": ["…"], "optional": ["…"]},
+             "crop-sown-registry": {"required": ["…"], "optional": []}},
+  "limits": {"allowed_subject_id_types": ["FAYDA_FAN"], "max_validity_duration": "P1Y",
+             "allow_partner_consents": false}}]}
+```
+
+| Answer | When |
+| --- | --- |
+| `200`, `Cache-Control: private, max-age=60` | The list (empty for an unknown partner), or the template |
+| `404` `unknown_template` | Unknown code, or not granted to the partner |
+| `404` | The request came through the public gateway |
+| `422` | No `partner` |
+| `503` `partner_policy_unavailable` | Partner Management cannot be read and nothing is cached |
+
+`scopes` names every registry the use case reads; `limits` come from the partner's use-case policy (an empty list or no duration is left out).
 
 ## Console API (staff)
 
