@@ -133,7 +133,7 @@ The checks, in order:
 | `limits` or `template` from a caller that is not a presenter | `caller_terms_not_allowed` |
 | `limits` or `template` from a presenter, without `purpose` | `malformed_object` |
 
-A consent is for a purpose and scopes per registry. A consent made from a [consent template](README.md#consent-templates) keeps the template code as a label; any request with the same purpose can use it.
+A consent is for a purpose and scopes per registry. A consent made from a [consent template](README.md#consent-templates) keeps the template code as a label; any caller-terms request with the same purpose can use it.
 
 **Consent by lookup.** The Composite may send no consent. The CM then picks the consent it holds for the partner (`consent_partner_id`), the subject (its main subject or one of its `subject_identifiers`) and the **purpose**: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). An index on (partner, subject, purpose) over active consents serves the search.
 
@@ -141,7 +141,7 @@ How the Composite and the departments fit together: [Exchange consent tokens](ex
 
 ## Consent by lookup at a registry
 
-A registry called directly (not in caller-terms mode) may send no consent: `partner_id`, `data_controller` and `request_context.subject_id`. The CM picks the partner's consent for that subject with a grant for that registry: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). It finds consents collected through the CM and partner-signed consents it has already validated, but not consents made from a consent template. An index on (partner, subject, controller) over active consents serves the search.
+A registry called directly (not in caller-terms mode) may send no consent: `partner_id`, `data_controller` and `request_context.subject_id`. The CM picks the partner's consent for that subject with a grant for that registry: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). It finds consents collected through the CM and partner-signed consents it has already validated, but not consents made from a consent template. Such a consent was given for a use case's data, to be used through the token presenter (the Composite): there the use case's scopes and the partner's use-case policy apply. Found by a direct call by registry, it would be used without them. An index on (partner, subject, controller) over active consents serves the search.
 
 **Subject matching (both lookups).** `request_context.subject_id` matches the consent's subject or one of its other identifiers (`subject_identifiers`, e.g. a `FARMER_ID` recorded in the partner portal), so a registry may search by either. Types are matched as spelled, with no aliasing: the registry maps its own type names (e.g. DCI `UIN`) to the consent's ([Registry integration](registry-integration.md#no-consent-in-the-search)).
 

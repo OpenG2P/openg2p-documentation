@@ -43,7 +43,7 @@ A **consent template** is what a consent can be made from: a code, a title, a pu
 | Question | Answer |
 | --- | --- |
 | What is a consent for? | A purpose and scopes per registry, as everywhere. |
-| What is the template code on a consent? | A label, for display only. No decision uses it. |
+| What is the template code on a consent? | A label: it does not decide whether a request is allowed. Its one effect: a consent made from a template is used only through the token presenter (the Composite), so a [lookup at a registry](verification-and-enforcement.md#consent-by-lookup-at-a-registry) skips it. |
 | How is a consent found when the caller sends none? | By partner, subject and **purpose**: the most recent active one. |
 | Where do templates come from at the Agri Stack Exchange? | The Composite publishes each use case granted to the partner as a template ([Consent](../../open-agri-stack/architecture/consent.md#consent-templates)). |
 | Source down? | No consent can be made from a template (`503`, fail closed). |

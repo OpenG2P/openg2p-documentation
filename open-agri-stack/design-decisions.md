@@ -157,7 +157,7 @@ the departments.
 templates** (a code, a title, a purpose, the scopes per registry and limits) read from
 a source set at install. At the Exchange the source is the Composite, which publishes each use
 case as a template; in a department, the registry's data scopes. A consent keeps
-the template's code as a label, for display only; lookup is by purpose. Partner Management already reads
+the template's code as a label; lookup is by purpose. The label decides one thing: a consent made from a template is used only through the Composite, never by a partner calling the Exchange CM directly by registry, so the use case's scopes and policy always apply. Partner Management already reads
 its grantable items from a catalogue source in the same way.
 
 **Options considered.**

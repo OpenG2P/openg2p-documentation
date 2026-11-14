@@ -60,7 +60,7 @@ the approved grants. A department CM stores one per accepted **consent token**.
 | policy_version | int | Version of the partner's policy in Partner Management evaluated at issue |
 | policy_id | str | PM's id of that policy version |
 | policy_ref | str | The policy's key, `kind:key`: `data_controller:farmer-registry`, or `template:loan-profile@1` (no PM policy: a consent template, or terms sent by a token presenter). On an originated consent with several grants, set only when all grants share one reference (a consent made from a template) |
-| template | str | Exchange role: the consent template code (e.g. `loan-profile@1`) the consent was made from, or that a token presenter sent with a partner-signed one. A label for display and audit; the purpose and grants are what the consent is for. Null otherwise |
+| template | str | Exchange role: the consent template code (e.g. `loan-profile@1`) the consent was made from, or that a token presenter sent with a partner-signed one. A label for display and audit; the purpose and grants are what the consent is for. A [lookup at a registry](verification-and-enforcement.md#consent-by-lookup-at-a-registry) skips consents that have one. Null otherwise |
 | status | enum | `active`, `revoked`, `expired` |
 | created_at / revoked_at / expired_at | datetime | Append-only |
 

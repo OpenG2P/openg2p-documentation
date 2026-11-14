@@ -54,7 +54,7 @@ The Composite lists only the use cases granted to the partner. The Exchange CM r
 | Question | Answer |
 | --- | --- |
 | What is a consent for? | A purpose and scopes per registry, as in every Consent Manager. |
-| What is the template code on a consent? | A label, for display only. No decision uses it. |
+| What is the template code on a consent? | A label: it does not decide whether a request is allowed. Its one effect: a consent made from a template is used only through the Composite; a partner calling the Exchange CM directly, by registry, does not find it ([why](../../consent-management/design/verification-and-enforcement.md#consent-by-lookup-at-a-registry)). |
 | How does the Exchange CM find a consent when the bank sends none? | By partner, farmer and **purpose**: the most recent active consent. |
 | Can one consent serve two use cases? | Yes, if they have the same purpose; each gets only the scopes it asks for, within the consent's grants. |
 | Who checks the bank is granted the use case? | The Composite, from the Exchange's Partner Management. The Exchange CM checks the consent against the purpose, scopes and limits the Composite sends ([request handling](../composite/request-handling.md#consent-mode)). |

@@ -31,7 +31,7 @@ At an Exchange CM (a CM in the [exchange role](design/exchange-consent-tokens.md
 | **Consent templates** tab | Lists the templates offered to the partner, with purpose, scopes per registry and limits. A template that names no scopes shows as unavailable. |
 | New request | Names one template. The consent takes its purpose and scopes per registry; staff may leave out optional scopes (required ones stay). The template's longest validity is the default validity and the ceiling; its subject ID types apply. A template not offered to the partner: `422 template_not_offered`. A request naming registries and scopes without a template: `400`. |
 | Approval | The Consent Approver's approval narrows the consent to the template's scopes at that time (the template must still be offered). |
-| The consent | Records the purpose and the scopes per registry. The template code is kept as a label, for display only. |
+| The consent | Records the purpose and the scopes per registry. The template code is kept as a label. The consent is used through the Composite, not by a direct call by registry. |
 | Use | The Composite presents the consent for any use case with the same purpose. The partner need not keep the consent ID: a request to the Composite may carry no consent, and the Exchange CM finds the partner's most recent active consent for the subject and purpose ([consent by lookup](design/verification-and-enforcement.md#caller-terms-mode)). |
 | Source down | No request can be raised or approved (`503`, fail closed). |
 
