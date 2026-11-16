@@ -147,6 +147,8 @@ to the network layer above, for discovering providers.
 the Consent Manager is a generic consent service, the same at the Exchange and in
 the departments.
 
+<figure><img src="../.gitbook/assets/open-agri-stack-exchange-calls-before-after.svg" alt="Who calls whom at the Exchange. Before: the Composite reads the use-case policy from the Exchange PM, and the Exchange CM reads the same policy again (plus partner keys); the Composite calls the CM's validate with the use case, and the CM calls the Composite back for the use case: two cycles. After: the Composite reads the use-case policy, the only grant check, and calls validate with the purpose, scopes and limits; the CM reads only partner keys from PM and no use case; the CM's partner portal reads consent templates from the Composite only when a consent is created, never during a query."><figcaption><p>Who calls whom at the Exchange, before and after</p></figcaption></figure>
+
 | Component | Holds and does |
 | --- | --- |
 | **Composite** | The use case definitions: purpose, registries, scopes. Checks that the partner is granted the use case (the only grant check, `403 partner_not_allowed`). At validate, sends the CM the use case's purpose, the scopes and the use-case policy's limits. Publishes each use case granted to a partner as a consent template, at an internal endpoint |
