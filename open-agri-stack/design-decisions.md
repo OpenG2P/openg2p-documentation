@@ -129,7 +129,7 @@ to the network layer above, for discovering providers.
 
 ### 8. The Consent Manager is unaware of use cases
 
-*Proposed 2026-11-12, from a design review. Decided and implemented 2026-11-12; deployed 2026-11-16 (Consent Manager develop.93, Partner Management develop.38, Composite develop.75).*
+*Decided 2026-11-12, after a design review.*
 
 **What the review observed.**
 
@@ -179,7 +179,7 @@ did not change.
 
 ### 9. A use-case policy does not list purposes
 
-*Proposed 2026-11-12, from the same review. Decided and implemented 2026-11-12; deployed 2026-11-16 (Consent Manager develop.93, Partner Management develop.38, Composite develop.75).*
+*Decided 2026-11-12, after the same review.*
 
 **Observation.** The partner sends a use case; the use case has a purpose; the
 Exchange PM grants the use case to the partner. Listing allowed purposes in the
