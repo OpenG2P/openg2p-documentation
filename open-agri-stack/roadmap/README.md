@@ -6,7 +6,7 @@ description: What comes next, by phase.
 
 What is still to be built in Agri Stack, in phases. Each item says what is to be done and where its design stands: a design page, the approach already decided, or "not designed yet". Country data and registry settings are set by the system integrator for each rollout and are not listed here.
 
-The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md) and [Registry Data Sync](registry-data-sync.md).
+The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md), [Registry Data Sync](registry-data-sync.md) and [API Metering and Billing](api-metering.md).
 
 ## Phase 1 — First production release
 
@@ -45,6 +45,7 @@ The longer designs are on their own pages: [Generic Exchange](generic-exchange.m
 * **Farmer access to their own records** — a farmer portal or app and beneficiary APIs for the Farmer Registry and Crop Sown Registry, to see their records and consents and ask for corrections (the Consent Manager's farmer routes are a start). *Design:* not designed yet.
 * **Farmer-readable consent form** — generated from the request: the purpose, the period and, per registry, each data scope in plain language and the farmer's language, instead of a form the partner prepares. *Design:* not designed yet.
 * **Partial consent and revocation** — the farmer declines individual data items, or revokes one registry's grant only, instead of the whole consent. *Design:* not designed yet.
+* **API metering and billing** — counting each partner's billable calls at the Composite so partners can be charged per call, and departments paid by how often their registry answered: a usage outbox in the Composite, a queue (Kafka), metering (OpenMeter), billing (Lago), quotas from the same meter, a partner usage page and a daily reconciliation against the Audit Manager. The audit records alone are not enough: they can drop events and do not say what was billable. *Design:* [API Metering and Billing](api-metering.md); what is billable is still to be decided.
 * **Partner-level limits and daily quotas** — `limits.daily_quota_per_partner` in use cases, and the policy's `max_fetch_frequency` and `data_life` enforced (today recorded only), counted in the Redis that holds the rate-limit buckets. *Design:* [rate limiting](../composite/rate-limiting.md#later).
 * **A published schema per use case** — an endpoint serving each use case's JSON Schema (`response.schema`), and responses checked against it. *Design:* decided as stated.
 * **Exchange consent used directly at a registry** — a consent held by the Exchange Consent Manager used at a registry without the Composite (path A in the [architecture](../architecture/README.md#data-sharing-paths)); today a registry's own Consent Manager finds only the consents it holds. *Design:* recommended: always collect consent spanning registries at the Exchange.
@@ -71,7 +72,6 @@ The longer designs are on their own pages: [Generic Exchange](generic-exchange.m
   * shared services by URL in the registry charts (catalogue, Exchange Consent Manager), and setup jobs that call service APIs instead of writing into another service's database;
   * a gateway between departments with mutual TLS (a client certificate per department) on top of signed requests; site-to-site WireGuard documented as the alternative for a few departments;
   * versioning and a compatibility promise for the shared APIs (Composite, consent tokens, catalogue, registry partner API);
-  * usage metering per partner at the Exchange (later: billing);
   * onboarding a department as one documented step list (the [test](../deployment/testing.md) already does the keys and scope policies for test installs).
 
   *Design:* not designed yet.
