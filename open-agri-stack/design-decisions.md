@@ -171,29 +171,11 @@ its grantable items from a catalogue source in the same way.
 | Consents for use cases made through the Composite, not the CM's portal | CM generic | A department has no Composite: the portal must stay in the CM |
 | **The CM is generic, with consent templates** (chosen) | Removes both cycles; one CM everywhere | Larger change |
 
-**What was built.**
-
-* **Consent Manager:** "use-case mode" became **caller-terms mode**: a configured
-  token presenter (the Composite) sends `request_context {subject_id, purpose,
-  requested_scopes, limits, template}`; the CM checks the consent's purpose, the
-  limits and grant ∩ requested scopes, and reads no policy. `use_case_not_granted`
-  went; `caller_terms_not_allowed` refuses terms from any other caller. Decisions
-  record `policy_ref: template:<code>`. The CM reads templates from
-  `consent_template_source_url` (chart `global.agriStackExchange.consentTemplateSourceUrl`,
-  was `compositeApiUrl`) and fails closed (`503`). The consent's `use_case` field
-  became `template`, a label (startup migration); lookup is by purpose. The
-  partner portal's tab is **Consent templates**; `partnerPortal.compositeUrl` went.
-* **Composite:** the PM policy read is the only grant check. New refusals before
-  calling the CM: `403 consent_scope_missing`, `500 use_case_misconfigured`. New
-  internal endpoint `GET /composite/v1/internal/consent-templates?partner=`, kept off
-  the public host (VirtualService `directResponse` 404, and the backend refuses
-  gateway requests). CORS is empty by default: no browser calls the Composite.
-* **Registries:** no change. They use the scope mode, with the policy from the
-  department's PM. Consent tokens are unchanged.
-* **Formerly open, solved:** the limits on consent creation (subject ID types,
-  longest validity, partner-signed consents allowed) travel in the template, for
-  the portal, and in the validate request's `limits`, for each query. The CM still
-  reads no use-case policy.
+**Details.** How the Consent Manager checks a request from the Composite:
+[caller-terms mode](../consent-management/design/verification-and-enforcement.md#caller-terms-mode).
+How the Composite checks the grant and calls the Consent Manager:
+[Request Handling](composite/request-handling.md). The registries and consent tokens
+did not change.
 
 ### 9. A use-case policy does not list purposes
 
@@ -204,12 +186,6 @@ Exchange PM grants the use case to the partner. Listing allowed purposes in the
 use-case policy repeats what the use case already says.
 
 **Decision.** Granting a use case grants its purpose: the use-case policy has no
-purposes. The allowed purposes stay in the departments' scope policies, where there
-is no use case. Today the list is already optional ("Optional limits" in Partner
-Management).
-
-**What was built.** Partner Management refuses purposes on a use-case policy
-(`400 G2P-REQ-102`; `[]` is accepted); its form shows none; a startup migration
-step clears them on existing use-case policies, and `/policies` serves
-`allowed_purposes: []`. The Composite does not check them; the Exchange CM checks
-the consent's purpose against the use case's purpose that the Composite sends.
+purposes, and Partner Management refuses them on one. The Exchange CM checks the
+consent's purpose against the use case's purpose, which the Composite sends. The
+allowed purposes stay in the departments' scope policies, where there is no use case.
