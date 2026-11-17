@@ -4,7 +4,7 @@ description: Open digital public infrastructure for agriculture.
 
 # Agri Stack
 
-Agri Stack is **open-source digital public infrastructure (DPI) for agriculture**. A country deploys it so that the services farmers need (credit, insurance, subsidies, market access, advisory) can draw on trusted farmer data, **with the farmer's consent**.
+Agri Stack is **open-source digital public infrastructure (DPI) for agriculture**. A country deploys it so that the services farmers need (credit, insurance, subsidies, OAN (marketplace), advisory) can draw on trusted farmer data, **with the farmer's consent**.
 
 * **Open source.** Free to deploy, adapt and extend.
 * **Digital public infrastructure.** Countries deploy it to provide essential services to farmers, on infrastructure they own and run.
@@ -16,7 +16,7 @@ Agri Stack is **open-source digital public infrastructure (DPI) for agriculture*
 
 ## At a glance
 
-<figure><img src="../.gitbook/assets/open-agri-stack-overview.svg" alt="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, with the farmer's consent; for example credit, insurance, subsidies, market access, advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><figcaption><p>Concept: Agri Stack makes farmer data available, with consent, to the farmer services offered in a country</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/open-agri-stack-overview.svg" alt="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, with the farmer's consent; for example credit, insurance, subsidies, OAN (marketplace), advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><figcaption><p>Concept: Agri Stack makes farmer data available, with consent, to the farmer services offered in a country</p></figcaption></figure>
 
 ## What Agri Stack does
 
