@@ -122,7 +122,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <polyline class="arA" points="236,72 236,356 300,356 300,434" marker-end="url(#aA)"/>
 <text class="nA" x="306" y="372">A</text>
 <!-- C: Crop Sown Registry → Farmer Registry, as its partner -->
-<line class="arC" x1="794" y1="464" x2="746" y2="464" marker-end="url(#aC)"/>
+<line class="arC" x1="794" y1="464" x2="746" y2="464" marker-end="url(#aC)" marker-start="url(#aC)"/>
 <text class="nC" x="766" y="456">C</text>
 
 <!-- legend -->
