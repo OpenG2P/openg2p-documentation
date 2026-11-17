@@ -36,7 +36,7 @@ If the deployment has [catalogue sources](functional-specifications.md#catalogue
 
 ## A new partner, with its policy
 
-1. **Onboard partner** (top menu): fill in the partner (Partner ID, Name, Organisation), its public key, and the **Reason for onboarding**.
+1. **Partners → + Onboard partner**: fill in the partner (Partner ID, Name, Organisation), its public key, and the **Reason for onboarding**.
 2. Under **Policies (optional)**, click **+ Add policy** for each policy and [fill it in](#filling-in-a-policy): any mix, one per registry and one per use case.
 3. **Submit request.** The keys and policies wait as `pending` until the request is approved.
 4. [Approve the request](#approve-or-reject).
@@ -53,7 +53,7 @@ A policy with a request waiting shows **Change pending** (a link to it) instead 
 
 ## Approve or reject
 
-1. **Requests**, open the request. It shows the proposed keys, and the policies and revocations by registry or use case.
+1. **Approvals** (the menu lists every request to onboard a partner, change its keys or change its policies), open the request. It shows the proposed keys, and the policies and revocations by registry or use case.
 2. Check them against what was agreed with the partner (and, for a scope policy, with the registry's data owner).
 3. **Approve** or **Reject**, with notes.
 

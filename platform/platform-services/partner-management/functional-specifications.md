@@ -63,8 +63,8 @@ admin portal, not free text, and the API rejects anything else:
 | Rotate keys | Partner ID | Select (when not opened from a partner) | Existing partners |
 | Rotate keys | Revoke existing keys | Checkbox list | The partner's current (non-revoked) keys |
 | Onboard / Rotate keys | Import from JWKS URL | Checkbox | Enabled only when a JWKS URL is set |
-| Requests | Status filter | Buttons | All, `created`, `approved`, `rejected` |
-| Requests | Type filter | Select | All, `onboarding`, `key_update`, `policy` |
+| Approvals | Status filter | Buttons | All, `created`, `approved`, `rejected` |
+| Approvals | Type filter | Select | All, `onboarding`, `key_update`, `policy` |
 | Partners | Status filter | Select | All, `created`, `active`, `disabled` |
 | Onboard / Add policy | Policy for | Select | *Registry*, *Use case* |
 | Onboard / Add policy | Registry | Select + *Other…* (when [catalogue sources](#catalogue-sources) are configured) | The configured registries |

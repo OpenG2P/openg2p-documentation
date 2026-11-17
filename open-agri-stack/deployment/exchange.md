@@ -34,6 +34,8 @@ Chart **OpenG2P Commons Services** (`openg2p-commons-services`), release `common
 
 Keep the rest at the defaults: Master Data (with the same country pack as the registries), Partner Management, Consent Manager, eSignet and the Mock Identity System on; Keymanager off. Other Consent Manager fields: [CM deployment](../../consent-management/deployment/README.md#exchange-optional).
 
+**Use cases from the Composite in Partner Management.** Set Partner Management's catalogue source to the Composite's use cases (YAML below: `partner-management.staffPortalApi.catalogueSources`; not in the Rancher form). The **Use case** field of a policy is then a list of the Composite's published use cases, and Partner Management refuses a name the Composite does not publish. Left empty, the field is free text and only its form (`name@major`) is checked. The source can be set before the Composite is installed: until it answers, a use case is accepted with a warning for the approver.
+
 <details>
 
 <summary>The same choices as YAML (command-line installs)</summary>
@@ -49,6 +51,12 @@ global:
 openg2p-consent-manager:
   partnerPortal:
     enabled: true
+partner-management:
+  staffPortalApi:
+    catalogueSources:
+      - kind: use_cases
+        url: http://agri-composite-api/composite/v1/use-cases
+        label: Agri Stack Composite
 ```
 
 </details>

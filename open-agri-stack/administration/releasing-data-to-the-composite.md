@@ -22,7 +22,7 @@ The install raises and approves this onboarding itself (actor `bootstrap` in the
 curl -s https://partner-management-partner-api.<department domain>/keys/PARTNER_AGRI_COMPOSITE
 ```
 
-It serves the same `kid` as `https://agri-composite.<Exchange domain>/.well-known/jwks.json`. If the partner is missing (the setting was off, or the entry was removed), onboard it by hand: **Requests → + Onboard partner**:
+It serves the same `kid` as `https://agri-composite.<Exchange domain>/.well-known/jwks.json`. If the partner is missing (the setting was off, or the entry was removed), onboard it by hand: **Partners → + Onboard partner**:
 
 | Field | Value |
 | --- | --- |
