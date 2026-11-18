@@ -187,6 +187,7 @@ use-case policy.
 | `fetch_type` | `oneshot` (default) or `periodic`. |
 | `max_fetch_frequency` | How often a periodic partner may fetch (ISO-8601). Optional. |
 | `data_life` | How long the partner may keep the data (ISO-8601, e.g. `P30D`). Optional. |
+| `allow_assisted_confirmation` | `true` = the partner's staff may take consents by assisted confirmation in the Consent Manager's partner portal (national-ID login, then one "I agree"; no signed form, no approver). On a scope policy, every registry of the request must allow it; at the Exchange, on the use-case policy (the Composite passes it in the consent template). Default `false`. |
 | `allow_partner_consents` | `true` = the partner may present consents it collected and signed itself; the Consent Manager accepts them (it can verify only the partner's signature, not that the person agreed). Default `false`: such consents are refused. |
 
 Lists are trimmed and blanks and duplicates dropped; durations must be longer

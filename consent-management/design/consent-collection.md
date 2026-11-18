@@ -1,7 +1,8 @@
 ---
 description: >-
   How a partner seeks a subject's consent and how the subject gives it: the
-  scenarios (in person with a form is built), national-ID login, identifiers
+  scenarios (in person with a form is built; assisted, operator-confirmed is
+  planned), the farmer's recourse, national-ID login, identifiers
   and demographics, the partner's copy of a consent, and the partner portal.
 ---
 
@@ -13,7 +14,7 @@ A partner (e.g. a bank) needs a subject's (e.g. a farmer's) consent before it ca
 **Roles, as everywhere in OpenG2P:** *staff* (government users), *agents* (government field users), *partners* (organisations such as banks, onboarded in Partner Management), *beneficiaries* (subjects, e.g. farmers). A partner's own employees using the partner portal are **partner users**.
 {% endhint %}
 
-<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent, each with a national-ID login: 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, a Consent Approver checks it and the national-ID login, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Four ways a farmer gives a bank consent, each with a national-ID login: 0, assisted, operator-confirmed (built; the SMS planned): staff raise the request in the partner portal, the farmer logs in with the national ID and agrees with one tick to all the template's data, the consent is active at once, an SMS to the phone registered with the national ID carries a link and a reference, and the farmer can revoke it or report that they did not give it; 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, a Consent Approver checks it and the national-ID login, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The four consent scenarios</p></figcaption></figure>
 
 ## Principle
 
@@ -25,9 +26,44 @@ The subject proves who they are with their **national ID** (e.g. through eSignet
 
 | | Where the subject is | Agreement | Approval | Active | Status |
 | --- | --- | --- | --- | --- | --- |
+| **0 · Assisted, operator-confirmed** | with the partner (office or field agent) | one "I agree" tick in the partner portal, after the login | none | at once | **Built** (the SMS: Phase 2) |
 | **1 · In person, with a form** | with the partner (office or field agent) | a signed form, uploaded | yes: a Consent Approver checks the form | after approval | **Built** |
 | **2 · In person, digital** | with the partner | the subject approves on the CM's screen after logging in | none | at once | Not built yet |
 | **3 · Self-service** | anywhere, on their own device | the subject approves in their own portal or app | none | at once | Not built yet |
+
+### 0. Assisted, operator-confirmed
+
+The quickest way, and the weakest proof: the subject's national-ID login and one tick, with no form and no Consent Approver. It sits beside scenario 1, which does not change; on each request the partner user chooses one or the other.
+
+1. A partner user creates the consent request in the partner portal, as in scenario 1: the consent template (elsewhere the purpose and registries), the subject's ID and other identifiers. Validity is not asked for: the backend sets it.
+2. On the request, under **How the person agrees**, the partner user chooses **Confirm here** instead of **Signed form**. The choice appears only when the install and the partner's policy allow it.
+3. The subject logs in with their national ID on the spot (OTP to the phone registered with the ID, or biometrics), as in scenario 1. Required.
+4. The portal shows the CM's statement, read-only, as the label of one checkbox, worded for the subject: **"I agree to share my data with PARTNER_BANK_A for the purpose 'credit-assessment' until 2026-12-18: farmer-registry: …; crop-sown-registry: …."** The subject ticks it, and **Record the agreement** sends it.
+5. The consent is **active at once**, for every scope requested (no partial choice). Its validity comes from the backend, not the partner user: the install's default, capped by the policy's longest consent.
+6. *(Phase 2)* The CM sends an **SMS** through the [Notifications](../../platform/platform-services/notifications/README.md) service (Novu) to the **phone registered with the national ID**, read from the login, never a number the partner types: who, for what, until when, a **reference** and a **link** ([the subject's recourse](#the-subjects-recourse)).
+
+**Rules the CM enforces.** The login must be for the request's subject and recent (`assisted_confirmation_login_max_age_seconds`, default 10 minutes). The statement sent back must be the one the CM gave (`GET …/consent-requests/{id}/confirmation`, then `POST …/confirm` with it): what is recorded is what was shown. Every requested scope must still be allowed. The consent's **assurance** records how it was given: `method: assisted_confirmation`, the national-ID login (provider, method, ACR, time), the partner user (`confirmed_by`), the time, the statement and its SHA-256. The partner's [consent record](#the-partners-copy-of-a-consent) says so (`how_given`, `confirmation`), with no signed form; the CM console shows it on the consent. The request is `approved` with no approver.
+
+**Off unless allowed twice.** The install turns the option on (Helm `partnerPortal.assistedConfirmation.enabled`, default off; `validityDays`, default 30; `loginMaxAgeSeconds`, default 600; it also needs the national-ID login), and the partner's policy must allow it (**May collect consents by assisted confirmation**, `allow_assisted_confirmation`, default off). At an Exchange the limit is on the use-case policy and the Composite passes it to the Exchange CM with the other limits; in a department, on the scope policy. A partner manager can so allow it for a low-risk use case and keep the signed form for a sensitive one.
+
+**Departments.** The consent tokens to the registries do not change: the departments trust the Exchange's consents however they were given. Carrying the assurance in the token, so a department could refuse this kind, is on the [roadmap](../../open-agri-stack/roadmap/README.md#phase-2-farmers-partners-and-the-open-agri-network).
+
+{% hint style="warning" %}
+**Why it is the weakest.** Data-protection laws (India's DPDP Act, the GDPR) ask for consent given by a clear act of the person. A tick on the partner's own screen cannot show who ticked; the national-ID login shows only that the subject was there. That is why the text is worded as the subject's own agreement, the SMS goes to the subject's own phone, and the subject can undo it and report it.
+{% endhint %}
+
+### The subject's recourse
+
+*Planned for [Phase 2](../../open-agri-stack/roadmap/README.md#phase-2-farmers-partners-and-the-open-agri-network); until then CM staff revoke a consent on the subject's request.* A notification alone is not recourse: the subject also needs a way to act on it.
+
+1. **The SMS** (to the phone registered with the national ID) names the partner, the purpose and the validity, and has a **reference** and a **link**.
+2. **The link** opens the CM's consent page. The subject logs in with the national ID, sees the consent and **what was fetched under it** (the access log), and chooses:
+   * **Revoke**: the consent ends; sharing stops when the registries' consent tokens expire (minutes).
+   * **I did not give this consent**: the consent is revoked at once and marked **disputed**, with the subject's statement.
+3. **Without a smartphone:** the subject gives the reference to a helpline or the grievance officer; CM staff revoke and mark the consent disputed in the console for them.
+4. **A disputed consent** shows in the CM console with the partner user who raised it, the partner and the data fetched; the Exchange's partner manager is alerted, and can withdraw the partner's `allow_assisted_confirmation`, or disable the partner.
+
+The same SMS and link serve scenario 2. Recording the partner user on every consent, and the disputes per partner, deter misuse.
 
 ### 1. In person, with a form (subject at the partner's office, or the partner's user in the field)
 
@@ -38,7 +74,7 @@ The subject proves who they are with their **national ID** (e.g. through eSignet
 
 ### 2. In person, digital (not built yet)
 
-An extension of scenario 1 without the paper form and the back-office check:
+An extension of scenario 1 without the paper form and the back-office check. Unlike scenario 0, the subject decides on the **CM's own screen**, in their language, which the partner cannot change, and may approve in part:
 
 1. A partner user creates the consent request in the partner portal, choosing **digital approval**.
 2. The subject logs in with their national ID (eSignet: OTP to the phone registered with the ID, or biometrics), as in scenario 1.
@@ -58,6 +94,7 @@ The subject logs in to a self-service portal or app (national ID login), sees th
 
 ## What is built
 
+* **Scenario 0**, assisted confirmation: the choice on the request, the statement and the tick, the consent active at once, its assurance and consent record; the PM policy field and the Composite's template limit. Not yet: the SMS and the subject's recourse (Phase 2).
 * **Scenario 1**, end to end: the partner portal and partner realm, requests by partner users, signed-form upload (object storage), optional national-ID login, approval in the CM console, consents with their assurance and receipt, the partner's consent record.
 * **Using the consent:** a partner sends no consent and the CM finds it by lookup; at an Exchange the Composite gets a consent token per registry ([Verification & enforcement](verification-and-enforcement.md)).
 * **Partner-signed consents**, only from partners whose policy allows them (`allow_partner_consents`, off by default): the CM checks the partner's signature, not that the subject took part.

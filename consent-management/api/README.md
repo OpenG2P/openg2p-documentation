@@ -130,6 +130,7 @@ For partner users; every call is scoped to the user's `partner_id`. Base `/conse
 | `GET /consent-requests`, `GET /consent-requests/{id}` | List (`status`, `limit`, `offset`) and read requests |
 | `POST`, `GET`, `DELETE /consent-requests/{id}/evidence[/{evidence_id}]` | Upload (PDF, JPEG, PNG; 10 MB), download and delete the signed form |
 | `POST /consent-requests/{id}/submit`, `…/cancel` | Submit for approval; cancel |
+| `GET /consent-requests/{id}/confirmation`, `POST …/confirm` | Assisted confirmation (scenario 0): the statement to show the subject after the national-ID login; then `{statement, agreed: true}` makes the consent active at once. `403` when the install or the partner's policy does not allow it |
 | `GET /subject-auth`, `POST` / `GET /consent-requests/{id}/subject-auth`, `GET /subject-auth/callback` | The subject's national-ID login: settings, start, status, and the provider's redirect |
 | `GET /consents`, `GET /consents/{id}` | The partner's consents |
 | `GET /consents/{id}/receipt`, `GET /consents/{id}/record` | The receipt; the [consent record](../design/consent-collection.md#the-partners-copy-of-a-consent) (ZIP) |

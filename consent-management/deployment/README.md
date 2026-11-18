@@ -298,6 +298,8 @@ Off by default. With `partnerPortal.subjectAuth.enabled: true` (and the partner 
 
 The staff API gets `CONSENT_MANAGER_SUBJECT_AUTH_*` (enabled, provider name, discovery URL, client ID, redirect URI, ACR, ID types, key path). Further backend settings, defaulted: `subject_auth_scope` (`openid profile`), `subject_auth_claims`, `subject_auth_subject_claim` (`individual_id`), `subject_auth_stored_claims` (`[name]`), `subject_auth_session_ttl_seconds` (300).
 
+**Assisted confirmation (consent scenario 0).** `partnerPortal.assistedConfirmation.enabled` (default `false`; Rancher: Allow Assisted Confirmation) lets partner staff take a consent with the subject's national-ID login and one "I agree", with no signed form and no staff check, for partners whose Partner Management policy allows it (`allow_assisted_confirmation`). Needs the national-ID login above (always on at the Exchange). `validityDays` (30): how long such a consent lasts, capped by the policy's or consent template's longest; `loginMaxAgeSeconds` (600): how recent the login must be. The staff API gets `CONSENT_MANAGER_ASSISTED_CONFIRMATION_*`. [How it works](../design/consent-collection.md#0-assisted-operator-confirmed).
+
 **Testing with the mock identity system:** its identities are the national IDs of the sample people loaded in Master Data (Load Sample People); use a sample person's national ID as the request's subject ID. For the one-time code it accepts, see the mock identity system's configuration.
 
 ## Exchange — optional

@@ -16,27 +16,28 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 ## How a farmer gives consent
 
-<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Three ways a farmer gives a bank consent, each with a national-ID login: 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, a Consent Approver checks it and the national-ID login, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The three consent scenarios</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/consent-collection-scenarios.svg" alt="Four ways a farmer gives a bank consent, each with a national-ID login: 0, assisted, operator-confirmed (built; the SMS planned): staff raise the request in the partner portal, the farmer logs in with the national ID and agrees with one tick to all the template's data, the consent is active at once, an SMS to the phone registered with the national ID carries a link and a reference, and the farmer can revoke it or report that they did not give it; 1, in person with a form (built): staff raise the request in the partner portal, the farmer logs in with the national ID and signs a form that staff upload, a Consent Approver checks it and the national-ID login, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record; 2, in person, digital (planned): after the login the farmer approves on the Consent Manager's screen, the consent is active at once and an SMS lets them revoke; 3, self-service (planned), where the farmer can also revoke"><figcaption><p>The four consent scenarios</p></figcaption></figure>
 
 | Scenario | Status | How the farmer confirms |
 | --- | --- | --- |
+| **0 · Assisted, operator-confirmed** | **Built** (the SMS: Phase 2) | National-ID login on the bank's device, then one tick, "I agree to share all of the above", in the partner portal; active at once, no form, no approval step; the weakest proof, allowed only where the partner's use-case policy allows it. Phase 2: an SMS to the phone registered with the national ID gives a link to revoke or report "I did not give this" |
 | **1 · In person, with a form** | **Built** | National-ID login (eSignet) on the bank's device, a signed form, and a check by a Consent Approver |
 | **2 · In person, digital** | Planned | National-ID login, then the farmer approves the request on the CM's own screen; active at once, no form, no approval step; an SMS to the registered phone lets them revoke |
 | **3 · Self-service** | Planned | National-ID login in their own portal or app, where they approve or decline, and can revoke any consent |
 
-In every scenario the farmer proves who they are with the national ID; an SMS is only ever a notification afterwards. The steps, the partner portal and the gaps are in the Consent Manager's [consent collection](../../consent-management/design/consent-collection.md).
+In every scenario the farmer proves who they are with the national ID; an SMS is only ever a notification afterwards, with a way to undo the consent ([the farmer's recourse](../../consent-management/design/consent-collection.md#the-subjects-recourse)). The steps, the partner portal and the gaps are in the Consent Manager's [consent collection](../../consent-management/design/consent-collection.md).
 
 ## Two ways a consent reaches the Exchange
 
 | | Consent held by the Exchange CM (the main path) | Consent signed by the partner |
 | --- | --- | --- |
-| Collected by | The Exchange CM: partner staff in the partner portal (scenario 1), or the CM's own screens (scenarios 2 and 3, planned) | The partner, through its own channel (its app, branch or forms), outside the Exchange |
+| Collected by | The Exchange CM: partner staff in the partner portal (scenarios 1 and 0), or the CM's own screens (scenarios 2 and 3, planned) | The partner, through its own channel (its app, branch or forms), outside the Exchange |
 | What the partner sends to the Composite | Nothing (the Exchange CM finds the consent), or its consent ID | The consent object it signed (`consent_jws`) |
 | Allowed | Always | Only if the partner's use-case policy allows partner-signed consents (**May present its own signed consents**; off by default). The Composite passes this limit to the Exchange CM |
-| What the CM can check | The farmer's national-ID login, the signed form, a Consent Approver's check | The partner's signature only, not that the farmer agreed: the partner keeps the evidence and answers for it |
+| What the CM can check | The farmer's national-ID login, and the signed form and a Consent Approver's check (scenario 1) or the farmer's tick (scenario 0) | The partner's signature only, not that the farmer agreed: the partner keeps the evidence and answers for it |
 | In the partner portal | Listed under **Consents** | Not listed; stored by the Exchange CM when first used, and usable afterwards by its ID or by lookup |
 
-Both go to the Composite's same query API; the Exchange CM turns either into the registries' consent tokens. All three scenarios above are the first path. The second exists for partners the Exchange trusts with their own consent collection; the [install test](../deployment/testing.md) uses it by default because it needs no person. Partner's side: [Partner Guide, step 4](../partner-integration-guide.md#step-4-collect-the-farmers-consent).
+Both go to the Composite's same query API; the Exchange CM turns either into the registries' consent tokens. All the scenarios above are the first path. The second exists for partners the Exchange trusts with their own consent collection; the [install test](../deployment/testing.md) uses it by default because it needs no person. Partner's side: [Partner Guide, step 4](../partner-integration-guide.md#step-4-collect-the-farmers-consent).
 
 ## Consent templates
 
