@@ -1,33 +1,29 @@
 ---
 description: >-
-  Why Agri Stack is designed the way it is, and the design changes under
-  discussion: the Exchange and the Composite (the Account Aggregator pattern), independent registries, policies in
-  Partner Management and consent in the Consent Manager, how departments trust the
+  Why Agri Stack is designed the way it is: the Exchange and the Composite (the
+  Account Aggregator pattern), independent registries, policies in Partner
+  Management and consent in the Consent Manager, how departments trust the
   Composite, standards, and a Consent Manager unaware of use cases
 ---
 
 # Design Decisions
 
-This page logs Agri Stack's key design decisions: what was chosen and why. Each
-entry has a **status**: *Decided* (built, or agreed and being built) or *Proposed*
-(under discussion; nothing changed yet). The design itself is in
-[Architecture](architecture/README.md).
+This page logs Agri Stack's key design decisions: what was chosen and why. The
+design itself is in [Architecture](architecture/README.md).
 
-| # | Decision | Status |
-| --- | --- | --- |
-| 1 | [Registries are independent; the Exchange composes](#1-registries-are-independent-the-exchange-composes) | Decided |
-| 2 | [The Account Aggregator pattern, with a Composite that keeps no data](#2-the-account-aggregator-pattern-with-a-composite-that-keeps-no-data) | Decided |
-| 3 | [Policies in Partner Management, consent in the Consent Manager](#3-policies-in-partner-management-consent-in-the-consent-manager) | Decided |
-| 4 | [A use case defines its data; partners are granted use cases](#4-a-use-case-defines-its-data-partners-are-granted-use-cases) | Decided |
-| 5 | [Departments trust the Composite, within a ceiling](#5-departments-trust-the-composite-within-a-ceiling) | Decided |
-| 6 | [Standard-neutral: DCI is one format](#6-standard-neutral-dci-is-one-format) | Decided |
-| 7 | [Reference data in MDS; Beckn only at the network layer](#7-reference-data-in-mds-beckn-only-at-the-network-layer) | Decided |
-| 8 | [The Consent Manager is unaware of use cases](#8-the-consent-manager-is-unaware-of-use-cases) | Decided |
-| 9 | [A use-case policy does not list purposes](#9-a-use-case-policy-does-not-list-purposes) | Decided |
+| # | Decision |
+| --- | --- |
+| 1 | [Registries are independent; the Exchange composes](#1-registries-are-independent-the-exchange-composes) |
+| 2 | [The Account Aggregator pattern, with a Composite that keeps no data](#2-the-account-aggregator-pattern-with-a-composite-that-keeps-no-data) |
+| 3 | [Policies in Partner Management, consent in the Consent Manager](#3-policies-in-partner-management-consent-in-the-consent-manager) |
+| 4 | [A use case defines its data; partners are granted use cases](#4-a-use-case-defines-its-data-partners-are-granted-use-cases) |
+| 5 | [Departments trust the Composite, within a ceiling](#5-departments-trust-the-composite-within-a-ceiling) |
+| 6 | [Standard-neutral: DCI is one format](#6-standard-neutral-dci-is-one-format) |
+| 7 | [Reference data in MDS; Beckn only at the network layer](#7-reference-data-in-mds-beckn-only-at-the-network-layer) |
+| 8 | [The Consent Manager is unaware of use cases](#8-the-consent-manager-is-unaware-of-use-cases) |
+| 9 | [A use-case policy does not list purposes](#9-a-use-case-policy-does-not-list-purposes) |
 
-## Decided
-
-### 1. Registries are independent; the Exchange composes
+## 1. Registries are independent; the Exchange composes
 
 **Decision.** Each department runs its own registry (Farmer Registry, Crop Sown
 Registry, …) with its own Partner Management and Consent Manager. Registries share
@@ -39,7 +35,7 @@ a use case needs and combines the answers.
 answer about a farmer without dealing with each department. See
 [Exchange](architecture/exchange.md).
 
-### 2. The Account Aggregator pattern, with a Composite that keeps no data
+## 2. The Account Aggregator pattern, with a Composite that keeps no data
 
 **Decision.** The Exchange follows the pattern of India's Account Aggregator
 framework (DEPA): one consent from the person covers several data providers, the
@@ -73,19 +69,18 @@ artefact semantics are used by the Consent Manager
 ([Standards](architecture/standards.md)). See
 [What it stores](architecture/exchange.md#what-it-stores).
 
-### 3. Policies in Partner Management, consent in the Consent Manager
+## 3. Policies in Partner Management, consent in the Consent Manager
 
 **Decision.** Partner Management holds who a partner is, its keys and what it may
 access (its policies). The Consent Manager holds the farmers' consents. Grants are
-approved through Partner Management's onboarding approval. *Decided 2026-09; built
-2026-10.*
+approved through Partner Management's onboarding approval.
 
 **Why.** What a partner may access is decided when it is onboarded, by the partner
 manager; a consent is one farmer's agreement. Keeping them apart lets each be
 approved by the right person. See
 [Data-Sharing Policies](architecture/data-sharing-policies.md).
 
-### 4. A use case defines its data; partners are granted use cases
+## 4. A use case defines its data; partners are granted use cases
 
 **Decision.** A use case (for example `loan-profile@1`) defines its purpose, the
 registries it reads, the data from each and the response. A partner is granted
@@ -96,7 +91,7 @@ use case's data.
 **Why.** Who may call a use case is decided at onboarding, not in the use case.
 See [Use Cases](architecture/use-cases.md).
 
-### 5. Departments trust the Composite, within a ceiling
+## 5. Departments trust the Composite, within a ceiling
 
 **Decision.** To each department, the Composite is one partner, onboarded in the
 department's Partner Management with a standing scope policy per registry: the
@@ -108,7 +103,7 @@ consent tokens. The Exchange's Partner Management does not hold the Composite.
 onboard each partner. See
 [Composite as a partner](architecture/exchange.md#composite-as-a-partner).
 
-### 6. Standard-neutral: DCI is one format
+## 6. Standard-neutral: DCI is one format
 
 **Decision.** Internal records and consent filtering do not depend on one
 standard. DCI is one output format among possible others.
@@ -116,7 +111,7 @@ standard. DCI is one output format among possible others.
 **Why.** Countries and partners use different interoperability standards. See
 [Standards](architecture/standards.md).
 
-### 7. Reference data in MDS; Beckn only at the network layer
+## 7. Reference data in MDS; Beckn only at the network layer
 
 **Decision.** All reference data (crops, seed varieties, farm inputs, livestock,
 geography, land) lives in the [Master Data Service](../platform/platform-services/master-data-service/README.md),
@@ -127,11 +122,9 @@ to the network layer above, for discovering providers.
 **Why.** One versioned catalogue that every registry and service reads. See
 [Interoperability with OAN (Beckn)](roadmap/oan-interoperability.md).
 
-### 8. The Consent Manager is unaware of use cases
+## 8. The Consent Manager is unaware of use cases
 
-*Decided 2026-11-12, after a design review.*
-
-**What the review observed.**
+**What a design review observed.**
 
 * **Two cycles at the Exchange.**
   * The Composite reads the partner's use-case policy from the Exchange PM, then
@@ -177,9 +170,7 @@ How the Composite checks the grant and calls the Consent Manager:
 [Request Handling](composite/request-handling.md). The registries and consent tokens
 did not change.
 
-### 9. A use-case policy does not list purposes
-
-*Decided 2026-11-12, after the same review.*
+## 9. A use-case policy does not list purposes
 
 **Observation.** The partner sends a use case; the use case has a purpose; the
 Exchange PM grants the use case to the partner. Listing allowed purposes in the
