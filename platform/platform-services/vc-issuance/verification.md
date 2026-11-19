@@ -123,7 +123,7 @@ stored.** What travels is the signed payload the QR already encodes.
 
 ```
 browser (reads QR, unwraps to hex)
-   └─> Agent Portal API   POST /agent_portal/vc/verify
+   └─> Agent Portal API   POST /vc-verification/verify_vc
           └─> verify-service (in-cluster)  POST /v1/verify/vc-verification
 ```
 

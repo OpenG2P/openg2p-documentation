@@ -187,7 +187,8 @@ Portal asks the agent to choose when more than one is configured.
 
 The choice is made **before the lookup**, not at the issue step, because each
 definition names the registry **view** the beneficiary is resolved through — so
-`lookup_beneficiary`, `start_authentication` and `issue` all take `vc_type`. It
+`lookup_beneficiary`, `start_authentication`, `issue_vc` and
+`create_wallet_offer` all take `vc_type`. It
 is locked once a record is found: changing it afterwards would leave a record
 resolved in one view about to be issued against another.
 

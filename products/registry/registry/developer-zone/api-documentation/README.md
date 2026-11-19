@@ -8,7 +8,7 @@ description: API reference for OpenG2P Registry.
 **New home: GitLab.** **`registry-platform`** is now developed at [github.com/OpenG2P/registry-platform](https://github.com/OpenG2P/registry-platform).
 {% endhint %}
 
-OpenG2P Registry exposes two primary API surfaces. Both pages below are **generated from the OpenAPI specs published by [`registry-platform`](https://github.com/OpenG2P/registry-platform/tree/develop/apis/docs/openapi)** and render live from them, so the request/response schemas are always the spec's own.
+OpenG2P Registry exposes three API surfaces. All the pages below are **generated from the OpenAPI specs published by [`registry-platform`](https://github.com/OpenG2P/registry-platform/tree/develop/apis/docs/openapi)** and render live from them, so the request/response schemas are always the spec's own.
 
 ## Staff Portal API
 
@@ -24,6 +24,18 @@ REST APIs for external system integration, including data ingestion and DCI-comp
 
 {% content-ref url="partner-api.md" %}
 [partner-api.md](partner-api.md)
+{% endcontent-ref %}
+
+## Agent Portal API
+
+REST APIs used by the Agent Portal UI at a service counter: issue a verifiable credential to a beneficiary, as a printed card or into their mobile wallet, and verify a credential's QR. See [Verifiable Credentials](../../../../../platform/platform-services/vc-issuance/README.md) for how issuance works.
+
+* **Who calls it.** Agents signed in to the Keycloak `agent` realm. Issuance endpoints need the `register:issue_credential` permission and `verify_vc` needs `register:verify_credential`.
+* **What gets mounted.** Each feature is switched on separately in the Helm chart: `agentPortalApi.vcIssuance`, `agentPortalApi.walletIssuance` (for `create_wallet_offer`) and `agentPortalApi.vcVerification` (for `verify_vc`). A route whose feature is off is not served. This reference lists every route.
+* **Order of calls.** A credential is issued only after the beneficiary authenticates: `get_vc_types` → `lookup_beneficiary` → `start_authentication` → `get_authentication_status` → `issue_vc` or `create_wallet_offer`.
+
+{% content-ref url="agent-portal-api.md" %}
+[agent-portal-api.md](agent-portal-api.md)
 {% endcontent-ref %}
 
 ## How these pages are maintained

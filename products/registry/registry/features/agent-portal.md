@@ -209,8 +209,8 @@ The agent picks the credential in **step 1, before the look-up**, and the choice
 is locked once a record is found. That ordering is not cosmetic: the definition
 names the view the beneficiary is resolved through, so choosing later would mean
 looking someone up in one view and issuing them a credential built from another.
-`lookup_beneficiary`, `start_authentication` and `issue` therefore all carry
-`vc_type`.
+`lookup_beneficiary`, `start_authentication`, `issue_vc` and `create_wallet_offer`
+therefore all carry `vc_type`.
 
 The selector only appears when more than one type is configured; with a single
 definition the flow is unchanged.
@@ -265,6 +265,10 @@ and in particular [Phase 1 — Paper Credential](../../../../platform/platform-s
 | `agent-portal-api` | Registry Platform | Resolves the record, drives the beneficiary's authentication, pushes claims to Certify, renders the PDF, logs the issuance |
 | `iam-agent-portal-api` | IAM | OIDC confidential client for the `agent` realm |
 
+Every endpoint, with its request and response schema, is listed in the
+[Agent Portal API](../developer-zone/api-documentation/agent-portal-api.md)
+reference.
+
 A variant registry rebuilds `agent-portal-api` from the platform image with its
 own extension installed, exactly as it does for `staff-api` — the service maps
 the registry's own register-domain model, and running the platform's default
@@ -276,8 +280,16 @@ A new agent capability needs:
 
 1. a **permission** on the `agent-portal` client, declared in the registry's
    `iam-register` payload;
-2. **routes** on the Agent Portal API, guarded by that permission;
+2. **routes** on the Agent Portal API, guarded by that permission. Name them as
+   the staff API does: a kebab-case resource group, then a snake_case
+   verb-and-object action, all `POST` (`/vc-issuance/issue_vc`);
 3. **BFF routes** in the UI that proxy them, so the browser still holds no token;
 4. a **card** on the landing page, enabled by that permission.
 
 Nothing about the authentication model changes.
+
+After adding or renaming routes, regenerate the OpenAPI spec in
+`registry-platform` (`apis/scripts/generate_openapi.py`) and then the
+[Agent Portal API](../developer-zone/api-documentation/agent-portal-api.md)
+reference page, as described in
+[API Documentation](../developer-zone/api-documentation/README.md#how-these-pages-are-maintained).

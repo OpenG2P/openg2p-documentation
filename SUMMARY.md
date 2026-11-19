@@ -107,6 +107,7 @@
       * [API Documentation](products/registry/registry/developer-zone/api-documentation/README.md)
         * [Staff Portal API](products/registry/registry/developer-zone/api-documentation/staff-portal-api.md)
         * [Partner API](products/registry/registry/developer-zone/api-documentation/partner-api.md)
+        * [Agent Portal API](products/registry/registry/developer-zone/api-documentation/agent-portal-api.md)
       * [Non Functional Requirements](products/registry/registry/developer-zone/non-functional-requirements.md)
     * [Deployment and Extension](products/registry/registry/deployment-and-extension/README.md)
       * [Packaging & the reference registry](products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md)
