@@ -607,6 +607,7 @@
     * [Use Cases](open-agri-stack/architecture/use-cases.md)
     * [Consent](open-agri-stack/architecture/consent.md)
     * [Data-Sharing Policies](open-agri-stack/architecture/data-sharing-policies.md)
+    * [Catalogue](open-agri-stack/architecture/catalogue.md)
     * [Request Flow](open-agri-stack/architecture/request-flow.md)
     * [Networking and Gateway](open-agri-stack/architecture/networking-and-gateway.md)
     * [Standards](open-agri-stack/architecture/standards.md)

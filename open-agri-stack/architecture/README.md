@@ -19,7 +19,7 @@ Its own install ([Exchange](exchange.md)). **Everything goes through a use case:
 | [Consent Manager](../../consent-management/README.md) | Holds the farmers' consents; issues a consent token per registry for each query |
 | [Partner Management](../../platform/platform-services/partner-management/README.md) | Partners, their keys, and the use cases each may call |
 | eSignet | The farmer's login with the national ID |
-| Catalogue, Audit Manager | The shared codes; who asked for what |
+| [Catalogue](catalogue.md), Audit Manager | The shared codes; who asked for what |
 
 ## Department registries
 
@@ -30,7 +30,7 @@ Each department is its own install, with its registry and its own services:
 | Registry ([Farmer Registry](../../products/registry/farmer-registry/README.md), [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)) | The system of record; serves its partners through its partner API ([Registries](../registries/README.md)) |
 | Consent Manager | Checks each consent, including the Exchange's consent tokens |
 | Partner Management | The department's partners, and what it releases to the Composite (the Composite's scope policy) |
-| Catalogue, Audit Manager | The same codes as every install (one country pack); who accessed the department's data |
+| [Catalogue](catalogue.md), Audit Manager | The same codes as every install (one country pack); who accessed the department's data |
 
 Registries are joined on the farmer's Farmer ID; the national ID only authenticates the farmer. Other departments (Livestock, Land, …) follow the same pattern.
 
