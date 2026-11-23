@@ -2,33 +2,24 @@
 description: >-
   Agri Stack Exchange — one Consent Manager codebase in two roles: the Exchange
   CM issues signed consent tokens (applying the terms the Composite sends), a
-  department CM accepts them from a trusted issuer and applies the Composite's
-  scope policy in its own Partner Management. Opt-in, off by default.
+  department CM accepts them from a trusted issu
 ---
 
 # Exchange consent tokens (Agri Stack Exchange)
 
-In [Agri Stack across departments](../../open-agri-stack/architecture/README.md)
-a partner (e.g. a bank) onboards and the farmer consents **only at the Exchange** (the data exchange layer, `agrix`), while
-each department registry (`trial`, `dept1`) still decides at its own boundary through its own Consent
-Manager. The link between the two is a **consent token** (called *receipt* in the API and settings):
-a short-lived JWS the Exchange CM signs for one registry and one query, which the department CM
-verifies and evaluates against the policy its own Partner Management holds for the Composite. It is not the long-lived
-[consent receipt](data-model.md#consent-receipt-kantara-iso-27560) document (Kantara / ISO 27560)
-the CM keeps as the record of a consent (all four terms side by side: [key terms](README.md#key-terms)).
+In [Agri Stack across departments](../../open-agri-stack/architecture/) a partner (e.g. a bank) onboards and the farmer consents **only at the Exchange** (the data exchange layer, `agrix`), while each department registry (`trial`, `dept1`) still decides at its own boundary through its own Consent Manager. The link between the two is a **consent token** (called _receipt_ in the API and settings): a short-lived JWS the Exchange CM signs for one registry and one query, which the department CM verifies and evaluates against the policy its own Partner Management holds for the Composite. It is not the long-lived [consent receipt](data-model.md#consent-receipt-kantara-iso-27560) document (Kantara / ISO 27560) the CM keeps as the record of a consent (all four terms side by side: [key terms](./#key-terms)).
 
-Everything here is **opt-in and off by default**. With the settings empty, as in every standalone
-install, none of it runs. Settings: [Deployment](../deployment/README.md#exchange-optional).
+Everything here is **opt-in and off by default**. With the settings empty, as in every standalone install, none of it runs. Settings: [Deployment](../deployment/#exchange-optional).
 
 ## Why a consent token
 
 The partner's consent and its access policy are held at the Exchange, but each department must decide for itself what leaves its registry. Without a token there are three ways to connect them, and each falls short:
 
-| Option | Problem |
-| --- | --- |
+| Option                                                 | Problem                                                                                                                                                                                                                                    |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Pass the partner's whole consent to every registry** | Each department must hold the partner as its own partner (key and policy in its Partner Management), so the partner onboards at every department. Each registry also sees the whole consent, including grants for other departments' data. |
-| **Let each registry ask the Exchange CM per request** | Every department depends on the Exchange's live answer, and keeps nothing signed as proof of why it released the data. |
-| **Trust the Composite, capped by the ceiling** | See below. |
+| **Let each registry ask the Exchange CM per request**  | Every department depends on the Exchange's live answer, and keeps nothing signed as proof of why it released the data.                                                                                                                     |
+| **Trust the Composite, capped by the ceiling**         | See below.                                                                                                                                                                                                                                 |
 
 **Why trusting the Composite and the ceiling is not enough.** A department could release data to any Composite request, up to the ceiling it set for the Composite, with no token. It would lose four things:
 
@@ -46,17 +37,16 @@ A consent token avoids these problems. The Exchange CM checks the partner's poli
 
 Tokens cost almost nothing extra: the Composite calls the Exchange CM to check the consent anyway, the tokens are issued in that same call, and departments verify them offline with a cached key.
 
-**The trade-off: no live revocation check.** A department checks a token offline and never asks the Exchange whether the consent is still in force. If the farmer revokes a consent, a token issued just before stays usable until it expires: up to the token lifetime (default 5 minutes, never past the consent's own expiry), and only by the Composite, for the one registry and query it was issued for. In exchange, no department depends on the Exchange being up, and no request waits on a call to another organisation. A deployment that needs revocation to apply at once can shorten the lifetime, or turn on the optional status check (each department then calls the Exchange per token, and refuses tokens while the Exchange is unreachable); see [Department role: accepting](#department-role-accepting).
+**The trade-off: no live revocation check.** A department checks a token offline and never asks the Exchange whether the consent is still in force. If the farmer revokes a consent, a token issued just before stays usable until it expires: up to the token lifetime (default 5 minutes, never past the consent's own expiry), and only by the Composite, for the one registry and query it was issued for. In exchange, no department depends on the Exchange being up, and no request waits on a call to another organisation. A deployment that needs revocation to apply at once can shorten the lifetime, or turn on the optional status check (each department then calls the Exchange per token, and refuses tokens while the Exchange is unreachable); see [Department role: accepting](exchange-consent-tokens.md#department-role-accepting).
 
 ## Two roles, one codebase
 
-| Role | Install | Configured by | What it does |
-| --- | --- | --- | --- |
-| **Exchange CM** | `agrix` | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent against the **terms the Composite sends**: the use case's purpose, the scopes it asks for and the limits of the partner's use-case policy ([caller-terms mode](verification-and-enforcement.md#caller-terms-mode)). It reads no use case and no use-case policy. When a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
-| **Department CM** | `trial`, `dept1` | `trusted_receipt_issuers` | Accepts a consent token from a trusted issuer on `/validate`, checks it, applies the **presenter's scope policy** in the department's Partner Management (the department ceiling), and returns its normal decision to the registry. |
+| Role              | Install          | Configured by                           | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ----------------- | ---------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Exchange CM**   | `agrix`          | `receipt_issuer` + `receipt_presenters` | Validates the partner's consent against the **terms the Composite sends**: the use case's purpose, the scopes it asks for and the limits of the partner's use-case policy ([caller-terms mode](verification-and-enforcement.md#caller-terms-mode)). It reads no use case and no use-case policy. When a configured **presenter** (the Composite, `agri-composite`) asks with `issue_receipts: true`, signs one consent token per registry. Serves the tokens' status. |
+| **Department CM** | `trial`, `dept1` | `trusted_receipt_issuers`               | Accepts a consent token from a trusted issuer on `/validate`, checks it, applies the **presenter's scope policy** in the department's Partner Management (the department ceiling), and returns its normal decision to the registry.                                                                                                                                                                                                                                   |
 
-The registry is unchanged: it calls its **own** CM `/validate` with the consent JWS it received (now
-a consent token), its `data_controller`, and the DCI `sender_id` as `partner_id` — as it always has.
+The registry is unchanged: it calls its **own** CM `/validate` with the consent JWS it received (now a consent token), its `data_controller`, and the DCI `sender_id` as `partner_id` — as it always has.
 
 ```mermaid
 sequenceDiagram
@@ -80,99 +70,51 @@ sequenceDiagram
 
 ## Consent token
 
-A compact JWS signed with the CM's **existing receipt-signing key** — the same key, `kid` and
-algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27560), published at
-`/.well-known/jwks.json` on the partner API. Departments, on other clusters, fetch it from the
-Exchange CM's **public host**; it is the one path of the partner API published outside the cluster
-(`/validate` is in-cluster only, [security](security-and-trust.md#caller-authentication)).
+A compact JWS signed with the CM's **existing receipt-signing key** — the same key, `kid` and algorithm as its [Kantara receipts](data-model.md#consent-receipt-kantara-iso-27560), published at `/.well-known/jwks.json` on the partner API. Departments, on other clusters, fetch it from the Exchange CM's **public host**; it is the one path of the partner API published outside the cluster (`/validate` is in-cluster only, [security](security-and-trust.md#caller-authentication)).
 
 **Header:** `{"alg": "<EdDSA|ES256|RS256>", "kid": "<CM kid>", "typ": "consent-token+jwt"}`
 
 `typ` marks the JWS as a consent token, so a CM never mistakes it for a partner-signed consent. The value is OpenG2P's own (explicit typing, as RFC 8725 §3.11 recommends), not a registered media type. A CM also still recognises the earlier value `consent-receipt+jwt` (from when these tokens were called consent receipts), so the Exchange and the departments can be upgraded one at a time.
 
-| Claim | Meaning |
-| --- | --- |
-| `iss` | The Exchange CM's issuer ID (`receipt_issuer`, e.g. `agri-stack-exchange-cm`) |
-| `jti` | Token ID (UUID) — the key for its status |
-| `consent_id` | The Exchange CM's consent artefact for this registry |
-| `aud` | The data controller the token is for (e.g. `farmer-registry`) |
-| `presenter` | Who may present it — the caller that asked for it (e.g. `agri-composite`) |
-| `partner` | The partner that obtained the consent (the consent's `aud`, e.g. `bank-a`) |
-| `sub` | The subject, `{"type": "FAYDA_FAN", "value": "…"}` — same shape as the consent's `subject_id` |
-| `purpose` | Purpose code |
-| `scopes` | Data scope IDs for this registry: the consent's grant ∩ the Composite's `requested_scopes` (in caller-terms mode) or ∩ the partner's scope policy for this registry at the Exchange |
-| `consent_issued_at` | When the farmer's consent was issued (ISO-8601). Registries use it as "consent time" for data-scope versions |
-| `consent_exp` | Consent expiry (epoch seconds) |
-| `iat`, `nbf`, `exp` | Token times (epoch seconds); `exp` = min(consent expiry, now + `receipt_ttl_seconds`, default 300) |
+| Claim               | Meaning                                                                                                                                                                             |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `iss`               | The Exchange CM's issuer ID (`receipt_issuer`, e.g. `agri-stack-exchange-cm`)                                                                                                       |
+| `jti`               | Token ID (UUID) — the key for its status                                                                                                                                            |
+| `consent_id`        | The Exchange CM's consent artefact for this registry                                                                                                                                |
+| `aud`               | The data controller the token is for (e.g. `farmer-registry`)                                                                                                                       |
+| `presenter`         | Who may present it — the caller that asked for it (e.g. `agri-composite`)                                                                                                           |
+| `partner`           | The partner that obtained the consent (the consent's `aud`, e.g. `bank-a`)                                                                                                          |
+| `sub`               | The subject, `{"type": "FAYDA_FAN", "value": "…"}` — same shape as the consent's `subject_id`                                                                                       |
+| `purpose`           | Purpose code                                                                                                                                                                        |
+| `scopes`            | Data scope IDs for this registry: the consent's grant ∩ the Composite's `requested_scopes` (in caller-terms mode) or ∩ the partner's scope policy for this registry at the Exchange |
+| `consent_issued_at` | When the farmer's consent was issued (ISO-8601). Registries use it as "consent time" for data-scope versions                                                                        |
+| `consent_exp`       | Consent expiry (epoch seconds)                                                                                                                                                      |
+| `iat`, `nbf`, `exp` | Token times (epoch seconds); `exp` = min(consent expiry, now + `receipt_ttl_seconds`, default 300)                                                                                  |
 
-> `sub` is an object, as the spec requires, so a generic RFC 7519 JWT validator (which wants a
-> string `sub`) rejects it. Verify a consent token at the **JWS** level (signature with the JWKS
-> key), then read the claims — as the department CM does.
+> `sub` is an object, as the spec requires, so a generic RFC 7519 JWT validator (which wants a string `sub`) rejects it. Verify a consent token at the **JWS** level (signature with the JWKS key), then read the claims — as the department CM does.
 
 ## Exchange role: issuing
 
 `POST /consent/v1/validate` with `issue_receipts: true`:
 
-1. **Caller check** — the request's `partner_id` must be in `receipt_presenters` and `receipt_issuer`
-   must be set; otherwise the decision is `deny` / `receipt_presenter_not_allowed`. The partner API
-   has no Keycloak (transport is Istio mTLS), so — as for every partner-API call — the caller is
-   identified by the `partner_id` it sends. That value becomes the token's `presenter`, which the
-   department CM then matches against the `sender_id` the registry verified on the signed DCI
-   request: a consent token is only usable by the presenter it was issued to.
-2. **Consent** — the partner-signed `consent_jws`, a consent the CM holds by `consent_id`, or, with
-   neither, the one it finds for the partner, subject and purpose
-   ([consent by lookup](verification-and-enforcement.md#caller-terms-mode); none → `consent_not_found`).
-   The partner therefore never has to handle the Exchange's consent IDs.
-3. **Validation** — each granted controller (or only `data_controller`, if sent) is validated
-   as a registry's call would be (for a partner-signed consent: signature via Partner Management and
-   replay; for any consent: status and validity). The policy
-   is the **terms the Composite sends** when it sends `request_context.purpose` (purpose, limits;
-   effective scopes = grant ∩ `requested_scopes`; [caller-terms mode](verification-and-enforcement.md#caller-terms-mode)),
-   otherwise the partner's scope policy for that controller in the Exchange's Partner Management. Each writes its artefact and
-   decision log as usual.
-4. **Consent tokens** — if every controller permits, one token per controller is signed and recorded
-   (`issued_receipts`), and the response carries `receipts: {data_controller: JWS}`. If any
-   controller denies, that deny is returned and **no** tokens are issued.
+1. **Caller check** — the request's `partner_id` must be in `receipt_presenters` and `receipt_issuer` must be set; otherwise the decision is `deny` / `receipt_presenter_not_allowed`. The partner API has no Keycloak (transport is Istio mTLS), so — as for every partner-API call — the caller is identified by the `partner_id` it sends. That value becomes the token's `presenter`, which the department CM then matches against the `sender_id` the registry verified on the signed DCI request: a consent token is only usable by the presenter it was issued to.
+2. **Consent** — the partner-signed `consent_jws`, a consent the CM holds by `consent_id`, or, with neither, the one it finds for the partner, subject and purpose ([consent by lookup](verification-and-enforcement.md#caller-terms-mode); none → `consent_not_found`). The partner therefore never has to handle the Exchange's consent IDs.
+3. **Validation** — each granted controller (or only `data_controller`, if sent) is validated as a registry's call would be (for a partner-signed consent: signature via Partner Management and replay; for any consent: status and validity). The policy is the **terms the Composite sends** when it sends `request_context.purpose` (purpose, limits; effective scopes = grant ∩ `requested_scopes`; [caller-terms mode](verification-and-enforcement.md#caller-terms-mode)), otherwise the partner's scope policy for that controller in the Exchange's Partner Management. Each writes its artefact and decision log as usual.
+4. **Consent tokens** — if every controller permits, one token per controller is signed and recorded (`issued_receipts`), and the response carries `receipts: {data_controller: JWS}`. If any controller denies, that deny is returned and **no** tokens are issued.
 
-**Status** — `GET /consent/v1/receipts/{jti}/status` → `active | revoked | expired`, for departments
-that turn the optional status check on. A consent token
-is `revoked` when its consent artefact is revoked (per registry: revoking the farmer-registry consent
-revokes only that token), `expired` after its `exp` or when its consent expires. Auth follows the
-partner API (no Keycloak; the jti is an unguessable UUID and the answer is only the status). It is
-published on the Exchange's public host only when enabled there, for departments that check status
-([settings](../deployment/README.md#what-is-reachable-from-outside)).
+**Status** — `GET /consent/v1/receipts/{jti}/status` → `active | revoked | expired`, for departments that turn the optional status check on. A consent token is `revoked` when its consent artefact is revoked (per registry: revoking the farmer-registry consent revokes only that token), `expired` after its `exp` or when its consent expires. Auth follows the partner API (no Keycloak; the jti is an unguessable UUID and the answer is only the status). It is published on the Exchange's public host only when enabled there, for departments that check status ([settings](../deployment/#what-is-reachable-from-outside)).
 
 ## Department role: accepting
 
 When `/validate` receives a JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`):
 
-1. **Issuer** — `iss` must be in `trusted_receipt_issuers`; otherwise deny
-   `receipt_issuer_not_trusted` (also when no issuers are configured: a consent token is never
-   accepted by default).
-2. **Signature** — verified against the issuer's JWKS (cached, refetched when the `kid` is unknown,
-   so a key rotation is picked up at once). A bad signature, an `alg` that is not the key's, or a
-   missing claim → `receipt_invalid`.
-3. **Audience, presenter, time, subject** — `aud` must equal `data_controller`
-   (`audience_mismatch`); `presenter` must equal the caller's `partner_id` (the registry's DCI
-   `sender_id`) and the trusted issuer's configured `presenter`, if set (`presenter_mismatch`);
-   `nbf`/`exp` (`expired`, 30 s leeway on `nbf`); `request_context.subject_id` of the same type as
-   `sub` must match it (`subject_mismatch`).
-4. **Status** (optional, **off by default**) — with `receipt_status_check: always` the department
-   also asks the issuer for the token's status (cached 10 s): `revoked` / `expired` deny with that
-   reason; unreachable → `receipt_status_unavailable` (fail closed). Off, the token is checked
-   offline only; see the trade-off [above](#why-a-consent-token).
-5. **Department ceiling** — the **presenter's** (the Composite's, PM partner
-   `PARTNER_AGRI_COMPOSITE`) active scope policy for this controller in the department's Partner
-   Management (none → `unknown_partner`; PM unreachable with nothing cached → `policy_unavailable`).
-   Subject type and purpose must be allowed; validity (`consent_issued_at` → `consent_exp`) is
-   checked against `max_validity_duration`; **effective scopes = token `scopes` ∩ policy
-   `allowed_data_scopes`** (∩ `requested_scopes`, if sent).
-6. **Decision** — the normal response (`effective_data_scopes`, `subject_id` from `sub`, the policy
-   reference, `consent_id`). A permit stores an artefact (`source: receipt`, valid until the token
-   expires) and a consent receipt; presenting the same token again returns the stored decision.
-   Every decision on a consent token logs `receipt_jti` and `receipt_issuer`.
+1. **Issuer** — `iss` must be in `trusted_receipt_issuers`; otherwise deny `receipt_issuer_not_trusted` (also when no issuers are configured: a consent token is never accepted by default).
+2. **Signature** — verified against the issuer's JWKS (cached, refetched when the `kid` is unknown, so a key rotation is picked up at once). A bad signature, an `alg` that is not the key's, or a missing claim → `receipt_invalid`.
+3. **Audience, presenter, time, subject** — `aud` must equal `data_controller` (`audience_mismatch`); `presenter` must equal the caller's `partner_id` (the registry's DCI `sender_id`) and the trusted issuer's configured `presenter`, if set (`presenter_mismatch`); `nbf`/`exp` (`expired`, 30 s leeway on `nbf`); `request_context.subject_id` of the same type as `sub` must match it (`subject_mismatch`).
+4. **Status** (optional, **off by default**) — with `receipt_status_check: always` the department also asks the issuer for the token's status (cached 10 s): `revoked` / `expired` deny with that reason; unreachable → `receipt_status_unavailable` (fail closed). Off, the token is checked offline only; see the trade-off [above](exchange-consent-tokens.md#why-a-consent-token).
+5. **Department ceiling** — the **presenter's** (the Composite's, PM partner `PARTNER_AGRI_COMPOSITE`) active scope policy for this controller in the department's Partner Management (none → `unknown_partner`; PM unreachable with nothing cached → `policy_unavailable`). Subject type and purpose must be allowed; validity (`consent_issued_at` → `consent_exp`) is checked against `max_validity_duration`; **effective scopes = token `scopes` ∩ policy `allowed_data_scopes`** (∩ `requested_scopes`, if sent).
+6. **Decision** — the normal response (`effective_data_scopes`, `subject_id` from `sub`, the policy reference, `consent_id`). A permit stores an artefact (`source: receipt`, valid until the token expires) and a consent receipt; presenting the same token again returns the stored decision. Every decision on a consent token logs `receipt_jti` and `receipt_issuer`.
 
-The policy's `allowed_signing_algs` governs partner signatures and is not applied to consent tokens
-(the Exchange CM's key is trusted through `trusted_receipt_issuers`).
+The policy's `allowed_signing_algs` governs partner signatures and is not applied to consent tokens (the Exchange CM's key is trusted through `trusted_receipt_issuers`).
 
-Setting up a department: [Deployment](../deployment/README.md#setting-up-a-department).
+Setting up a department: [Deployment](../deployment/#setting-up-a-department).

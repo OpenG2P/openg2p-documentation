@@ -1,8 +1,8 @@
 ---
 description: >-
-  The integration layer between external data sources and the OpenG2P
-  Registry. Receives or fetches data, verifies who sent it, reshapes each
-  record, and delivers signed batches to the Registry Partner API.
+  The integration layer between external data sources and the OpenG2P Registry.
+  Receives or fetches data, verifies who sent it, reshapes each record, and
+  delivers signed batches to the Registry Partner
 ---
 
 # Connector
@@ -36,6 +36,6 @@ The connector does not decide whether a record is correct, does not deduplicate 
 
 ## Related documentation
 
-* [OpenG2P Registry](../../../products/registry/registry/README.md)
+* [OpenG2P Registry](../../../products/registry/registry/)
 * [Registry ingestion pipeline](../../../products/registry/registry/design/ingestion-pipeline.md)
 * [Registry partner APIs](../../../products/registry/registry/design/partner-apis.md)

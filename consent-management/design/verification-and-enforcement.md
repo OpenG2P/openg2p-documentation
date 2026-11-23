@@ -2,8 +2,7 @@
 description: >-
   The primary flow: a registry asks the Consent Manager whether it may answer a
   partner. The kinds of consent a request can carry, the validation pipeline,
-  how the partner's policy from Partner Management is applied, caller-terms
-  mode, and consent by lookup.
+  how the partner's policy from Partner Manageme
 ---
 
 # Verification & enforcement
@@ -14,12 +13,12 @@ A partner calls a registry about a person. The registry calls its Consent Manage
 
 A registry never decides which kind of consent a caller uses: it passes whatever came with the request, or nothing. There are no partner types; the CM tells the cases apart by the request and by its own settings.
 
-| The request carries | Treated as | Accepted when |
-| --- | --- | --- |
-| `consent_id` | A consent this CM collected (originated), named by ID | It is the partner's, active, valid now, and has a grant for the caller ([below](#a-consent-the-cm-holds)) |
-| No consent | A **lookup** of a consent this CM holds ([at a registry](#consent-by-lookup-at-a-registry); [in caller-terms mode](#caller-terms-mode)) | This CM holds an active consent of that partner for that subject and registry (or purpose); none → `consent_not_found` |
-| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-consent-tokens.md#department-role-accepting)) | This CM trusts the token's issuer, and the token's `presenter` is the caller |
-| Any other JWS (`consent_jws`) | A **partner-signed consent**: one the partner collected and signed itself | The partner's policy (in caller-terms mode, the `limits`) sets `allow_partner_consents`; the [pipeline](#validation-pipeline-partner-signed-consent) passes |
+| The request carries                                                                    | Treated as                                                                                                                                                                                            | Accepted when                                                                                                                                                                              |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `consent_id`                                                                           | A consent this CM collected (originated), named by ID                                                                                                                                                 | It is the partner's, active, valid now, and has a grant for the caller ([below](verification-and-enforcement.md#a-consent-the-cm-holds))                                                   |
+| No consent                                                                             | A **lookup** of a consent this CM holds ([at a registry](verification-and-enforcement.md#consent-by-lookup-at-a-registry); [in caller-terms mode](verification-and-enforcement.md#caller-terms-mode)) | This CM holds an active consent of that partner for that subject and registry (or purpose); none → `consent_not_found`                                                                     |
+| A JWS whose header `typ` is `consent-token+jwt` (or the earlier `consent-receipt+jwt`) | A **consent token** from an Exchange ([Exchange consent tokens](exchange-consent-tokens.md#department-role-accepting))                                                                                | This CM trusts the token's issuer, and the token's `presenter` is the caller                                                                                                               |
+| Any other JWS (`consent_jws`)                                                          | A **partner-signed consent**: one the partner collected and signed itself                                                                                                                             | The partner's policy (in caller-terms mode, the `limits`) sets `allow_partner_consents`; the [pipeline](verification-and-enforcement.md#validation-pipeline-partner-signed-consent) passes |
 
 So at a department the Composite presents consent tokens: the farmer's consent is held by the Exchange CM, not the department's, and the Composite's policy there does not allow partner-signed consents. A department's own partners send nothing and rely on the lookup.
 
@@ -47,22 +46,22 @@ flowchart TD
   G -. fail .-> X
 ```
 
-| # | Check | Reason code on failure |
-| -- | --- | --- |
-| 1 | The JWS decodes and its claims match the consent-object schema: exactly one of `grants` or `data_controller` + `data_scopes`, no controller twice | `malformed_object` |
-| 2 | Grant selection: a consent with `grants` needs the request's `data_controller` (else `malformed_object`) and a grant for it; a single-registry consent must name the requested `data_controller`, if one is sent | `controller_not_granted` |
-| 3 | If `request_context.subject_id` has the consent subject's `type`, its `value` matches (another type is left to the registry) | `subject_mismatch` |
-| 4 | Partner Management has an active scope policy for the partner (`aud` → `PARTNER_<AUD>`) and the controller. A `404` fails closed. In caller-terms mode no policy is read: the caller's terms apply (the partner's keys are still read from PM) | `unknown_partner`; PM unreachable, nothing cached: `policy_unavailable` |
-| 5 | The policy (caller-terms mode: `limits`) sets `allow_partner_consents`: the CM cannot verify that the subject agreed, only the partner's signature | `partner_consent_not_accepted` |
-| 6 | The JWS `alg` is in the policy's (caller-terms mode: the `limits`') `allowed_signing_algs` and the CM's allowed set, matches the PM key for the JWS `kid` (algorithm-confusion guard), and the signature verifies | `signature_invalid` |
-| 7 | [Caller-terms mode](#caller-terms-mode) only: `requested_scopes` is sent; the consent's purpose is `request_context.purpose` | `scope_exceeds_policy` / `purpose_not_allowed` |
-| 8 | A `jti` already decided **for this controller** returns that decision (`revoked` or `expired` if the stored consent is), provided it is the same consent (partner, subject, scopes) | `replay` (a different consent reusing the `jti`) |
-| 9 | `issued_at` within the freshness window (default ±300 s) | `replay` |
-| 10 | `aud` is the partner, and the grant's `data_controller` is the policy's (not in caller-terms mode) | `audience_mismatch` |
-| 11 | The subject's `type` ∈ `allowed_subject_id_types` (policy or `limits`) | `subject_not_allowed` |
-| 12 | `purpose.code` ∈ `allowed_purposes` (not in caller-terms mode: step 7 checks the purpose) | `purpose_not_allowed` |
-| 13 | Effective scopes = the grant's `data_scopes` ∩ the ceiling (∩ `requested_scopes`) is not empty | `scope_exceeds_policy` |
-| 14 | `now ∈ [valid_from, valid_until]`, and `valid_until − valid_from ≤ max_validity_duration` (policy or `limits`) | `expired` / `validity_exceeds_policy` |
+| #  | Check                                                                                                                                                                                                                                          | Reason code on failure                                                  |
+| -- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1  | The JWS decodes and its claims match the consent-object schema: exactly one of `grants` or `data_controller` + `data_scopes`, no controller twice                                                                                              | `malformed_object`                                                      |
+| 2  | Grant selection: a consent with `grants` needs the request's `data_controller` (else `malformed_object`) and a grant for it; a single-registry consent must name the requested `data_controller`, if one is sent                               | `controller_not_granted`                                                |
+| 3  | If `request_context.subject_id` has the consent subject's `type`, its `value` matches (another type is left to the registry)                                                                                                                   | `subject_mismatch`                                                      |
+| 4  | Partner Management has an active scope policy for the partner (`aud` → `PARTNER_<AUD>`) and the controller. A `404` fails closed. In caller-terms mode no policy is read: the caller's terms apply (the partner's keys are still read from PM) | `unknown_partner`; PM unreachable, nothing cached: `policy_unavailable` |
+| 5  | The policy (caller-terms mode: `limits`) sets `allow_partner_consents`: the CM cannot verify that the subject agreed, only the partner's signature                                                                                             | `partner_consent_not_accepted`                                          |
+| 6  | The JWS `alg` is in the policy's (caller-terms mode: the `limits`') `allowed_signing_algs` and the CM's allowed set, matches the PM key for the JWS `kid` (algorithm-confusion guard), and the signature verifies                              | `signature_invalid`                                                     |
+| 7  | [Caller-terms mode](verification-and-enforcement.md#caller-terms-mode) only: `requested_scopes` is sent; the consent's purpose is `request_context.purpose`                                                                                    | `scope_exceeds_policy` / `purpose_not_allowed`                          |
+| 8  | A `jti` already decided **for this controller** returns that decision (`revoked` or `expired` if the stored consent is), provided it is the same consent (partner, subject, scopes)                                                            | `replay` (a different consent reusing the `jti`)                        |
+| 9  | `issued_at` within the freshness window (default ±300 s)                                                                                                                                                                                       | `replay`                                                                |
+| 10 | `aud` is the partner, and the grant's `data_controller` is the policy's (not in caller-terms mode)                                                                                                                                             | `audience_mismatch`                                                     |
+| 11 | The subject's `type` ∈ `allowed_subject_id_types` (policy or `limits`)                                                                                                                                                                         | `subject_not_allowed`                                                   |
+| 12 | `purpose.code` ∈ `allowed_purposes` (not in caller-terms mode: step 7 checks the purpose)                                                                                                                                                      | `purpose_not_allowed`                                                   |
+| 13 | Effective scopes = the grant's `data_scopes` ∩ the ceiling (∩ `requested_scopes`) is not empty                                                                                                                                                 | `scope_exceeds_policy`                                                  |
+| 14 | `now ∈ [valid_from, valid_until]`, and `valid_until − valid_from ≤ max_validity_duration` (policy or `limits`)                                                                                                                                 | `expired` / `validity_exceeds_policy`                                   |
 
 > **Policy is a ceiling, consent is a request.** The ceiling is the policy's `allowed_data_scopes` for the calling registry; in caller-terms mode it is `requested_scopes` (the scopes the caller asks for). The effective scopes never exceed it.
 
@@ -70,33 +69,33 @@ The key and the scope policy come from PM (cached per pod); the signature check 
 
 ## A consent the CM holds
 
-By `consent_id` (or found by [lookup](#consent-by-lookup-at-a-registry)) there is no signature or freshness check: the CM collected the consent itself. It checks, in order:
+By `consent_id` (or found by [lookup](verification-and-enforcement.md#consent-by-lookup-at-a-registry)) there is no signature or freshness check: the CM collected the consent itself. It checks, in order:
 
-| Check | Reason code on failure |
-| --- | --- |
-| The CM holds a consent with that ID that it collected (`originated`). A lookup also finds partner-signed consents it has already validated | `unknown_consent` |
-| Not revoked; not expired; validity started | `revoked` / `expired` / `not_yet_valid` |
-| `consent_partner_id` is the partner the consent was given to (a lookup at a registry sets it to the caller) | `partner_mismatch` |
-| `request_context.subject_id`, if sent, matches the consent's subject or one of its `subject_identifiers` of that type | `subject_mismatch` |
-| The consent has a grant for `data_controller`, if sent | `controller_not_granted` |
-| Caller-terms mode: `requested_scopes` is sent; the consent's purpose is `request_context.purpose`; the `limits`' subject ID types and longest validity | `scope_exceeds_policy`, `purpose_not_allowed`, `subject_not_allowed`, `validity_exceeds_policy` |
-| Each grant ∩ the partner's **current** scope policy for that registry (caller-terms mode: ∩ `requested_scopes`, no policy read) leaves something. A grant whose registry has no policy is dropped | `scope_exceeds_policy`; PM unreachable: `policy_unavailable` |
+| Check                                                                                                                                                                                             | Reason code on failure                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| The CM holds a consent with that ID that it collected (`originated`). A lookup also finds partner-signed consents it has already validated                                                        | `unknown_consent`                                                                               |
+| Not revoked; not expired; validity started                                                                                                                                                        | `revoked` / `expired` / `not_yet_valid`                                                         |
+| `consent_partner_id` is the partner the consent was given to (a lookup at a registry sets it to the caller)                                                                                       | `partner_mismatch`                                                                              |
+| `request_context.subject_id`, if sent, matches the consent's subject or one of its `subject_identifiers` of that type                                                                             | `subject_mismatch`                                                                              |
+| The consent has a grant for `data_controller`, if sent                                                                                                                                            | `controller_not_granted`                                                                        |
+| Caller-terms mode: `requested_scopes` is sent; the consent's purpose is `request_context.purpose`; the `limits`' subject ID types and longest validity                                            | `scope_exceeds_policy`, `purpose_not_allowed`, `subject_not_allowed`, `validity_exceeds_policy` |
+| Each grant ∩ the partner's **current** scope policy for that registry (caller-terms mode: ∩ `requested_scopes`, no policy read) leaves something. A grant whose registry has no policy is dropped | `scope_exceeds_policy`; PM unreachable: `policy_unavailable`                                    |
 
 ## How the policy is applied
 
-A partner has one **scope policy** per registry in Partner Management ([Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)). The CM reads only the **active** version and records it on every decision, artefact and grant: `policy_ref` (`data_controller:<registry>`), `policy_version`, and `policy_id` (PM's id of that version). The CM reads no use-case policies: in [caller-terms mode](#caller-terms-mode) the decision records `policy_ref: template:<code>` (the label the caller sent) and no `policy_id` or `policy_version`.
+A partner has one **scope policy** per registry in Partner Management ([Access policies](../../platform/platform-services/partner-management/functional-specifications.md#access-policies)). The CM reads only the **active** version and records it on every decision, artefact and grant: `policy_ref` (`data_controller:<registry>`), `policy_version`, and `policy_id` (PM's id of that version). The CM reads no use-case policies: in [caller-terms mode](verification-and-enforcement.md#caller-terms-mode) the decision records `policy_ref: template:<code>` (the label the caller sent) and no `policy_id` or `policy_version`.
 
-| Policy field | How `/validate` applies it |
-| --- | --- |
-| `data_controller` | Selects a scope policy: the calling registry's (step 4) |
-| `allowed_data_scopes` | Ceiling on the effective scopes (step 13) |
-| `allowed_purposes` | The consent's `purpose.code` must be listed; empty = any (step 12) |
-| `allowed_subject_id_types` | The consent subject's `type` must be listed; empty = any (step 11) |
-| `allowed_signing_algs` | The consent JWS `alg` must be listed (step 6). Not applied to consent tokens |
-| `allow_partner_consents` | Default false. True: the partner may present a consent it signed itself (step 5). Consents the CM holds and consent tokens do not need it |
-| `max_validity_duration` | `valid_until − valid_from` may not exceed it (step 14) |
-| `fetch_type` | Default fetch type of a consent the CM collects; recorded on the artefact |
-| `max_fetch_frequency`, `data_life` | Not checked by the CM |
+| Policy field                       | How `/validate` applies it                                                                                                                |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `data_controller`                  | Selects a scope policy: the calling registry's (step 4)                                                                                   |
+| `allowed_data_scopes`              | Ceiling on the effective scopes (step 13)                                                                                                 |
+| `allowed_purposes`                 | The consent's `purpose.code` must be listed; empty = any (step 12)                                                                        |
+| `allowed_subject_id_types`         | The consent subject's `type` must be listed; empty = any (step 11)                                                                        |
+| `allowed_signing_algs`             | The consent JWS `alg` must be listed (step 6). Not applied to consent tokens                                                              |
+| `allow_partner_consents`           | Default false. True: the partner may present a consent it signed itself (step 5). Consents the CM holds and consent tokens do not need it |
+| `max_validity_duration`            | `valid_until − valid_from` may not exceed it (step 14)                                                                                    |
+| `fetch_type`                       | Default fetch type of a consent the CM collects; recorded on the artefact                                                                 |
+| `max_fetch_frequency`, `data_life` | Not checked by the CM                                                                                                                     |
 
 Evaluation is **deterministic**: the same consent, policy version and request context give the same decision.
 
@@ -111,13 +110,13 @@ Caller-terms mode applies only when **both** hold:
 * the caller (`partner_id`) is a configured consent-token presenter (`receipt_presenters`, e.g. `agri-composite`), and
 * `request_context.purpose` is sent.
 
-| `request_context` field | Meaning |
-| --- | --- |
-| `subject_id` | The subject |
-| `purpose` | Required. The consent's purpose must equal it |
-| `requested_scopes` | Required, not empty. The scope ceiling |
-| `limits` | Optional: `allowed_subject_id_types`, `allowed_signing_algs`, `max_validity_duration` (absent = no limit), `allow_partner_consents` (absent = false) |
-| `template` | Optional label (`name@major` from the Composite). Recorded as `policy_ref: template:<code>`; never used to decide |
+| `request_context` field | Meaning                                                                                                                                              |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject_id`            | The subject                                                                                                                                          |
+| `purpose`               | Required. The consent's purpose must equal it                                                                                                        |
+| `requested_scopes`      | Required, not empty. The scope ceiling                                                                                                               |
+| `limits`                | Optional: `allowed_subject_id_types`, `allowed_signing_algs`, `max_validity_duration` (absent = no limit), `allow_partner_consents` (absent = false) |
+| `template`              | Optional label (`name@major` from the Composite). Recorded as `policy_ref: template:<code>`; never used to decide                                    |
 
 The checks, in order:
 
@@ -128,20 +127,20 @@ The checks, in order:
 5. The validity is within `max_validity_duration`, else `validity_exceeds_policy`.
 6. For each registry, **effective scopes = the consent's grant ∩ `requested_scopes`**; empty → `scope_exceeds_policy`.
 
-| Request | Decision |
-| --- | --- |
+| Request                                                      | Decision                   |
+| ------------------------------------------------------------ | -------------------------- |
 | `limits` or `template` from a caller that is not a presenter | `caller_terms_not_allowed` |
-| `limits` or `template` from a presenter, without `purpose` | `malformed_object` |
+| `limits` or `template` from a presenter, without `purpose`   | `malformed_object`         |
 
-A consent is for a purpose and scopes per registry. A consent made from a [consent template](README.md#consent-templates) keeps the template code as a label; any caller-terms request with the same purpose can use it.
+A consent is for a purpose and scopes per registry. A consent made from a [consent template](./#consent-templates) keeps the template code as a label; any caller-terms request with the same purpose can use it.
 
-**Consent by lookup.** The Composite may send no consent. The CM then picks the consent it holds for the partner (`consent_partner_id`), the subject (its main subject or one of its `subject_identifiers`) and the **purpose**: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). An index on (partner, subject, purpose) over active consents serves the search.
+**Consent by lookup.** The Composite may send no consent. The CM then picks the consent it holds for the partner (`consent_partner_id`), the subject (its main subject or one of its `subject_identifiers`) and the **purpose**: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](verification-and-enforcement.md#a-consent-the-cm-holds). An index on (partner, subject, purpose) over active consents serves the search.
 
 How the Composite and the departments fit together: [Exchange consent tokens](exchange-consent-tokens.md) and [Data-sharing policies](../../open-agri-stack/architecture/data-sharing-policies.md).
 
 ## Consent by lookup at a registry
 
-A registry called directly (not in caller-terms mode) may send no consent: `partner_id`, `data_controller` and `request_context.subject_id`. The CM picks the partner's consent for that subject with a grant for that registry: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](#a-consent-the-cm-holds). It finds consents collected through the CM and partner-signed consents it has already validated, but not consents made from a consent template. Such a consent was given for a use case's data, to be used through the token presenter (the Composite): there the use case's scopes and the partner's use-case policy apply. Found by a direct call by registry, it would be used without them. An index on (partner, subject, controller) over active consents serves the search.
+A registry called directly (not in caller-terms mode) may send no consent: `partner_id`, `data_controller` and `request_context.subject_id`. The CM picks the partner's consent for that subject with a grant for that registry: active, valid now, the latest `valid_until` (then the newest). None → `consent_not_found`. It then validates it as [a consent the CM holds](verification-and-enforcement.md#a-consent-the-cm-holds). It finds consents collected through the CM and partner-signed consents it has already validated, but not consents made from a consent template. Such a consent was given for a use case's data, to be used through the token presenter (the Composite): there the use case's scopes and the partner's use-case policy apply. Found by a direct call by registry, it would be used without them. An index on (partner, subject, controller) over active consents serves the search.
 
 **Subject matching (both lookups).** `request_context.subject_id` matches the consent's subject or one of its other identifiers (`subject_identifiers`, e.g. a `FARMER_ID` recorded in the partner portal), so a registry may search by either. Types are matched as spelled, with no aliasing: the registry maps its own type names (e.g. DCI `UIN`) to the consent's ([Registry integration](registry-integration.md#no-consent-in-the-search)).
 
@@ -155,6 +154,6 @@ Every evaluation, permit or deny, writes an immutable **decision log** entry wit
 
 A consent the CM holds already has its artefact and receipt; a permit on it is logged and returns them.
 
-Once stored, a partner-signed consent is used like a consent the CM holds: by its `consent_id`, or found by [lookup](#caller-terms-mode) when the partner sends no consent, until it expires or is revoked. It differs in what is behind it: no request, no signed form, no national-ID login, no Consent Approver (its assurance is the partner's signature only), and the partner portal does not list it (the console's **Access Log** shows its use).
+Once stored, a partner-signed consent is used like a consent the CM holds: by its `consent_id`, or found by [lookup](verification-and-enforcement.md#caller-terms-mode) when the partner sends no consent, until it expires or is revoked. It differs in what is behind it: no request, no signed form, no national-ID login, no Consent Approver (its assurance is the partner's signature only), and the partner portal does not list it (the console's **Access Log** shows its use).
 
 Two registries validating one multi-grant consent each get their own decision, artefact and receipt; revoking one leaves the other in force. Revocation applies at once on the next `/validate`; an enforcement point that caches decisions checks [consent status](../api/verification-api.md).

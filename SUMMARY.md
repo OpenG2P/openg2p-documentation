@@ -648,8 +648,7 @@
     * [Keys](open-agri-stack/administration/keys.md)
   * [Partner Guide: Fetching Farmer Data](open-agri-stack/partner-integration-guide.md)
   * [Versions & Source Code](open-agri-stack/versions/README.md)
-* [Agencies](agencies/README.md)
-  * [High Level Design](agencies/design/agency-high-level-design-document.md)
+* [Agencies](products/agencies.md)
 
 ## Platform
 
@@ -665,6 +664,7 @@
 * [Platform Services](platform-services/README.md)
   * [Identity & Access Management](identity-and-access-management/README.md)
     * [High Level Design](identity-and-access-management/high-level-design.md)
+    * [Agency API Design](platform/platform-services/identity-and-access-management/agency-high-level-design-document.md)
     * [Authentication - Flow Diagram](identity-and-access-management/authentication-flow-diagram.md)
     * [RBAC in Product APIs](identity-and-access-management/rbac-in-product-apis.md)
     * [Staff Portal Application Registration](identity-and-access-management/staff-portal-application-registration.md)

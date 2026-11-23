@@ -2,6 +2,7 @@
 description: >-
   The OpenG2P Agency Solution: onboarding agencies, managing their agents, and
   enabling field work from an Android tablet.
+hidden: true
 ---
 
 # Agencies
@@ -12,4 +13,4 @@ It spans IAM, Registry, G2P Bridge and the Android app.
 
 ## Documents
 
-* [High Level Design](design/agency-high-level-design-document.md): purpose, architecture, identity and access, data policies, device management and decisions.
+* [High Level Design](../platform/platform-services/identity-and-access-management/agency-high-level-design-document.md): purpose, architecture, identity and access, data policies, device management and decisions.

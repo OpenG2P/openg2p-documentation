@@ -1,9 +1,8 @@
 ---
 description: >-
-  Design for capturing high-frequency, semi-structured field observations
-  (e.g. crop-sown/harvest events) separately from versioned register data,
-  with async enrichment and computation feeding aggregates back to the
-  registry.
+  Design for capturing high-frequency, semi-structured field observations (e.g.
+  crop-sown/harvest events) separately from versioned register data, with async
+  enrichment and computation feeding aggregate
 ---
 
 # Observations
@@ -16,77 +15,69 @@ description: >-
 
 ***
 
-
 ### 1. Enums
 
-**RecordStatusEnum** (reused from `core/.../models/enum.py`)
-`ACTIVE`, `ARCHIVED`
+**RecordStatusEnum** (reused from `core/.../models/enum.py`) `ACTIVE`, `ARCHIVED`
 
-**RelationTypeEnum** (new)
-`VOIDS` — this observation replaces another observation.
-`FOLLOWS` — this observation is the next lifecycle step after another observation.
+**RelationTypeEnum** (new) `VOIDS` — this observation replaces another observation. `FOLLOWS` — this observation is the next lifecycle step after another observation.
 
-**SourceEnum** (new)
-Fixed values: `AGENT_WEB_UI`, `AGENT_APP`, `STAFF_WEB_UI`, `STAFF_APP`, `BENE_WEB_UI`, `BENE_APP`
-Pattern value: `PARTNER_{partner_mnemonic}` — `{partner_mnemonic}` validated against the Partner Management Service (`partner_mgmt_api_url`, `apis/openg2p-registry-partner-api/.../config.py`), not the local `g2p_partners` table
+**SourceEnum** (new) Fixed values: `AGENT_WEB_UI`, `AGENT_APP`, `STAFF_WEB_UI`, `STAFF_APP`, `BENE_WEB_UI`, `BENE_APP` Pattern value: `PARTNER_{partner_mnemonic}` — `{partner_mnemonic}` validated against the Partner Management Service (`partner_mgmt_api_url`, `apis/openg2p-registry-partner-api/.../config.py`), not the local `g2p_partners` table
 
-**ProcessStatusEnum** (reused from `core/.../models/g2p_functional_id_generation_queue.py`)
-`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED` — used for `computation_status`
+**ProcessStatusEnum** (reused from `core/.../models/g2p_functional_id_generation_queue.py`) `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED` — used for `computation_status`
 
-**EnrichmentStatusEnum** (new)
-`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`, `NOT_APPLICABLE` — used for `enrichment_status`
+**EnrichmentStatusEnum** (new) `PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`, `NOT_APPLICABLE` — used for `enrichment_status`
 
----
+***
 
 ### 2. Model Design
 
 #### 2.1 `G2PObservation` — table `g2p_observations`
 
-| Field | Type | Nullable | Notes |
-|---|---|---|---|
-| observation_id | String (uuid4) | No | PK |
-| observation_type | String | No | Indexed |
-| internal_record_id | String | No | Indexed. The subject/context the observation is about |
-| register_mnemonic | String | No | Indexed |
-| observed_at | DateTime | No | Indexed |
-| created_at | DateTime | No | |
-| created_by | String | No | |
-| submission_id | String | Yes | Indexed |
-| source | String | Yes | Fixed value or `PARTNER_{partner_mnemonic}`, app-level validated against Partner Management Service (not a DB enum, not the local `g2p_partners` table) |
-| latitude | Numeric | Yes | |
-| longitude | Numeric | Yes | |
-| record_status | String (RecordStatusEnum) | No | Default `ACTIVE` |
-| related_observation_id | String | Yes | Indexed |
-| relation_type | String (RelationTypeEnum) | Yes | |
-| schema_version | Integer | No | |
+| Field                    | Type                      | Nullable | Notes                                                                                                                                                   |
+| ------------------------ | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| observation\_id          | String (uuid4)            | No       | PK                                                                                                                                                      |
+| observation\_type        | String                    | No       | Indexed                                                                                                                                                 |
+| internal\_record\_id     | String                    | No       | Indexed. The subject/context the observation is about                                                                                                   |
+| register\_mnemonic       | String                    | No       | Indexed                                                                                                                                                 |
+| observed\_at             | DateTime                  | No       | Indexed                                                                                                                                                 |
+| created\_at              | DateTime                  | No       |                                                                                                                                                         |
+| created\_by              | String                    | No       |                                                                                                                                                         |
+| submission\_id           | String                    | Yes      | Indexed                                                                                                                                                 |
+| source                   | String                    | Yes      | Fixed value or `PARTNER_{partner_mnemonic}`, app-level validated against Partner Management Service (not a DB enum, not the local `g2p_partners` table) |
+| latitude                 | Numeric                   | Yes      |                                                                                                                                                         |
+| longitude                | Numeric                   | Yes      |                                                                                                                                                         |
+| record\_status           | String (RecordStatusEnum) | No       | Default `ACTIVE`                                                                                                                                        |
+| related\_observation\_id | String                    | Yes      | Indexed                                                                                                                                                 |
+| relation\_type           | String (RelationTypeEnum) | Yes      |                                                                                                                                                         |
+| schema\_version          | Integer                   | No       |                                                                                                                                                         |
 
 #### 2.1.1 `G2PObservationPayload` — table `g2p_observations_payload`
 
 Split from `G2PObservation` so envelope-only reads (timeline listing, search, hierarchy walks, void/follow resolution) never do IO on the JSONB payload. One row per observation, 1:1, written in the same transaction as the `g2p_observations` insert. Fetched explicitly (join or second query) only when payload contents are actually needed — schema validation at write time, `ENRICHMENT_WORKER`, `COMPUTATION_WORKER`, reporting-view extraction.
 
-| Field | Type | Nullable | Notes |
-|---|---|---|---|
-| observation_id | String | No | PK. Same value as the `g2p_observations` row — no DB-level FK, consistent with the rest of the platform |
-| payload | JSONB | No | Write-once |
-| payload_enriched | JSONB | Yes | Upserted by `ENRICHMENT_WORKER`. Updating it never touches `g2p_observations` |
+| Field             | Type   | Nullable | Notes                                                                                                   |
+| ----------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------- |
+| observation\_id   | String | No       | PK. Same value as the `g2p_observations` row — no DB-level FK, consistent with the rest of the platform |
+| payload           | JSONB  | No       | Write-once                                                                                              |
+| payload\_enriched | JSONB  | Yes      | Upserted by `ENRICHMENT_WORKER`. Updating it never touches `g2p_observations`                           |
 
 #### 2.2 `G2PObservationTypeDefinition` — table `g2p_observation_type_definitions`
 
-No free-standing `observation_type`. Every definition is scoped under exactly one `register_mnemonic` — there is no separate allowed/disallowed mapping table. A `(register_mnemonic, observation_type)` pair is valid if and only if a definition row exists for it; existence *is* the allow-list.
+No free-standing `observation_type`. Every definition is scoped under exactly one `register_mnemonic` — there is no separate allowed/disallowed mapping table. A `(register_mnemonic, observation_type)` pair is valid if and only if a definition row exists for it; existence _is_ the allow-list.
 
-| Field | Type | Nullable | Notes |
-|---|---|---|---|
-| observation_type_definition_id | String | No | PK |
-| register_mnemonic | String | No | Indexed. The definition's owning register/table type |
-| observation_type | String | No | Indexed |
-| display_name | String | No | |
-| description | String | Yes | |
-| payload_json_schema | JSONB | No | JSON Schema document |
-| schema_version | Integer | No | |
-| follows_observation_type | String | Yes | References another `observation_type`. Drives the generic UI's FOLLOWS-candidate step (Section 10.6) — null means this type never follows anything |
-| enrichment_applicable | Boolean | No | Default `false`. Gates `enrichment_status` at enqueue time |
-| computation_applicable | Boolean | No | Default `false`. Gates whether a queue row is created at all |
-| is_enabled | Boolean | No | Default `true` |
+| Field                             | Type    | Nullable | Notes                                                                                                                                              |
+| --------------------------------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| observation\_type\_definition\_id | String  | No       | PK                                                                                                                                                 |
+| register\_mnemonic                | String  | No       | Indexed. The definition's owning register/table type                                                                                               |
+| observation\_type                 | String  | No       | Indexed                                                                                                                                            |
+| display\_name                     | String  | No       |                                                                                                                                                    |
+| description                       | String  | Yes      |                                                                                                                                                    |
+| payload\_json\_schema             | JSONB   | No       | JSON Schema document                                                                                                                               |
+| schema\_version                   | Integer | No       |                                                                                                                                                    |
+| follows\_observation\_type        | String  | Yes      | References another `observation_type`. Drives the generic UI's FOLLOWS-candidate step (Section 10.6) — null means this type never follows anything |
+| enrichment\_applicable            | Boolean | No       | Default `false`. Gates `enrichment_status` at enqueue time                                                                                         |
+| computation\_applicable           | Boolean | No       | Default `false`. Gates whether a queue row is created at all                                                                                       |
+| is\_enabled                       | Boolean | No       | Default `true`                                                                                                                                     |
 
 Unique index: `(register_mnemonic, observation_type)`. The same `observation_type` string could exist under a different `register_mnemonic` as a completely separate, independently-defined row — nothing links them; they'd just happen to share a name.
 
@@ -94,23 +85,24 @@ Unique index: `(register_mnemonic, observation_type)`. The same `observation_typ
 
 Renamed from `G2PObservationAggregateQueue`. `G2PObservationAggregateDefinition` is removed — which aggregate(s) a given `observation_type` produces is now internal to that type's computation adapter (2.6), not a separate metadata table.
 
-| Field | Type | Nullable | Notes |
-|---|---|---|---|
-| queue_id | String | No | PK |
-| observation_id | String | No | Indexed. Source row is immutable — no snapshot fields needed |
-| queue_timestamp | DateTime | No | Set on enqueue |
-| enrichment_status | String (EnrichmentStatusEnum) | No | `PENDING` if `enrichment_applicable`, else `NOT_APPLICABLE` |
-| enrichment_no_of_attempts | Integer | No | Default `0` |
-| enrichment_latest_timestamp | DateTime | Yes | Last enrichment attempt |
-| enrichment_latest_error_code | String | Yes | |
-| computation_status | String (ProcessStatusEnum) | No | Default `PENDING`. Row only created if `computation_applicable` |
-| computation_no_of_attempts | Integer | No | Default `0` |
-| computation_latest_timestamp | DateTime | Yes | Last computation attempt |
-| computation_latest_error_code | String | Yes | |
+| Field                            | Type                          | Nullable | Notes                                                           |
+| -------------------------------- | ----------------------------- | -------- | --------------------------------------------------------------- |
+| queue\_id                        | String                        | No       | PK                                                              |
+| observation\_id                  | String                        | No       | Indexed. Source row is immutable — no snapshot fields needed    |
+| queue\_timestamp                 | DateTime                      | No       | Set on enqueue                                                  |
+| enrichment\_status               | String (EnrichmentStatusEnum) | No       | `PENDING` if `enrichment_applicable`, else `NOT_APPLICABLE`     |
+| enrichment\_no\_of\_attempts     | Integer                       | No       | Default `0`                                                     |
+| enrichment\_latest\_timestamp    | DateTime                      | Yes      | Last enrichment attempt                                         |
+| enrichment\_latest\_error\_code  | String                        | Yes      |                                                                 |
+| computation\_status              | String (ProcessStatusEnum)    | No       | Default `PENDING`. Row only created if `computation_applicable` |
+| computation\_no\_of\_attempts    | Integer                       | No       | Default `0`                                                     |
+| computation\_latest\_timestamp   | DateTime                      | Yes      | Last computation attempt                                        |
+| computation\_latest\_error\_code | String                        | Yes      |                                                                 |
 
 Enqueue rule: a row is created only if `enrichment_applicable` or `computation_applicable` is `true` for the observation's type. At creation:
-- `enrichment_applicable = true` → `enrichment_status = PENDING`, `computation_status = PENDING`.
-- `enrichment_applicable = false` → `enrichment_status = NOT_APPLICABLE`, `computation_status = PENDING`.
+
+* `enrichment_applicable = true` → `enrichment_status = PENDING`, `computation_status = PENDING`.
+* `enrichment_applicable = false` → `enrichment_status = NOT_APPLICABLE`, `computation_status = PENDING`.
 
 Open item: neither case covers `computation_applicable = false` (an enrichment-only type, no rollup). By symmetry this would need `computation_status = NOT_APPLICABLE` too, set from `computation_applicable` at enqueue — not yet confirmed as a requirement.
 
@@ -118,19 +110,19 @@ Pickup/dispatch logic lives entirely in Celery Beat — see Section 6.
 
 #### 2.4 `G2PRegisterObservationAggregate` — table `g2p_register_observation_aggregates`
 
-| Field | Type | Nullable | Notes |
-|---|---|---|---|
-| aggregate_id | String | No | PK |
-| internal_record_id | String | No | Indexed |
-| register_mnemonic | String | No | Indexed. Required to know which register/table `internal_record_id` resolves against |
-| aggregate_type | String | No | Indexed |
-| period_key | String | No | Indexed, e.g. `2018_SUMMER_IRRIGATED`. Adapter-defined label, format not enforced by the platform |
-| period_start_date | Date | No | Indexed. Adapter-derived; the generic sortable/rangeable anchor `period_key` alone doesn't provide |
-| period_end_date | Date | No | Adapter-derived |
-| aggregate_value | JSONB | No | Computed measures |
-| geo_dimensions | JSONB | Yes | Resolved by `COMPUTATION_WORKER` from `internal_record_id`/`register_mnemonic`'s geo hierarchy — never adapter-populated |
-| custom_dimensions | JSONB | Yes | Populated by the computation adapter; shape is specific to `aggregate_type` |
-| computed_at | DateTime | No | |
+| Field                | Type     | Nullable | Notes                                                                                                                    |
+| -------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| aggregate\_id        | String   | No       | PK                                                                                                                       |
+| internal\_record\_id | String   | No       | Indexed                                                                                                                  |
+| register\_mnemonic   | String   | No       | Indexed. Required to know which register/table `internal_record_id` resolves against                                     |
+| aggregate\_type      | String   | No       | Indexed                                                                                                                  |
+| period\_key          | String   | No       | Indexed, e.g. `2018_SUMMER_IRRIGATED`. Adapter-defined label, format not enforced by the platform                        |
+| period\_start\_date  | Date     | No       | Indexed. Adapter-derived; the generic sortable/rangeable anchor `period_key` alone doesn't provide                       |
+| period\_end\_date    | Date     | No       | Adapter-derived                                                                                                          |
+| aggregate\_value     | JSONB    | No       | Computed measures                                                                                                        |
+| geo\_dimensions      | JSONB    | Yes      | Resolved by `COMPUTATION_WORKER` from `internal_record_id`/`register_mnemonic`'s geo hierarchy — never adapter-populated |
+| custom\_dimensions   | JSONB    | Yes      | Populated by the computation adapter; shape is specific to `aggregate_type`                                              |
+| computed\_at         | DateTime | No       |                                                                                                                          |
 
 Unique index: `(internal_record_id, aggregate_type, period_key)`. `register_mnemonic` is not part of the key — `internal_record_id` values are already unique platform-wide (`uuid4`).
 
@@ -285,23 +277,23 @@ class G2PObservationAdapterFactory:
 
 For each result an adapter returns, `COMPUTATION_WORKER` resolves `geo_dimensions` itself from that result's own `internal_record_id`/`register_mnemonic` (its geo hierarchy) — a generic step applied uniformly regardless of `aggregate_type`, so no adapter implements geo resolution. `COMPUTATION_WORKER` then upserts each result (with its resolved `geo_dimensions`) into `g2p_register_observation_aggregates` (Section 2.4) and appends it to `g2p_register_observation_aggregate_history` (Section 2.5).
 
----
+***
 
 ### 3. Observation Envelope Design
 
 Envelope = every column on `G2PObservation` (Section 2.1). `payload`/`payload_enriched` are not envelope columns at all — they live in the separate `G2PObservationPayload` table (Section 2.1.1).
 
-| Purpose | Fields |
-|---|---|
-| Identity | `observation_id` |
-| Classification | `observation_type`, `schema_version` |
-| Subject linkage | `internal_record_id`, `register_mnemonic` |
-| Timing | `observed_at`, `created_at` |
-| Provenance | `created_by`, `submission_id`, `source` |
-| Location | `latitude`, `longitude` |
-| Lifecycle | `record_status`, `related_observation_id`, `relation_type` |
+| Purpose         | Fields                                                     |
+| --------------- | ---------------------------------------------------------- |
+| Identity        | `observation_id`                                           |
+| Classification  | `observation_type`, `schema_version`                       |
+| Subject linkage | `internal_record_id`, `register_mnemonic`                  |
+| Timing          | `observed_at`, `created_at`                                |
+| Provenance      | `created_by`, `submission_id`, `source`                    |
+| Location        | `latitude`, `longitude`                                    |
+| Lifecycle       | `record_status`, `related_observation_id`, `relation_type` |
 
----
+***
 
 ### 4. Observation Payload Metadata Design
 
@@ -315,19 +307,19 @@ Enumerated payload fields reference `G2PAttribute`/`G2PAttributeValue` datasets 
 
 Reportable payload keys per `observation_type` are declared in `reporting.yaml`/`reporting_views.sql` (farmer-registry), one entry per key that a materialized reporting view extracts.
 
----
+***
 
 ### 5. Observation Types
 
 Each row is a complete, self-contained `G2PObservationTypeDefinition` — nested under exactly one `register_mnemonic`, not cross-referenced from elsewhere.
 
-| register_mnemonic | observation_type | follows_observation_type | Payload fields |
-|---|---|---|---|
-| `IndividualLand` | `CROP_SOWING_EVENT` | — | `commodity_code`, `season`, `sowing_method`, `area_sown_ha`, `seed_variety`, `seed_source`, `is_cluster_participant`, `cluster_id`, `notes`, `photo_document_ids` |
-| `IndividualLand` | `CROP_HARVEST_EVENT` | `CROP_SOWING_EVENT` | `collected_land_ha`, `collected_product_quintal`, `harvest_method`, `is_cluster_participant`, `cluster_id`, `notes`, `photo_document_ids` |
-| `IndividualLivestock` | `LIVESTOCK_HEALTH_EVENT` | — | `health_status`, `vaccination_type`, `treatment_notes`, `photo_document_ids` |
-| `Household` | `HOUSEHOLD_FOOD_SECURITY_SURVEY` | — | `food_security_score`, `meals_per_day`, `coping_strategy`, `notes` |
-| `IndividualLand` | `WEATHER_OBSERVATION` | — | `rainfall_mm`, `temperature_c`, `event_type`, `notes` |
+| register\_mnemonic    | observation\_type                | follows\_observation\_type | Payload fields                                                                                                                                                    |
+| --------------------- | -------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IndividualLand`      | `CROP_SOWING_EVENT`              | —                          | `commodity_code`, `season`, `sowing_method`, `area_sown_ha`, `seed_variety`, `seed_source`, `is_cluster_participant`, `cluster_id`, `notes`, `photo_document_ids` |
+| `IndividualLand`      | `CROP_HARVEST_EVENT`             | `CROP_SOWING_EVENT`        | `collected_land_ha`, `collected_product_quintal`, `harvest_method`, `is_cluster_participant`, `cluster_id`, `notes`, `photo_document_ids`                         |
+| `IndividualLivestock` | `LIVESTOCK_HEALTH_EVENT`         | —                          | `health_status`, `vaccination_type`, `treatment_notes`, `photo_document_ids`                                                                                      |
+| `Household`           | `HOUSEHOLD_FOOD_SECURITY_SURVEY` | —                          | `food_security_score`, `meals_per_day`, `coping_strategy`, `notes`                                                                                                |
+| `IndividualLand`      | `WEATHER_OBSERVATION`            | —                          | `rainfall_mm`, `temperature_c`, `event_type`, `notes`                                                                                                             |
 
 #### 5.1 `payload_json_schema` — `IndividualLand` / `CROP_SOWING_EVENT`
 
@@ -368,7 +360,7 @@ Each row is a complete, self-contained `G2PObservationTypeDefinition` — nested
 }
 ```
 
----
+***
 
 ### 6. Celery Beat and Workers
 
@@ -377,12 +369,13 @@ Each row is a complete, self-contained `G2PObservationTypeDefinition` — nested
 Single beat task, fixed polling interval (`observation_processing_beat_producer_frequency` setting — same convention as the platform's existing `score_compute_beat_producer_frequency`).
 
 Each tick:
+
 1. Query `g2p_observation_processing_queue` for rows matching either:
-   - `enrichment_status = 'PENDING'`, OR
-   - `computation_status = 'PENDING'` AND `enrichment_status IN ('COMPLETED', 'NOT_APPLICABLE')`.
+   * `enrichment_status = 'PENDING'`, OR
+   * `computation_status = 'PENDING'` AND `enrichment_status IN ('COMPLETED', 'NOT_APPLICABLE')`.
 2. For each matched row, dispatch to exactly one worker — never both from the same row on the same tick:
-   - If `enrichment_status = 'PENDING'` → mark `enrichment_status = 'PROCESSING'`, `celery_app.send_task(ENRICHMENT_WORKER, queue_id)`.
-   - Else (`computation_status = 'PENDING'`, enrichment already resolved) → mark `computation_status = 'PROCESSING'`, `celery_app.send_task(COMPUTATION_WORKER, queue_id)`.
+   * If `enrichment_status = 'PENDING'` → mark `enrichment_status = 'PROCESSING'`, `celery_app.send_task(ENRICHMENT_WORKER, queue_id)`.
+   * Else (`computation_status = 'PENDING'`, enrichment already resolved) → mark `computation_status = 'PROCESSING'`, `celery_app.send_task(COMPUTATION_WORKER, queue_id)`.
 
 A row whose `enrichment_status` is still `PENDING` is therefore always dispatched for enrichment first; it only becomes computation-eligible on a later tick, once `enrichment_status` reaches `COMPLETED` (or was `NOT_APPLICABLE` from enqueue).
 
@@ -408,20 +401,21 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 
 #### 6.4 Dispatch table
 
-| enrichment_status | computation_status | Beat dispatches to |
-|---|---|---|
-| `PENDING` | `PENDING` | `ENRICHMENT_WORKER` |
-| `PROCESSING` or `FAILED` | `PENDING` | *(nothing yet — not eligible)* |
-| `COMPLETED` or `NOT_APPLICABLE` | `PENDING` | `COMPUTATION_WORKER` |
-| `COMPLETED` or `NOT_APPLICABLE` | `COMPLETED`, `PROCESSING`, or `FAILED` | *(nothing — done, in flight, or terminally failed)* |
+| enrichment\_status              | computation\_status                    | Beat dispatches to                                  |
+| ------------------------------- | -------------------------------------- | --------------------------------------------------- |
+| `PENDING`                       | `PENDING`                              | `ENRICHMENT_WORKER`                                 |
+| `PROCESSING` or `FAILED`        | `PENDING`                              | _(nothing yet — not eligible)_                      |
+| `COMPLETED` or `NOT_APPLICABLE` | `PENDING`                              | `COMPUTATION_WORKER`                                |
+| `COMPLETED` or `NOT_APPLICABLE` | `COMPLETED`, `PROCESSING`, or `FAILED` | _(nothing — done, in flight, or terminally failed)_ |
 
----
+***
 
 ### 7. Sample Records — Crop Sown / Harvest (based on PDF: Amhara, Wheat, 2018 summer irrigated)
 
 **obs-0001 — initial sowing record, Farmer X, plot land-77abf3**
 
 `g2p_observations`:
+
 ```json
 {
   "observation_id": "obs-0001",
@@ -439,7 +433,9 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
   "schema_version": 1
 }
 ```
+
 `g2p_observations_payload`:
+
 ```json
 {
   "observation_id": "obs-0001",
@@ -460,6 +456,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 **obs-0002 — correction of obs-0001 (`VOIDS`)**
 
 `g2p_observations`:
+
 ```json
 {
   "observation_id": "obs-0002",
@@ -477,7 +474,9 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
   "schema_version": 1
 }
 ```
+
 `g2p_observations_payload`:
+
 ```json
 {
   "observation_id": "obs-0002",
@@ -498,6 +497,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 **obs-0003 — harvest for obs-0002 (`FOLLOWS`)**
 
 `g2p_observations`:
+
 ```json
 {
   "observation_id": "obs-0003",
@@ -515,7 +515,9 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
   "schema_version": 1
 }
 ```
+
 `g2p_observations_payload`:
+
 ```json
 {
   "observation_id": "obs-0003",
@@ -533,6 +535,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 **obs-0004 — sowing, Farmer Y, plot land-9c21e0, no cluster**
 
 `g2p_observations`:
+
 ```json
 {
   "observation_id": "obs-0004",
@@ -548,7 +551,9 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
   "schema_version": 1
 }
 ```
+
 `g2p_observations_payload`:
+
 ```json
 {
   "observation_id": "obs-0004",
@@ -568,6 +573,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 **obs-0005 — harvest for obs-0004 (`FOLLOWS`)**
 
 `g2p_observations`:
+
 ```json
 {
   "observation_id": "obs-0005",
@@ -583,7 +589,9 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
   "schema_version": 1
 }
 ```
+
 `g2p_observations_payload`:
+
 ```json
 {
   "observation_id": "obs-0005",
@@ -597,7 +605,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 }
 ```
 
----
+***
 
 ### 8. Sample Rollup Computation — Farmer Level
 
@@ -607,7 +615,8 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 
 **Beat**: this row is dispatched straight to `COMPUTATION_WORKER` on the first tick that sees it — `enrichment_status` is already `NOT_APPLICABLE`, so Beat never routes it to `ENRICHMENT_WORKER` (Section 6).
 
-**COMPUTATION_WORKER steps**:
+**COMPUTATION\_WORKER steps**:
+
 1. Receive `queue_id` from Beat → `computation_status = PENDING`, `enrichment_status = NOT_APPLICABLE` → eligible.
 2. Resolve `G2PObservationAdapterFactory.get_computer("CROP_HARVEST_EVENT")` → `G2PObservationComputerCropHarvestEvent`.
 3. Fetch `g2p_observations` row for `obs-0003` (envelope only, no payload IO yet), read `internal_record_id` (`land-77abf3`, mnemonic `IndividualLand`) and `related_observation_id` (`obs-0002`, `relation_type = FOLLOWS`) → fetch the `g2p_observations` envelope row for the sowing observation `obs-0002`.
@@ -619,6 +628,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 9. Worker resolves `geo_dimensions` for the result from `individual-55f2`'s geo hierarchy, then upserts the result (with its resolved `geo_dimensions`) into `g2p_register_observation_aggregates` and appends to `g2p_register_observation_aggregate_history`; sets `computation_status = COMPLETED`.
 
 **Result row (`g2p_register_observation_aggregates`)**:
+
 ```json
 {
   "aggregate_id": "agg-1001",
@@ -648,7 +658,7 @@ A row whose `enrichment_status` is still `PENDING` is therefore always dispatche
 }
 ```
 
----
+***
 
 ### 9. Sample Rollup Computation — Region Level
 
@@ -657,6 +667,7 @@ Materialized view: `fr_rpt_observation_crop_performance` (`farmer-registry/docke
 **View grouping columns**: `geo_1` (region), `geo_2`, `geo_3`, `commodity_code`, `season`.
 
 **View steps**:
+
 1. Source rows: `g2p_observations` where `observation_type IN ('CROP_SOWING_EVENT', 'CROP_HARVEST_EVENT')` and `record_status = 'ACTIVE'`.
 2. Join `g2p_observations_payload` on `observation_id` — this view needs payload contents, unlike Section 8's envelope-only lookups.
 3. Join `IndividualLand` → `Individual` → `Household` for `geo_1..geo_5` (same inheritance mechanism as `fr_rpt_crop`).
@@ -667,43 +678,43 @@ Materialized view: `fr_rpt_observation_crop_performance` (`farmer-registry/docke
 
 **Sample output row (Amhara, Wheat, 2018 summer irrigated — computed from obs-0001..obs-0005)**:
 
-| geo_1 | commodity_code | season | total_farmers | male | female | total_area_sown_ha | area_sown_ha_cluster | total_area_collected_ha | total_production_quintal | productivity_quintal_per_ha |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Amhara | WHEAT | 2018_SUMMER_IRRIGATED | 2 | 2 | 0 | 1.25 | 0.85 | 1.18 | 19.7 | 16.69 |
+| geo\_1 | commodity\_code | season                  | total\_farmers | male | female | total\_area\_sown\_ha | area\_sown\_ha\_cluster | total\_area\_collected\_ha | total\_production\_quintal | productivity\_quintal\_per\_ha |
+| ------ | --------------- | ----------------------- | -------------- | ---- | ------ | --------------------- | ----------------------- | -------------------------- | -------------------------- | ------------------------------ |
+| Amhara | WHEAT           | 2018\_SUMMER\_IRRIGATED | 2              | 2    | 0      | 1.25                  | 0.85                    | 1.18                       | 19.7                       | 16.69                          |
 
 This row is the same shape as the PDF's regional wheat performance table (planned/sown/collected land in hectares, collected product in quintals, cluster vs. non-cluster split, participant farmer counts by gender, productivity ratio), populated from individual `g2p_observations` rows instead of a manually compiled spreadsheet.
 
----
+***
 
 ### Observations - Tabular Presentation
 
 **Envelope fields** — `g2p_observations`
 
-| observation_id | observation_type | internal_record_id | register_mnemonic | observed_at | record_status | related_observation_id | relation_type |
-|---|---|---|---|---|---|---|---|
-| obs-0001 | CROP_SOWING_EVENT | land-77abf3 | IndividualLand | 2018-06-15T00:00:00Z | ARCHIVED | — | — |
-| obs-0002 | CROP_SOWING_EVENT | land-77abf3 | IndividualLand | 2018-06-15T00:00:00Z | ACTIVE | obs-0001 | VOIDS |
-| obs-0003 | CROP_HARVEST_EVENT | land-77abf3 | IndividualLand | 2018-10-20T00:00:00Z | ACTIVE | obs-0002 | FOLLOWS |
-| obs-0004 | CROP_SOWING_EVENT | land-9c21e0 | IndividualLand | 2018-06-18T00:00:00Z | ACTIVE | — | — |
-| obs-0005 | CROP_HARVEST_EVENT | land-9c21e0 | IndividualLand | 2018-10-22T00:00:00Z | ACTIVE | obs-0004 | FOLLOWS |
+| observation\_id | observation\_type    | internal\_record\_id | register\_mnemonic | observed\_at         | record\_status | related\_observation\_id | relation\_type |
+| --------------- | -------------------- | -------------------- | ------------------ | -------------------- | -------------- | ------------------------ | -------------- |
+| obs-0001        | CROP\_SOWING\_EVENT  | land-77abf3          | IndividualLand     | 2018-06-15T00:00:00Z | ARCHIVED       | —                        | —              |
+| obs-0002        | CROP\_SOWING\_EVENT  | land-77abf3          | IndividualLand     | 2018-06-15T00:00:00Z | ACTIVE         | obs-0001                 | VOIDS          |
+| obs-0003        | CROP\_HARVEST\_EVENT | land-77abf3          | IndividualLand     | 2018-10-20T00:00:00Z | ACTIVE         | obs-0002                 | FOLLOWS        |
+| obs-0004        | CROP\_SOWING\_EVENT  | land-9c21e0          | IndividualLand     | 2018-06-18T00:00:00Z | ACTIVE         | —                        | —              |
+| obs-0005        | CROP\_HARVEST\_EVENT | land-9c21e0          | IndividualLand     | 2018-10-22T00:00:00Z | ACTIVE         | obs-0004                 | FOLLOWS        |
 
 **Payload fields** — `g2p_observations_payload` (columns match Section 2.1.1 exactly; `payload`/`payload_enriched` are single JSONB cells, not flattened)
 
-| observation_id | payload | payload_enriched |
-|---|---|---|
-| obs-0001 | `{"commodity_code": "WHEAT", "season": "2018_SUMMER_IRRIGATED", "sowing_method": "TRACTOR", "area_sown_ha": 0.75, "seed_variety": "Kubsa", "seed_source": "GOVERNMENT_SUBSIDY", "is_cluster_participant": true, "cluster_id": "CLU-AMH-014"}` | `null` |
-| obs-0002 | `{"commodity_code": "WHEAT", "season": "2018_SUMMER_IRRIGATED", "sowing_method": "TRACTOR", "area_sown_ha": 0.85, "seed_variety": "Kubsa", "seed_source": "GOVERNMENT_SUBSIDY", "is_cluster_participant": true, "cluster_id": "CLU-AMH-014"}` | `null` |
-| obs-0003 | `{"collected_land_ha": 0.80, "collected_product_quintal": 13.6, "harvest_method": "CLUSTER_COMBINE", "is_cluster_participant": true, "cluster_id": "CLU-AMH-014"}` | `null` |
-| obs-0004 | `{"commodity_code": "WHEAT", "season": "2018_SUMMER_IRRIGATED", "sowing_method": "MANUAL", "area_sown_ha": 0.40, "seed_variety": "Kubsa", "seed_source": "OWN", "is_cluster_participant": false}` | `null` |
-| obs-0005 | `{"collected_land_ha": 0.38, "collected_product_quintal": 6.1, "harvest_method": "MANUAL", "is_cluster_participant": false}` | `null` |
+| observation\_id | payload                                                                                                                                                                                                                                       | payload\_enriched |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| obs-0001        | `{"commodity_code": "WHEAT", "season": "2018_SUMMER_IRRIGATED", "sowing_method": "TRACTOR", "area_sown_ha": 0.75, "seed_variety": "Kubsa", "seed_source": "GOVERNMENT_SUBSIDY", "is_cluster_participant": true, "cluster_id": "CLU-AMH-014"}` | `null`            |
+| obs-0002        | `{"commodity_code": "WHEAT", "season": "2018_SUMMER_IRRIGATED", "sowing_method": "TRACTOR", "area_sown_ha": 0.85, "seed_variety": "Kubsa", "seed_source": "GOVERNMENT_SUBSIDY", "is_cluster_participant": true, "cluster_id": "CLU-AMH-014"}` | `null`            |
+| obs-0003        | `{"collected_land_ha": 0.80, "collected_product_quintal": 13.6, "harvest_method": "CLUSTER_COMBINE", "is_cluster_participant": true, "cluster_id": "CLU-AMH-014"}`                                                                            | `null`            |
+| obs-0004        | `{"commodity_code": "WHEAT", "season": "2018_SUMMER_IRRIGATED", "sowing_method": "MANUAL", "area_sown_ha": 0.40, "seed_variety": "Kubsa", "seed_source": "OWN", "is_cluster_participant": false}`                                             | `null`            |
+| obs-0005        | `{"collected_land_ha": 0.38, "collected_product_quintal": 6.1, "harvest_method": "MANUAL", "is_cluster_participant": false}`                                                                                                                  | `null`            |
 
 **Aggregate fields** — `g2p_register_observation_aggregates` (columns match Section 2.4 exactly; `aggregate_value`/`geo_dimensions`/`custom_dimensions` are single JSONB cells)
 
-| aggregate_id | internal_record_id | register_mnemonic | aggregate_type | period_key | period_start_date | period_end_date | aggregate_value | geo_dimensions | custom_dimensions | computed_at |
-|---|---|---|---|---|---|---|---|---|---|---|
-| agg-1001 | individual-55f2 | Individual | SEASON_CROP_YIELD_SUMMARY | 2018_SUMMER_IRRIGATED | 2018-06-01 | 2018-10-31 | `{"total_area_sown_ha": 0.85, "total_area_collected_ha": 0.80, "total_production_quintal": 13.6, "yield_quintal_per_ha": 17.0, "by_commodity": {"WHEAT": {"area_sown_ha": 0.85, "production_quintal": 13.6}}}` | `{"region_id": "AMH", "region_name": "Amhara"}` | `{"primary_commodity": "WHEAT"}` | 2018-10-21T02:00:00Z |
+| aggregate\_id | internal\_record\_id | register\_mnemonic | aggregate\_type              | period\_key             | period\_start\_date | period\_end\_date | aggregate\_value                                                                                                                                                                                               | geo\_dimensions                                 | custom\_dimensions               | computed\_at         |
+| ------------- | -------------------- | ------------------ | ---------------------------- | ----------------------- | ------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------------------------- | -------------------- |
+| agg-1001      | individual-55f2      | Individual         | SEASON\_CROP\_YIELD\_SUMMARY | 2018\_SUMMER\_IRRIGATED | 2018-06-01          | 2018-10-31        | `{"total_area_sown_ha": 0.85, "total_area_collected_ha": 0.80, "total_production_quintal": 13.6, "yield_quintal_per_ha": 17.0, "by_commodity": {"WHEAT": {"area_sown_ha": 0.85, "production_quintal": 13.6}}}` | `{"region_id": "AMH", "region_name": "Amhara"}` | `{"primary_commodity": "WHEAT"}` | 2018-10-21T02:00:00Z |
 
----
+***
 
 ### 10. Field Recording UX Design
 
@@ -718,21 +729,21 @@ Two distinct search modes, not one general-purpose search box.
 #### 10.2 Recording a new observation — screen flow
 
 1. **Subject profile → Observations tab → "+ Record Observation."**
-2. **Type picker** — list of `observation_type` values from every `G2PObservationTypeDefinition` row (Section 2.2) whose `register_mnemonic` equals this subject's own `register_mnemonic`. Existence of a definition row *is* what makes a type valid here — no separate allowed/disallowed check. A Land profile shows `CROP_SOWING_EVENT`, `CROP_HARVEST_EVENT`, `WEATHER_OBSERVATION` (all three defined under `IndividualLand`, Section 5); a Livestock profile shows `LIVESTOCK_HEALTH_EVENT` (defined under `IndividualLivestock`).
+2. **Type picker** — list of `observation_type` values from every `G2PObservationTypeDefinition` row (Section 2.2) whose `register_mnemonic` equals this subject's own `register_mnemonic`. Existence of a definition row _is_ what makes a type valid here — no separate allowed/disallowed check. A Land profile shows `CROP_SOWING_EVENT`, `CROP_HARVEST_EVENT`, `WEATHER_OBSERVATION` (all three defined under `IndividualLand`, Section 5); a Livestock profile shows `LIVESTOCK_HEALTH_EVENT` (defined under `IndividualLivestock`).
 3. **Form screen** — rendered directly from `payload_json_schema` (Section 4). Enum fields render as choice chips, not free text. Required fields marked from the schema's `required` list.
 
 #### 10.3 Envelope auto-fill
 
 None of the envelope fields (Section 3) are hand-entered on the form.
 
-| Field | Source |
-|---|---|
-| `internal_record_id`, `register_mnemonic` | current subject context |
-| `observed_at` | device clock, defaults to now, editable for backdating |
-| `latitude`, `longitude` | device GPS, manual pin-drop fallback |
-| `created_by` | logged-in agent |
-| `source` | fixed per client build, e.g. `AGENT_APP` |
-| `schema_version` | active version of the type definition at submit time |
+| Field                                     | Source                                                 |
+| ----------------------------------------- | ------------------------------------------------------ |
+| `internal_record_id`, `register_mnemonic` | current subject context                                |
+| `observed_at`                             | device clock, defaults to now, editable for backdating |
+| `latitude`, `longitude`                   | device GPS, manual pin-drop fallback                   |
+| `created_by`                              | logged-in agent                                        |
+| `source`                                  | fixed per client build, e.g. `AGENT_APP`               |
+| `schema_version`                          | active version of the type definition at submit time   |
 
 #### 10.4 Smart defaults
 
@@ -770,7 +781,7 @@ Form submissions save to local storage immediately as drafts and sync opportunis
 5. Link-to-prior picker (auto-selected when unambiguous, shown only when not)
 6. Sync/pending queue indicator (timeline badge, no separate screen)
 
----
+***
 
 ### 11. APIs
 
@@ -780,24 +791,24 @@ Every endpoint is `POST` — no `GET` verb anywhere in this platform. A "fetch" 
 
 #### 11.1 Metadata APIs — Observation Type Definitions
 
-| Path | Request body | Purpose |
-|---|---|---|
-| `/create_observation_type` | `register_mnemonic`, `observation_type`, `payload_json_schema`, flags | Create a `G2PObservationTypeDefinition` (Section 2.2) |
-| `/update_observation_type` | `register_mnemonic`, `observation_type`, fields to change | Update a definition (e.g. `schema_version` bump) |
-| `/get_observation_type` | `register_mnemonic`, `observation_type` | Fetch one definition — used by the form renderer for `payload_json_schema` (Section 10.2, point 3) |
-| `/get_observation_types` | `register_mnemonic` (optional) | List definitions; scoped to one `register_mnemonic` when given — the exact query behind the Type Picker (Section 10.2, point 2), or all definitions when omitted (admin/catalog use) |
+| Path                       | Request body                                                          | Purpose                                                                                                                                                                              |
+| -------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/create_observation_type` | `register_mnemonic`, `observation_type`, `payload_json_schema`, flags | Create a `G2PObservationTypeDefinition` (Section 2.2)                                                                                                                                |
+| `/update_observation_type` | `register_mnemonic`, `observation_type`, fields to change             | Update a definition (e.g. `schema_version` bump)                                                                                                                                     |
+| `/get_observation_type`    | `register_mnemonic`, `observation_type`                               | Fetch one definition — used by the form renderer for `payload_json_schema` (Section 10.2, point 3)                                                                                   |
+| `/get_observation_types`   | `register_mnemonic` (optional)                                        | List definitions; scoped to one `register_mnemonic` when given — the exact query behind the Type Picker (Section 10.2, point 2), or all definitions when omitted (admin/catalog use) |
 
 Response body for a single definition = the `G2PObservationTypeDefinition` row (Section 2.2) verbatim — `payload_json_schema` returned as-is, since it's consumed directly by the schema-driven form renderer, not reprocessed.
 
 #### 11.2 Data APIs — Observations
 
-| Path | Request body | Purpose |
-|---|---|---|
-| `/record_observation` | envelope fields + `payload` (see below) | Record one observation. Validates `payload` against the resolved `(register_mnemonic, observation_type)` schema (Section 4), writes `g2p_observations` + `g2p_observations_payload` in one transaction, enqueues `G2PObservationProcessingQueue` (Section 2.3) |
-| `/record_observations` | array of the above | Same, batch — the offline-sync path (Section 10.7) |
-| `/get_observation` | `observation_id` | Fetch one observation — envelope (Section 2.1) joined with payload (Section 2.1.1) |
-| `/get_observations` | `internal_record_id`, `observation_type`, `status`, `open` (bool) | Contextual timeline query (Section 10.1) — `open: true` is also the FOLLOWS-candidate query (Section 10.6, point 2) |
-| `/search_observations` | `query`, `observation_type`, `season`, `date_from`, `date_to` | Open-ended search (Section 10.1, secondary mode) |
+| Path                   | Request body                                                      | Purpose                                                                                                                                                                                                                                                        |
+| ---------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/record_observation`  | envelope fields + `payload` (see below)                           | Record one observation. Validates `payload` against the resolved `(register_mnemonic, observation_type)` schema (Section 4), writes `g2p_observations` + `g2p_observations_payload` in one transaction, enqueues `G2PObservationProcessingQueue` (Section 2.3) |
+| `/record_observations` | array of the above                                                | Same, batch — the offline-sync path (Section 10.7)                                                                                                                                                                                                             |
+| `/get_observation`     | `observation_id`                                                  | Fetch one observation — envelope (Section 2.1) joined with payload (Section 2.1.1)                                                                                                                                                                             |
+| `/get_observations`    | `internal_record_id`, `observation_type`, `status`, `open` (bool) | Contextual timeline query (Section 10.1) — `open: true` is also the FOLLOWS-candidate query (Section 10.6, point 2)                                                                                                                                            |
+| `/search_observations` | `query`, `observation_type`, `season`, `date_from`, `date_to`     | Open-ended search (Section 10.1, secondary mode)                                                                                                                                                                                                               |
 
 `open: true` filters to `record_status = 'ACTIVE'` and not yet pointed at by any other observation's `related_observation_id`/`relation_type = FOLLOWS` — the one generic query Section 10.6 depends on.
 
@@ -806,6 +817,7 @@ Response body for a single definition = the `G2PObservationTypeDefinition` row (
 **Example — `POST /record_observation`** (recording `obs-0003`, the harvest linked via `FOLLOWS` to `obs-0002`, Section 7):
 
 Request:
+
 ```json
 {
   "observation_type": "CROP_HARVEST_EVENT",
@@ -830,17 +842,18 @@ Response: `200 OK`, body = the full `g2p_observations` row for `obs-0003` (Secti
 
 #### 11.3 Data APIs — Observation Aggregates
 
-| Path | Request body | Purpose |
-|---|---|---|
-| `/get_observation_aggregates` | `internal_record_id`, `aggregate_type` (optional) | Latest aggregate row(s) for a subject |
-| `/get_observation_aggregate` | `internal_record_id`, `aggregate_type` | Latest single aggregate for a subject — the number a subject's profile surfaces |
-| `/get_observation_aggregate_history` | `internal_record_id`, `aggregate_type` | Full `g2p_register_observation_aggregate_history` (Section 2.5) for that subject/aggregate_type — trend over time |
+| Path                                 | Request body                                      | Purpose                                                                                                            |
+| ------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `/get_observation_aggregates`        | `internal_record_id`, `aggregate_type` (optional) | Latest aggregate row(s) for a subject                                                                              |
+| `/get_observation_aggregate`         | `internal_record_id`, `aggregate_type`            | Latest single aggregate for a subject — the number a subject's profile surfaces                                    |
+| `/get_observation_aggregate_history` | `internal_record_id`, `aggregate_type`            | Full `g2p_register_observation_aggregate_history` (Section 2.5) for that subject/aggregate\_type — trend over time |
 
 Read-only — nothing writes to `g2p_register_observation_aggregates` through this API; the only writer is `COMPUTATION_WORKER` (Section 6.3).
 
 **Example — `POST /get_observation_aggregate`**
 
 Request:
+
 ```json
 {
   "internal_record_id": "individual-55f2",

@@ -2,8 +2,7 @@
 description: >-
   The OpenG2P Consent Manager: the Policy Decision Point for outbound data
   sharing. It holds the subject's consent, checks it against the partner's
-  access policy in Partner Management, and tells the registry what it may
-  release.
+  access policy in Partner Management, and tells the reg
 ---
 
 # Consent Management
@@ -22,11 +21,11 @@ The CM is the **Policy Decision Point (PDP)**. A registry, or any other data-hol
 
 ## Where responsibilities sit
 
-| Concern | Owner |
-| --- | --- |
-| Partners, their signing keys and their **access policies** (what a partner may ever receive) | **Partner Management (PM)**. Changes are requested and approved there. The CM reads them, cached ([Partner Management integration](design/partner-management-integration.md)) |
-| The subject's **consent**, the decision at `/validate`, consent receipts and consent tokens | **Consent Manager**. Receipts and tokens are signed with the CM's own `.p12` key, published at `/.well-known/jwks.json`; the CM is not a PM partner |
-| The data, its [data scopes](../products/registry/registry/design/data-scopes.md), and releasing only the permitted fields | **The registry** ([Registry integration](design/registry-integration.md)) |
+| Concern                                                                                                                   | Owner                                                                                                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Partners, their signing keys and their **access policies** (what a partner may ever receive)                              | **Partner Management (PM)**. Changes are requested and approved there. The CM reads them, cached ([Partner Management integration](design/partner-management-integration.md)) |
+| The subject's **consent**, the decision at `/validate`, consent receipts and consent tokens                               | **Consent Manager**. Receipts and tokens are signed with the CM's own `.p12` key, published at `/.well-known/jwks.json`; the CM is not a PM partner                           |
+| The data, its [data scopes](../products/registry/registry/design/data-scopes.md), and releasing only the permitted fields | **The registry** ([Registry integration](design/registry-integration.md))                                                                                                     |
 
 ## What problem it solves
 
@@ -41,7 +40,7 @@ The CM answers these once, for every registry.
 
 ## Two operating modes
 
-1. **Verify &amp; enforce (primary).** A partner calls a registry about a person. The registry asks the CM, which finds or verifies the consent, applies the partner's policy for that registry, and returns the **effective data scopes**. See [Verification & enforcement](design/verification-and-enforcement.md).
+1. **Verify & enforce (primary).** A partner calls a registry about a person. The registry asks the CM, which finds or verifies the consent, applies the partner's policy for that registry, and returns the **effective data scopes**. See [Verification & enforcement](design/verification-and-enforcement.md).
 2. **Originate (secondary).** Consent is collected through the CM itself: in person through the partner portal (a signed form checked by a Consent Approver, optionally the subject's national-ID login), or through the origination API. See [Consent collection](design/consent-collection.md) and [Consent lifecycle](design/consent-lifecycle.md).
 
 ## Design principles
@@ -66,10 +65,10 @@ The CM answers these once, for every registry.
 
 ## How to read this section
 
-{% content-ref url="design/README.md" %}
-[README.md](design/README.md)
+{% content-ref url="design/" %}
+[design](design/)
 {% endcontent-ref %}
 
-{% content-ref url="api/README.md" %}
-[README.md](api/README.md)
+{% content-ref url="api/" %}
+[api](api/)
 {% endcontent-ref %}

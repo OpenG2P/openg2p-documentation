@@ -2,8 +2,7 @@
 description: >-
   End-to-end guide for a partner (data consumer) who wants to fetch a
   beneficiary's data from an OpenG2P registry — onboarding, keys, policy,
-  obtaining consent (through the Consent Manager, or signing your own),
-  calling the API, and handling the outcome.
+  obtaining consent (through the Consent Manager, or signing y
 ---
 
 # Partner Integration Guide
@@ -14,10 +13,10 @@ You are a **partner** — a system that wants to fetch some data about a benefic
 
 There are two ways to hold the consent:
 
-| | How consent is collected | What you send the registry | Steps |
-| --- | --- | --- | --- |
-| **Held by the Consent Manager** (the default) | Through the Consent Manager, e.g. your staff in its partner portal with the beneficiary's national-ID login and a signed form | Nothing: you search the person by identifier and the Consent Manager finds the consent | 1–4, 7–10 |
-| **Signed by you** | In your own trusted system | A consent object you sign, embedded in each request. Only if your policy allows it (off by default) | 1–10 |
+|                                               | How consent is collected                                                                                                      | What you send the registry                                                                          | Steps     |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------- |
+| **Held by the Consent Manager** (the default) | Through the Consent Manager, e.g. your staff in its partner portal with the beneficiary's national-ID login and a signed form | Nothing: you search the person by identifier and the Consent Manager finds the consent              | 1–4, 7–10 |
+| **Signed by you**                             | In your own trusted system                                                                                                    | A consent object you sign, embedded in each request. Only if your policy allows it (off by default) | 1–10      |
 
 ## Who you talk to
 
@@ -38,10 +37,10 @@ sequenceDiagram
   R-->>P: only the permitted fields (or an error)
 ```
 
-| You interact with           | For                                                              | How                          |
-| --------------------------- | ---------------------------------------------------------------- | ---------------------------- |
-| **Partner Management (PM)** | onboarding, registering + rotating your keys, your access policy | through the PM operator (PM staff UI / API) |
-| **The Registry**            | the actual data fetch                                            | the registry's data API      |
+| You interact with           | For                                                                   | How                                                            |
+| --------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| **Partner Management (PM)** | onboarding, registering + rotating your keys, your access policy      | through the PM operator (PM staff UI / API)                    |
+| **The Registry**            | the actual data fetch                                                 | the registry's data API                                        |
 | **Consent Manager (CM)**    | collecting consent; your consents, their receipts and consent records | its partner portal; its public keys (`/.well-known/jwks.json`) |
 
 ***
@@ -65,7 +64,7 @@ You sign every request to a registry (the DCI envelope) and, if you sign your ow
 
 ## Step 2 — Onboard in Partner Management
 
-Register yourself as a partner in **Partner Management (PM)** and upload your **public** key(s). See [Partner Management](../platform/platform-services/partner-management/README.md) and [how CM consumes PM keys](design/partner-management-integration.md).
+Register yourself as a partner in **Partner Management (PM)** and upload your **public** key(s). See [Partner Management](../platform/platform-services/partner-management/) and [how CM consumes PM keys](design/partner-management-integration.md).
 
 * Agree your **audience** — the ID you put in `aud` of every consent and use as DCI `sender_id` (e.g. `bank-a`). Your PM partner ID follows from it: upper-case, `-` → `_`, prefix `PARTNER_` (`bank-a` → `PARTNER_BANK_A`). See the [partner ID convention](design/partner-management-integration.md#partner-id-convention).
 * The PM operator raises an onboarding request with that partner ID, a name, and your public key(s) as PEM or JWK with `kid` + `algorithm` — and, usually, your access policy (Step 3) — and approves it.
@@ -102,16 +101,16 @@ Either way, the consent must stay within what the beneficiary agreed to **and** 
 
 _Only for a consent you sign yourself (Step 4, way 2)._ Build the consent claims — these become the **payload** of the JWS you sign in Step 6. Fields:
 
-| Field             | Meaning                                                                  |
-| ----------------- | ------------------------------------------------------------------------ |
-| `jti`             | Unique id for THIS object (replay guard — never reuse)                   |
-| `subject_id`      | `{ type, value }` — the beneficiary (e.g. `national_id` / `FARMER_1234`) |
-| `grants`          | `[{ data_controller, data_scopes }]` — one grant per registry: the registry's controller id (agreed in Step 3) and the registry's data scope IDs you're requesting from it (subset of that registry's policy) |
-| `aud`             | **Your** audience (e.g. `bank-a`), agreed in Step 2                       |
-| `purpose`         | `{ code, text }` — must be allowed by the policy                         |
-| `fetch_type`      | `oneshot` or `periodic`                                                  |
-| `validity`        | `{ valid_from, valid_until }` (within the policy's max)                  |
-| `issued_at`       | Now (UTC) — must be within the freshness window                          |
+| Field        | Meaning                                                                                                                                                                                                       |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `jti`        | Unique id for THIS object (replay guard — never reuse)                                                                                                                                                        |
+| `subject_id` | `{ type, value }` — the beneficiary (e.g. `national_id` / `FARMER_1234`)                                                                                                                                      |
+| `grants`     | `[{ data_controller, data_scopes }]` — one grant per registry: the registry's controller id (agreed in Step 3) and the registry's data scope IDs you're requesting from it (subset of that registry's policy) |
+| `aud`        | **Your** audience (e.g. `bank-a`), agreed in Step 2                                                                                                                                                           |
+| `purpose`    | `{ code, text }` — must be allowed by the policy                                                                                                                                                              |
+| `fetch_type` | `oneshot` or `periodic`                                                                                                                                                                                       |
+| `validity`   | `{ valid_from, valid_until }` (within the policy's max)                                                                                                                                                       |
+| `issued_at`  | Now (UTC) — must be within the freshness window                                                                                                                                                               |
 
 ```json
 {
@@ -182,23 +181,23 @@ You do **not** call the Consent Manager's `/validate` — the registry does that
 
 You receive back **only** the effective fields (`consent scope ∩ policy`), or an error the registry surfaces from the decision's `reason_code`:
 
-| `reason_code`          | What it means / what to fix                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------------------------------ |
-| `ok`                   | Permitted — you got `effective_data_scopes`.                                                           |
-| `unknown_partner`      | Your partner isn't active in PM, or you have no active policy for this registry there. Re-check Steps 2 & 3. |
-| `policy_unavailable`   | The Consent Manager could not read your policy from PM. Temporary — retry later.                       |
-| `consent_not_found`    | You sent no consent and the CM holds no active, valid consent of yours for that person (and registry, or purpose through an Exchange). Collect one (Step 4). |
-| `partner_consent_not_accepted` | You sent a consent you signed, but your policy does not allow your own consents. Use a consent held by the CM, or ask for the policy change (Step 3). |
-| `signature_invalid`    | The consent JWS didn't verify — wrong `kid`, a key/alg mismatch, or the JWS was altered after signing. |
-| `audience_mismatch`    | `aud` / `data_controller` don't match your policy. Re-check Steps 2, 3 & 5.                            |
-| `controller_not_granted` | Your consent has no grant for the registry you called. Add a grant for it (Step 5).                  |
-| `subject_mismatch`     | The subject declared to the CM is not the consent's subject. (The registry runs its own check too: if what you search is not the consent's subject, it rejects the item with a search-criteria error.) |
-| `purpose_not_allowed`  | Purpose isn't in your policy — ask the PM operator for a policy change (Step 3). Through an Exchange: the consent's purpose is not the use case's. |
-| `scope_exceeds_policy` | You requested a scope outside the policy ceiling — narrow it or ask for a policy change (Step 3).      |
-| `expired`              | `validity` window passed — issue a fresh consent.                                                      |
-| `revoked`              | The subject revoked this consent — stop; you may need fresh consent.                                   |
-| `replay`               | `issued_at` outside the freshness window — sync clocks, issue fresh; or a `jti` you already used for a different consent — use a new `jti` per consent. (Re-sending the same signed consent to the same registry returns its earlier decision.) |
-| `malformed_object`     | The object failed schema validation — check required fields; use `grants` **or** `data_controller` + `data_scopes`, not both, and list each registry once. |
+| `reason_code`                  | What it means / what to fix                                                                                                                                                                                                                     |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ok`                           | Permitted — you got `effective_data_scopes`.                                                                                                                                                                                                    |
+| `unknown_partner`              | Your partner isn't active in PM, or you have no active policy for this registry there. Re-check Steps 2 & 3.                                                                                                                                    |
+| `policy_unavailable`           | The Consent Manager could not read your policy from PM. Temporary — retry later.                                                                                                                                                                |
+| `consent_not_found`            | You sent no consent and the CM holds no active, valid consent of yours for that person (and registry, or purpose through an Exchange). Collect one (Step 4).                                                                                    |
+| `partner_consent_not_accepted` | You sent a consent you signed, but your policy does not allow your own consents. Use a consent held by the CM, or ask for the policy change (Step 3).                                                                                           |
+| `signature_invalid`            | The consent JWS didn't verify — wrong `kid`, a key/alg mismatch, or the JWS was altered after signing.                                                                                                                                          |
+| `audience_mismatch`            | `aud` / `data_controller` don't match your policy. Re-check Steps 2, 3 & 5.                                                                                                                                                                     |
+| `controller_not_granted`       | Your consent has no grant for the registry you called. Add a grant for it (Step 5).                                                                                                                                                             |
+| `subject_mismatch`             | The subject declared to the CM is not the consent's subject. (The registry runs its own check too: if what you search is not the consent's subject, it rejects the item with a search-criteria error.)                                          |
+| `purpose_not_allowed`          | Purpose isn't in your policy — ask the PM operator for a policy change (Step 3). Through an Exchange: the consent's purpose is not the use case's.                                                                                              |
+| `scope_exceeds_policy`         | You requested a scope outside the policy ceiling — narrow it or ask for a policy change (Step 3).                                                                                                                                               |
+| `expired`                      | `validity` window passed — issue a fresh consent.                                                                                                                                                                                               |
+| `revoked`                      | The subject revoked this consent — stop; you may need fresh consent.                                                                                                                                                                            |
+| `replay`                       | `issued_at` outside the freshness window — sync clocks, issue fresh; or a `jti` you already used for a different consent — use a new `jti` per consent. (Re-sending the same signed consent to the same registry returns its earlier decision.) |
+| `malformed_object`             | The object failed schema validation — check required fields; use `grants` **or** `data_controller` + `data_scopes`, not both, and list each registry once.                                                                                      |
 
 ***
 

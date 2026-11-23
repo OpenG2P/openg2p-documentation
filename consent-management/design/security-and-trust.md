@@ -2,8 +2,7 @@
 description: >-
   The Consent Manager's trust model: keyholders, signing and key management
   (partner keys from Partner Management, the CM's own .p12 key and JWKS), the
-  algorithm-confusion guard, ID-token checks, replay protection, caller
-  authentication, and the threat model.
+  algorithm-confusion guard, ID-token checks, replay
 ---
 
 # Security & trust
@@ -16,11 +15,11 @@ The Consent Manager's value depends on its cryptography and trust boundaries.
 
 There are three keyholders:
 
-| Party               | Holds                                   | Used for                                                 |
-| ------------------- | --------------------------------------- | -------------------------------------------------------- |
+| Party               | Holds                                   | Used for                                                                                               |
+| ------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **Partner**         | Its private signing key (managed in PM) | Signs its DCI requests and, if its policy allows partner-signed consents, the consent object it embeds |
-| **Consent Manager** | Its own private signing key (`.p12`)    | Signs consent receipts (proof of decision) and, in the Exchange role, consent tokens |
-| **OIDC Provider**   | Its private signing key                 | Signs ID tokens in the origination flow                  |
+| **Consent Manager** | Its own private signing key (`.p12`)    | Signs consent receipts (proof of decision) and, in the Exchange role, consent tokens                   |
+| **OIDC Provider**   | Its private signing key                 | Signs ID tokens in the origination flow                                                                |
 
 The CM uses the **public** counterpart of each, but stores only its own:
 
@@ -32,7 +31,7 @@ The CM uses the **public** counterpart of each, but stores only its own:
 
 * **Asymmetric only.** All signatures — partner consent objects and CM receipts — use asymmetric keys (**RS256 / ES256 / EdDSA**). No symmetric/shared-secret signing: anyone holding the verifying key can check a signature without being able to forge one.
 * **Canonicalisation.** An artefact is serialised as canonical JSON (sorted keys) before hashing, so the same artefact always gives the same bytes.
-* **Key rotation.** Partner keys are rotated in PM: register a new `kid`, switch signing, retire the old key; the CM refetches on an unknown `kid`. The CM's own key is rotated by giving the new `.p12` a new `kid` ([Deployment](../deployment/README.md#signing-key-p12)).
+* **Key rotation.** Partner keys are rotated in PM: register a new `kid`, switch signing, retire the old key; the CM refetches on an unknown `kid`. The CM's own key is rotated by giving the new `.p12` a new `kid` ([Deployment](../deployment/#signing-key-p12)).
 
 ### Verifying the partner's consent object
 
@@ -81,18 +80,18 @@ The partner-facing PDP API does **not** use Keycloak. Different endpoint classes
 
 ## Threat model (selected)
 
-| Threat                                    | Mitigation                                                                                                                                                    |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Forged consent from an unknown party      | Signature must verify against a partner key fetched from PM; PM `404` (unknown/disabled/no active key) fails closed (`unknown_partner` / `signature_invalid`) |
-| Algorithm-confusion / alg downgrade       | The JWS `alg` must match the algorithm PM registered for that `kid` and be allowed by the policy, else `signature_invalid`                                    |
-| PM outage during a decision               | Per-pod cache serves the last keys and policies PM gave within the hard TTL; beyond it the CM fails closed (`policy_unavailable`)                              |
-| Partner over-asking beyond its contract   | Policy intersection caps scope (`scope_exceeds_policy`); at an Exchange, the Composite refuses partners not granted the use case (`partner_not_allowed`) and the CM caps scopes at what the Composite asks for                                      |
-| Partner claiming a consent it never collected | Partner-signed consents refused unless the partner's policy allows them (`partner_consent_not_accepted`); consents collected through the CM carry national-ID authentication and evidence |
-| Replaying a captured consent object       | `jti` + freshness window (`replay`)                                                                                                                           |
-| Using consent meant for another recipient | Audience check (`audience_mismatch`)                                                                                                                          |
-| Using one registry's grant at another     | Grant selected by the calling registry's `data_controller`; policy per (partner, controller) (`controller_not_granted`, `unknown_partner`)                    |
-| Using a consent for a different person    | `subject_mismatch` when the caller declares a same-type subject; the registry also checks the consent's subject against what it searches                     |
-| Acting on revoked consent                 | Checked on every `/validate` (`revoked`); a status endpoint for callers that cache; an Exchange consent token already issued lapses within its lifetime (default 5 minutes) |
-| Tampering with a stored artefact          | Receipt signs the artefact hash; mismatch is detectable                                                                                                       |
-| Key compromise                            | Key revocation + rotation; short validity windows                                                                                                             |
-| Repudiation of a decision                 | CM-signed receipt + immutable decision log                                                                                                                    |
+| Threat                                        | Mitigation                                                                                                                                                                                                     |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Forged consent from an unknown party          | Signature must verify against a partner key fetched from PM; PM `404` (unknown/disabled/no active key) fails closed (`unknown_partner` / `signature_invalid`)                                                  |
+| Algorithm-confusion / alg downgrade           | The JWS `alg` must match the algorithm PM registered for that `kid` and be allowed by the policy, else `signature_invalid`                                                                                     |
+| PM outage during a decision                   | Per-pod cache serves the last keys and policies PM gave within the hard TTL; beyond it the CM fails closed (`policy_unavailable`)                                                                              |
+| Partner over-asking beyond its contract       | Policy intersection caps scope (`scope_exceeds_policy`); at an Exchange, the Composite refuses partners not granted the use case (`partner_not_allowed`) and the CM caps scopes at what the Composite asks for |
+| Partner claiming a consent it never collected | Partner-signed consents refused unless the partner's policy allows them (`partner_consent_not_accepted`); consents collected through the CM carry national-ID authentication and evidence                      |
+| Replaying a captured consent object           | `jti` + freshness window (`replay`)                                                                                                                                                                            |
+| Using consent meant for another recipient     | Audience check (`audience_mismatch`)                                                                                                                                                                           |
+| Using one registry's grant at another         | Grant selected by the calling registry's `data_controller`; policy per (partner, controller) (`controller_not_granted`, `unknown_partner`)                                                                     |
+| Using a consent for a different person        | `subject_mismatch` when the caller declares a same-type subject; the registry also checks the consent's subject against what it searches                                                                       |
+| Acting on revoked consent                     | Checked on every `/validate` (`revoked`); a status endpoint for callers that cache; an Exchange consent token already issued lapses within its lifetime (default 5 minutes)                                    |
+| Tampering with a stored artefact              | Receipt signs the artefact hash; mismatch is detectable                                                                                                                                                        |
+| Key compromise                                | Key revocation + rotation; short validity windows                                                                                                                                                              |
+| Repudiation of a decision                     | CM-signed receipt + immutable decision log                                                                                                                                                                     |
