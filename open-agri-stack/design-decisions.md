@@ -1,0 +1,182 @@
+---
+description: >-
+  Why Agri Stack is designed the way it is: the Exchange and the Composite (the
+  Account Aggregator pattern), independent registries, policies in Partner
+  Management and consent in the Consent Manager, how departments trust the
+  Composite, standards, and a Consent Manager unaware of use cases
+---
+
+# Design Decisions
+
+This page logs Agri Stack's key design decisions: what was chosen and why. The
+design itself is in [Architecture](architecture/README.md).
+
+| # | Decision |
+| --- | --- |
+| 1 | [Registries are independent; the Exchange composes](#1-registries-are-independent-the-exchange-composes) |
+| 2 | [The Account Aggregator pattern, with a Composite that keeps no data](#2-the-account-aggregator-pattern-with-a-composite-that-keeps-no-data) |
+| 3 | [Policies in Partner Management, consent in the Consent Manager](#3-policies-in-partner-management-consent-in-the-consent-manager) |
+| 4 | [A use case defines its data; partners are granted use cases](#4-a-use-case-defines-its-data-partners-are-granted-use-cases) |
+| 5 | [Departments trust the Composite, within a ceiling](#5-departments-trust-the-composite-within-a-ceiling) |
+| 6 | [Standard-neutral: DCI is one format](#6-standard-neutral-dci-is-one-format) |
+| 7 | [Reference data in MDS; Beckn only at the network layer](#7-reference-data-in-mds-beckn-only-at-the-network-layer) |
+| 8 | [The Consent Manager is unaware of use cases](#8-the-consent-manager-is-unaware-of-use-cases) |
+| 9 | [A use-case policy does not list purposes](#9-a-use-case-policy-does-not-list-purposes) |
+
+## 1. Registries are independent; the Exchange composes
+
+**Decision.** Each department runs its own registry (Farmer Registry, Crop Sown
+Registry, …) with its own Partner Management and Consent Manager. Registries share
+data, never code: one registry's install never pulls in another's. Partners do not
+call the registries; they call the Exchange, whose Composite searches each registry
+a use case needs and combines the answers.
+
+**Why.** Departments own their data and release schedules. A partner gets one
+answer about a farmer without dealing with each department. See
+[Exchange](architecture/exchange.md).
+
+## 2. The Account Aggregator pattern, with a Composite that keeps no data
+
+**Decision.** The Exchange follows the pattern of India's Account Aggregator
+framework (DEPA): one consent from the person covers several data providers, the
+exchange in the middle holds no data, and each provider enforces access itself.
+Agri Stack's providers are the departments' registries, each checking the consent
+token at its own Consent Manager. Like an Account Aggregator, the Exchange stores no
+data from the providers: it keeps consents, partners' keys and policies, and audit
+records, as an Account Aggregator keeps consent artefacts and logs. The difference
+is that an Account Aggregator is **data-blind**: the data is encrypted end to end
+for the requester, so it cannot read what it passes on, and the requester gets
+each provider's data separately and combines it itself. The Composite reads the
+registries' answers to **combine** them into one signed response for the
+partner, and keeps none of them.
+
+**Why.**
+
+* **Fits access to credit.** Account Aggregator was built for lenders getting a
+  person's data from many providers with one consent, which is Agri Stack's main
+  use case (a bank's loan profile of a farmer).
+* **One consent, many registries.** The farmer consents once; the partner does not
+  deal with each department.
+* **Providers stay in control.** Each registry decides what it releases; the
+  Exchange cannot widen it.
+* **Combining over data-blind routing.** A data-blind router is easier to trust,
+  but every partner would then have to combine the results itself. A use case
+  defines one answer (for example, a loan profile), so the Composite combines it,
+  and keeps no copy: it would otherwise be a second system of record to protect.
+
+Account Aggregator itself is a framework, not software to deploy; its consent
+artefact semantics are used by the Consent Manager
+([Standards](architecture/standards.md)). See
+[What it stores](architecture/exchange.md#what-it-stores).
+
+## 3. Policies in Partner Management, consent in the Consent Manager
+
+**Decision.** Partner Management holds who a partner is, its keys and what it may
+access (its policies). The Consent Manager holds the farmers' consents. Grants are
+approved through Partner Management's onboarding approval.
+
+**Why.** What a partner may access is decided when it is onboarded, by the partner
+manager; a consent is one farmer's agreement. Keeping them apart lets each be
+approved by the right person. See
+[Data-Sharing Policies](architecture/data-sharing-policies.md).
+
+## 4. A use case defines its data; partners are granted use cases
+
+**Decision.** A use case (for example `loan-profile@1`) defines its purpose, the
+registries it reads, the data from each and the response. A partner is granted
+use cases through a use-case policy in the Exchange's Partner Management. A use
+case does not list who may call it, and a partner's grant does not narrow the
+use case's data.
+
+**Why.** Who may call a use case is decided at onboarding, not in the use case.
+See [Use Cases](architecture/use-cases.md).
+
+## 5. Departments trust the Composite, within a ceiling
+
+**Decision.** To each department, the Composite is one partner, onboarded in the
+department's Partner Management with a standing scope policy per registry: the
+most the registry releases to it. Partners have no policy in any department. The
+department's Consent Manager accepts the Exchange Consent Manager's short-lived
+consent tokens. The Exchange's Partner Management does not hold the Composite.
+
+**Why.** A department decides only what it releases, once, and never has to
+onboard each partner. See
+[Composite as a partner](architecture/exchange.md#composite-as-a-partner).
+
+## 6. Standard-neutral: DCI is one format
+
+**Decision.** Internal records and consent filtering do not depend on one
+standard. DCI is one output format among possible others.
+
+**Why.** Countries and partners use different interoperability standards. See
+[Standards](architecture/standards.md).
+
+## 7. Reference data in MDS; Beckn only at the network layer
+
+**Decision.** All reference data (crops, seed varieties, farm inputs, livestock,
+geography, land) lives in the [Master Data Service](../platform/platform-services/master-data-service/README.md),
+defined by the country; international classifications are optional mappings.
+Beckn is not used for the registry data layer: its sources are fixed. It belongs
+to the network layer above, for discovering providers.
+
+**Why.** One versioned catalogue that every registry and service reads. See
+[Interoperability with OAN (Beckn)](roadmap/oan-interoperability.md).
+
+## 8. The Consent Manager is unaware of use cases
+
+**What a design review observed.**
+
+* **Two cycles at the Exchange.**
+  * The Composite reads the partner's use-case policy from the Exchange PM, then
+    calls the Exchange CM, which reads the same policy from PM again. One policy
+    is enforced in two places, each with its own cache.
+  * The Composite calls the Exchange CM to validate, and the CM calls the
+    Composite back for the use case's purpose and scopes.
+* **Consent is made for a use case.** The Exchange CM records a consent for a use
+  case (`name@major`), so the CM depends on an Agri Stack concept, while in the
+  departments a consent is for a purpose and data scopes.
+
+**Decision.** Only the Composite and Partner Management know what a use case is;
+the Consent Manager is a generic consent service, the same at the Exchange and in
+the departments.
+
+<figure><img src="../.gitbook/assets/open-agri-stack-exchange-calls.svg" alt="Who calls whom at the Exchange: the Composite reads the use-case policy from the Exchange PM, the only grant check, and calls the Exchange CM's validate with the purpose, scopes and limits; the CM reads only partner keys from PM and no use case; the CM's partner portal reads consent templates from the Composite only when a consent is created, never during a query."><figcaption><p>Who calls whom at the Exchange</p></figcaption></figure>
+
+| Component | Holds and does |
+| --- | --- |
+| **Composite** | The use case definitions: purpose, registries, scopes. Checks that the partner is granted the use case (the only grant check, `403 partner_not_allowed`). At validate, sends the CM the use case's purpose, the scopes and the use-case policy's limits. Publishes each use case granted to a partner as a consent template, at an internal endpoint |
+| **Partner Management** | Partners' keys, and which partners may use which use cases (use-case policies). To PM, a use case is an item from the Composite's catalogue |
+| **Consent Manager** | Consents for a purpose and scopes per registry, as in the departments. At validate: checks that the consent's purpose is the purpose it was sent, intersects the scopes sent with the consent's scopes, and issues consent tokens for the intersection. Reads neither the Composite nor use-case policies |
+
+**The partner portal stays in the Consent Manager**, generic: it offers **consent
+templates** (a code, a title, a purpose, the scopes per registry and limits) read from
+a source set at install. At the Exchange the source is the Composite, which publishes each use
+case as a template; in a department, the registry's data scopes. A consent keeps
+the template's code as a label; lookup is by purpose. The label decides one thing: a consent made from a template is used only through the Composite, never by a partner calling the Exchange CM directly by registry, so the use case's scopes and policy always apply. Partner Management already reads
+its grantable items from a catalogue source in the same way.
+
+**Options considered.**
+
+| Option | Result | Why not |
+| --- | --- | --- |
+| The CM decides the grant; the Composite stops reading policies | Removes the duplicate policy read | The CM still depends on use cases and on the Composite |
+| The Composite decides the grant; the CM checks only the consent, but still makes consents for a use case | Removes the duplicate policy read | The CM still depends on use cases and on the Composite |
+| Consents for use cases made through the Composite, not the CM's portal | CM generic | A department has no Composite: the portal must stay in the CM |
+| **The CM is generic, with consent templates** (chosen) | Removes both cycles; one CM everywhere | Larger change |
+
+**Details.** How the Consent Manager checks a request from the Composite:
+[caller-terms mode](../consent-management/design/verification-and-enforcement.md#caller-terms-mode).
+How the Composite checks the grant and calls the Consent Manager:
+[Request Handling](composite/request-handling.md). The registries and consent tokens
+did not change.
+
+## 9. A use-case policy does not list purposes
+
+**Observation.** The partner sends a use case; the use case has a purpose; the
+Exchange PM grants the use case to the partner. Listing allowed purposes in the
+use-case policy repeats what the use case already says.
+
+**Decision.** Granting a use case grants its purpose: the use-case policy has no
+purposes, and Partner Management refuses them on one. The Exchange CM checks the
+consent's purpose against the use case's purpose, which the Composite sends. The
+allowed purposes stay in the departments' scope policies, where there is no use case.

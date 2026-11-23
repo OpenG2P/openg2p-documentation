@@ -31,6 +31,7 @@ Settings: [Composite deployment](../deployment/composite-chart-settings.md#scali
 
 * **Per-partner limits at the edge**, if partner identity moves to mTLS client certificates or a JWT the gateway can read.
 * **Daily quotas** per partner per use case (`limits.daily_quota_per_partner`), counted in the same Redis.
+* **Counting calls for charging** is metering, not rate limiting: [API Metering and Billing](../roadmap/api-metering.md).
 * **Per-farmer fetch frequency**: the policy's `max_fetch_frequency` (how often a partner may fetch the same farmer's data).
 
 The policy's `data_life` is a retention term for the partner (how long it may keep the data), not a rate. It is recorded only.

@@ -57,7 +57,7 @@ The CM answers these once, for every registry.
 
 * **Beneficiary API deployed by default.** The subject API (`/my/*`) and origination API are built but run on the beneficiary API, which the chart ships disabled; subjects have no portal yet (staff revoke on their request).
 * **Consent scenarios 2 and 3:** the subject approving digitally after the national-ID login, and self-service with a redirect back to the partner ([Consent collection](design/consent-collection.md#scenarios)).
-* **Notifications** to subjects and partners (grant, revoke, expiry; an SMS with a revoke link after digital approval) and revocation webhooks.
+* **Notifications** to subjects and partners (grant, revoke, expiry; an SMS through Novu with a revoke link after scenarios 0 and 2), the subject's consent page (revoke, or "I did not give this"), disputed consents, and revocation webhooks ([the subject's recourse](design/consent-collection.md#the-subjects-recourse)).
 * **A minimum assurance per policy.**
 * **Partner portal:** partner-user management from the portal (staff create users today); a partner-signed API for partners with their own systems.
 * **Evidence:** encryption at rest beyond the object store's, retention and deletion rules.

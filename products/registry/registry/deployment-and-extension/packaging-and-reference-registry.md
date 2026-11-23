@@ -66,7 +66,7 @@ A domain registry (for example the [Farmer Registry](../../farmer-registry/READM
   * each default is taken from the wrapper's own values first, then the platform's, so the form shows the registry's images and switches (a blank boolean would submit as false);
   * questions for keys only the wrapper has go in its `questions.own.yaml`, which CI appends unchanged.
 
-  The form therefore always matches the pinned platform version.
+  The form therefore always matches the pinned platform version. A wrapper can change a platform question's default (in its values) and add questions, but cannot drop one: every platform question is on its form, including those for features the registry does not use.
 * **One platform version, in two places.** The platform version is pinned as `RP_VERSION` in each Dockerfile (the base image tag) and as the `openg2p-registry` dependency version in `Chart.yaml`. The two always move together, with the registry's `scripts/bump-rp-version.sh`: `-n` shows the newest version published as both chart and images, `<version>` pins that version in both places. A CI check (`test/test_rp_pin_lockstep.py`) fails the build if the two drift.
 * **Two version lines.** The registry's own chart and images share one version, stamped by CI on every commit. The platform version moves only when it is bumped as above.
 * **Several registries in one namespace.** Names that would collide (the Keycloak staff client, the keymanager app-id, the AWE callback secret) derive from the release name, so two registries can share a namespace.
@@ -74,6 +74,8 @@ A domain registry (for example the [Farmer Registry](../../farmer-registry/READM
 ## Versioning & CI
 
 A **single** workflow (`build-publish.yml`) builds **all** images + the chart at **one version per commit**, and rewrites every chart image tag to that version so images and chart stay locked together. The `ui-widgets` npm library is the only separately-versioned artifact.
+
+**Widget changes reach the staff UI one build later.** The staff UI does not build the widgets from the repository's `ui/ui-widgets` source: it installs the published `@openg2p/registry-widgets` package at the version pinned in `ui/staff-ui/package.json`. On a push to `develop` that changes the widgets, two workflows run side by side: the npm workflow publishes a new widgets version and commits the staff UI's new pin with `[skip ci]`, while the image build uses the old pin. The staff UI image therefore gets the new widgets on the next build of `develop`: the next push, or a manual run of `build-publish.yml`. On release-candidate branches the image build waits for the widgets release instead.
 
 * Scheme, derivation and lockstep rules: [**Helm & Docker versioning and CI**](../../../../releases/helm-docker-versioning-and-ci/README.md).
 * Released versions / changelog: [**Registry Platform changelog**](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html).

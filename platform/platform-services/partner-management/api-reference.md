@@ -89,11 +89,11 @@ policies.
   "policies": [
     {
       "use_case": "loan-profile@1",
-      "allowed_purposes": ["credit-assessment"],
       "allowed_signing_algs": ["EdDSA", "ES256"],
       "max_validity_duration": "P1Y",
       "fetch_type": "oneshot",
       "data_life": "P30D",
+      "allow_assisted_confirmation": false,
       "allow_partner_consents": false
     }
   ],
@@ -315,6 +315,7 @@ registry's scope policy; `?use_case=loan-profile@1` only that use case's policy;
       "fetch_type": "oneshot",
       "max_fetch_frequency": null,
       "data_life": null,
+      "allow_assisted_confirmation": false,
       "allow_partner_consents": false,
       "effective_from": "2026-10-20T09:15:00"
     }

@@ -63,8 +63,8 @@ admin portal, not free text, and the API rejects anything else:
 | Rotate keys | Partner ID | Select (when not opened from a partner) | Existing partners |
 | Rotate keys | Revoke existing keys | Checkbox list | The partner's current (non-revoked) keys |
 | Onboard / Rotate keys | Import from JWKS URL | Checkbox | Enabled only when a JWKS URL is set |
-| Requests | Status filter | Buttons | All, `created`, `approved`, `rejected` |
-| Requests | Type filter | Select | All, `onboarding`, `key_update`, `policy` |
+| Approvals | Status filter | Buttons | All, `created`, `approved`, `rejected` |
+| Approvals | Type filter | Select | All, `onboarding`, `key_update`, `policy` |
 | Partners | Status filter | Select | All, `created`, `active`, `disabled` |
 | Onboard / Add policy | Policy for | Select | *Registry*, *Use case* |
 | Onboard / Add policy | Registry | Select + *Other…* (when [catalogue sources](#catalogue-sources) are configured) | The configured registries |
@@ -167,22 +167,27 @@ Each policy has exactly one **key**, `data_controller` or `use_case`:
 | Kind | Key | Grants | Used by |
 | --- | --- | --- | --- |
 | **Scope policy** | `data_controller`: the registry's data controller ID (e.g. `farmer-registry`) | `allowed_data_scopes` — the registry's scopes the partner may receive (required, non-empty) | The Consent Manager of that registry, for every consent and query from the partner |
-| **Use-case policy** | `use_case`: one published use case as `name@major` (e.g. `loan-profile@1`) | That use case; `allowed_data_scopes` must be empty | An Exchange: its Composite and its Consent Manager |
+| **Use-case policy** | `use_case`: one published use case as `name@major` (e.g. `loan-profile@1`) | That use case and its purpose; `allowed_data_scopes` and `allowed_purposes` must be empty | An Exchange's Composite, which passes the limits to its Consent Manager |
 
-A partner of an Exchange has one use-case policy per use case, so purposes,
-subject ID types, algorithms and limits are set per use case.
+A partner of an Exchange has one use-case policy per use case, so subject ID
+types, algorithms and limits are set per use case. A use-case policy has no
+purposes: granting a use case grants its purpose. A request that gives purposes
+for a use-case policy is refused (`400`, `G2P-REQ-102`); an empty list is accepted
+and stored as `[]`, and `GET /policies` serves `"allowed_purposes": []` for every
+use-case policy.
 
 ### Fields
 
 | Field | Meaning |
 | --- | --- |
-| `allowed_purposes` | Purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-datasets) is configured. |
+| `allowed_purposes` | Scope policies only: purposes the partner may ask consent for. Empty = any. Codes of `CONSENT_PURPOSE` when its [Master Data list](#master-data-datasets) is configured. Always empty for a use-case policy. |
 | `allowed_subject_id_types` | ID types the partner may identify a person by. Empty = any. Codes of `SUBJECT_ID_TYPE` when configured. |
 | `allowed_signing_algs` | Algorithms the partner may sign with. At least one, from PM's key algorithms (`EdDSA`, `ES256`, `RS256`) as narrowed by `crypto_allowed_algorithms`. Default `EdDSA`, `ES256`. One that matches none of the partner's active (or, on onboarding, proposed) keys is accepted with a warning. |
 | `max_validity_duration` | Longest consent the partner may ask for (ISO-8601, e.g. `P1Y`). Empty = no limit. |
 | `fetch_type` | `oneshot` (default) or `periodic`. |
 | `max_fetch_frequency` | How often a periodic partner may fetch (ISO-8601). Optional. |
 | `data_life` | How long the partner may keep the data (ISO-8601, e.g. `P30D`). Optional. |
+| `allow_assisted_confirmation` | `true` = the partner's staff may take consents by assisted confirmation in the Consent Manager's partner portal (national-ID login, then one "I agree"; no signed form, no approver). On a scope policy, every registry of the request must allow it; at the Exchange, on the use-case policy (the Composite passes it in the consent template). Default `false`. |
 | `allow_partner_consents` | `true` = the partner may present consents it collected and signed itself; the Consent Manager accepts them (it can verify only the partner's signature, not that the person agreed). Default `false`: such consents are refused. |
 
 Lists are trimmed and blanks and duplicates dropped; durations must be longer
@@ -248,7 +253,7 @@ With sources configured:
 * **The portal** offers the configured registries as the data controller (plus
   *Other…* for one without a source) and its scopes as a checkbox list, and the
   source's use cases as a select, with their labels and descriptions (a use case
-  also with its purpose, which can fill **Purposes**). A source that cannot be read shows its
+  also with its purpose, shown for information). A source that cannot be read shows its
   error and the field falls back to free text.
 * **Requests are checked** (onboarding and policy): every scope of a scope policy
   whose data controller has a source, and the use case of a use-case policy

@@ -9,10 +9,10 @@ What the [Composite](README.md) does for each partner request, as built. The sam
 ## Per request
 
 1. Verifies the partner's signature against PM (key `PARTNER_<SENDER_ID>`). Checks the message is fresh (`header.message_ts` within 300 seconds) and addressed to the Composite.
-2. Checks that the partner has a policy for the use case (`name@major`) in the Exchange's PM: cached; no grant fails with `partner_not_allowed`, and PM unreadable with nothing cached with `partner_policy_unavailable`.
+2. Checks that the partner has a policy for the use case (`name@major`) in the Exchange's PM: cached; no grant fails with `partner_not_allowed`, and PM unreadable with nothing cached with `partner_policy_unavailable`. This is the only grant check: the Exchange CM reads no use-case policy. The policy's limits are kept for step 5.
 3. Validates the input (subject type, parameters) and applies the per-partner rate limit.
-4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](use-case-configuration.md#data-scopes) for every mandatory source; the Exchange CM then accepts it only if the partner's policy for the use case allows partner-signed consents (`partner_consent_not_accepted`). A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject). With no consent, the Exchange CM looks up the partner's active consent for this subject and use case (Exchange mode only; passthrough mode refuses with `consent_required`).
-5. Gets a consent token per registry from the Exchange CM, sending the partner, the subject, the use case and its purpose so that the CM applies the partner's policy for that use case. A deny fails the request (`consent_denied`, with the CM's reason, e.g. `consent_not_found`); a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
+4. Checks the consent. For a `consent_jws`: the partner's signature, the subject, the validity window, and a grant with the use case's required [data scopes](use-case-configuration.md#data-scopes) for every mandatory source; the Exchange CM then accepts it only if the limits sent allow partner-signed consents (`partner_consent_not_accepted`). A `consent_id` is checked by the Exchange CM (active, in its validity, obtained by this partner, about this subject). With no consent, the Exchange CM looks up the partner's most recent active consent for this subject and the use case's purpose (Exchange mode only; passthrough mode refuses with `consent_required`).
+5. Gets a consent token per registry from the Exchange CM, sending the partner, the subject, the use case's purpose and scopes, and the limits of the partner's use-case policy ([below](#consent-mode)). A deny fails the request (`consent_denied`, with the CM's reason, e.g. `consent_not_found`); a mandatory source without a consent token fails it too; an optional one is reported `unavailable`.
 6. Calls the sources in dependency order (`depends_on`), in parallel within a level, each a DCI sync search signed with the Composite's key, naming the partner in `header.meta.on_behalf_of` and carrying that registry's consent token. Per-source timeout and retries; overall timeout.
 7. Maps the results, computes derived fields, and returns a response signed by the Composite, with a status per source (`ok`, `no_record`, `denied`, `unavailable`, `error`).
 8. Sends audit events to the Audit Manager, without ever blocking the request.
@@ -73,7 +73,7 @@ The Composite renders the source's query template, adds the rest, signs the enve
 
 ## Consent mode
 
-The consent mode is a service setting, `exchange` by default, as on the Agri Stack Exchange ([setting it](../deployment/composite-chart-settings.md#consent-mode-and-the-exchange-cm)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is granted use cases only at the Exchange (its PM); each department CM trusts the Exchange CM's consent tokens and applies the Composite's scope policy in the department's PM.
+The consent mode is a service setting, `exchange` by default, as on the Agri Stack Exchange ([setting it](../deployment/composite-chart-settings.md#consent-mode-and-the-exchange-cm)). Each registry receives its **own consent token** from the Exchange CM, not the partner's consent. The partner onboards and is granted use cases only at the Exchange (its PM); only the Composite reads those grants. Each department CM trusts the Exchange CM's consent tokens and applies the Composite's scope policy in the department's PM.
 
 After the partner checks (steps 1–4 above), the Composite calls the Exchange CM's `POST /consent/v1/validate` with:
 
@@ -81,12 +81,19 @@ After the partner checks (steps 1–4 above), the Composite calls the Exchange C
 {"consent_jws": "<the partner's consent>", "partner_id": "agri-composite",
  "issue_receipts": true,
  "request_context": {"subject_id": {"type": "FAYDA_FAN", "value": "…"},
-                     "use_case": "loan-profile@1", "purpose": "credit-assessment",
-                     "requested_scopes": ["<the use case's scopes>"]}}
+                     "purpose": "credit-assessment",
+                     "requested_scopes": ["<the use case's scopes>"],
+                     "limits": {"allowed_subject_id_types": ["FAYDA_FAN"],
+                                "max_validity_duration": "P1Y",
+                                "allow_partner_consents": true},
+                     "template": "loan-profile@1"}}
 ```
 
-* With a `consent_id`, it sends `consent_id` and `consent_partner_id: <the calling partner>` instead of `consent_jws`; with neither, only `consent_partner_id`, and the Exchange CM looks up the partner's active consent for this subject and use case ([consent by lookup](../../consent-management/api/verification-api.md#consent-by-lookup)).
-* The Exchange CM applies the calling partner's policy for the use case from PM: it must exist (`use_case_not_granted`), the consent's purpose must match, and a `consent_jws` is accepted only if the policy allows partner-signed consents (`partner_consent_not_accepted`).
+* With a `consent_id`, it sends `consent_id` and `consent_partner_id: <the calling partner>` instead of `consent_jws`; with neither, only `consent_partner_id`, and the Exchange CM looks up the partner's most recent active consent for this subject and purpose ([consent by lookup](../../consent-management/api/verification-api.md#consent-by-lookup)).
+* `purpose` is the use case's. `requested_scopes` is always sent: with a `consent_jws`, the scopes the consent grants that the use case uses; with a `consent_id` or no consent, every scope the use case's sources name.
+* `limits` come from the partner's use-case policy: `allowed_subject_id_types`, `allowed_signing_algs` and `max_validity_duration` only when the policy sets them; `allow_partner_consents` always.
+* `template` is the use case (`name@major`), a label the Exchange CM records; it never decides.
+* The Exchange CM reads no use case and no policy ([caller-terms mode](../../consent-management/design/verification-and-enforcement.md#caller-terms-mode)): the consent's purpose must be `purpose`, the limits apply, and each grant is cut to `requested_scopes`.
 * `partner_id` is the Composite's, which must be one of the Exchange CM's **token presenters** (`receiptPresenters`). On `permit`, the answer carries `receipts: {<data_controller>: <consent token JWS>}` (consent tokens are called *receipts* in the API), limited to `requested_scopes`. The Composite applies the use case's scope rules to the grants (`consent_grant_missing`, `consent_scope_missing`) and sends each registry its own token; the registry passes it to its own CM as usual ([Exchange consent tokens](../../consent-management/design/exchange-consent-tokens.md)).
 
 | Situation | Result |
@@ -97,3 +104,6 @@ After the partner checks (steps 1–4 above), the Composite calls the Exchange C
 | Exchange CM unreachable, timed out, HTTP 408/429/5xx, or no URL configured | **503** `consent_exchange_unavailable` (fails closed) |
 | Exchange CM answers another non-200 or a non-JSON body | **502** `consent_exchange_error` |
 | Use case with `consent.required: false` | The Exchange CM is not called and registries get no consent |
+| A `consent_jws` that grants none of the use case's scopes | **403** `consent_scope_missing`; the Exchange CM is not called |
+| A `consent_id` or no consent, and a source names no scopes | **500** `use_case_misconfigured`; the Exchange CM is not called |
+| Use case with no purpose (Exchange mode) | **500** `use_case_misconfigured`; the Exchange CM is not called |

@@ -4,7 +4,7 @@ description: Open digital public infrastructure for agriculture.
 
 # Agri Stack
 
-Agri Stack is **open-source digital public infrastructure (DPI) for agriculture**. A country deploys it so that the services farmers need (credit, insurance, subsidies, market access, advisory) can draw on trusted farmer data, **with the farmer's consent**.
+Agri Stack is **open-source digital public infrastructure (DPI) for agriculture**. A country deploys it so that the services farmers need (credit, insurance, subsidies, OAN (marketplace), advisory) can draw on trusted farmer data, **with the farmer's consent**.
 
 * **Open source.** Free to deploy, adapt and extend.
 * **Digital public infrastructure.** Countries deploy it to provide essential services to farmers, on infrastructure they own and run.
@@ -16,7 +16,7 @@ Agri Stack is **open-source digital public infrastructure (DPI) for agriculture*
 
 ## At a glance
 
-<figure><img src="../.gitbook/assets/open-agri-stack-overview.svg" alt="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, with the farmer's consent; for example credit, insurance, subsidies, market access, advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><figcaption><p>Concept: Agri Stack makes farmer data available, with consent, to the farmer services offered in a country</p></figcaption></figure>
+<figure><img src="../.gitbook/assets/open-agri-stack-overview.svg" alt="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, with the farmer's consent; for example credit, insurance, subsidies, OAN (marketplace), advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (Composite, consent with national-ID login, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><figcaption><p>Concept: Agri Stack makes farmer data available, with consent, to the farmer services offered in a country</p></figcaption></figure>
 
 ## What Agri Stack does
 
@@ -39,13 +39,14 @@ The **registries** are the systems of record, each run by its own department. Re
 * **Farmer Registry:** who the farmers are, their households and holdings.
 * **Crop Sown Registry:** what each farmer grows, plot by plot and season by season.
 * **Livestock Registry:** animals and their life events.
+* **[Agents Registry](registries/agents-registry/README.md):** the agents who serve farmers (e.g. extension agents), their assignments and trainings; for managing agents, not shared with partners.
 * **Land Registry:** parcels, holdings and tenure.
 
 More can be added as a country needs them. All registries identify the farmer by the **Farmer ID** the Farmer Registry issues; the national ID is used to authenticate the farmer. Each registry also issues verifiable credentials to farmers. More: [Registries](registries/README.md).
 
 ### Catalogues
 
-The **catalogues** are the common vocabulary every registry and service uses: crops, seed varieties, farm inputs (fertilisers, pest control, machinery, irrigation), livestock, locations, land. They are defined once for the country and are public. More: [Master Data Service](../platform/platform-services/master-data-service/README.md).
+The **catalogues** are the common vocabulary every registry and service uses: crops, seed varieties, farm inputs (fertilisers, pest control, machinery, irrigation), livestock, locations, land. They are defined once for the country, and can be published openly. More: [Catalogue](architecture/catalogue.md).
 
 ## Agri Stack and OAN
 

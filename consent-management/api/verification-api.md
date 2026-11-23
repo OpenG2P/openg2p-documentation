@@ -26,13 +26,14 @@ the effective data scopes. The consent is named by `consent_id`, sent as a partn
 | --- | --- | --- |
 | `consent_jws` | one of these, or neither ([lookup](#consent-by-lookup)) | The partner-signed consent, forwarded verbatim |
 | `consent_id` | | A consent this CM holds (collected through it), by ID. Not with `consent_jws` |
-| `consent_partner_id` | with `consent_id`, and for a use-case lookup | The partner the consent was given to (its audience, e.g. `bank-a`); another → `partner_mismatch` |
-| `partner_id` | no | The caller (a registry sends the DCI `sender_id`). Traceability only, except for a consent-token presenter: it identifies the presenter for `issue_receipts`, use-case mode and consent tokens. The partner is keyed off `aud`. In a [lookup without use case](#consent-by-lookup), the partner whose consent is looked up |
-| `data_controller` | when the consent has `grants`, and for a lookup without use case | The **calling registry**. Selects that registry's grant in the consent |
-| `request_context.requested_scopes` | no (yes in use-case mode) | Narrows the effective scopes further; in use-case mode, the use case's scopes |
+| `consent_partner_id` | with `consent_id`, and for a caller-terms lookup | The partner the consent was given to (its audience, e.g. `bank-a`); another → `partner_mismatch` |
+| `partner_id` | no | The caller (a registry sends the DCI `sender_id`). Traceability only, except for a consent-token presenter: it identifies the presenter for `issue_receipts`, caller-terms mode and consent tokens. The partner is keyed off `aud`. In a [lookup at a registry](#consent-by-lookup), the partner whose consent is looked up |
+| `data_controller` | when the consent has `grants`, and for a lookup at a registry | The **calling registry**. Selects that registry's grant in the consent |
+| `request_context.requested_scopes` | no (yes in caller-terms mode) | Narrows the effective scopes further; in caller-terms mode, the ceiling (the scopes the caller asks for) |
 | `request_context.subject_id` | for a lookup | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch`; the same holds for the consent's other identifiers (`subject_identifiers`, e.g. `FARMER_ID`). A lookup matches it to the consent's subject or one of those identifiers, `type` spelled exactly |
-| `request_context.use_case` | no | **Use-case mode** (Exchange): the use case the caller serves, `name@major` (e.g. `loan-profile@1`). Applies only when `partner_id` is a configured token presenter; ignored otherwise. The consenting partner's policy for this use case applies; none → `use_case_not_granted` ([use-case mode](../design/verification-and-enforcement.md#use-case-mode)) |
-| `request_context.purpose` | no | Use-case mode: the purpose the use case serves; the consent's `purpose.code` must equal it, else `purpose_not_allowed` |
+| `request_context.purpose` | no | **Caller-terms mode** (Exchange): sent by a configured token presenter (the Composite), it turns the mode on; ignored from any other caller. The consent's `purpose.code` must equal it, else `purpose_not_allowed`. The caller's terms replace the partner's scope policies; no policy is read ([caller-terms mode](../design/verification-and-enforcement.md#caller-terms-mode)) |
+| `request_context.limits` | no | Caller-terms mode: `allowed_subject_id_types`, `allowed_signing_algs`, `max_validity_duration` (absent = no limit), `allow_partner_consents` (absent = false). From a caller that is not a presenter → `caller_terms_not_allowed`; without `purpose` → `malformed_object` |
+| `request_context.template` | no | Caller-terms mode: a label (e.g. `loan-profile@1`), recorded as `policy_ref: template:<code>`; never used to decide. Same rules as `limits` |
 | `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-consent-tokens.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
 
 `consent_jws` may also be a **consent token** (header `typ: consent-token+jwt`, or the earlier
@@ -109,7 +110,8 @@ the partner's policy for that registry (∩ `requested_scopes`).
 
 `subject_id` is the **consent's** subject: the registry checks it against what it searches.
 `data_controller` is the controller the decision was made for (also on a deny, when known).
-`policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied. For a
+`policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied; in
+caller-terms mode `policy_ref` is `template:<code>` and the other two are null. For a
 consent the CM holds, or with `issue_receipts`, a permit also carries `grants`:
 `{data_controller: effective scopes}`.
 
@@ -153,9 +155,9 @@ and no consent tokens are issued. `receipts` is `null` on every other response.
 }
 ```
 
-**Request — use-case mode** (the Composite at the Exchange). The Composite names the use case and
-its purpose; the CM applies the consenting partner's policy for that use case and limits each registry's
-scopes to `requested_scopes`.
+**Request — caller-terms mode** (the Composite at the Exchange). The Composite sends the use case's
+purpose, the scopes it asks for and the limits of the partner's use-case policy; the CM checks the
+consent's purpose, applies the limits and limits each registry's scopes to `requested_scopes`.
 
 ```json
 {
@@ -163,10 +165,15 @@ scopes to `requested_scopes`.
   "partner_id": "agri-composite",
   "issue_receipts": true,
   "request_context": {
-    "use_case": "loan-profile@1",
+    "subject_id": { "type": "FAYDA_FAN", "value": "1234567890123456" },
     "purpose": "credit-assessment",
     "requested_scopes": ["farmer-registry.personal_details", "crop-sown-registry.crop_season"],
-    "subject_id": { "type": "national_id", "value": "1234567890123456" }
+    "limits": {
+      "allowed_subject_id_types": ["FAYDA_FAN"],
+      "max_validity_duration": "P1Y",
+      "allow_partner_consents": false
+    },
+    "template": "loan-profile@1"
   }
 }
 ```
@@ -174,9 +181,10 @@ scopes to `requested_scopes`.
 ### Consent by lookup
 
 A caller may send **neither** `consent_jws` nor `consent_id`: the CM finds the consent it holds.
-Two forms: with a use case (the Composite) and without (a registry).
+Two forms: in caller-terms mode (the Composite) and at a registry.
 
-**With a use case** (the Composite at an Exchange):
+**Caller-terms mode** (the Composite at an Exchange): the partner's most recent active consent for
+the subject and purpose.
 
 ```json
 {
@@ -185,17 +193,22 @@ Two forms: with a use case (the Composite) and without (a registry).
   "issue_receipts": true,
   "request_context": {
     "subject_id": { "type": "FAYDA_FAN", "value": "1234567890123456" },
-    "use_case": "loan-profile@1",
     "purpose": "credit-assessment",
-    "requested_scopes": ["farmer-registry.personal_details", "crop-sown-registry.crop_season"]
+    "requested_scopes": ["farmer-registry.personal_details", "crop-sown-registry.crop_season"],
+    "limits": {
+      "allowed_subject_id_types": ["FAYDA_FAN"],
+      "max_validity_duration": "P1Y",
+      "allow_partner_consents": false
+    },
+    "template": "loan-profile@1"
   }
 }
 ```
 
-Only for a configured token presenter with `consent_partner_id`, `request_context.use_case` and
+Only for a configured token presenter with `consent_partner_id`, `request_context.purpose` and
 `request_context.subject_id`; otherwise `malformed_object`.
 
-**Without a use case** (a registry, when the partner's search carries no consent):
+**At a registry** (when the partner's search carries no consent):
 
 ```json
 {

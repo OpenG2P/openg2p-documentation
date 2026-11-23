@@ -36,6 +36,15 @@ gen() {
     --description "APIs available for the Registry Partner ecosystem" \
     --out "${dir}/partner-api.md" \
     --schemas
+
+  python3 tools/gen-openapi-pages.py \
+    --spec "${base}/openapi-agent-portal.json" \
+    --spec-id "registry-agent-portal-api${sfx}" \
+    --spec-url "${base}/openapi-agent-portal.json" \
+    --title "Agent Portal API" \
+    --description "APIs used by the Agent Portal UI to issue and verify credentials" \
+    --out "${dir}/agent-portal-api.md" \
+    --schemas
 }
 
 echo "CURRENT (develop)"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 76 1200 660" role="img" aria-label="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, using farmer data with the farmer's consent; for example credit, insurance, subsidies, market access, advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (national-ID login, Composite, consent, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><style>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 76 1200 660" role="img" aria-label="Agri Stack. Above it, farmer services offered by banks, insurers, government programmes and agritechs, using farmer data with the farmer's consent; for example credit, insurance, subsidies, OAN (marketplace), advisory and more. A use case for a farmer reaches Agri Stack through its API. Agri Stack has three layers: the Exchange for consented data sharing (Composite, consent with national-ID login, Partner Management); the registries, systems of record, each run by its own department and each issuing verifiable credentials (Farmer Registry, Crop Sown Registry, Livestock Registry, Land Registry); and the catalogues, a public common vocabulary (crop, seed, inputs, livestock, location, land)."><style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .h1{font-size:28px;font-weight:700} .sub{font-size:14px;fill:#56625B}
 .lt{font-size:13px;font-weight:700;fill:#FFFFFF;letter-spacing:.03em} .ls{font-size:11px;fill:#C9D2CC;letter-spacing:.05em}
@@ -30,7 +30,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <rect class="oan" x="46" y="130" width="174" height="82" rx="9"/><text class="ts" x="133" y="166" text-anchor="middle">Credit</text><text class="s" x="133" y="186" text-anchor="middle">loans · crop finance</text>
 <rect class="oan" x="232" y="130" width="174" height="82" rx="9"/><text class="ts" x="319" y="166" text-anchor="middle">Insurance</text><text class="s" x="319" y="186" text-anchor="middle">crop · livestock</text>
 <rect class="oan" x="418" y="130" width="174" height="82" rx="9"/><text class="ts" x="505" y="166" text-anchor="middle">Subsidies</text><text class="s" x="505" y="186" text-anchor="middle">schemes · programmes</text>
-<rect class="oan" x="604" y="130" width="174" height="82" rx="9"/><text class="ts" x="691" y="166" text-anchor="middle">Market access</text><text class="s" x="691" y="186" text-anchor="middle">buyers · prices</text>
+<rect class="oan" x="604" y="130" width="174" height="82" rx="9"/><text class="ts" x="691" y="166" text-anchor="middle">OAN</text><text class="s" x="691" y="186" text-anchor="middle">marketplace</text>
 <rect class="oan" x="790" y="130" width="174" height="82" rx="9"/><text class="ts" x="877" y="166" text-anchor="middle">Advisory</text><text class="s" x="877" y="186" text-anchor="middle">extension · weather</text>
 <rect class="more" x="976" y="130" width="178" height="82" rx="9"/><text class="ts" x="1065" y="176" text-anchor="middle" style="fill:#6B6590">…and more</text>
 <line class="ar" x1="708" y1="230" x2="708" y2="288" marker-end="url(#a)"/>
@@ -44,10 +44,9 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <rect class="side" x="46" y="332" width="200" height="88" rx="10"/>
 <text class="lt" x="146" y="370" text-anchor="middle">EXCHANGE</text>
 <text class="ls" x="146" y="389" text-anchor="middle">CONSENTED DATA SHARING</text>
-<rect class="dpi" x="262" y="332" width="214" height="88" rx="9"/><text class="t" x="369" y="369" text-anchor="middle">National-ID Login</text><text class="s" x="369" y="389" text-anchor="middle">the farmer proves who they are</text>
-<rect class="dpi" x="488" y="332" width="214" height="88" rx="9" style="stroke:#2A6470;stroke-width:2.2"/><text class="t" x="595" y="369" text-anchor="middle">Composite</text><text class="s" x="595" y="389" text-anchor="middle">one query, many registries</text>
-<rect class="dpi" x="714" y="332" width="214" height="88" rx="9"/><text class="t" x="821" y="369" text-anchor="middle">Consent</text><text class="s" x="821" y="389" text-anchor="middle">purpose · consent tokens</text>
-<rect class="dpi" x="940" y="332" width="214" height="88" rx="9"/><text class="t" x="1047" y="369" text-anchor="middle">Partner Management</text><text class="s" x="1047" y="389" text-anchor="middle">partners · keys · policies</text>
+<rect class="dpi" x="563" y="332" width="289" height="88" rx="9" style="stroke:#2A6470;stroke-width:2.2"/><text class="t" x="707.5" y="369" text-anchor="middle">Composite</text><text class="s" x="707.5" y="389" text-anchor="middle">one query, many registries</text>
+<rect class="dpi" x="262" y="332" width="289" height="88" rx="9"/><text class="t" x="406.5" y="369" text-anchor="middle">Consent</text><text class="s" x="406.5" y="389" text-anchor="middle">national-ID login · purpose · consent tokens</text>
+<rect class="dpi" x="864" y="332" width="290" height="88" rx="9"/><text class="t" x="1009" y="369" text-anchor="middle">Partner Management</text><text class="s" x="1009" y="389" text-anchor="middle">partners · keys · policies</text>
 
 <line class="ar" x1="708" y1="422" x2="708" y2="458" marker-end="url(#a)"/>
 <text class="lbl" x="718" y="444">search + its consent token, per registry</text>

@@ -105,8 +105,8 @@ Current consumers and where their settings are documented:
 
 | Consumer | Reads | Settings |
 | --- | --- | --- |
-| Consent Manager | The consenting partner's scope policy for the registry's data controller; in an Exchange, the partner's policy for the request's use case | [Consent Manager deployment](../../../consent-management/deployment/README.md) |
-| Composite (Exchange) | The calling partner's policy for the use case (`?use_case=name@major`; 404 = not granted); listings for its console | [Composite deployment](../../../open-agri-stack/deployment/exchange.md#composite) |
+| Consent Manager | The consenting partner's scope policy for the registry's data controller (in a department or a standalone registry). An Exchange's Consent Manager reads no use-case policies: the Composite sends it the limits | [Consent Manager deployment](../../../consent-management/deployment/README.md) |
+| Composite (Exchange) | The calling partner's policy for the use case (`?use_case=name@major`; 404 = not granted), the only check of the grant; its limits go to the Exchange's Consent Manager with each request and in the consent templates it publishes. Listings for its console | [Composite deployment](../../../open-agri-stack/deployment/exchange.md#composite) |
 
 How the Consent Manager evaluates a policy:
 [Verification and enforcement](../../../consent-management/design/verification-and-enforcement.md).

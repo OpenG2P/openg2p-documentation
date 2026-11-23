@@ -76,6 +76,13 @@ Rancher-annotated charts into the catalog index).
    two builds of the same commit produce the same image, and the SHA is recorded
    as a label.
 
+   So a **re-run on the same commit builds nothing**: each image step finds the
+   version already built from that commit and skips. That holds even when a
+   pinned branch has moved since: for example, a db-seed image that bakes in
+   `openg2p-data@develop` keeps the openg2p-data of its first build. To pick up
+   the moved branch, push a new commit (an empty one will do:
+   `git commit --allow-empty`); it builds a new version.
+
 ## No path filters — builds are all-or-nothing
 
 The workflow triggers on every push, with **no per-artifact path filters**. Any
