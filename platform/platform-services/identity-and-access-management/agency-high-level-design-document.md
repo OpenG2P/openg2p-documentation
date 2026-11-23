@@ -181,7 +181,7 @@ Each agency is a Keycloak group in realm `agent`, named by its `agency_id`, and 
 
 1. **Role:** what the actor may call.
 2. **API surface:** agents cannot call Verification, Approval or other AWE operations because those endpoints do not exist in the agency APIs.
-3. **Data policy:** which records the actor may touch (section 8).
+3. **Data policy:** which records the actor may touch ([Agency/Agents RBAC](../../../identity-and-access-management/agency-agents-rbac.md)).
 4. **Agency state:** for a disabled agency, fresh logins and fresh data ingestion are rejected regardless of token validity (section 6.8).
 
 ### 6.6 Table ownership
@@ -272,39 +272,7 @@ Reasons:
 
 ## 8. Data policies
 
-### 8.1 Model
-
-Policy definitions are the existing data policies, published to the `agent` realm as client roles with two prefixes: `AGC_` for agency policies, created by staff, and `AGT_` for agent policies, created by agency administrators and scoped to their agency by the name `AGT_{AGENCY_MNEMONIC}_...`, so one agency's `AGT_` policies cannot clash with, or be attached to, another agency's agents. They are granted at two levels:
-
-* the **agency** (the outer boundary): AGC\_ roles mapped on the agency's Keycloak group. They are mandatory, and are attached by staff or by the Partner API;
-* each **agent**: AGT\_ roles mapped on the user. They are optional, and are attached by the agency administrator or by the Partner API.
-
-Keycloak puts the union of group roles and user roles in the token, so the intersection is computed by the agency middleware, not by Keycloak.
-
-### 8.2 Within-agency rule
-
-When an AGT\_ policy is attached, the Agency API and the Partner API check that it is within the agency policy, so the Agency Web UI can warn about assignments that would have no effect. The authority is the read-time intersection in the middleware (section 8.3), not this check. Example:
-
-| Level   | Policy                     |
-| ------- | -------------------------- |
-| Agency  | State = Karnataka          |
-| Agent 1 | Districts = Mysuru, Mandya |
-| Agent 2 | District = Hassan          |
-
-### 8.3 Enforcement
-
-* Product agency APIs enforce policies for agent actors the way the registry does for staff.
-* The effective policy is resolved from the token's AGC\_ and AGT\_ roles and the `agency` claim. An `iam-core` agency middleware, used by every agency API, reads the AGC\_ and AGT\_ roles, resolves each set to a merged filter expression with the existing staff data-policy helper, and sets the effective filter to the AND of the two (AGC\_ ∩ AGT\_).
-* **Deny by default.** A token with no AGC\_ role gives blank views, which is different from the staff side, where no policy means no restriction. An agent with no AGT\_ role gets the agency policy as it stands. An AGT\_ role can only narrow, never widen.
-* The resolution logic lives in `iam-core`, so every API computes it the same way.
-
-### 8.4 Policy changes
-
-If the department narrows an agency policy, agent policies outside it are **not deleted**. The effective policy is the intersection at read time, and the Agency Web UI shows which assignments are no longer effective. Nobody needs to clamp agent rows: the intersection does the work, and staff do not write the agent tables.
-
-### 8.5 Reuse
-
-The staff data-policy code is reused for agency and agent policies. The within-agency validation is built on top of it.
+Data policies apply at two levels: `AGC_` roles on the agency (mandatory, created by staff) and `AGT_` roles on the agent (optional, created by agency administrators). The effective policy is their intersection, computed at read time by the `iam-core` agency middleware, with deny by default. The model, the within-agency rule, enforcement, policy changes and reuse are documented in [Agency/Agents RBAC](../../../identity-and-access-management/agency-agents-rbac.md).
 
 ## 9. Agent Android application
 
