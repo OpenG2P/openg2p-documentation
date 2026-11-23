@@ -639,6 +639,8 @@
     * [Keys](open-agri-stack/administration/keys.md)
   * [Partner Guide: Fetching Farmer Data](open-agri-stack/partner-integration-guide.md)
   * [Versions & Source Code](open-agri-stack/versions/README.md)
+* [Agencies](agencies/README.md)
+  * [High Level Design](agencies/design/agency-high-level-design-document.md)
 
 ## Platform
 
