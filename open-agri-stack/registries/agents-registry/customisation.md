@@ -104,6 +104,11 @@ A country that already keeps agents elsewhere (in Ethiopia, the Ministry of Agri
 
 Dates are entered in the Gregorian calendar. Ethiopian-calendar entry, as the Crop Sown Registry offers for some fields, is not configured.
 
+## The agent credential
+
+* **Claims:** the view `meta_data/vc-views/agent_vc_view.sql`, and the credential definition (`registry.agentPortalApi.vcDefinitions`) in the chart's values: add a claim in both. Keep the card to identity and role: it is a bearer document.
+* **Card design:** `helm/openg2p-agents-registry/files/pdf-templates/agent-card.svg`; its title and issuing authority: `registry.agentPortalApi.pdf`.
+
 ## Branding and languages
 
 The registry's name, logo and theme are in `meta_data/registry-configurations/`. Labels are plain English and shown as written; a translation for another language goes in the languages file.

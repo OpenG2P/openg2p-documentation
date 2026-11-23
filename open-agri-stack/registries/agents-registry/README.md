@@ -142,6 +142,15 @@ Reporting views for Superset or Insights. Geography levels are read by position 
 
 Not built yet: dashboards, and areas with no active agent (the list of areas is in Master Data, not in the registry).
 
+## Verifiable credentials
+
+The registry can issue an agent a **verifiable credential**, their ID card, at the counter, as the Farmer Registry does for farmers ([VC Issuance](../../../platform/platform-services/vc-issuance/README.md), Phase 1: a printed card with a signed QR). It is **off by default**.
+
+* **Who:** an active agent, in service (a retired, suspended or separated agent gets no card).
+* **How:** the agent authenticates with the national ID system (eSignet), then staff in the Agent Portal issue the credential.
+* **Claims:** Agent ID, full name, date of birth, gender, position, service point and assigned area, from the view `agent_vc_view`. The QR carries name, date of birth, gender and the Agent ID; employment terms, qualifications and trainings are never on the card.
+* **Packaging:** the Agent Portal API image `openg2p-agents-registry-agent-portal-api`, the credential definition `OpenG2PAgentCredential` and the card design `agent-card.svg` in the chart. Turning it on: [Deploying on Rancher](deployment/rancher.md#verifiable-credentials).
+
 ## What it shares
 
 Nothing with partners. No bank, insurer or OAN service reads agents through the [Exchange](../../architecture/exchange.md), so the registry has no partner search output and no data scopes, and **consent enforcement is off**. The partner API is deployed only to take data in: a learning platform's trainings, and an existing agent system's records through `ingest_data`. Partner signatures are still checked.
@@ -157,8 +166,8 @@ A thin **extension** of the Registry Platform, like the other registries ([Packa
 
 * the `agents-extension` package: models, domain services (checks, record names, the training context and summary, sample trainings), seed metadata and the training register's configuration;
 * `scripts/agents_definitions.py`: the registers, sections, tabs, intake form, search, duplicate check, approval bindings, activity types and indicators in one file, from which `scripts/build_seed_sql.py` generates the seed SQL (CI checks the two match);
-* four images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed`. The staff portal UI is the platform's image;
-* the `openg2p-agents-registry` chart, a values overlay over the platform's `openg2p-registry` chart.
+* five images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed` and `agent-portal-api` (VC issuance). The staff portal and Agent Portal UIs are the platform's images;
+* the `openg2p-agents-registry` chart, a values overlay over the platform's `openg2p-registry` chart, plus the credential card design.
 
 ## Pages
 

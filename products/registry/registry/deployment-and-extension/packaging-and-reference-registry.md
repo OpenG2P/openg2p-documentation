@@ -66,7 +66,7 @@ A domain registry (for example the [Farmer Registry](../../farmer-registry/READM
   * each default is taken from the wrapper's own values first, then the platform's, so the form shows the registry's images and switches (a blank boolean would submit as false);
   * questions for keys only the wrapper has go in its `questions.own.yaml`, which CI appends unchanged.
 
-  The form therefore always matches the pinned platform version.
+  The form therefore always matches the pinned platform version. A wrapper can change a platform question's default (in its values) and add questions, but cannot drop one: every platform question is on its form, including those for features the registry does not use.
 * **One platform version, in two places.** The platform version is pinned as `RP_VERSION` in each Dockerfile (the base image tag) and as the `openg2p-registry` dependency version in `Chart.yaml`. The two always move together, with the registry's `scripts/bump-rp-version.sh`: `-n` shows the newest version published as both chart and images, `<version>` pins that version in both places. A CI check (`test/test_rp_pin_lockstep.py`) fails the build if the two drift.
 * **Two version lines.** The registry's own chart and images share one version, stamped by CI on every commit. The platform version moves only when it is bumped as above.
 * **Several registries in one namespace.** Names that would collide (the Keycloak staff client, the keymanager app-id, the AWE callback secret) derive from the release name, so two registries can share a namespace.

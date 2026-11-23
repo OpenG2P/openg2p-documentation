@@ -52,12 +52,26 @@ The defaults suit a production-like install. Change only these.
 **Leave as they are:**
 
 * **Install ID Generator?** and **Enable DB Seed** on: the ID generator issues Agent IDs, and the seed is the registry's configuration.
-* **Verify Partner Signature** on, **Enforce Consent** off: the registry shares nothing, and its partner API only takes data in, from signed partners.
+* **Verify Partner Signature** on; **Enforce Consent** and **Allow Unsigned Read of Data Scope Catalogue** off: the registry shares nothing and has no data scopes, and its partner API only takes data in, from signed partners.
+* **Install Beneficiary Portal API?** off: the registry has no beneficiaries; its records are the agents, kept by staff.
+* **Install Registry Connector?** off: the platform's ingestion gateway (ODK Central, webhooks, event buses into the partner API). It is of use only if an existing agent system pushes its records that way; then set its hostname and **Partner API Service** (`<release>-partner-api`).
 * **Load Templates to Object Store** off: the registry renders no records for partners.
 * **Sanity - Run Full E2E** off: the platform's e2e tier seeds and searches a reference-registry record this registry does not have.
 * **Load Sample Images** and **Optional Seeds**: this registry ships none.
 
 The Agent ID's length is a YAML setting ([Customisation](../customisation.md#agent-id)).
+
+The form is the platform chart's, so it also shows platform options this registry does not use (the beneficiary portal, the registry connector, consent). Their defaults are already right for it.
+
+### Verifiable credentials
+
+Off by default. To issue agents their credential:
+
+1. The environment needs Inji Certify (commons layer), the Keycloak `agent` realm, and the national ID system's login (eSignet) ([VC Issuance → Deployment](../../../../platform/platform-services/vc-issuance/deployment.md)).
+2. In the form's **VC Issuance** group, turn on **Verifiable Credentials (Agent Portal)**, **Agent Portal UI** and **Enable VC Issuance**, and check **Issuer DID**: it must be the DID Certify was installed with (the default is `did:web:` and the Certify hostname).
+3. Leave **Register ID** as the chart sets it (the Agent register) and **Set Up Beneficiary Login Automatically** on: here the "beneficiary" is the agent, and the bootstrap Job creates the eSignet client and turns on the Agent register's registrant authentication.
+
+The card design is `files/pdf-templates/agent-card.svg` in the chart, and its title and issuer are `registry.agentPortalApi.pdf.title` and `.issuerName`.
 
 ### Production
 
