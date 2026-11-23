@@ -81,7 +81,7 @@ Shows all attributes of the selected application (model: `StaffPortalApplication
 * **Add** button opens a popup to create a new data policy for the application.
 * User can **remove** an existing data policy.
 
-> **Implementation note:** Data policies are not a separate table today. They are `StaffRole` rows whose `role_mnemonic` is prefixed `"DP_"` (see `DataPolicyMiddleware` / `DP_ROLE_PREFIX` in `iam-core`). The UI should present these as a distinct tab, stripping the `DP_` prefix for display and re-applying it on create. If a dedicated data-policy model is introduced later, this tab's data source should be swappable without changing its UX.
+> **Implementation note:** How data policies are modelled (`DP_`-prefixed roles) and how they reach Keycloak is described in [Staff RBAC](../../../../identity-and-access-management/staff-rbac.md).
 
 ### 4. Login Providers
 
@@ -148,7 +148,6 @@ All models extend `BaseORMModelWithTimes`, so every record also carries platform
 
 * New Application is inserted at the top of the list — assumes the API returns/allows client-side sort by most-recently-created, or the UI re-fetches sorted by `created_at desc`.
 * Delete/remove actions on Roles, Permissions, mappings, and Data Policies are irreversible from the UI and should carry a confirmation step.
-* Data Policies are modeled as `DP_`-prefixed `StaffRole` rows today; if a dedicated model is introduced later, this tab's data source should be swapped without changing its UX.
 
 ### 7. Open Questions
 
