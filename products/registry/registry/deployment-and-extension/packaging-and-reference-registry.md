@@ -75,5 +75,7 @@ A domain registry (for example the [Farmer Registry](../../farmer-registry/READM
 
 A **single** workflow (`build-publish.yml`) builds **all** images + the chart at **one version per commit**, and rewrites every chart image tag to that version so images and chart stay locked together. The `ui-widgets` npm library is the only separately-versioned artifact.
 
+**Widget changes reach the staff UI one build later.** The staff UI does not build the widgets from the repository's `ui/ui-widgets` source: it installs the published `@openg2p/registry-widgets` package at the version pinned in `ui/staff-ui/package.json`. On a push to `develop` that changes the widgets, two workflows run side by side: the npm workflow publishes a new widgets version and commits the staff UI's new pin with `[skip ci]`, while the image build uses the old pin. The staff UI image therefore gets the new widgets on the next build of `develop`: the next push, or a manual run of `build-publish.yml`. On release-candidate branches the image build waits for the widgets release instead.
+
 * Scheme, derivation and lockstep rules: [**Helm & Docker versioning and CI**](../../../../releases/helm-docker-versioning-and-ci/README.md).
 * Released versions / changelog: [**Registry Platform changelog**](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html).

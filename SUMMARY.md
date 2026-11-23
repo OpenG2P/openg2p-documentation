@@ -625,6 +625,7 @@
     * [Generic Exchange](open-agri-stack/roadmap/generic-exchange.md)
     * [Interoperability with OAN (Beckn)](open-agri-stack/roadmap/oan-interoperability.md)
     * [Livestock Registry](open-agri-stack/roadmap/livestock-registry.md)
+    * [Agent Registry](open-agri-stack/roadmap/agent-registry.md)
     * [Registry Data Sync](open-agri-stack/roadmap/registry-data-sync.md)
     * [API Metering and Billing](open-agri-stack/roadmap/api-metering.md)
   * [Deployment](open-agri-stack/deployment/README.md)

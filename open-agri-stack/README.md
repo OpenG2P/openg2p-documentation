@@ -39,6 +39,7 @@ The **registries** are the systems of record, each run by its own department. Re
 * **Farmer Registry:** who the farmers are, their households and holdings.
 * **Crop Sown Registry:** what each farmer grows, plot by plot and season by season.
 * **Livestock Registry:** animals and their life events.
+* **Agent Registry:** the agents who serve farmers (e.g. extension agents), their assignments and trainings; for managing agents, not shared with partners.
 * **Land Registry:** parcels, holdings and tenure.
 
 More can be added as a country needs them. All registries identify the farmer by the **Farmer ID** the Farmer Registry issues; the national ID is used to authenticate the farmer. Each registry also issues verifiable credentials to farmers. More: [Registries](registries/README.md).

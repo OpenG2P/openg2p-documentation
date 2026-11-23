@@ -6,7 +6,7 @@ description: What comes next, by phase.
 
 What is still to be built in Agri Stack, in phases. Each item says what is to be done and where its design stands: a design page, the approach already decided, or "not designed yet". Country data and registry settings are set by the system integrator for each rollout and are not listed here.
 
-The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md), [Registry Data Sync](registry-data-sync.md) and [API Metering and Billing](api-metering.md).
+The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md), [Agent Registry](agent-registry.md), [Registry Data Sync](registry-data-sync.md) and [API Metering and Billing](api-metering.md).
 
 ## Phase 1 — First production release
 
@@ -25,6 +25,7 @@ The longer designs are on their own pages: [Generic Exchange](generic-exchange.m
 
    *Design:* decided as listed.
 9. **Livestock Registry** — an Animal register and a livestock events register. *Design:* [Livestock Registry](livestock-registry.md).
+10. **Agent Registry** — a generic reference registry of the agents who serve farmers (e.g. extension agents): an Agent register (Agent ID, employment, current assignment, status, specializations, qualifications) and a trainings activity register; not shared with partners. *Design:* [Agent Registry](agent-registry.md).
 
 ### Needed before production
 
