@@ -11,6 +11,8 @@ Each registry in Agri Stack belongs to a department and is its own install there
 | [Farmer Registry](../../products/registry/farmer-registry/README.md) | Agriculture | Farmers, their land, households and declared main crops |
 | [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md) | Crops | Crop seasons, plot by plot and season by season |
 
+The [Agents Registry](agents-registry/README.md) is also part of Agri Stack, but is not a data source: it holds the agents who serve farmers (extension agents, development agents), their assignments, qualifications and trainings, for the staff who manage them, and shares nothing with partners.
+
 **One registry per fact.** Crop seasons are held only in the Crop Sown Registry, land in the Farmer Registry (until a land administration registry exists), and livestock moves to the Livestock Registry once it is built. Two registries holding the same fact would disagree, and count it twice.
 
 ## Each registry is sovereign
