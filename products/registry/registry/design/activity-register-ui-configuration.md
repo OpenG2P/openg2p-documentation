@@ -2,7 +2,7 @@
 description: >-
   Proposal: make the activity register staff UI configurable where
   implementations differ (tabs, list columns, context and summary pages, form
-  widgets), in line with the registry platform's widget approach for registers.
+  widgets), in line with the registry platform's widget appro
 ---
 
 # Activity Register UI Configuration (Proposal)
@@ -17,10 +17,10 @@ A register's staff portal screens are set by configuration: sections, tabs and f
 
 The activity register UI is generic platform code (`ui/staff-ui/src/app/[locale]/activity/…`, `features/activity/…`), the same for every activity register. It is only partly driven by configuration:
 
-| Part | Today |
-| --- | --- |
-| Record form | Generated from each activity type's JSON Schema (`SchemaForm`), with its own inputs for geography and calendar dates. It does not use the platform's widget library |
-| Tabs | Fixed in code (`app/[locale]/activity/[type]/page.tsx`): Activities, Contexts (labelled Current state when the register has a projection), Work list, Summaries, Indicators, Record, Settings, for every activity register |
+| Part                                        | Today                                                                                                                                                                                                                         |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Record form                                 | Generated from each activity type's JSON Schema (`SchemaForm`), with its own inputs for geography and calendar dates. It does not use the platform's widget library                                                           |
+| Tabs                                        | Fixed in code (`app/[locale]/activity/[type]/page.tsx`): Activities, Contexts (labelled Current state when the register has a projection), Work list, Summaries, Indicators, Record, Settings, for every activity register    |
 | List columns, context page, summary display | Partly configurable through `ui_hints` in the activity configuration (`meta_data/activity-config/<Register>.json`): `context_columns`, `summary_fields`, `batch_carry_fields`, search placeholders. The rest is fixed in code |
 
 ## Decision so far
@@ -31,12 +31,12 @@ No full page builder: an activity register's screens follow its model (activitie
 
 All settings in the activity configuration file, extending `ui_hints`.
 
-| # | Change | Effort | Risk |
-| --- | --- | --- | --- |
-| 1 | **Tabs shown and their labels:** e.g. no Work list when no type needs verification, "Crop seasons" or "Herds" for contexts, no Indicators | Small | Low |
-| 2 | **List columns** for activities, contexts and summaries: which payload, current-state or aggregate fields (extends `context_columns`, `summary_fields`) | Small to medium | Low |
-| 3 | **Context and summary pages:** which current-state and aggregate fields, and how they are grouped | Medium | Low |
-| 4 | **Form widgets from the platform's widget library,** chosen per field with a schema hint (e.g. `x-widget`), so registers and activity registers share one widget set; the calendar date input and the geography picker become ordinary widgets | Larger | Medium: data entry; test with an existing register's forms (e.g. the Crop Sown Registry's) |
+| # | Change                                                                                                                                                                                                                                         | Effort          | Risk                                                                                       |
+| - | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ------------------------------------------------------------------------------------------ |
+| 1 | **Tabs shown and their labels:** e.g. no Work list when no type needs verification, "Crop seasons" or "Herds" for contexts, no Indicators                                                                                                      | Small           | Low                                                                                        |
+| 2 | **List columns** for activities, contexts and summaries: which payload, current-state or aggregate fields (extends `context_columns`, `summary_fields`)                                                                                        | Small to medium | Low                                                                                        |
+| 3 | **Context and summary pages:** which current-state and aggregate fields, and how they are grouped                                                                                                                                              | Medium          | Low                                                                                        |
+| 4 | **Form widgets from the platform's widget library,** chosen per field with a schema hint (e.g. `x-widget`), so registers and activity registers share one widget set; the calendar date input and the geography picker become ordinary widgets | Larger          | Medium: data entry; test with an existing register's forms (e.g. the Crop Sown Registry's) |
 
 ## Order of work
 

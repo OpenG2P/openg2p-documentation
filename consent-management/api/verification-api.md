@@ -1,59 +1,44 @@
 ---
 description: >-
-  The partner API, used by registries and the Composite: validate a consent
-  (by ID, by lookup, a partner-signed object or a consent token), consent and
-  consent-token status, signed receipts, and the CM's public keys.
+  The partner API, used by registries and the Composite: validate a consent (by
+  ID, by lookup, a partner-signed object or a consent token), consent and
+  consent-token status, signed receipts, and the CM'
 ---
 
 # Verification API
 
-The hot path a registry (or any PEP) uses before releasing data. The checks and their order:
-[Verification &amp; enforcement](../design/verification-and-enforcement.md). Reason codes:
-[API Reference](README.md#shared-reason-codes).
+The hot path a registry (or any PEP) uses before releasing data. The checks and their order: [Verification & enforcement](../design/verification-and-enforcement.md). Reason codes: [API Reference](./#shared-reason-codes).
 
-**Audience:** the **partner** API. **No auth**: callers (registries, the Composite) reach it in
-cluster over Istio mTLS.
+**Audience:** the **partner** API. **No auth**: callers (registries, the Composite) reach it in cluster over Istio mTLS.
 
 ## `POST /consent/v1/validate`
 
-Validate a consent **for one data controller** (the calling registry) and return a decision with
-the effective data scopes. The consent is named by `consent_id`, sent as a partner-signed
-`consent_jws`, or neither ([lookup](#consent-by-lookup)).
+Validate a consent **for one data controller** (the calling registry) and return a decision with the effective data scopes. The consent is named by `consent_id`, sent as a partner-signed `consent_jws`, or neither ([lookup](verification-api.md#consent-by-lookup)).
 
 **Request**
 
-| Field | Required | Meaning |
-| --- | --- | --- |
-| `consent_jws` | one of these, or neither ([lookup](#consent-by-lookup)) | The partner-signed consent, forwarded verbatim |
-| `consent_id` | | A consent this CM holds (collected through it), by ID. Not with `consent_jws` |
-| `consent_partner_id` | with `consent_id`, and for a caller-terms lookup | The partner the consent was given to (its audience, e.g. `bank-a`); another → `partner_mismatch` |
-| `partner_id` | no | The caller (a registry sends the DCI `sender_id`). Traceability only, except for a consent-token presenter: it identifies the presenter for `issue_receipts`, caller-terms mode and consent tokens. The partner is keyed off `aud`. In a [lookup at a registry](#consent-by-lookup), the partner whose consent is looked up |
-| `data_controller` | when the consent has `grants`, and for a lookup at a registry | The **calling registry**. Selects that registry's grant in the consent |
-| `request_context.requested_scopes` | no (yes in caller-terms mode) | Narrows the effective scopes further; in caller-terms mode, the ceiling (the scopes the caller asks for) |
-| `request_context.subject_id` | for a lookup | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch`; the same holds for the consent's other identifiers (`subject_identifiers`, e.g. `FARMER_ID`). A lookup matches it to the consent's subject or one of those identifiers, `type` spelled exactly |
-| `request_context.purpose` | no | **Caller-terms mode** (Exchange): sent by a configured token presenter (the Composite), it turns the mode on; ignored from any other caller. The consent's `purpose.code` must equal it, else `purpose_not_allowed`. The caller's terms replace the partner's scope policies; no policy is read ([caller-terms mode](../design/verification-and-enforcement.md#caller-terms-mode)) |
-| `request_context.limits` | no | Caller-terms mode: `allowed_subject_id_types`, `allowed_signing_algs`, `max_validity_duration` (absent = no limit), `allow_partner_consents` (absent = false). From a caller that is not a presenter → `caller_terms_not_allowed`; without `purpose` → `malformed_object` |
-| `request_context.template` | no | Caller-terms mode: a label (e.g. `loan-profile@1`), recorded as `policy_ref: template:<code>`; never used to decide. Same rules as `limits` |
-| `issue_receipts` | no (default `false`) | **Exchange role only** ([Exchange consent tokens](../design/exchange-consent-tokens.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed` |
+| Field                              | Required                                                                   | Meaning                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `consent_jws`                      | one of these, or neither ([lookup](verification-api.md#consent-by-lookup)) | The partner-signed consent, forwarded verbatim                                                                                                                                                                                                                                                                                                                                     |
+| `consent_id`                       |                                                                            | A consent this CM holds (collected through it), by ID. Not with `consent_jws`                                                                                                                                                                                                                                                                                                      |
+| `consent_partner_id`               | with `consent_id`, and for a caller-terms lookup                           | The partner the consent was given to (its audience, e.g. `bank-a`); another → `partner_mismatch`                                                                                                                                                                                                                                                                                   |
+| `partner_id`                       | no                                                                         | The caller (a registry sends the DCI `sender_id`). Traceability only, except for a consent-token presenter: it identifies the presenter for `issue_receipts`, caller-terms mode and consent tokens. The partner is keyed off `aud`. In a [lookup at a registry](verification-api.md#consent-by-lookup), the partner whose consent is looked up                                     |
+| `data_controller`                  | when the consent has `grants`, and for a lookup at a registry              | The **calling registry**. Selects that registry's grant in the consent                                                                                                                                                                                                                                                                                                             |
+| `request_context.requested_scopes` | no (yes in caller-terms mode)                                              | Narrows the effective scopes further; in caller-terms mode, the ceiling (the scopes the caller asks for)                                                                                                                                                                                                                                                                           |
+| `request_context.subject_id`       | for a lookup                                                               | The subject about to be searched. Same `type` as the consent subject but a different `value` → `subject_mismatch`; the same holds for the consent's other identifiers (`subject_identifiers`, e.g. `FARMER_ID`). A lookup matches it to the consent's subject or one of those identifiers, `type` spelled exactly                                                                  |
+| `request_context.purpose`          | no                                                                         | **Caller-terms mode** (Exchange): sent by a configured token presenter (the Composite), it turns the mode on; ignored from any other caller. The consent's `purpose.code` must equal it, else `purpose_not_allowed`. The caller's terms replace the partner's scope policies; no policy is read ([caller-terms mode](../design/verification-and-enforcement.md#caller-terms-mode)) |
+| `request_context.limits`           | no                                                                         | Caller-terms mode: `allowed_subject_id_types`, `allowed_signing_algs`, `max_validity_duration` (absent = no limit), `allow_partner_consents` (absent = false). From a caller that is not a presenter → `caller_terms_not_allowed`; without `purpose` → `malformed_object`                                                                                                          |
+| `request_context.template`         | no                                                                         | Caller-terms mode: a label (e.g. `loan-profile@1`), recorded as `policy_ref: template:<code>`; never used to decide. Same rules as `limits`                                                                                                                                                                                                                                        |
+| `issue_receipts`                   | no (default `false`)                                                       | **Exchange role only** ([Exchange consent tokens](../design/exchange-consent-tokens.md)). On permit, also return one signed consent token per granted controller (or only `data_controller`, if sent). Allowed only when `partner_id` is a configured token presenter, else deny `receipt_presenter_not_allowed`                                                                   |
 
-`consent_jws` may also be a **consent token** (header `typ: consent-token+jwt`, or the earlier
-`consent-receipt+jwt`) from a trusted Exchange CM; then `data_controller` must be the token's `aud`
-and `partner_id` its `presenter` ([Department role](../design/exchange-consent-tokens.md#department-role-accepting)).
-A partner-signed `consent_jws` is accepted only when the applicable policy sets
-`allow_partner_consents`.
+`consent_jws` may also be a **consent token** (header `typ: consent-token+jwt`, or the earlier `consent-receipt+jwt`) from a trusted Exchange CM; then `data_controller` must be the token's `aud` and `partner_id` its `presenter` ([Department role](../design/exchange-consent-tokens.md#department-role-accepting)). A partner-signed `consent_jws` is accepted only when the applicable policy sets `allow_partner_consents`.
 
-**Consent claims** (the payload of a partner-signed compact JWS, RFC 7515; the protected header
-carries `alg` and `kid`): `jti`, `aud`, `subject_id {type, value}`, `purpose {code, text}`,
-`fetch_type`, `validity {valid_from, valid_until}`, `issued_at`, and the data to share in **one** of
-two forms:
+**Consent claims** (the payload of a partner-signed compact JWS, RFC 7515; the protected header carries `alg` and `kid`): `jti`, `aud`, `subject_id {type, value}`, `purpose {code, text}`, `fetch_type`, `validity {valid_from, valid_until}`, `issued_at`, and the data to share in **one** of two forms:
 
-* `grants: [{data_controller, data_scopes}, ...]` — **one consent, one grant per registry**. A partner
-  that needs data from several registries asks the subject once and lists a grant for each.
-* `data_controller` + `data_scopes` — the earlier single-registry form, still accepted and treated
-  as a single grant.
+* `grants: [{data_controller, data_scopes}, ...]` — **one consent, one grant per registry**. A partner that needs data from several registries asks the subject once and lists a grant for each.
+* `data_controller` + `data_scopes` — the earlier single-registry form, still accepted and treated as a single grant.
 
-A consent carrying both forms, an empty `grants` list, or two grants for the same controller is
-`malformed_object`.
+A consent carrying both forms, an empty `grants` list, or two grants for the same controller is `malformed_object`.
 
 ```json
 // consent claims (JWS payload) with one grant per registry
@@ -85,9 +70,7 @@ A consent carrying both forms, an empty `grants` list, or two grants for the sam
 }
 ```
 
-For a consent with `grants`, `data_controller` is required and selects the grant; for a
-single-registry consent it is optional and must equal the consent's. Effective scopes = the grant ∩
-the partner's policy for that registry (∩ `requested_scopes`).
+For a consent with `grants`, `data_controller` is required and selects the grant; for a single-registry consent it is optional and must equal the consent's. Effective scopes = the grant ∩ the partner's policy for that registry (∩ `requested_scopes`).
 
 **Response — permit (HTTP 200)**
 
@@ -108,12 +91,7 @@ the partner's policy for that registry (∩ `requested_scopes`).
 }
 ```
 
-`subject_id` is the **consent's** subject: the registry checks it against what it searches.
-`data_controller` is the controller the decision was made for (also on a deny, when known).
-`policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied; in
-caller-terms mode `policy_ref` is `template:<code>` and the other two are null. For a
-consent the CM holds, or with `issue_receipts`, a permit also carries `grants`:
-`{data_controller: effective scopes}`.
+`subject_id` is the **consent's** subject: the registry checks it against what it searches. `data_controller` is the controller the decision was made for (also on a deny, when known). `policy_ref`, `policy_version` and `policy_id` name the Partner Management policy applied; in caller-terms mode `policy_ref` is `template:<code>` and the other two are null. For a consent the CM holds, or with `issue_receipts`, a permit also carries `grants`: `{data_controller: effective scopes}`.
 
 **Response — deny (HTTP 200)**
 
@@ -127,15 +105,9 @@ consent the CM holds, or with `issue_receipts`, a permit also carries `grants`:
 }
 ```
 
-> Both outcomes return HTTP 200 so the PEP can read `reason_code`. Transport/auth failures use the
-> usual 4xx/5xx. The registry releases data **only** when `decision == "permit"`, and only the
-> fields in `effective_data_scopes`.
+> Both outcomes return HTTP 200 so the PEP can read `reason_code`. Transport/auth failures use the usual 4xx/5xx. The registry releases data **only** when `decision == "permit"`, and only the fields in `effective_data_scopes`.
 
-**Response — permit with consent tokens** (`issue_receipts: true`, exchange role). The response gains
-`receipts`, one consent token (compact JWS) per controller ([token format](../design/exchange-consent-tokens.md#consent-token)).
-With one controller the other fields are that controller's decision; with several, they hold the
-common `subject_id` and the earliest `valid_until`. If any controller denies, that deny is returned
-and no consent tokens are issued. `receipts` is `null` on every other response.
+**Response — permit with consent tokens** (`issue_receipts: true`, exchange role). The response gains `receipts`, one consent token (compact JWS) per controller ([token format](../design/exchange-consent-tokens.md#consent-token)). With one controller the other fields are that controller's decision; with several, they hold the common `subject_id` and the earliest `valid_until`. If any controller denies, that deny is returned and no consent tokens are issued. `receipts` is `null` on every other response.
 
 ```json
 {
@@ -155,9 +127,7 @@ and no consent tokens are issued. `receipts` is `null` on every other response.
 }
 ```
 
-**Request — caller-terms mode** (the Composite at the Exchange). The Composite sends the use case's
-purpose, the scopes it asks for and the limits of the partner's use-case policy; the CM checks the
-consent's purpose, applies the limits and limits each registry's scopes to `requested_scopes`.
+**Request — caller-terms mode** (the Composite at the Exchange). The Composite sends the use case's purpose, the scopes it asks for and the limits of the partner's use-case policy; the CM checks the consent's purpose, applies the limits and limits each registry's scopes to `requested_scopes`.
 
 ```json
 {
@@ -180,11 +150,9 @@ consent's purpose, applies the limits and limits each registry's scopes to `requ
 
 ### Consent by lookup
 
-A caller may send **neither** `consent_jws` nor `consent_id`: the CM finds the consent it holds.
-Two forms: in caller-terms mode (the Composite) and at a registry.
+A caller may send **neither** `consent_jws` nor `consent_id`: the CM finds the consent it holds. Two forms: in caller-terms mode (the Composite) and at a registry.
 
-**Caller-terms mode** (the Composite at an Exchange): the partner's most recent active consent for
-the subject and purpose.
+**Caller-terms mode** (the Composite at an Exchange): the partner's most recent active consent for the subject and purpose.
 
 ```json
 {
@@ -205,8 +173,7 @@ the subject and purpose.
 }
 ```
 
-Only for a configured token presenter with `consent_partner_id`, `request_context.purpose` and
-`request_context.subject_id`; otherwise `malformed_object`.
+Only for a configured token presenter with `consent_partner_id`, `request_context.purpose` and `request_context.subject_id`; otherwise `malformed_object`.
 
 **At a registry** (when the partner's search carries no consent):
 
@@ -221,16 +188,11 @@ Only for a configured token presenter with `consent_partner_id`, `request_contex
 }
 ```
 
-`partner_id`, `data_controller` and `request_context.subject_id` are required; otherwise
-`malformed_object`. `requested_scopes` is optional.
+`partner_id`, `data_controller` and `request_context.subject_id` are required; otherwise `malformed_object`. `requested_scopes` is optional.
 
-In both forms the subject matches the consent's subject or one of its `subject_identifiers`, type
-spelled exactly. Which consent is picked, and how it is then checked:
-[Verification & enforcement](../design/verification-and-enforcement.md#consent-by-lookup-at-a-registry).
-The decision carries the `consent_id` used; none found → `consent_not_found`.
+In both forms the subject matches the consent's subject or one of its `subject_identifiers`, type spelled exactly. Which consent is picked, and how it is then checked: [Verification & enforcement](../design/verification-and-enforcement.md#consent-by-lookup-at-a-registry). The decision carries the `consent_id` used; none found → `consent_not_found`.
 
-**Idempotency is per (`jti`, `data_controller`)**: a repeat of the same signed consent by the
-same registry returns its stored decision; another registry gets its own `consent_id` and receipt.
+**Idempotency is per (`jti`, `data_controller`)**: a repeat of the same signed consent by the same registry returns its stored decision; another registry gets its own `consent_id` and receipt.
 
 ## `GET /consent/v1/consents/{consent_id}/status`
 
@@ -247,9 +209,7 @@ A lightweight, OCSP-like status check for enforcement points that cache decision
 
 ## `GET /consent/v1/receipts/{jti}/status`
 
-Status of a consent token this CM issued in the **exchange role** (with `issue_receipts`). A
-department CM calls it only if its optional token status check is on (off by default,
-[why](../design/exchange-consent-tokens.md#department-role-accepting)).
+Status of a consent token this CM issued in the **exchange role** (with `issue_receipts`). A department CM calls it only if its optional token status check is on (off by default, [why](../design/exchange-consent-tokens.md#department-role-accepting)).
 
 **Auth:** none (partner API; Istio mTLS at transport). **Response (HTTP 200)**
 
@@ -257,17 +217,13 @@ department CM calls it only if its optional token status check is on (off by def
 { "jti": "0b6d1f0e-5c1e-4c1a-9d7e-2f1f6c8a9b10", "status": "active", "checked_at": "2026-10-01T10:00:05Z" }
 ```
 
-`status` ∈ `active | revoked | expired`: `revoked` when the token's consent (the Exchange CM's
-artefact for that registry) is revoked, `expired` after the token's `exp` or the consent's expiry.
-A `404` means this CM issued no such consent token.
+`status` ∈ `active | revoked | expired`: `revoked` when the token's consent (the Exchange CM's artefact for that registry) is revoked, `expired` after the token's `exp` or the consent's expiry. A `404` means this CM issued no such consent token.
 
 ## `GET /consent/v1/receipts/{receipt_id}`
 
 Fetch the signed [Consent Receipt](../design/data-model.md#consent-receipt-kantara-iso-27560).
 
-**Auth:** none (in cluster; the signature makes it self-verifying). **Response:** the receipt JSON-LD
-document (HTTP 200) or `404`. A receipt carries `data_controllers` (one entry per controller it covers) beside
-`data_controller`; a receipt from `/validate` covers exactly the one registry that validated.
+**Auth:** none (in cluster; the signature makes it self-verifying). **Response:** the receipt JSON-LD document (HTTP 200) or `404`. A receipt carries `data_controllers` (one entry per controller it covers) beside `data_controller`; a receipt from `/validate` covers exactly the one registry that validated.
 
 ## `GET /.well-known/jwks.json`
 
@@ -283,5 +239,4 @@ The CM's public signing key, for receipts and consent tokens. Routed from outsid
 
 ## Reason codes
 
-Any [shared reason code](README.md#shared-reason-codes). Consent-token codes (`receipt_*`,
-`presenter_mismatch`) occur only with the Exchange settings on.
+Any [shared reason code](./#shared-reason-codes). Consent-token codes (`receipt_*`, `presenter_mismatch`) occur only with the Exchange settings on.

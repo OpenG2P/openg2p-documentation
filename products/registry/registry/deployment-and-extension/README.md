@@ -2,7 +2,7 @@
 description: >-
   How the OpenG2P Registry is packaged, deployed and extended. The platform is
   now a complete, installable registry in its own right — with a reference
-  registry, Helm chart, Docker images, seeding and tests.
+  registry, Helm chart, Docker images, seeding and t
 ---
 
 # Deployment and Extension
@@ -37,19 +37,19 @@ A domain registry (social registry, farmer registry, disability registry, …) i
 
 | Artifact                             | Location                                                                                                                                                         |
 | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Platform + reference registry source | [`OpenG2P/registry-platform`](https://github.com/OpenG2P/registry-platform)                                                                    |
+| Platform + reference registry source | [`OpenG2P/registry-platform`](https://github.com/OpenG2P/registry-platform)                                                                                      |
 | Dockerfiles                          | `registry-platform/docker/*` (+ `ui/staff-ui/Dockerfile`)                                                                                                        |
 | Helm chart                           | `registry-platform/helm/openg2p-registry`, published to the OpenG2P Helm repository — [`openg2p.github.io/openg2p-helm`](https://openg2p.github.io/openg2p-helm) |
 | Docker images                        | Docker Hub, the `openg2p/openg2p-registry-*` repositories                                                                                                        |
 | Reference extension (example)        | `registry-platform/reference-extension`                                                                                                                          |
-| Version catalogue / changelog        | [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html)                     |
+| Version catalogue / changelog        | [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html)                                                               |
 
 ## Versioning & CI
 
 All Docker images and the Helm chart are built by a **single CI workflow** and carry **one version per commit** — images and chart never drift. The versioning scheme, derivation rules and lockstep tagging are documented once, org-wide, here:
 
 {% hint style="info" %}
-[**Helm & Docker versioning and CI**](../../../../releases/helm-docker-versioning-and-ci/README.md) — the authoritative reference (not repeated here).
+[**Helm & Docker versioning and CI**](../../../../releases/helm-docker-versioning-and-ci/) — the authoritative reference (not repeated here).
 {% endhint %}
 
 {% hint style="success" %}
