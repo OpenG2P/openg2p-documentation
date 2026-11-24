@@ -32,7 +32,7 @@ Without the **agriculture** domain in Master Data, the install succeeds but the 
 1. In Rancher, select the cluster and the namespace.
 2. Under **Apps → Charts**, refresh the repositories and select **OpenG2P Agents Registry**.
 3. Choose the version. Tick **Show pre-release versions** to see `0.0.0-develop.N` versions.
-4. Name the release, e.g. `agents`. The release name is part of the hostnames and the database name.
+4. Name the release, e.g. `ar` (the name on the trial environment). The release name is part of the hostnames and the database name.
 5. Tick **Customize Helm options before install**, then **Next**.
 6. Make the choices below, then **Install**.
 
@@ -45,17 +45,19 @@ The defaults suit a production-like install. Change only these.
 | Field | Choose | Why |
 | --- | --- | --- |
 | **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org`; the staff portal is then at `<release>.<Base Domain>` |
-| **Load Sample Data** | On for a demo only | Loads the country pack's sample agents. See [Sample data](#sample-data) |
+| **Load Sample Data** | On for a demo only | Loads the country pack's sample agents, the sample approval policies and the demo staff users they name. See [Sample data](#sample-data) |
 | **Load sample trainings** | On for a demo only | Shown when Load Sample Data is on. See [Sample data](#sample-data) |
 | **AWE Approver User Password** | Your own | The initial password of the demo staff users, among them the approvers `alex.carter` and `nina.patel` (default `pass`, changed at first login). Only with Load Sample Data; a demo user that already exists in the `staff` realm keeps its password ([details](../../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)) |
 
 **Leave as they are:**
 
 * **Install ID Generator?** and **Enable DB Seed** on: the ID generator issues Agent IDs, and the seed is the registry's configuration.
+* **Install Staff Portal API?**, **Install Staff Portal UI?** and **Install Partner API?** on: staff keep the agents in the portal, and a learning platform sends trainings in through the partner API.
+* **Use AWE for Approvals** on: new agents and changes to an agent are approved in AWE ([Adding an agent and approving it](#adding-an-agent-and-approving-it)).
 * **Verify Partner Signature** on; **Enforce Consent** and **Allow Unsigned Read of Data Scope Catalogue** off: the registry shares nothing and has no data scopes, and its partner API only takes data in, from signed partners.
 * **Install Beneficiary Portal API?** off: the registry has no beneficiaries; its records are the agents, kept by staff.
-* **Install Registry Connector?** off: the platform's ingestion gateway (ODK Central, webhooks, event buses into the partner API). It is of use only if an existing agent system pushes its records that way; then set its hostname and **Partner API Service** (`<release>-partner-api`).
-* **Load Templates to Object Store** (versions on Registry Platform `0.0.0-develop.847` or older) off. The templates are Jinja files that convert records between the registry's format and a partner's format (e.g. a farmer record into a DCI search result in the Farmer Registry), uploaded to the object store by db-seed. This registry shares no records and ships none, so turned on there db-seed fails. Later versions have no switch: db-seed uploads the templates an image ships and skips when there are none.
+* **Install Registry Connector?** off: the platform's ingestion gateway (ODK Central, webhooks, event buses into the partner API). It is of use only if an existing agent system pushes its records that way; then set its hostname and **Partner API Service** to `<release>-partner-api` (the default, `agents-partner-api`, is right only for a release named `agents`).
+* **Load Templates to Object Store** (Agents Registry `0.0.0-develop.7` or older) off. The templates are Jinja files that convert records between the registry's format and a partner's format (e.g. a farmer record into a DCI search result in the Farmer Registry), uploaded to the object store by db-seed. This registry shares no records and ships none, so turned on there db-seed fails. Later versions have no switch: db-seed uploads the templates an image ships and skips when there are none.
 * **Sanity - Run Full E2E** off: the platform's e2e tier seeds and searches a reference-registry record this registry does not have.
 * **Load Sample Images** and **Optional Seeds**: this registry ships none.
 
@@ -121,17 +123,17 @@ kubectl -n <ns> logs job/<release>-db-seed
 | `<release>-sanity` | Complete: the partner API is up |
 | iam-register | Complete |
 
-The release serves these hostnames, named the way every registry's are ([Hostnames](../../../../products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md#hostnames)). With the release `agents` and Base Domain `trial.openg2p.org`:
+The release serves these hostnames, named the way every registry's are ([Hostnames](../../../../products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md#hostnames)). With the release `ar` and Base Domain `trial.openg2p.org`:
 
 | Hostname | Serves | Who uses it |
 | --- | --- | --- |
-| `agents.trial.openg2p.org` | The staff portal | Staff, in the browser |
-| `agents-staff-api.trial.openg2p.org` | The staff portal's API | AWE, which posts approval decisions to it (`/awe/webhooks/decision`); IAM. The staff portal calls the API inside the cluster |
-| `agents-partner-api.trial.openg2p.org` | The partner API | Signed partners sending data in (a learning platform's trainings) |
-| `agents-idgenerator-api.trial.openg2p.org` | The ID generator | Administrators. The registry calls it inside the cluster, for Agent IDs |
-| `agents-agent.trial.openg2p.org`, `agents-agent-api.trial.openg2p.org` | The Agent Portal and its API | Only with VC issuance on |
+| `ar.trial.openg2p.org` | The staff portal | Staff, in the browser |
+| `ar-staff-api.trial.openg2p.org` | The staff portal's API | AWE, which posts approval decisions to it (`/awe/webhooks/decision`); IAM. The staff portal calls the API inside the cluster |
+| `ar-partner-api.trial.openg2p.org` | The partner API | Signed partners sending data in (a learning platform's trainings) |
+| `ar-idgenerator-api.trial.openg2p.org` | The ID generator | Administrators. The registry calls it inside the cluster, for Agent IDs |
+| `ar-agent.trial.openg2p.org`, `ar-agent-api.trial.openg2p.org` | The Agent Portal and its API | Only with VC issuance on |
 
-Agents Registry versions on a Registry Platform older than this convention served the APIs as `staff-agents…`, `partner-agents…`, `idgenerator-agents…` and `agent-agents…`.
+Agents Registry versions on a Registry Platform older than this convention served the APIs as `staff-<release>…`, `partner-<release>…`, `idgenerator-<release>…` and `agent-<release>…`.
 
 Then open the staff portal at `https://<Registry Hostname>`:
 
@@ -154,7 +156,7 @@ An agent is not added from the **Agent** register's list. It is added through in
 2. **Add New** (top right) → **New agent**, fill in the form and submit. The button shows to users whose roles grant `intakeSubmission:edit`: Intake Officer, Operations Administrator, Technical Administrator.
 3. The submission goes to AWE for approval. With sample data, db-seed sets up two policies, **Agent Intake Form** (new agents) and **Agent Change Request** (changes to an agent's record). Each has two stages, approved in order: stage 1 by `alex.carter`, stage 2 by `nina.patel`. Both must approve.
 4. Each approver signs in to the staff portal (password: **AWE Approver User Password** from the install) and approves under **Tasks**.
-5. On the second approval AWE calls the staff API back (`/awe/webhooks/decision`), the agent is created, and the Agent ID is generated.
+5. On the second approval AWE calls the staff API back (`/awe/webhooks/decision`). The rest runs in the background (Celery), about a minute per step: the agent is created, with a temporary `TEMP-…` ID, then the ID generator gives it its Agent ID. The form never shows an Agent ID; a new agent raises no change request.
 
 A change to an existing agent (from its record) raises a change request that follows the same two stages. The demo approvers and their policies exist only with sample data; a production install sets its own up in AWE ([Customisation](../customisation.md#approvals)).
 
@@ -163,8 +165,8 @@ A change to an existing agent (from its record) raises a change request that fol
 `helm uninstall` leaves the database, PVCs and IAM rows behind. Use the repository's script, with `--dry-run` first:
 
 ```bash
-./scripts/uninstall-registry.sh --namespace <ns> --release agents --dry-run
-./scripts/uninstall-registry.sh --namespace <ns> --release agents
+./scripts/uninstall-registry.sh --namespace <ns> --release ar --dry-run
+./scripts/uninstall-registry.sh --namespace <ns> --release ar
 ```
 
 It removes the release, leftover Jobs, labelled Secrets and ConfigMaps, the registry's database and role in `commons-postgresql`, its IAM rows, and its PVCs and PVs. Options: `--keep-iam`, `--keep-pvs`, `--force`, `--yes`. It leaves shared services alone: the Keycloak client, the approval policies in the shared AWE database, and Master Data.

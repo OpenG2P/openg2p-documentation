@@ -40,11 +40,14 @@ It is built on the [OpenG2P Registry Platform](../../../products/registry/regist
 
 ## Registers
 
+Two registers: one entity register and one activity register.
+
 | Register | Kind | Holds |
 | --- | --- | --- |
-| **Agent** | Entity register | One record per agent: identity, person, contact, employment, current assignment, service status |
-| **Specializations**, **Qualifications** | List sections of Agent | Rows under the agent |
+| **Agent** | Entity register | One record per agent: identity, person, contact, employment, current assignment, service status, and two lists of rows, specializations and qualifications |
 | **AgentTraining** | Activity register | Trainings completed and certifications awarded, by agent |
+
+**Specializations and qualifications are not registers.** They are list sections of the agent record: rows under the agent, added and edited on the agent's record, the way the Farmer Registry keeps lands and livestock under a farmer. Each list is kept in a table of its own (`AgentSpecialization`, `AgentQualification`), which the platform defines as a child of Agent with the purpose `TABLE`; that is why the two names appear among the register definitions.
 
 ### The agent record
 

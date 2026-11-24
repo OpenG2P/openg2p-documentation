@@ -143,5 +143,5 @@ pytest test/integration
 ## What not to change
 
 * **Codes** in the packs: change labels instead.
-* **The register mnemonics** (`Agent`, `AgentSpecialization`, `AgentQualification`, `AgentTraining`) and their IDs in `agents_definitions.py`: the models, the ID pool and the approval bindings depend on them.
+* **The register mnemonics** of the two registers (`Agent`, `AgentTraining`) and of the agent's two list tables (`AgentSpecialization`, `AgentQualification`), and their IDs in `agents_definitions.py`: the models, the ID pool and the approval bindings depend on them.
 * **Generated SQL** by hand: change the definitions and regenerate.
