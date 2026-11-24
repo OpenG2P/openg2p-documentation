@@ -55,7 +55,7 @@ The defaults suit a production-like install. Change only these.
 
 **Leave as they are:**
 
-* **Install ID Generator?**, **Enable DB Seed** and **Load Templates to Object Store** on. The ID generator issues Cluster IDs, the seed is the registry's configuration, and without the templates every DCI search fails.
+* **Install ID Generator?** and **Enable DB Seed** on. The ID generator issues Cluster IDs, and the seed is the registry's configuration and uploads the templates, without which every DCI search fails. (Versions on Registry Platform `0.0.0-develop.847` or older also show **Load Templates to Object Store**: keep it on.)
 * **Sanity - Run Full E2E** off. The platform's e2e tier seeds an entity record this registry does not have.
 * **Load Sample Images** and **Optional Seeds**: this registry ships none.
 * The ID generator's unused platform pools (`individual`, `household`, `farmer`) are harmless.

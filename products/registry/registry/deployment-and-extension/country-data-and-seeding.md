@@ -114,7 +114,7 @@ generator and no country content.
 |---|---|
 | `entrypoint.sh` | Runs the ordered steps, entirely from environment variables |
 | `mds_client.py` | Small client for the Master Data API, used by seed scripts that need geography or datasets |
-| `upload_templates.py` | Jinja templates → object store (Garage) |
+| `upload_templates.py` | Jinja templates → object store (Garage). Always run; an image without templates skips it |
 
 There is deliberately **no `load_sample_data.py` and no bulk generator in the
 platform**. The platform owns the *hook* and the *order*; each registry variant
@@ -216,7 +216,6 @@ platform chart itself).
 | `enabled` | `true` | Run the db-seed Job at all. Meta-data SQL is applied unconditionally when on |
 | `loadSampleData` | `false` | Load the demo people |
 | `loadImages` | `false` | Sample profile photos — requires `loadSampleData` |
-| `loadTemplates` | `true` | Jinja templates → object store (Garage) |
 
 {% hint style="info" %}
 Removed from the platform: `loadGeoData` (a legacy loader that wrote a second
@@ -276,7 +275,6 @@ So in the Rancher form these appear under the **DB Seed** group:
 | Enable DB Seed | `registry.dbSeed.enabled` |
 | Load Sample Data | `registry.dbSeed.loadSampleData` |
 | Load Sample Images | `registry.dbSeed.loadImages` |
-| Load Templates to Object Store | `registry.dbSeed.loadTemplates` |
 
 and under **Sanity**: `registry.sanity.enabled`, `registry.sanity.runE2e`,
 `registry.sanity.failOnError`.
@@ -300,7 +298,6 @@ registry:
     enabled: true          # meta-data SQL is REQUIRED
     loadSampleData: false
     loadImages: false
-    loadTemplates: true    # keep — see below
   sanity:
     enabled: true          # smoke only; creates nothing
     runE2e: false          # e2e SEEDS fixtures and leaves them behind
@@ -311,9 +308,13 @@ analytics:
 ```
 
 {% hint style="danger" %}
-**Do not turn off `dbSeed.enabled` or `loadTemplates`.** The meta-data SQL defines
-the register itself — without it there is no registry. Without the Jinja templates
-in the object store every record fails to render and a DCI search returns an empty result.
+**Do not turn off `dbSeed.enabled`.** The meta-data SQL defines the register
+itself — without it there is no registry. It also uploads the Jinja templates to
+the object store, without which every record fails to render and a DCI search
+returns an empty result. There is no switch for the templates: db-seed uploads
+the ones the image ships. Registry Platform versions up to `0.0.0-develop.847`
+had a **Load Templates to Object Store** switch (`dbSeed.loadTemplates`); on them, keep it on
+for a registry that ships templates.
 
 The same goes for **datasets on the Master Data side**: they are configuration,
 not demo data. Keep `geoSeed.load.codelists: true` (and any `geoSeed.domains` your
@@ -364,7 +365,7 @@ The chart runs db-seed as a `post-install,post-upgrade` hook Job:
 | 1 | **meta-data SQL** → registry DB — register definitions, UI metadata | *always, when `enabled`* |
 | 2 | **sample data** → `g2p_register_*` | `loadSampleData` |
 | 3 | **images** → object store | `loadImages` |
-| 4 | **templates** → object store | `loadTemplates` |
+| 4 | **templates** → object store | *always; skipped when the image ships none* |
 | 5 | **AWE seed** → AWE DB | `aweDbSeed` |
 
 Datasets and geo dropdowns are not steps here: the registry does not load them.

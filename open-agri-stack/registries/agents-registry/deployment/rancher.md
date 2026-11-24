@@ -55,7 +55,7 @@ The defaults suit a production-like install. Change only these.
 * **Verify Partner Signature** on; **Enforce Consent** and **Allow Unsigned Read of Data Scope Catalogue** off: the registry shares nothing and has no data scopes, and its partner API only takes data in, from signed partners.
 * **Install Beneficiary Portal API?** off: the registry has no beneficiaries; its records are the agents, kept by staff.
 * **Install Registry Connector?** off: the platform's ingestion gateway (ODK Central, webhooks, event buses into the partner API). It is of use only if an existing agent system pushes its records that way; then set its hostname and **Partner API Service** (`<release>-partner-api`).
-* **Load Templates to Object Store** off: the registry renders no records for partners.
+* **Load Templates to Object Store** (versions on Registry Platform `0.0.0-develop.847` or older) off. The templates are Jinja files that convert records between the registry's format and a partner's format (e.g. a farmer record into a DCI search result in the Farmer Registry), uploaded to the object store by db-seed. This registry shares no records and ships none, so turned on there db-seed fails. Later versions have no switch: db-seed uploads the templates an image ships and skips when there are none.
 * **Sanity - Run Full E2E** off: the platform's e2e tier seeds and searches a reference-registry record this registry does not have.
 * **Load Sample Images** and **Optional Seeds**: this registry ships none.
 
@@ -92,8 +92,8 @@ Sample data is off by default. For a demo, turn on both switches:
 | **Load sample trainings** | Trainings and certifications for the sample agents | The sample agents |
 
 * **Which pack:** db-seed picks the pack whose sample agents' areas Master Data knows, so the samples match the country Master Data was installed with. A pack without `samples/agents.json` loads none.
-* **The ETH pack** has 24 Development Agents in eleven woredas of eight regions, among them the Tigray woredas of the pack's sample farmers: DAs, senior DAs, supervisors, woreda specialists and community animal health workers, with one on leave, one suspended and one retired.
-* **Agent IDs** are fixed, so a reinstall gives the same records: a woreda's six P-code digits and a sequence (`01010101` is the first DA of Tahtay Adiyabo, `ET010101`).
+* **What a pack's samples hold:** agents of every position, posted in the areas of the pack's sample farmers, with one on leave, one suspended and one retired.
+* **Agent IDs** are fixed, so a reinstall gives the same records: the code of the agent's area and a sequence.
 * **Trainings:** every sample agent has a course in the topic of their primary specialization; every second one also an online course on digital tools; every third one a certification. One training is corrected.
 
 {% hint style="info" %}

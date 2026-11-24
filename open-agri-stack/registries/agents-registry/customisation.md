@@ -54,7 +54,7 @@ The registry keeps **no lists**. Every coded field is checked against Master Dat
 
 The assigned area is a unit of the country's geography, at **any level**. The form's geography widget lists the levels Master Data serves.
 
-* **Ethiopia** assigns Development Agents to a **kebele**. The ETH pack's geography stops at the woreda (its source has no kebele level), so today the assigned area is the woreda, and the kebele is in the service point's name. Adding a kebele level to the pack makes the kebele selectable, with no registry change.
+* **For example, Ethiopia** assigns Development Agents to a **kebele**. The ETH pack's geography stops at the woreda (its source has no kebele level), so today the assigned area is the woreda, and the kebele is in the service point's name. Adding a kebele level to the pack makes the kebele selectable, with no registry change.
 * The reports read the levels by position, so a country with five levels gets five columns.
 
 ## Agent ID
@@ -98,11 +98,11 @@ Registrations and changes are approved in AWE under the policy keys `registry.in
 
 ## An existing agent system
 
-A country that already keeps agents elsewhere (in Ethiopia, the Ministry of Agriculture's DA Registry) brings them in through the partner API's `ingest_data`, with an ingestion mapping from its fields to the Agent register's. The mapping is written once that system's fields are known. Sending changes back to it is not built; the registry's change events (outgestion) would carry them.
+A country that already keeps agents elsewhere (for example, the Ministry of Agriculture's DA Registry in Ethiopia) brings them in through the partner API's `ingest_data`, with an ingestion mapping from its fields to the Agent register's. The mapping is written once that system's fields are known. Sending changes back to it is not built; the registry's change events (outgestion) would carry them.
 
 ## Calendar
 
-Dates are entered in the Gregorian calendar. Ethiopian-calendar entry, as the Crop Sown Registry offers for some fields, is not configured.
+Dates are entered in the Gregorian calendar. A country calendar (for example the Ethiopian calendar, which the Crop Sown Registry offers for some fields) is not configured.
 
 ## The agent credential
 

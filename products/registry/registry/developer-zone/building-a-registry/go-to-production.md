@@ -65,7 +65,6 @@ registry:
     enabled: true            # KEEP: metadata seeding is required
     loadSampleData: false    # no demo records
     loadImages: false        # no demo photos
-    loadTemplates: true      # KEEP: DCI templates must be in MinIO
   sanity:
     enabled: false           # or true with runE2e:false for a smoke check
     runE2e: false            # NEVER true in production
@@ -77,13 +76,14 @@ analytics:
 ```
 
 {% hint style="danger" %}
-Two switches are load-bearing and must stay **on**:
+These are load-bearing and must stay **on**:
 
 * **`dbSeed.enabled`** — without the metadata SQL you have tables but no
   registers or screens. It creates no registrant data. (Datasets are not part of
   it — they come from Master Data; see step 2.)
-* **`loadTemplates`** — without the DCI templates in MinIO every record fails to
-  render, and a DCI search returns an empty `200` rather than an error.
+* **`dbSeed.enabled`** also uploads the DCI templates to the object store (there
+  is no separate switch). Without them every record fails to render, and a DCI
+  search returns an empty `200` rather than an error.
 {% endhint %}
 
 ## 4. Keep the enforcement gates on

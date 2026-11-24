@@ -62,9 +62,8 @@ optional:
 ```yaml
 registry:
   dbSeed:
-    enabled: true          # REQUIRED — the metadata IS the registry
-    loadTemplates: true    # REQUIRED — without the DCI templates every partner
-                           #            search returns an empty 200
+    enabled: true          # REQUIRED — the metadata IS the registry, and it
+                           #            uploads the DCI templates
     loadSampleData: false
     loadImages: false
     syncGeoWidgets: true   # removed in the current registry platform — drop on upgrade

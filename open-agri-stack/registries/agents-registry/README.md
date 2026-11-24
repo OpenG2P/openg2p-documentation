@@ -13,7 +13,7 @@ description: >-
 
 Farmers are served by agents: extension agents, development agents, animal health workers. A ministry needs to know who they are, where each one is posted, what they are qualified in and which trainings they have completed, and to keep that record right through postings, promotions, leave and retirement.
 
-The **OpenG2P Agents Registry** keeps that record. It is a **reference registry**: generic fields and lists that a system integrator customises for a country ([Customisation](customisation.md)). Ethiopia's Development Agents are the first case it is built against.
+The **OpenG2P Agents Registry** keeps that record. It is a **reference registry**: generic fields and lists that a system integrator customises for a country ([Customisation](customisation.md)).
 
 It is built on the [OpenG2P Registry Platform](../../../products/registry/registry/README.md), like the [Farmer Registry](../../../products/registry/farmer-registry/README.md) and the [Crop Sown Registry](../../../products/registry/crop-sown-registry/README.md): an **entity register** for the agents and an **[activity register](../../../products/registry/registry/features/activity-register.md)** for their trainings, in one registry.
 
@@ -158,7 +158,7 @@ Nothing with partners. No bank, insurer or OAN service reads agents through the 
 ## How it relates to other registries
 
 * **Farmers.** Which farmers an agent serves is **not stored**: the agent's assigned area and a farmer's location in the [Farmer Registry](../../../products/registry/farmer-registry/README.md) give the link when a service needs it. The registries stay independent, and no list of farmers per agent goes out of date.
-* **Crop Sown Registry.** Its activities carry the development agent's ID as an identifier held by another system, checked by format only.
+* **Crop Sown Registry.** Its activities carry the agent's ID as an identifier held by another system, checked by format only.
 
 ## How it is packaged
 

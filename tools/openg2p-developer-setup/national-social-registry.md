@@ -64,7 +64,7 @@ Uses `openg2p-data` demography JSON (+ product seed files):
 
 ```bash
 LOAD_SAMPLE_DATA=true make nsr-registry-seed
-LOAD_SAMPLE_DATA=true LOAD_TEMPLATES=true LOAD_IMAGES=true make nsr-registry-seed
+LOAD_SAMPLE_DATA=true LOAD_IMAGES=true make nsr-registry-seed
 ```
 
 ### Repos (beyond common)

@@ -88,4 +88,4 @@ If Superset has no dashboards after an install, check the **earlier** Jobs first
 
 ## For production
 
-Keep sample data, sample images, bulk data and the full e2e off. Keep **Enable DB Seed** and **Load Templates to Object Store** on. Details: [An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).
+Keep sample data, sample images, bulk data and the full e2e off. Keep **Enable DB Seed** on: it also uploads the templates (on Registry Platform `0.0.0-develop.847` or older, keep **Load Templates to Object Store** on too). Details: [An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production).
