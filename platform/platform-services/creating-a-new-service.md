@@ -11,15 +11,15 @@ This page is a **build guide and prompt**: hand it (or paste it) to a developer 
 
 **Reference services (exemplars — read their code + docs before starting):**
 
-| Service                        | Repo                 | Docs                                            |
-| ------------------------------ | -------------------- | ----------------------------------------------- |
-| Consent Manager (CM)           | `consent-manager`    | [Consent Management](../../consent-management/) |
-| Partner Management (PM)        | `partner-management` | [Partner Management](partner-management/)       |
-| Approval Workflow Engine (AWE) | `awe`                | [AWE](approval-workflow-engine/)                |
-| G2P Bridge                     | `g2p-bridge`         | —                                               |
-| Audit Manager                  | `audit-manager`      | [Audit Manager](audit-manager/)                 |
-| Master Data Service (MDS)      | `master-data-service` | [Master Data Service](master-data-service/)    |
-| Agri Stack Composite           | `agri-stack` (`composite/`) | [Composite](../../open-agri-stack/composite/) |
+| Service                        | Repo                        | Docs                                            |
+| ------------------------------ | --------------------------- | ----------------------------------------------- |
+| Consent Manager (CM)           | `consent-manager`           | [Consent Management](../../consent-management/) |
+| Partner Management (PM)        | `partner-management`        | [Partner Management](partner-management/)       |
+| Approval Workflow Engine (AWE) | `awe`                       | [AWE](approval-workflow-engine/)                |
+| G2P Bridge                     | `g2p-bridge`                | —                                               |
+| Audit Manager                  | `audit-manager`             | [Audit Manager](audit-manager/)                 |
+| Master Data Service (MDS)      | `master-data-service`       | [Master Data Service](master-data-service/)     |
+| Agri Stack Composite           | `agri-stack` (`composite/`) | [Composite](../../open-agri-stack/composite/)   |
 
 The newest services (MDS, the Composite) show the current practice for IAM staff login, the Base Domain, a non-root read-only image, pre-commit and OpenAPI generation. Older services predate some of the rules below; where they differ, follow this page.
 
@@ -109,7 +109,7 @@ Provision via the chart's **`keycloak-init`** dependency (it creates clients, ro
 
 * **Confidential service client** `<slug>` (serviceAccountsEnabled) in the `staff` realm — defines your admin/approver **client roles**; its service account drives automation and gets a client-credentials secret (auto-created Secret named after the client). The service itself validates inbound tokens via JWKS (no secret needed to validate).
 * **Staff login through IAM.** A new staff console logs in through the IAM staff portal API (`iam-core` in the backend; the UI gets `IAM_URL`, the login provider ID and the application mnemonic), as MDS and the Composite do. It needs no public Keycloak client. Older consoles (CM, AWE) log in with `keycloak-js` and a public client `<slug>-ui`.
-* **Register the application in IAM.** Ship `files/iam-registration/payload.json` (application tile, permissions, roles) and an `iamRegister` Job that pushes it to the IAM staff portal API with the service client's credentials. The application mnemonic must equal the Keycloak client ID. See [Staff Portal Application Registration](../../identity-and-access-management/staff-portal-application-registration.md).
+* **Register the application in IAM.** Ship `files/iam-registration/payload.json` (application tile, permissions, roles) and an `iamRegister` Job that pushes it to the IAM staff portal API with the service client's credentials. The application mnemonic must equal the Keycloak client ID. See [Staff Portal Application Registration](/broken/pages/5CcBdQgnXlNM2WnBYXnZ).
 * **`iamRegister.runAsHook`** (default `true`): the Job runs as a `post-install,post-upgrade` hook in a standalone install. Set it `false` in umbrella charts (e.g. commons-services), where one failing hook stops every later hook and Rancher may skip hooks; the Job then runs as a regular resource. Put the release revision in the Job name either way, and use `hook-delete-policy: before-hook-creation,hook-succeeded` so a later switch to `false` does not collide with a leftover hook object. PM, MDS and the Composite follow this pattern.
 * **Assign the first-install admin user** (and the service account, where it drives automation) to your roles via `clientRoleMappings`.
 
@@ -263,12 +263,12 @@ Provide `deployment/scripts/uninstall-<slug>.sh` that fully removes the service:
 
 Per-audience Services and hostnames follow the platform convention (see the reference services for exact strings). Every hostname sits under the Base Domain (`global.baseDomain`, §10), which defaults to `<ns>.openg2p.org`:
 
-| Component                                          | Service name                       | Hostname                          |
-| -------------------------------------------------- | ---------------------------------- | --------------------------------- |
-| Staff API + console UI (Vite console)              | `<release>-api` (+ `<release>-ui`) | `<slug>.<baseDomain>`             |
-| Staff console UI (Next.js console)                 | `<release>-console`                | `<slug>-console.<baseDomain>`     |
-| Partner API                                        | `<release>-partner-api`            | `<slug>-partner.<baseDomain>`     |
-| Beneficiary API                                    | `<release>-bene-api`               | `<slug>-bene.<baseDomain>`        |
+| Component                                          | Service name                       | Hostname                           |
+| -------------------------------------------------- | ---------------------------------- | ---------------------------------- |
+| Staff API + console UI (Vite console)              | `<release>-api` (+ `<release>-ui`) | `<slug>.<baseDomain>`              |
+| Staff console UI (Next.js console)                 | `<release>-console`                | `<slug>-console.<baseDomain>`      |
+| Partner API                                        | `<release>-partner-api`            | `<slug>-partner.<baseDomain>`      |
+| Beneficiary API                                    | `<release>-bene-api`               | `<slug>-bene.<baseDomain>`         |
 | Admin/staff-portal API (where identity is managed) | `<release>-staff-portal-api`       | `<slug>-staff-portal.<baseDomain>` |
 
 Make each hostname a `global.<name>Hostname` value built from the Base Domain, e.g. `'<slug>-partner.{{ tpl .Values.global.baseDomain $ }}'`. A Vite console is served on the **staff** hostname (same origin as the staff API via one combined VirtualService, §9); a Next.js console has its own hostname and proxies to the API. External partners/PEPs call the **partner** hostname; internal service↔service traffic uses the in-cluster Service DNS names, not the external hostnames.
@@ -306,6 +306,6 @@ Make each hostname a `global.<name>Hostname` value built from the Base Domain, e
 * [Partner Management](partner-management/) · [PM integration (keys, policies, caching)](partner-management/integration.md)
 * [Approval Workflow Engine](approval-workflow-engine/)
 * [Audit Manager](audit-manager/)
-* [Staff Portal Application Registration](../../identity-and-access-management/staff-portal-application-registration.md)
+* [Staff Portal Application Registration](/broken/pages/5CcBdQgnXlNM2WnBYXnZ)
 * [Consent Manager](../../consent-management/) — the most complete worked example of every pattern here.
 * [Helm & Docker Versioning Strategy and CI](../../releases/helm-docker-versioning-and-ci/) · [Helm charts](../../releases/helm-charts.md)

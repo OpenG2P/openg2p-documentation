@@ -81,7 +81,7 @@ Shows all attributes of the selected application (model: `StaffPortalApplication
 * **Add** button opens a popup to create a new data policy for the application.
 * User can **remove** an existing data policy.
 
-> **Implementation note:** How data policies are modelled (`DP_`-prefixed roles) and how they reach Keycloak is described in [Staff RBAC](../../../../identity-and-access-management/staff-rbac.md).
+> **Implementation note:** How data policies are modelled (`DP_`-prefixed roles) and how they reach Keycloak is described in [Staff RBAC](/broken/pages/s3m01FOkuQUMPO3z5NVf).
 
 ### 4. Login Providers
 

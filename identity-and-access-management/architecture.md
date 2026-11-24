@@ -1,8 +1,7 @@
 # Architecture
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 1: IAM architecture -->
+<figure><img src="../.gitbook/assets/IAM-Architecture-001 (1).png" alt=""><figcaption><p>IAM Architecture</p></figcaption></figure>
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 2: feature ownership, who writes, who reads -->
+<figure><img src="../.gitbook/assets/IAM-Architecture-002 (1).png" alt=""><figcaption><p>Who writes, who reads?</p></figcaption></figure>
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 3: database migrations -->
-
+<figure><img src="../.gitbook/assets/IAM-Architecture-003 (1).png" alt=""><figcaption><p>Database Migrations for IAM</p></figcaption></figure>
