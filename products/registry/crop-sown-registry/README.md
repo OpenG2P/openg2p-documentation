@@ -10,6 +10,8 @@ description: >-
 **Source:** [github.com/OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry)
 {% endhint %}
 
+<figure><img src="../../../.gitbook/assets/crop-sown-registry-view.png" alt="The Crop Sown Registry staff portal home page, in its green theme: counts of clusters, crop seasons, form submissions and tasks, a search bar, and an illustration of crop fields and a harvest"><figcaption><p>The staff portal home page, with the Crop Sown Registry theme</p></figcaption></figure>
+
 A farmer registry says who farms and which plots they hold. It does not say what was grown on those plots this season, how much was sown, or what came of it. Ministries need that every season: to estimate production, to target seed and fertiliser, to see where pests and drought hit, and to give a bank or a subsidy programme evidence that a crop is really in the ground.
 
 The **OpenG2P Crop Sown Registry** (CSR) keeps that record. Development agents, cooperatives and field apps record what happens to each crop on each plot: the plan, land preparation, sowing, field observations, pests, damage and the harvest. The registry keeps every entry, works out each crop's current state, and sums it up per farmer and per area.

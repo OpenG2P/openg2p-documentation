@@ -8,8 +8,10 @@ description: >-
 # Agents Registry
 
 {% hint style="info" %}
-**Source:** [github.com/OpenG2P/agents-registry](https://github.com/OpenG2P/agents-registry). Built, not yet deployed in a demo environment.
+**Source:** [github.com/OpenG2P/agents-registry](https://github.com/OpenG2P/agents-registry)
 {% endhint %}
+
+<figure><img src="../../../.gitbook/assets/agents-registry-view.png" alt="The Agents Registry staff portal home page, in its teal theme: counts of agents, form submissions, messages and tasks, a search bar, and an illustration of extension agents at work"><figcaption><p>The staff portal home page, with the Agents Registry theme</p></figcaption></figure>
 
 Farmers are served by agents: extension agents, development agents, animal health workers. A ministry needs to know who they are, where each one is posted, what they are qualified in and which trainings they have completed, and to keep that record right through postings, promotions, leave and retirement.
 

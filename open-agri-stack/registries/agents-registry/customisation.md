@@ -71,6 +71,7 @@ The assigned area is a unit of the country's geography, at **any level**. The fo
               idLength: 8
   ```
 
+* **Generated, never typed:** not when the form is opened or submitted, but after the last approval stage: the record is created, and a Celery worker gets the ID from the ID generator within seconds, as for the Farmer ID ([Functional ID generation](../../../products/registry/registry/design/functional-id-generation.md)). The form shows it read-only. In a section's metadata, `section-editable: true` makes every field of the section editable and overrides a field's `widget-readonly`, so a section that holds the Agent ID leaves that flag out.
 * **Prefix:** none ships. A prefix (e.g. `DA-`) is set in `register_domain/id_generator/g2p_id_generator_service.py`, a code change.
 
 ## Forms and fields
@@ -112,6 +113,12 @@ Dates are entered in the Gregorian calendar. A country calendar (for example the
 ## Branding and languages
 
 The registry's name, logo and theme are in `meta_data/registry-configurations/`. Labels are plain English and shown as written; a translation for another language goes in the languages file.
+
+**Theme.** The registry ships its own theme, **Agents Registry Theme**: a teal background (`#3FA7A0`) with a deep teal accent (`#0B5563`), and as the home page's illustration (the theme's **Dashboard Image**) extension agents at work: an agent riding to the field, a training under a tree, a farm visit with a tablet. The illustration's source is `assets/dashboard_image.svg` at the repository's root; the seed carries it base64-encoded in `g2p_registry_theme_values.sql`. To change it, edit the SVG and regenerate that value.
+
+* **An administrator** can switch to another theme (e.g. the factory **OpenG2P-Theme**), edit this one or create one in the staff portal, under **Configuration → Registry**, with the Technical Administrator role. Upgrades keep those choices: the seed inserts the theme only when it is missing, and sets the registry's theme on the first install only.
+* **An install from before the theme** gets it once on upgrade (`meta_data/zz-upgrades/registry_theme.sql`), only while it still uses the OpenG2P theme.
+* **The login page** is not the registry's: every registry in a namespace shares the Keycloak `staff` realm and its one login theme.
 
 ## Testing a change
 

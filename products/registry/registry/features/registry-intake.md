@@ -88,6 +88,12 @@ stateDiagram-v2
 
 ***
 
+### After approval, and the dashboard
+
+* **After the last approval** the record is created in the background, about a minute later (Celery), and a register with generated IDs gets the record's ID about a minute after that. Until then the record does not appear in its register, and then shows a temporary `TEMP-…` ID. A new record raises no change request: change requests are for edits to existing records.
+* **The dashboard's Form Submissions card** counts all submissions, then drafts and finalized ones awaiting approval. An approved or rejected submission counts in the total only, so `1` with `0` pending and `0` draft means one submission, already decided.
+* **The dashboard's register counts** (active records) are cached for 10 minutes, so a new record can take that long to show there. The register's own list is always current. The cache is there because the counts are a full count of every register's active records, cut down to each user's data policies, on every dashboard load: on a register of hundreds of thousands of records that takes seconds. Users with the same data policies share one cached result. To change the time, set `REGISTRY_STAFF_PORTAL_API_CACHE_SUMMARY_EXPIRES_IN_SECONDS` on the staff API (`registry.staffApi.envVars` in a values file), in seconds. A short time costs that count on more loads.
+
 ### 2. Configure Intake Form Using Configuration Page
 
 #### Step 2.1: Select Register

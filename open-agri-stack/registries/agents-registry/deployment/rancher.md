@@ -47,7 +47,7 @@ The defaults suit a production-like install. Change only these.
 | **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org`; the staff portal is then at `<release>.<Base Domain>` |
 | **Load Sample Data** | On for a demo only | Loads the country pack's sample agents. See [Sample data](#sample-data) |
 | **Load sample trainings** | On for a demo only | Shown when Load Sample Data is on. See [Sample data](#sample-data) |
-| **AWE Approver User Password** | Your own | The initial password of the demo staff users, among them the approvers `alex.carter` and `nina.patel`. Only with Load Sample Data |
+| **AWE Approver User Password** | Your own | The initial password of the demo staff users, among them the approvers `alex.carter` and `nina.patel` (default `pass`, changed at first login). Only with Load Sample Data; a demo user that already exists in the `staff` realm keeps its password ([details](../../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)) |
 
 **Leave as they are:**
 

@@ -109,7 +109,7 @@ The file is read from the extension package, so a change needs new images. The f
 ## Clusters
 
 * **Approvers.** `awe_meta_data/` holds two two-stage policies, one for new clusters and one for changes, naming the demo users `alex.carter` then `nina.patel`. They are sample data, loaded only with **Load Sample Data**. In production, set the policies up in AWE's admin portal with your officials or role-based rules ([Approval policies and demo staff](../registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
-* **Cluster ID.** Ten digits after `CL-`, from the ID generator pool `cluster` (`registry.idgenerator.idGenerator.appConfig.idTypes.cluster.idLength`).
+* **Cluster ID.** Ten digits after `CL-`, from the ID generator pool `cluster` (`registry.idgenerator.idGenerator.appConfig.idTypes.cluster.idLength`). Generated when a new cluster is approved, and read-only in the form: the Cluster section has no `section-editable: true`, which would override the field's `widget-readonly`.
 * **Screens.** The Cluster register's screens are seed SQL that db-seed inserts only once. A change to an installed registry needs an upgrade script, like the one in `meta_data/zz-upgrades/`.
 
 ## Data scopes
@@ -118,7 +118,13 @@ Scopes are defined in `meta_data/data-scopes/` (`10_crop_sown.json`, `20_cluster
 
 ## Branding and languages
 
-The registry name and logo are in `meta_data/registry-configurations/g2p_registry_configuration.sql`. It uses the factory OpenG2P theme. It ships one language, English.
+The registry name and logo are in `meta_data/registry-configurations/g2p_registry_configuration.sql`. It ships one language, English.
+
+**Theme.** The registry ships its own theme, **Crop Sown Registry Theme**: a leaf green background (`#86B94A`) with a deep green accent (`#2E5E1E`), and as the home page's illustration (the theme's **Dashboard Image**) crop fields in rows, a harvest and a cluster coordinator recording the season. The illustration's source is `assets/dashboard_image.svg` at the repository's root; the seed carries it base64-encoded in `g2p_registry_theme_values.sql`. To change it, edit the SVG and regenerate that value.
+
+* **An administrator** can switch to another theme (e.g. the factory **OpenG2P-Theme**), edit this one or create one in the staff portal, under **Configuration → Registry**, with the Technical Administrator role. Upgrades keep those choices: the seed inserts the theme only when it is missing, and sets the registry's theme on the first install only.
+* **An install from before the theme** gets it once on upgrade (`meta_data/zz-upgrades/registry_theme.sql`), only while it still uses the OpenG2P theme.
+* **The login page** is not the registry's: every registry in a namespace shares the Keycloak `staff` realm and its one login theme.
 
 ## What not to change
 
