@@ -1,4 +1,3 @@
-# APIs Serving Agent Users and Agent Apps
+# APIs Serving Agents
 
-<!-- IMAGE PLACEHOLDER: Google Slides Product API Design, slide 2: Product Agent API -->
-
+<figure><img src="../../.gitbook/assets/Product-API-Design-Agent.png" alt=""><figcaption><p>Product APIs serving Agents</p></figcaption></figure>

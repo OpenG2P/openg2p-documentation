@@ -1,4 +1,3 @@
 # APIs Serving Staff Portal Users
 
-<!-- IMAGE PLACEHOLDER: Google Slides Product API Design, slide 1: Product Staff API -->
-
+<figure><img src="../../.gitbook/assets/Product-API-Design-Staff.png" alt=""><figcaption><p>OpenG2P Products - APIs servicing the Staff users</p></figcaption></figure>
