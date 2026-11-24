@@ -54,7 +54,7 @@ global:
       connectionString: http://household-registry-partner-api/dci/registry/sync/search
     disability:
       connector: dci
-      connectionString: https://partner-dr.example.org/dci/registry/sync/search?timeout=60&ssl_verify=true
+      connectionString: https://dr-partner-api.example.org/dci/registry/sync/search?timeout=60&ssl_verify=true
 ```
 
 A register with an empty connection string is unconfigured: only programs that target it fail, with

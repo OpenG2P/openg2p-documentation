@@ -4,7 +4,7 @@ Runnable cases live under `locust/api/partner-api/`. Commands are in
 `partner.txt` at the repo root. The short run notes are
 `locust/api/partner-api/dci/SCENARIOS.md`.
 
-Host: `https://partner-farmer-registry.perftest.openg2p.org`
+Host: `https://farmer-registry-partner-api.perftest.openg2p.org`
 
 ## 1. What is under test
 

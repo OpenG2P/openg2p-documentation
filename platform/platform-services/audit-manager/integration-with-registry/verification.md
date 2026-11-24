@@ -130,7 +130,7 @@ kubectl -n trial exec -it commons-postgresql-0 -- \
      details->'actor'->>'ip'       AS ip,
      details->'context'->>'api'    AS api
    FROM audit_events
-   WHERE source = '/openg2p/registry-staff-portal-api'
+   WHERE source LIKE '/openg2p/%staff-portal-api'   -- one registry: '/openg2p/<release>-staff-portal-api'
    ORDER BY ingested_at DESC LIMIT 1;"
 ```
 
@@ -165,7 +165,7 @@ Wait \~3 seconds, then query again — last row:
 SELECT actor_id, actor_type, outcome, details->'actor'->>'ip' AS ip,
        details->'context'->>'http_status' AS http_status
 FROM audit_events
-WHERE source = '/openg2p/registry-staff-portal-api'
+WHERE source LIKE '/openg2p/%staff-portal-api'   -- one registry: '/openg2p/<release>-staff-portal-api'
 ORDER BY ingested_at DESC LIMIT 1;
 ```
 
@@ -196,7 +196,7 @@ Expected: `200 pong` — and **no** new audit row, because `/ping` is in the mid
 -- not a new one for /ping.
 SELECT id, type, occurred_at
 FROM audit_events
-WHERE source = '/openg2p/registry-staff-portal-api'
+WHERE source LIKE '/openg2p/%staff-portal-api'   -- one registry: '/openg2p/<release>-staff-portal-api'
 ORDER BY ingested_at DESC LIMIT 3;
 ```
 
@@ -217,6 +217,6 @@ If repeated experiments have left noise in `audit_events`, prune selectively:
 
 ```sql
 DELETE FROM audit_events
-WHERE source = '/openg2p/registry-staff-portal-api'
+WHERE source LIKE '/openg2p/%staff-portal-api'   -- one registry: '/openg2p/<release>-staff-portal-api'
   AND occurred_at < now() - interval '1 hour';
 ```

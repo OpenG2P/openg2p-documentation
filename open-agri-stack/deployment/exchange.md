@@ -67,8 +67,8 @@ Chart **Agri Stack Composite** (`openg2p-agri-composite`), release e.g. `agri-co
 
 | Group | Field | Value |
 | --- | --- | --- |
-| Integration | Farmer Registry Search URL | `https://partner-fr.trial.openg2p.org/dci/registry/sync/search` ([Farmer Registry](farmer-registry.md#check)) |
-| Integration | Crop Sown Registry Search URL | `https://partner-csr.dept1.openg2p.org/dci/registry/sync/search` ([Crop Sown Registry](crop-sown-registry.md#check)) |
+| Integration | Farmer Registry Search URL | `https://fr-partner-api.trial.openg2p.org/dci/registry/sync/search` ([Farmer Registry](farmer-registry.md#check)) |
+| Integration | Crop Sown Registry Search URL | `https://csr-partner-api.dept1.openg2p.org/dci/registry/sync/search` ([Crop Sown Registry](crop-sown-registry.md#check)) |
 
 Keep the rest at the defaults (**Generate Signing Key** on). The Exchange CM reads its consent templates from this Composite in the same namespace (`http://agri-composite-api`, CM field **Consent Template Source URL**, empty by default); keep the release name `agri-composite` or set that field. Production: [Production](production.md#composite). All options: [Composite chart settings](composite-chart-settings.md).
 

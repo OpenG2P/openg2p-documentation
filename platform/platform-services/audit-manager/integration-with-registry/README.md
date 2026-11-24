@@ -34,6 +34,7 @@ Every BFF integration follows the same shape:
        | No actor + outcome 2xx (legitimate public call)             | NO         |
        | No actor + outcome non-2xx, `audit_anonymous_failures=true` | YES (anon) |
        | Health probes / OpenAPI surfaces / OPTIONS preflight        | NO         |
+       | Staff Portal API: paths in `audit_skip_paths` (the portal's per-page configuration, theme and language loads) | NO |
    * Builds a CloudEvents 1.0 envelope and POSTs it to Audit Manager via `asyncio.create_task` — never blocks the response. Errors are logged, never raised to the caller.
 3. **Default = disabled.** Both `audit_enabled=true` AND a non-empty `audit_manager_url` must be set; otherwise the middleware is a no-op.
 
@@ -47,6 +48,8 @@ The interface principles are identical; the implementations diverge where the au
 | Anonymous fallback                 | `actor.type=anonymous`, IP only — used for unauthenticated rejected attempts                                | Same shape, used when controller doesn't enrich (the v1 default state for all calls)                                                  |
 | Outcome derivation                 | HTTP status code                                                                                            | HTTP status code, with controller-supplied `request.state.audit_outcome` override (because partner-api wraps errors in 200 responses) |
 | 403 recovery                       | Decodes the bearer JWT (known-valid because AuthMiddleware ran) to identify the user that lacked permission | N/A — no JWT, no 403 path                                                                                                             |
-| CloudEvents `source`/`type` prefix | `/openg2p/registry-staff-portal-api`, `org.openg2p.staff_portal.<func>`                                     | `/openg2p/registry-partner-api`, `org.openg2p.partner_api.<func>`                                                                     |
+| CloudEvents `source`/`type` prefix | `/openg2p/<release>-staff-portal-api` (set by the chart), `org.openg2p.staff_portal.<func>`                 | `/openg2p/<release>-partner-api` (set by the chart), `org.openg2p.partner_api.<func>`                                                 |
+
+**One source per registry.** The chart sets each API's source from the release name, so the registries sharing one Audit Manager are told apart: the Farmer Registry's staff API (release `fr`) sends `/openg2p/fr-staff-portal-api`, the Agents Registry's (release `agents`) `/openg2p/agents-staff-portal-api`, and the Agent Portal API `/openg2p/<release>-agent-portal-api`. Registry Platform versions before this sent `/openg2p/registry-staff-portal-api` for every registry, so their events can be told apart only by matching them to each API's request log.
 
 The full middleware designs are captured on the per-BFF pages above. For the event schema and the HTTP contract the middleware POSTs to, see [Functional Specifications](../functional-specifications.md) and [API Reference](../api-reference.md).

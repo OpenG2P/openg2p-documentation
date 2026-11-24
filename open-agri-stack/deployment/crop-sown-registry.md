@@ -16,13 +16,13 @@ Follow the Crop Sown Registry's own guide: [Crop Sown Registry → Deployment](.
 | Commons Services | Exchange Domain (Consent Manager) | Empty when the Exchange is at `agrix.<parent domain>`; otherwise its domain ([Separate Clusters](separate-clusters.md)) |
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) |
 | Commons Services | Country Pack | The same as every other install (default `ETH`) |
-| Crop Sown Registry | Release name | e.g. `csr` (gives the hostname `partner-csr.<domain>`) |
+| Crop Sown Registry | Release name | e.g. `csr` (gives the hostname `csr-partner-api.<domain>`) |
 | Crop Sown Registry | Load Sample Data, Load sample crop seasons | **On** for a demo only ([sample data](testing.md#sample-data)) |
 
 ## Check
 
 1. The registry's own checks pass ([Deploying on Rancher](../../products/registry/crop-sown-registry/deployment/rancher.md)).
-2. Note its partner search URL, for the [Composite](exchange.md#composite): `https://partner-csr.dept1.openg2p.org/dci/registry/sync/search`.
+2. Note its partner search URL, for the [Composite](exchange.md#composite): `https://csr-partner-api.dept1.openg2p.org/dci/registry/sync/search`.
 3. Once the Exchange is installed, Partner Management serves the Composite's key:
 
    ```bash

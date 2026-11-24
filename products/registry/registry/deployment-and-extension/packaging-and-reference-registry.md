@@ -38,6 +38,33 @@ There is **one** chart, `openg2p-registry` (`registry-platform/helm/openg2p-regi
 
 There is no per-registry chart copy — the templates live once, here.
 
+## Hostnames
+
+A hostname a person opens has a plain name; a hostname a program calls ends in `-api`. The staff portal is the release's own hostname (**Registry Hostname**, `global.registryHostname`, default `<release>.<Base Domain>`). Each API's hostname is the registry hostname with `-<api>-api` after its first label, so it stays one DNS label and a `*.<Base Domain>` wildcard certificate covers it. With the release `fr` and Base Domain `trial.openg2p.org`:
+
+| Hostname | Serves | Called by |
+| --- | --- | --- |
+| `fr.trial.openg2p.org` | The staff portal | Staff, in the browser |
+| `fr-staff-api.trial.openg2p.org` | The staff portal's API | AWE, posting approval decisions (`/awe/webhooks/decision`); IAM, reading register fields for data policies; the browser, sent back by eSignet after registrant authentication (`/registrant-auth/callback`) |
+| `fr-partner-api.trial.openg2p.org` | The partner API | Partners and the Exchange's Composite (`/dci/registry/sync/search`), data sources (`/partner/ingest_data`) |
+| `fr-idgenerator-api.trial.openg2p.org` | The ID generator | Administrators. The registry itself calls it inside the cluster |
+| `fr-bene-api.trial.openg2p.org` | The beneficiary portal API | Only when installed |
+| `fr-agent-api.trial.openg2p.org` | The Agent Portal API | Only with VC issuance on |
+| `fr-agent.trial.openg2p.org` | The Agent Portal | Field agents, in the browser. Only with VC issuance on |
+
+* The staff portal does not call `fr-staff-api` from the browser: its server calls the staff API inside the cluster (`http://<release>-staff-portal-api`).
+* The Agent Portal's hostname (**Agent Portal Hostname**) is a plain `<release>-agent.<Base Domain>`: field agents type it, and it is the redirect URI on the Keycloak agent clients.
+* Changing **Registry Hostname** moves every API with it: `farmers.moa.gov.et` gives `farmers-staff-api.moa.gov.et`, `farmers-partner-api.moa.gov.et` and so on.
+* An API hostname opened in a browser answers `{"errors":[{"code":"G2P-REQ-404","message":"Not Found"}]}`. That is expected, not an IAM or login fault: the API has nothing at `/`. `/ping` answers, and `/docs` lists its endpoints.
+
+### Upgrading from the old names
+
+Registry Platform versions before this convention named the APIs with a prefix: `staff-fr…`, `partner-fr…`, `idgenerator-fr…`, `bene-fr…`, `agent-fr…`. A registry keeps the old names until its platform pin moves past them. On that upgrade:
+
+* **Updated by the install:** the AWE callback (db-seed), the IAM application's API URL (iam-register), and, with VC issuance on, the eSignet client's redirect URI and the stored callback (the registrant-auth bootstrap Job).
+* **Updated by hand, at the same time:** whatever calls the partner API from outside the release. In the Agri Stack, that is the Composite's **Farmer Registry Search URL** and **Crop Sown Registry Search URL** ([Exchange](../../../../open-agri-stack/deployment/exchange.md#composite)); also any partner or data source configured with the old partner URL.
+* **Approvals in progress:** AWE stores each request's callback URL when the request is raised, so a request raised before the upgrade and decided after it calls back the old hostname, which no longer exists. Upgrade when no approvals are pending.
+
 ## How the domain model is selected — `REGISTRY_EXTENSION_MODULE`
 
 The platform code imports the domain model by a fixed name (`openg2p_registry_extensions`). At startup each entrypoint **aliases the env-selected module** into `sys.modules`:

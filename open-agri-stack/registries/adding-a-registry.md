@@ -44,13 +44,13 @@ Add the registry's DCI search URL under its controller ID, in the Composite's He
 composite:
   registries:
     farmer-registry:
-      url: https://partner-fr.<dept-domain>/dci/registry/sync/search
+      url: https://fr-partner-api.<dept-domain>/dci/registry/sync/search
       partnerId: ""
     crop-sown-registry:
-      url: https://partner-csr.<dept-domain>/dci/registry/sync/search
+      url: https://csr-partner-api.<dept-domain>/dci/registry/sync/search
       partnerId: ""
     livestock-registry:
-      url: https://partner-lsr.<dept-domain>/dci/registry/sync/search   # the registry's partner API (full URL)
+      url: https://lsr-partner-api.<dept-domain>/dci/registry/sync/search   # the registry's partner API (full URL)
       partnerId: ""                                          # or livestock-registry, to verify its responses
 ```
 

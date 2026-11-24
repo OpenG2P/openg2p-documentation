@@ -139,7 +139,7 @@ Configure **no intake form** for this data model. Ingestion picks add or update 
 | Setting | Example |
 | --- | --- |
 | Hub and topic | the CSR's WebSub hub, `csr.crop-activity`; the relay subscribes with a secret |
-| Target | the FR's ingestion, `https://partner-fr.<department domain>/partner/ingest_data?data_model=CROP_ACTIVITY_V1` |
+| Target | the FR's ingestion, `https://fr-partner-api.<department domain>/partner/ingest_data?data_model=CROP_ACTIVITY_V1` |
 | Sign as | partner `crop-sown-registry`, with the key onboarded in the FR (detached JWS over `message`) |
 | Nightly search | the CSR's partner API, season summaries changed since the last run; schedule e.g. 02:00 |
 

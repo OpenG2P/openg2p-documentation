@@ -223,7 +223,7 @@ are set.
 | `REGISTRY_PARTNER_API_AUDIT_ENABLED` | `"false"` | Master on/off. Must be `"true"` to emit. |
 | `REGISTRY_PARTNER_API_AUDIT_MANAGER_URL` | `""` | Base URL of the Audit Manager service (e.g. `http://audit-manager.commons`). The middleware POSTs to `<url>/v1/auditmanager/events`. |
 | `REGISTRY_PARTNER_API_AUDIT_TIMEOUT_SECONDS` | `"2.0"` | httpx timeout for the audit POST. Short — the audit pipeline absorbs slow/unreachable Audit Manager. |
-| `REGISTRY_PARTNER_API_AUDIT_SOURCE` | `"/openg2p/registry-partner-api"` | CloudEvents `source` attribute. |
+| `REGISTRY_PARTNER_API_AUDIT_SOURCE` | `"/openg2p/registry-partner-api"` | CloudEvents `source` attribute. The chart sets it to `/openg2p/<release>-partner-api`. |
 | `REGISTRY_PARTNER_API_AUDIT_MODULE` | `"registry-partner-api"` | Free-form label landing in `details.context.module`. |
 | `REGISTRY_PARTNER_API_AUDIT_ANONYMOUS_FAILURES` | `"true"` | Whether to audit non-2xx calls without controller-supplied actor enrichment. Set to `"false"` to skip those. |
 

@@ -46,7 +46,7 @@ The defaults suit a production-like install. Change only these.
 
 | Field | Choose | Why |
 | --- | --- | --- |
-| **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org`. The partner API is then at `partner-<release>.<Base Domain>` |
+| **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org`. The partner API is then at `<release>-partner-api.<Base Domain>` |
 | **Load Sample Data** | On for a demo only | Loads two sample clusters. See [Sample data](#sample-data) |
 | **Load sample crop seasons** | On for a demo only | Shown when Load Sample Data is on. See [Sample data](#sample-data) |
 | **Pull submissions from ODK Central** | On only if sowings are collected with ODK | Needs more steps. See [ODK Central](#collecting-sowings-with-odk-central) |

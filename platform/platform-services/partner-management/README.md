@@ -59,7 +59,7 @@ shared platform-services layer), deployed as `commons-services-pm-*`. See
   **partner API** (host `partner-management-partner-api.<base domain>`), named
   for what it serves (partners' keys and policies), not for who calls it:
   partners never call it; registries, the Consent Manager and the Composite do.
-  It is not a registry's partner API (e.g. `partner-fr.<base domain>` for the
+  It is not a registry's partner API (e.g. `fr-partner-api.<base domain>` for the
   Farmer Registry), which partners call to search the registry.
 
 ## Scope of the first version

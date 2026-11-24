@@ -129,7 +129,7 @@ npm install @openg2p/registry-widgets@file:../ui-widgets/
 #### 6. Create `.env.local` in the staff-ui directory
 
 ```bash
-BACKEND_API_URL="https://staff-farmer-registry.dev.openg2p.org"
+BACKEND_API_URL="https://farmer-registry-staff-api.dev.openg2p.org"
 MASTERDATA_BACKEND_API_URL="https://master-data.dev.openg2p.org/"
 DEFAULT_LOCALE="en"
 IAM_URL="https://staff-iam.dev.openg2p.org"

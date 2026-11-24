@@ -121,10 +121,30 @@ kubectl -n <ns> logs job/<release>-db-seed
 | `<release>-sanity` | Complete: the partner API is up |
 | iam-register | Complete |
 
+The release serves these hostnames, named the way every registry's are ([Hostnames](../../../../products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md#hostnames)). With the release `agents` and Base Domain `trial.openg2p.org`:
+
+| Hostname | Serves | Who uses it |
+| --- | --- | --- |
+| `agents.trial.openg2p.org` | The staff portal | Staff, in the browser |
+| `agents-staff-api.trial.openg2p.org` | The staff portal's API | AWE, which posts approval decisions to it (`/awe/webhooks/decision`); IAM. The staff portal calls the API inside the cluster |
+| `agents-partner-api.trial.openg2p.org` | The partner API | Signed partners sending data in (a learning platform's trainings) |
+| `agents-idgenerator-api.trial.openg2p.org` | The ID generator | Administrators. The registry calls it inside the cluster, for Agent IDs |
+| `agents-agent.trial.openg2p.org`, `agents-agent-api.trial.openg2p.org` | The Agent Portal and its API | Only with VC issuance on |
+
+Agents Registry versions on a Registry Platform older than this convention served the APIs as `staff-agents…`, `partner-agents…`, `idgenerator-agents…` and `agent-agents…`.
+
 Then open the staff portal at `https://<Registry Hostname>`:
 
 * **Agent** lists the agents (the sample agents, if loaded). An agent's record has the tabs Profile, Employment and assignment, Specializations and qualifications, and Documents; its dropdowns show the country's lists.
 * The **Trainings** activity register shows the two activity types under **Record**, and with sample data the trainings, the per-agent summaries and the indicators.
+
+## Staff access
+
+The install onboards the registry on IAM and Keycloak itself. There is no manual step.
+
+* **IAM:** the `iam-register` Job registers the application `<release>-staff-portal` (the tile **Agents Registry**, with the staff portal and its API's URL), its roles, and the permissions each role grants (the catalogue `files/iam-registration/payload.json` in the platform chart). A user's Keycloak roles are few; what they can do in the portal is the permissions IAM maps to those roles.
+* **Keycloak:** the keycloak-init Job creates the client `<release>-staff-portal` in the `staff` realm with the registry's roles (Intake Officer, Data Editor, … Technical Administrator). It gives `admin` the Operations Administrator and Technical Administrator roles, and the demo staff users theirs.
+* **A new staff user:** in Keycloak, realm `staff` → **Users** → the user → **Role mapping**, assign roles of the client `<release>-staff-portal`.
 
 ## Uninstall
 
