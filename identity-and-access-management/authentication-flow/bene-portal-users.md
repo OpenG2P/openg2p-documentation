@@ -1,4 +1,3 @@
 # Bene Portal Users
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 8: bene auth flow -->
-
+<figure><img src="../../.gitbook/assets/IAM-Auth-Flow-Bene.png" alt=""><figcaption></figcaption></figure>

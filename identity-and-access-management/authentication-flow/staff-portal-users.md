@@ -1,4 +1,3 @@
 # Staff Portal Users
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 7: staff auth flow -->
-
+<figure><img src="../../.gitbook/assets/IAM-Auth-Flow-Staff.png" alt=""><figcaption><p>Auth flow for Staff Users</p></figcaption></figure>
