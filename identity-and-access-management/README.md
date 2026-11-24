@@ -1,377 +1,103 @@
 ---
-description: IAM and RBAC concepts within OpenG2P
+description: >-
+  Identity and Access Management (IAM) for OpenG2P: who can sign in, how they
+  are authenticated, which data they may see, and how the product APIs trust
+  the result.
 ---
 
-# Identity and Access Management
+# Identity & Access Management
 
-## **1. Introduction**
+IAM answers four questions for every OpenG2P product: **who is calling, how did they sign in, what may they do, and which records may they see.** One IAM service answers them for four groups of callers, and every product API relies on the same answers.
 
-### **1.1 Purpose**
+## The four groups of callers
 
-This document provides a detailed description of how **authentication, authorization, and identity management** are implemented within the OpenG2P platform.
+| Group | Signs in through | Identity provider | Portal or client |
+|---|---|---|---|
+| Staff users | `iam-staff-api` | Keycloak, realm `staff` (or another configured OIDC provider) | Staff Portal |
+| Agency users (agency administrators and agents) | `iam-agent-api` | Keycloak, realm `agent` | Agent Portal; Agent App on an Android tablet |
+| Beneficiaries | `iam-bene-api` | eSignet, backed by an ID provider (Farmer Registry, Disability Registry, Foundational ID Registry) | Bene Portal |
+| Partner systems | No sign-in | None: each request is signed | `iam-partner-api` and the Product Partner APIs |
 
-It explains:
+The names are fixed throughout: **`iam-staff-api`, `iam-agent-api`, `iam-bene-api`, `iam-partner-api`** for the APIs, and **Staff Portal, Agent Portal, Bene Portal, Partner Systems and Agent App** for the clients.
 
-* Integration with external Identity Providers (IdP)
-* Token lifecycle and authentication flows
-* Role-Based Access Control (RBAC) architecture
-* Interaction between IAM services and product APIs
-* Multi-channel user isolation
+## Architecture in brief
 
-***
+* **Three audiences, four APIs, one database.** Staff, agency and beneficiary users are the three audiences. The partner API is an integration surface, not an audience: there is no partner realm and no partner user type.
+* **`iam-core`** is a shared library used by all four APIs: OIDC adapters (Keycloak and eSignet), token validation, CSRF protection, the data-policy engine, the Keycloak admin client and the ORM models.
+* **One PostgreSQL database** sits behind a connection pooler. Each API writes only its own tables and has read access to the others, and Postgres grants enforce the split.
+* **Migrations belong to `iam-staff-api` only.** It runs every schema change and the seeding of configuration data such as the login providers. The other APIs get no CREATE, ALTER or DROP rights, and start only after the staff API has migrated.
+* **Keycloak** has two realms, `staff` and `agent`. The staff, agent and partner APIs administer it through service accounts. eSignet issues and manages beneficiary tokens, so beneficiaries are not users in IAM: the bene API keeps only a pairwise subject and a login/logout log.
 
-### **1.2 Scope**
+### Who writes what
 
-This document covers:
+| Data | Written by |
+|---|---|
+| Applications, roles, permissions | `iam-staff-api` |
+| Login providers | Seeding script only; staff can browse it, and the login code of each API reads it |
+| `AGC_` policy definitions (agency policies) | `iam-staff-api` |
+| `AGT_` policy definitions (agent policies) | `iam-agent-api` |
+| Agencies and their `AGC_` assignments | `iam-staff-api` and `iam-partner-api` |
+| Agents and their `AGT_` assignments | `iam-agent-api` and `iam-partner-api` |
+| Beneficiary login/logout log | `iam-bene-api` |
 
-* Staff channel (fully implemented in v1.0.0)
-* Foundational design for Agent and Beneficiary channels
+## Authentication flow
 
-***
+Staff, agency and beneficiary users follow the same eleven-step authorisation-code flow. Only the identity provider and the API differ.
 
-### **1.3 Key Concepts**
+1. The portal calls `/auth/start-authentication-transaction` on its IAM API.
+2. The API creates an auth-transaction object, keeps it in memory keyed by `STATE`, and returns it to the portal.
+3. The portal redirects the browser to the identity provider's authorisation endpoint.
+4. The browser navigates to the identity provider.
+5. The user authenticates (password, OTP and so on).
+6. The identity provider redirects the browser to the `redirect_uri` with an authorisation code.
+7. The browser calls the IAM API at the `redirect_uri` with the code.
+8. The API exchanges the code for tokens.
+9. The identity provider returns the tokens.
+10. The API validates the ID token and creates the auth context (for beneficiaries it logs the login event instead).
+11. The API returns a success response to the browser.
 
-<table data-full-width="true"><thead><tr><th width="150.3787841796875">Concept</th><th>Description</th></tr></thead><tbody><tr><td>IdP</td><td>External Identity Provider (Keycloak by default)</td></tr><tr><td>Realm</td><td>Logical isolation boundary for users</td></tr><tr><td>Client</td><td>Application registered with IdP</td></tr><tr><td>Token</td><td>JWT used for authentication and authorization</td></tr><tr><td>RBAC</td><td>Role-Based Access Control</td></tr><tr><td>IAM Service</td><td>Central service managing RBAC logic</td></tr></tbody></table>
+The Agent App on the tablet is the exception: it signs in with OIDC (PKCE) directly against Keycloak and sends the bearer token to the product agent APIs. Partner systems do not sign in at all.
 
-***
+## Data policies
 
-## **2. System Overview**
+A **data policy** limits which records a role may see. Policies reach the token as Keycloak roles with a prefix.
 
-OpenG2P follows a **decoupled IAM architecture**, where:
+| Prefix | Who it is for | Created by | Granted to |
+|---|---|---|---|
+| `DP_` | Staff | Staff users, in the Staff Portal | Staff users, as client roles under the application's client in realm `staff` |
+| `AGC_` | Agencies (mandatory, the outer boundary) | Staff users | The agency's Keycloak group in realm `agent` |
+| `AGT_{AGENCY_MNEMONIC}_` | Agents (optional, can only narrow) | Agency administrators, for their own agency | The agent's Keycloak user |
 
-* **Authentication** is handled by an external IdP (Keycloak)
-* **Authorization (RBAC)** is handled internally via IAM services
-* **Business APIs** enforce permissions using IAM
+* **Staff enforcement.** The data-policy middleware in `iam-core` runs on endpoints that carry the data-policy decorator. It collects the `DP_` roles from all of the user's clients, asks the IAM API to evaluate them, and puts the resulting filter on the request. `ALLOW` policies are combined with OR, and `DISALLOW` policies are negated and combined with AND. With no `DP_` role there is no restriction.
+* **Agent enforcement.** Keycloak returns the union of group and user roles, so it cannot intersect them. The agency middleware in `iam-core` resolves the `AGC_` roles to one filter and the `AGT_` roles to another and applies **`AGC_` AND `AGT_`**. With no `AGC_` role the agent sees nothing (deny by default); with no `AGT_` role the agency policy applies as it is; an `AGT_` role can never widen access.
+* **Who may do what.** Staff manage only the policies they create (`AGC_` and `DP_`) and cannot edit `AGT_` policies. Partners read policy definitions and can attach `AGC_` policies to the agencies and `AGT_` policies to the agents they created, but cannot create or change definitions.
+* **Narrowing an agency policy** does not delete agent policies. The intersection is computed on every read, and the Agent Portal shows which assignments are no longer effective.
 
-***
+## Agencies in IAM
 
-### **2.1 User Channels**
+Each agency is a Keycloak group in realm `agent`, named by its `agency_id`, and every agent or agency administrator belongs to exactly one agency group. The access token carries an `agency` claim, and services read that claim and never accept an agency from the request. Only staff (through `iam-staff-api`) and partner systems (through `iam-partner-api`) can create agencies. Agency administrators create agents through `iam-agent-api`.
 
-OpenG2P supports three independent user channels:
+Partner systems are onboarded in Partner-Management. The partner API checks that the partner exists and is active, fetches its public key and verifies the request signature. A partner can manage only the agencies and agents it created.
 
-<table><thead><tr><th width="155.789794921875">Channel</th><th>Description</th></tr></thead><tbody><tr><td>Staff</td><td>Internal users (administrators, operators)</td></tr><tr><td>Agents</td><td>Field agents interacting with beneficiaries</td></tr><tr><td>Beneficiaries</td><td>End users receiving benefits</td></tr></tbody></table>
+## Product APIs
 
-Each channel is:
+Every product has an API for each caller group, built in the same layers.
 
-* Logically isolated
-* Independently scalable
-* Mapped to separate identity domains
+1. **Clients.** The portals, the Agent App or the partner systems.
+2. **Login layer.** The IAM API for that group, together with its identity provider, issues the token.
+3. **Enforcement.** For staff and agent APIs, a small middleware injected from IAM into every product API checks the role and applies the data policy. Bene and partner APIs differ, as below.
+4. **Product API layer.** For example `farmer-registry-staff-api`, `disability-registry-agent-api`, `pbms-bene-api` and `bridge-partner-api`, and the IAM business services.
 
-***
+| Product API | Token | Enforcement |
+|---|---|---|
+| Product Staff APIs | Staff token from Keycloak, realm `staff` | Role-based access and `DP_` data policies |
+| Product Agent APIs | Agent token from Keycloak, realm `agent` | Roles, `AGC_` AND `AGT_` data policy, agency status. The Agent Portal calls only `iam-agent-api`; the Agent App calls every product agent API |
+| Product Bene APIs | Bene token from `iam-bene-api` and eSignet | No role or data-policy middleware. The context is always the beneficiary ID in the token, and the APIs return data only for it |
+| Product Partner APIs | No token: signed request, partner mnemonic in the payload header | Signature check against the partner's public key, from `partner-management-partner-api` (partner validation and public key) |
 
-## **3. Identity Provider Architecture**
+## In this section
 
-### **3.1 Keycloak as Default IdP**
-
-OpenG2P uses Keycloak for:
-
-* User authentication
-* Token issuance
-* Identity federation (future-ready)
-
-<mark style="color:blue;">Implementation teams can embrace other IdPs. OpenG2P supports use of multiple IdPs in a single installation. Example - Beneficiary Portal may use eSignet while Staff Portal may use Keycloak.</mark>
-
-***
-
-### **3.2 Realm Design**
-
-Each user channel maps to a dedicated realm:
-
-<table><thead><tr><th width="143.7193603515625">Realm</th><th>Purpose</th></tr></thead><tbody><tr><td>staff</td><td>Staff users and internal applications</td></tr><tr><td>agents</td><td>Agent users</td></tr><tr><td>beneficiaries</td><td>Beneficiary users</td></tr></tbody></table>
-
-#### **Why separate realms?**
-
-* Security isolation
-* Independent lifecycle management
-* Custom policies per user group
-
-***
-
-### **3.3 Client Configuration (Staff Realm)**
-
-The following clients are registered:
-
-<table><thead><tr><th width="202.9041748046875">Client</th><th width="191.546142578125">Type</th><th>Purpose</th></tr></thead><tbody><tr><td>openg2p-registry</td><td>Confidential</td><td>Core platform</td></tr><tr><td>Rancher</td><td>Third-party</td><td>Kubernetes management</td></tr><tr><td>Keycloak</td><td>Internal</td><td>Identity administration</td></tr><tr><td>MinIO</td><td>Third-party</td><td>Object storage</td></tr></tbody></table>
-
-***
-
-### **3.4 Token Structure**
-
-Tokens issued by Keycloak follow OIDC standards and include:
-
-```json
-{
-    "iss": "https://<auth-server>/realms/<realm>",
-    "sub": "<user-id>",
-    "aud": [
-        "<service-a>",
-        "<service-b>"
-    ],
-    "azp": "<client-application>",
-    "exp": 1700000000,
-    "iat": 1699996400,
-    "typ": "Bearer",
-    "preferred_username": "staff.user@example.com",
-    "email": "staff.user@example.com",
-    "name": "Staff User",
-    "given_name": "Staff",
-    "family_name": "User",
-    "scope": "openid profile email",
-    "realm_access": {
-        "roles": [
-            "create-realm"
-        ]
-    },
-    "resource_access": {
-        "<service-a>": {
-            "roles": [
-                "view",
-                "edit"
-            ]
-        },
-        "<service-b>": {
-            "roles": [
-                "admin"
-            ]
-        }
-    },
-    "user_type": "STAFF"
-}
-```
-
-#### **Important Claim: `resource_access`**
-
-This is critical for OpenG2P:
-
-* Contains application-specific roles
-* Used for RBAC enforcement
-
-***
-
-## **4. IAM Service Architecture**
-
-### **4.1 Overview**
-
-The IAM service acts as the **central authority for authorization logic**.
-
-#### **Repository**
-
-[`iam-service`](https://github.com/OpenG2P/iam-service) — a single consolidated repository containing the IAM source (`iam-core`, `iam-*-portal-api`), the Docker images (`docker/`), and the Helm chart (`deployments/charts/openg2p-iam-service`).
-
-***
-
-### **4.2 API Components**
-
-<table><thead><tr><th width="219.1722412109375">API</th><th width="197.50830078125">Purpose</th><th>Status</th></tr></thead><tbody><tr><td>openg2p-iam-staff-api</td><td>Staff RBAC</td><td>✅ Active</td></tr><tr><td>openg2p-iam-agent-api</td><td>Agent RBAC</td><td>⏳ Planned</td></tr><tr><td>openg2p-iam-bene-api</td><td>Beneficiary RBAC</td><td>⏳ Planned</td></tr></tbody></table>
-
-***
-
-### **4.3 Architectural Responsibilities**
-
-#### **4.3.1 Authentication Orchestration**
-
-* Ownership of Authentication transaction
-* Handles login flow redirection
-* Exchanges authorization codes for tokens
-* Manages session lifecycle
-
-#### **4.3.2 Token Mediation**
-
-* Validates tokens from IdP
-* Normalizes token structure for internal use
-
-#### **4.3.3 RBAC Enforcement Support**
-
-* Provides APIs/libraries for permission resolution
-
-***
-
-### **4.4 IAM API Runtime Design**
-
-Each channel has:
-
-* Independent FastAPI runtime
-* Independent deployment
-* Independent scaling
-
-***
-
-### **4.5 IAM Database Layer**
-
-#### **Database Strategy**
-
-* Separate database per channel
-* Avoids cross-channel contamination
-
-***
-
-### **4.6 Data Model**
-
-#### **4.6.1 Configuration Data (Staff Only)**
-
-**Applications**
-
-Defines accessible systems for Staff users
-
-* Registry
-* MinIO (3rd party)
-* Rancher (3rd party)
-* Keycloak (identity provider)
-
-***
-
-**Roles & Permissions**
-
-Roles and Permissions for each Application is defined in the Staff IAM database.
-
-While roles for 3rd party applications are managed by the 3rd party applications themselves, roles and their permissions for openg2p products are managed by the IAM service.
-
-Roles and Permissions for the Registry platform is available [here](https://docs.openg2p.org/registry/design/detailed-design-notes/rbac-roles-and-permissions) within the Registry documentation.
-
-***
-
-**Identity Providers**
-
-* Configurable login sources
-
-***
-
-#### **4.6.2 Transactional Data**
-
-Stored for all channels:
-
-<table><thead><tr><th width="147.792236328125">Data</th><th>Purpose</th></tr></thead><tbody><tr><td>Login logs</td><td>Audit</td></tr><tr><td>Logout logs</td><td>Session tracking</td></tr></tbody></table>
-
-***
-
-## **5. Product API Layer**
-
-### **5.1 Overview**
-
-Each business product exposes APIs per user channel.
-
-***
-
-### **5.2 API Structure**
-
-Each product runs **three independent API runtimes**:
-
-| Product  | Staff              | Agent              | Beneficiary       |
-| -------- | ------------------ | ------------------ | ----------------- |
-| Registry | registry-staff-api | registry-agent-api | registry-bene-api |
-| PBMS     | pbms-staff-api     | pbms-agent-api     | pbms-bene-api     |
-| Bridge   | bridge-staff-api   | bridge-agent-api   | bridge-bene-api   |
-| SPAR     | spar-staff-api     | spar-agent-api     | spar-bene-api     |
-
-***
-
-### **5.3 Responsibilities of Product APIs**
-
-* Validate JWT tokens
-* Extract roles from token
-* Fetch permissions from IAM
-* Enforce authorization rules
-
-***
-
-## **6. End-to-End Authentication Flow**
-
-### **6.1 Login Flow (OIDC Authorization Code Flow)**
-
-#### **Step-by-Step**
-
-1. User accesses application
-2. Redirected to Keycloak login
-3. User authenticates
-4. Keycloak returns authorization code
-5. IAM API exchanges code for token
-6. Token returned to client
-
-***
-
-### **6.2 SSO Behavior**
-
-For staff:
-
-* One login → access multiple apps
-* Shared session via Keycloak realm
-
-***
-
-## **7. Authorization Flow (RBAC Execution)**
-
-### **7.1 Flow Description**
-
-1. Client sends request with JWT
-2. Product API validates token (using IAM library)
-3. Extract roles from `resource_access`
-4. IAM library resolves permissions
-5. API checks required permission
-6. Access granted/denied
-
-***
-
-### **7.2 Key Design Choice**
-
-**RBAC is NOT embedded in product APIs**
-
-Instead:
-
-* Centralized in IAM service
-* Accessed via shared library
-
-***
-
-### **7.3 IAM Library Usage**
-
-Product APIs:
-
-* Import IAM library
-* Call permission validation methods
-* Avoid duplicating RBAC logic
-
-***
-
-## **8. Integration with Third-Party Applications**
-
-### **8.1 RBAC Model**
-
-| Application Type | RBAC Ownership |
-| ---------------- | -------------- |
-| OpenG2P Products | IAM Service    |
-| Third-party Apps | Self-managed   |
-
-***
-
-### **8.2 Examples**
-
-| App      | RBAC     |
-| -------- | -------- |
-| Rancher  | Internal |
-| Keycloak | Internal |
-| MinIO    | Internal |
-
-***
-
-## **12. Design Principles**
-
-* **Separation of Concerns**
-  * Products isolated from Identity and RBAC logic
-* **Centralized Authorization**
-  * Access controls defined in IdP identity definitions
-  * Access controls centrally by IAM services
-* **Decoupled Authentication**
-  * Authentication handled in decoupled IdPs
-  * OIDC / OAuth2.0 protocols used for integration with IdPs
-* **Channel Isolation**
-  * Realm-level separation
-  * Database-level separation
-* **Scalability by Design**
-  * IAM APIs scale independently for each channel
-  * Product APIs scale independently for each channel
-* Auditability
-  * Centralized logs (per channel) for Login / Logouts
-  * Future: API audit trails
-
-***
-
+* [Architecture](architecture.md)
+* [Authentication Flow](authentication-flow/README.md): [Staff Portal Users](authentication-flow/staff-portal-users.md), [Agent Portal Users](authentication-flow/agent-portal-users.md), [Bene Portal Users](authentication-flow/bene-portal-users.md)
+* [Data Policies](data-policies/README.md): [Staff Portal Users](data-policies/staff-portal-users.md), [Agent Portal Users](data-policies/agent-portal-users.md)
+* [Product APIs](product-apis/README.md): [Staff](product-apis/apis-serving-staff-portal-users.md), [Agent and Agent App](product-apis/apis-serving-agent-users-and-agent-apps.md), [Bene](product-apis/apis-serving-bene-portal-users.md), [Partner Systems](product-apis/apis-serving-partner-systems.md)
