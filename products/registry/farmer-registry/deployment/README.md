@@ -58,7 +58,7 @@ The defaults suit a production-like install. Change only these.
 | **Generate bulk demo data** | On for a dashboards or load-test demo only | 100,000 invented farmers ([data seeding](data-seeding.md#bulk-data)) |
 | **Sanity - Run Full E2E** | Off, except on a test environment | It leaves test data behind ([sanity testing](sanity-testing.md)) |
 | **Verifiable Credentials (Agent Portal)** | Off if farmer credentials are not issued, or eSignet and Inji Certify are not installed | On in this chart |
-| **AWE Approver User Password** | Your own | The initial password of the demo change-request approvers |
+| **AWE Approver User Password** | Your own | The initial password of the demo staff users, among them the change-request approvers. Only with Load Sample Data |
 
 {% hint style="warning" %}
 **Verify Partner Signature** and **Enforce Consent** are on by default. Turning either off returns data to partners unchecked or not cut down to their consent ([Consent-aware data sharing](../../registry/features/consent-aware-data-sharing.md#configuration)).
@@ -90,14 +90,14 @@ Add `--devel` to install a `0.0.0-develop.N` version.
 1. Check the Jobs completed: `kubectl -n <namespace> get jobs`. The install runs them in a fixed order; Helm stops at the first failure, so a missing Job means an **earlier** one failed. Order and names: [Install sequence](data-seeding.md#install-sequence).
 2. Read the sanity Job's log: `kubectl -n <namespace> logs job/<release>-sanity` ([sanity testing](sanity-testing.md)).
 3. Open `https://<release>.<Base Domain>`. You should get the Keycloak login page.
-4. Log in with the credentials set up by `keycloak-init`, and change the password when asked.
+4. Log in as `admin` (password `admin`, created by commons-base; the registry gives it its administrator roles), and change the password when asked. With **Load Sample Data**, the demo staff users can log in too, with **AWE Approver User Password**.
 5. With credentials on, open the agent portal at `https://<release>-agent.<Base Domain>`.
 
 ## Before going to production
 
 * Keep **Verify Partner Signature** and **Enforce Consent** on.
 * Keep sample data, sample images, bulk data and the full e2e off ([An empty install](../../registry/deployment-and-extension/country-data-and-seeding.md#an-empty-install-for-production)). On commons-services, turn **Load Sample People** off.
-* Replace the demo change-request approvers (`alex.carter`, `nina.patel`, in the extension's `awe_meta_data/30_approver_rule.sql`) with your officials.
+* Set up the approval policies in AWE's admin portal with your officials: the shipped ones (`awe_meta_data/`, naming `alex.carter` and `nina.patel`) are sample data, loaded only with **Load Sample Data** ([Approval policies and demo staff](../../registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
 * Never promote a demo namespace to production. Install fresh.
 
 ## Uninstall

@@ -54,7 +54,7 @@ Because each Partner Management reads the Composite's key when needed, the depar
 * Steps 1 and 2 can come in either order. Registries usually exist already; upgrading their Commons Services with **Exchange Role** `department` is then step 1.
 * Start each install once the one before it in the same namespace is ready: releases `deployed`, all pods running (`helm -n <ns> list`, `kubectl -n <ns> get pods`).
 * Every install loads the same country pack (Commons Services default `ETH`; it carries a [licence obligation](../../platform/platform-services/master-data-service/country-packs.md#sources-and-licence)).
-* For a test install, step 4 adds the step 3 policies itself, for the use case it tests.
+* For a test install, step 4 adds the step 3 policies itself, for the use case it tests. The test queries a sample farmer: load the [sample data](sample-data.md).
 * Before going live: [Production](production.md).
 
 ## Settings that must agree across installs

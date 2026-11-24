@@ -21,7 +21,7 @@ No other registry is needed, and the Exchange is not involved: the Agents Regist
 | Order | Job | Does |
 | --- | --- | --- |
 | Regular Job | the `iam-register` Job | Registers the staff portal's roles and permissions in IAM. A failure here does not fail the release |
-| Hook, weight 10 | `<release>-db-seed` | Waits for the APIs and for AWE. Loads the registers, the Agent screens, search and intake form, the training activity types and indicators, the reporting views and the Agent approval policies. With **Load Sample Data**, the country pack's sample agents |
+| Hook, weight 10 | `<release>-db-seed` | Waits for the APIs and for AWE. Loads the registers, the Agent screens, search and intake form, the training activity types and indicators, and the reporting views. With **Load Sample Data**, also the country pack's sample agents, the sample Agent approval policies and the demo staff users they name |
 | Hook, weight 20 | `<release>-activity-samples` | Only with **Load sample trainings**. Records the sample trainings and certifications. **Fails the release** if they cannot be loaded |
 | Hook, weight 25 | `<release>-sanity` | The platform's smoke tests: the partner API is up |
 

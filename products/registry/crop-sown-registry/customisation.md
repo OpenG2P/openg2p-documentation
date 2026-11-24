@@ -17,7 +17,7 @@ Work down the table. Make each change at the first layer that can carry it.
 | **1. Install settings** | Helm values (Rancher form or YAML) | Upgrade the release | Hostname, sample data, ODK pull, partners allowed to search across farmers |
 | **2. Master Data** | The country pack, or the Master Data admin UI | Nothing: read live | A new crop, variety, fertiliser, pest or damage cause |
 | **3. Activity definitions** | `scripts/activity_definitions.py`, then regenerate the seed SQL | Rebuild the db-seed image | A new field on an activity, a new activity type, due dates, verification, indicators, the ODK mapping |
-| **4. Other seed metadata** | SQL under `meta_data/` and `awe_meta_data/` | Rebuild the db-seed image | Cluster screens, cluster approvers, reporting views, registry name and theme |
+| **4. Other seed metadata** | SQL under `meta_data/` and `awe_meta_data/` | Rebuild the db-seed image | Cluster screens, the sample cluster approvers, reporting views, registry name and theme |
 | **5. Register configuration** | `meta_data/activity-config/CropSown.json` and its templates | Rebuild all images | Plausibility warnings, search fields, list columns, DCI records for crop seasons and summaries |
 | **6. Data scopes** | `meta_data/data-scopes/*.json` | Rebuild all images | A new or narrower scope |
 | **7. Domain code** | Python in `crop-sown-extension` | Rebuild all images | What identifies a crop season, the crop season status, the season summary and its windows, stored columns |
@@ -108,7 +108,7 @@ The file is read from the extension package, so a change needs new images. The f
 
 ## Clusters
 
-* **Approvers.** `awe_meta_data/` loads two two-stage policies, one for new clusters and one for changes. Both name demo users, `alex.carter` then `nina.patel`. Replace them with your officials, or with role-based rules, before going live.
+* **Approvers.** `awe_meta_data/` holds two two-stage policies, one for new clusters and one for changes, naming the demo users `alex.carter` then `nina.patel`. They are sample data, loaded only with **Load Sample Data**. In production, set the policies up in AWE's admin portal with your officials or role-based rules ([Approval policies and demo staff](../registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
 * **Cluster ID.** Ten digits after `CL-`, from the ID generator pool `cluster` (`registry.idgenerator.idGenerator.appConfig.idTypes.cluster.idLength`).
 * **Screens.** The Cluster register's screens are seed SQL that db-seed inserts only once. A change to an installed registry needs an upgrade script, like the one in `meta_data/zz-upgrades/`.
 

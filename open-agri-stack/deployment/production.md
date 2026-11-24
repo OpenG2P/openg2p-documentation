@@ -4,7 +4,7 @@ description: Preparing an install for production.
 
 # Production
 
-A demo install keeps the defaults; a production install changes the items below, during the [install steps](README.md#install-steps). The registries' own production settings are in their guides ([Farmer Registry](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#production)).
+A demo install keeps the defaults; a production install changes the items below, during the [install steps](README.md#install-steps). The registries' own production settings are in their guides ([Farmer Registry](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#production), [Agents Registry](../registries/agents-registry/deployment/rancher.md#production)). A production install loads no sample data: [Sample Data: in production](sample-data.md#in-production).
 
 ## Topology
 
@@ -120,7 +120,7 @@ Internal users keep reaching `/public/` on the Master Data host (`master-data.<b
 
 ## Remove test leftovers
 
-If the test ran on this install: [Testing: clean up](testing.md#clean-up). Also remove the registries' sample data, and their sanity partner `PARTNER_CM_SANITY` if the sanity tests ran.
+If the test ran on this install: [Testing: clean up](testing.md#clean-up). Also remove the registries' sanity partner `PARTNER_CM_SANITY` if the sanity tests ran. Sample data cannot be removed cleanly: an install that loaded it is installed fresh ([Sample Data](sample-data.md#in-production)).
 
 ## Keep
 

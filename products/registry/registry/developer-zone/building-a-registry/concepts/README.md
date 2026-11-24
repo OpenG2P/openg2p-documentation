@@ -104,7 +104,7 @@ different databases, with different rules.
 |---|---|---|---|
 | **Migrations** | `app.py` → `create_migrate()` per ORM class | API container start | Yes — `CREATE TABLE IF NOT EXISTS`, handled for you |
 | **Seed SQL** | `meta_data/` | The db-seed Job, on **every** install and upgrade | **Yes — and it is on you** |
-| **AWE seed SQL** | `awe_meta_data/` | The db-seed Job, against the **AWE** database | Yes, and defensively — see below |
+| **AWE seed SQL** | `awe_meta_data/` | The db-seed Job, against the **AWE** database: the callback secret always; the approval policies (sample data) only when `loadSampleData=true` | Yes, and defensively — see below |
 | **Sample data** | `docker/db-seed/load_sample_data.py` | The db-seed Job, only when `loadSampleData=true` | Yes |
 
 Three rules follow from that table:

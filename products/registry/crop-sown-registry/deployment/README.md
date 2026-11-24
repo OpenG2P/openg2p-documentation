@@ -21,7 +21,7 @@ The Farmer Registry is not needed ([why](../README.md#how-it-relates-to-the-farm
 | Order | Job | Does |
 | --- | --- | --- |
 | Regular Job | the `iam-register` Job | Registers the staff portal's roles and permissions in IAM. A failure here does not fail the release |
-| Hook, weight 10 | `<release>-db-seed` | Waits for the APIs and for AWE. Loads the registers, activity types, indicators, ODK mapping, Cluster screens, reporting views, DCI templates and Cluster approval policies. With **Load Sample Data**, the two sample clusters |
+| Hook, weight 10 | `<release>-db-seed` | Waits for the APIs and for AWE. Loads the registers, activity types, indicators, ODK mapping, Cluster screens, reporting views and DCI templates. With **Load Sample Data**, also the two sample clusters, the sample Cluster approval policies and the demo staff users they name |
 | Hook, weight 20 | `<release>-activity-samples` | Only with **Load sample crop seasons**. Records the sample crop seasons. **Fails the release** if any cannot be loaded |
 | Hook, weight 25 | `<release>-sanity` | The platform's smoke tests: the partner API is up and serves DCI search |
 

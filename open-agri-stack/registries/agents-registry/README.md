@@ -92,7 +92,7 @@ Every country's records pass these:
 
 ## Lifecycle and approvals
 
-Every change to an agent is a **change request**, approved in [AWE](../../../products/registry/registry/features/change-management-and-approval-workflow.md); a new agent comes in through the intake form, approved the same way. The shipped policies have two stages with demo approvers, replaced per country (for example the district office, then the regional office).
+Every change to an agent is a **change request**, approved in [AWE](../../../products/registry/registry/features/change-management-and-approval-workflow.md); a new agent comes in through the intake form, approved the same way. The shipped policies, two stages with demo approvers, are sample data, loaded only with **Load Sample Data**; a country sets up its own in AWE, for example the district office, then the regional office ([Customisation](customisation.md#approvals)).
 
 | Lifecycle event | What the change request changes |
 | --- | --- |

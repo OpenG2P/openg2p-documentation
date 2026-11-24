@@ -16,8 +16,9 @@ Follow the Crop Sown Registry's own guide: [Crop Sown Registry → Deployment](.
 | Commons Services | Exchange Domain (Consent Manager) | Empty when the Exchange is at `agrix.<parent domain>`; otherwise its domain ([Separate Clusters](separate-clusters.md)) |
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) |
 | Commons Services | Country Pack | The same as every other install (default `ETH`) |
+| Commons Services | Load Sample People | **On** for a demo only (the default); the sample crop seasons are for these people |
 | Crop Sown Registry | Release name | e.g. `csr` (gives the hostname `csr-partner-api.<domain>`) |
-| Crop Sown Registry | Load Sample Data, Load sample crop seasons | **On** for a demo only ([sample data](testing.md#sample-data)) |
+| Crop Sown Registry | Load Sample Data, Load sample crop seasons | **On** for a demo only ([Sample Data](sample-data.md)) |
 
 ## Check
 

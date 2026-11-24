@@ -16,8 +16,9 @@ Follow the Farmer Registry's own guide: [Farmer Registry → Deployment](../../p
 | Commons Services | Exchange Domain (Consent Manager) | Empty when the Exchange is at `agrix.<parent domain>`; otherwise its domain |
 | Commons Services | Partner Portal? (Consent Manager) | **No** (the default) |
 | Commons Services | Country Pack | The same as every other install (default `ETH`) |
+| Commons Services | Load Sample People | **On** for a demo only (the default); the sample farmers are these people |
 | Farmer Registry | Release name | e.g. `fr` (gives the hostname `fr-partner-api.<domain>`) |
-| Farmer Registry | Load Sample Data | **On** for a demo only ([sample data](testing.md#sample-data)) |
+| Farmer Registry | Load Sample Data | **On** for a demo only ([Sample Data](sample-data.md)) |
 
 ## Check
 

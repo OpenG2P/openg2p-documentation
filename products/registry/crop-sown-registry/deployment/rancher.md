@@ -51,7 +51,7 @@ The defaults suit a production-like install. Change only these.
 | **Load sample crop seasons** | On for a demo only | Shown when Load Sample Data is on. See [Sample data](#sample-data) |
 | **Pull submissions from ODK Central** | On only if sowings are collected with ODK | Needs more steps. See [ODK Central](#collecting-sowings-with-odk-central) |
 | **Pinned Catalogue Release** | Empty, or a release to freeze the lists for a season | Empty reads the latest lists from Master Data |
-| **AWE Approver User Password** | Your own | The initial password of the demo cluster approvers `alex.carter` and `nina.patel` |
+| **AWE Approver User Password** | Your own | The initial password of the demo staff users, among them the cluster approvers `alex.carter` and `nina.patel`. Only with Load Sample Data |
 
 **Leave as they are:**
 
@@ -97,7 +97,7 @@ registry:
 * Keep **Load Sample Data** and **Load sample crop seasons** off, and **Sanity - Run Full E2E** off.
 * Keep **Verify Partner Signature** and **Enforce Consent** on.
 * **Allow Unsigned Read of Data Scope Catalogue** is on by default: anyone who can reach the partner API can list the scopes (field names, no data). Turn it off to keep them private; Partner Management then takes scopes as free text.
-* Replace the demo cluster approvers (see [Customisation](../customisation.md#clusters)).
+* Set up the Cluster approval policies in AWE's admin portal, with the country's approvers: without sample data none are loaded, and a new cluster is refused until they exist ([Customisation](../customisation.md#clusters)).
 
 {% hint style="danger" %}
 **Never promote a demo namespace to production.** Sample crop seasons are recorded through the normal write path and cannot be separated cleanly afterwards. Install fresh.
@@ -109,7 +109,7 @@ Sample data is off by default. For a demo, turn on both switches:
 
 | Switch | Loads | Needs |
 | --- | --- | --- |
-| **Load Sample Data** | Two sample clusters, approved: `CL-4729318560` (teff, Sheno, Oromia) and `CL-5863027194` (wheat, Tahtay Adiyabo, Tigray) | Master Data, for the clusters' geography |
+| **Load Sample Data** | Two sample clusters, approved: `CL-4729318560` (teff, Sheno, Oromia) and `CL-5863027194` (wheat, Tahtay Adiyabo, Tigray). Also the sample Cluster approval policies and the demo staff users they name | Master Data with the `ETH` pack: the clusters are fixed in the registry's loader, in Ethiopian districts. With another pack, db-seed stops with the reason; keep Load Sample Data off |
 | **Load sample crop seasons** | Crop seasons for every adult among Master Data's sample people | The sample clusters, and Master Data's **sample people** |
 
 **What the crop seasons cover:**

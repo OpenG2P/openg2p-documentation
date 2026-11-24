@@ -639,6 +639,7 @@
       * [Composite Chart Settings](open-agri-stack/deployment/composite-chart-settings.md)
     * [Separate Clusters](open-agri-stack/deployment/separate-clusters.md)
     * [Testing](open-agri-stack/deployment/testing.md)
+    * [Sample Data](open-agri-stack/deployment/sample-data.md)
     * [Production](open-agri-stack/deployment/production.md)
     * [Upgrades and Uninstall](open-agri-stack/deployment/upgrades-and-uninstall.md)
   * [Administration](open-agri-stack/administration/README.md)

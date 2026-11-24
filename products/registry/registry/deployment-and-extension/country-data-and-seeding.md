@@ -1,7 +1,9 @@
 ---
 description: >-
   How a registry gets its country's geography and datasets from Master Data,
-  and the three kinds of data a registry install can create
+  which data is configuration and which is sample data, every switch from
+  commons-services to the registry, and the three kinds of data a registry
+  install can create
 ---
 
 # Country data & seeding
@@ -84,6 +86,63 @@ different switches.
 none of them.** See [An empty install](#an-empty-install-for-production).
 {% endhint %}
 
+## Configuration or sample: every switch
+
+An environment gets its data from two installs: **commons-services** (Master Data,
+and the mock identity system) and each **registry**. Some of it is configuration,
+which production needs; the rest is sample data, for demos and tests only.
+
+| Data | Comes from | Kind | Switch (form field, value) | Default | Production |
+|---|---|---|---|---|---|
+| Geography: levels, units, boundaries | The country pack, loaded into Master Data | Configuration | **Load Geography** (`geoSeed.load.geo`, Master Data chart form only) | On | On |
+| Core datasets (gender, education…) | The pack's `codelists/` | Configuration | **Load Datasets** (`masterData.geoSeed.load.codelists`) | On | On |
+| Theme datasets (crops, `AGENT_*` lists…) | The pack's `domains/<theme>/` | Configuration | **Dataset Themes** (`masterData.geoSeed.domains`) | `agriculture` | The themes the registries need |
+| Sample people: individuals and households | The pack's `samples/`, loaded into Master Data | Sample | **Load Sample People** (`masterData.geoSeed.load.samples`) | **On** | **Off** |
+| Test identities for the national ID login | Master Data's sample people, copied into the mock identity system | Sample | **Install Mock Identity System?** (`mock-identity-system.enabled`) | On | Off: eSignet uses the real ID system |
+| The staff user `admin` | commons-base (its keycloak-init), password `admin`, to be changed at first login. Each registry gives it its administrator roles | Configuration | None | Created | Created; change the password |
+| The registry's configuration: registers, screens, templates, the binding of forms and change requests to AWE policy keys, the AWE callback secret | The registry's db-seed image | Configuration | **Enable DB Seed** (`registry.dbSeed.enabled`) | On | **On** |
+| Sample records (farmers, agents, clusters…) | The registry's sample loader, from Master Data or the pack | Sample | **Load Sample Data** (`registry.dbSeed.loadSampleData`) | Off | Off |
+| Sample approval policies and demo staff users (`alex.carter`, `nina.patel`…) | The registry's `awe_meta_data/`; the platform chart's `dbSeed.sampleStaffUsers` | Sample | **Load Sample Data** | Off | Off: set up in AWE and Keycloak ([below](#approval-policies-and-demo-staff)) |
+| Sample profile photos | openg2p-data, in the db-seed image | Sample | **Load Sample Images** (`registry.dbSeed.loadImages`) | Off | Off |
+| Sample activities (the Agents Registry's trainings, the Crop Sown Registry's crop seasons) | The registry's activity-samples Job | Sample | **Load sample trainings**, **Load sample crop seasons** | Off | Off |
+| Bulk data | The registry's bulk generator | Sample | **Generate bulk demo data** (`analytics.bulkSample.enabled`), where the registry has it | Off | Off |
+| Sanity fixtures | The sanity suite | Test | **Sanity - Run Full E2E** (`registry.sanity.runE2e`) | Off | Off |
+
+### What each switch needs
+
+* **Load Sample Data** needs the country's samples. The Farmer Registry's sample
+  farmers are Master Data's sample people, so it needs **Load Sample People**. The
+  Agents Registry's sample agents are the pack's `samples/agents.json`, taken from
+  openg2p-data when the image is built; Master Data must know their areas. The
+  Crop Sown Registry's two sample clusters are in Ethiopian districts, so they
+  need the `ETH` pack.
+* **Load sample crop seasons** (Crop Sown Registry) needs Master Data's sample
+  people; **Load sample trainings** (Agents Registry) needs the sample agents.
+* **Load Sample Images** needs **Load Sample Data**.
+* **Sanity - Run Full E2E** needs **Load Sample Data**: its test user is added as
+  an approver to the sample approval policies.
+* **The mock identity system** has test identities only when Master Data holds
+  sample people.
+
+### No fallback
+
+The Farmer, Crop Sown and Agents Registries' sample loaders do not fall back. One
+that cannot load the country's samples (no Master Data, no sample people, or areas
+Master Data does not know) stops db-seed with the reason, and the release fails. It never loads other people instead, because records in places the
+country does not have are worse than none. Either load the samples the loader
+needs, or turn **Load Sample Data** off.
+
+### Which packs have samples
+
+| Pack | Sample people | Sample agents | With Load Sample Data |
+|---|---|---|---|
+| `ETH` | 21 individuals, 6 households | 24 | Every registry loads its samples |
+| `XKM` (fictitious) | None | None | db-seed stops: keep Load Sample Data off |
+
+The packs are in [openg2p-data](https://github.com/OpenG2P/openg2p-data), under
+`packs/<country>/samples/`. What else a pack holds:
+[Country Packs](../../../../platform/platform-services/master-data-service/country-packs.md).
+
 ## Bulk data is generated by each registry
 
 Dashboards and maps need volume to be worth looking at. That volume is **not** in
@@ -107,8 +166,10 @@ registration starts. See
 ## The platform ships machinery, not data
 
 The reference registry is deliberately minimal. The platform's `db-seed` image
-carries the **loaders and the ordering**; it carries no sample people, no bulk
-generator and no country content.
+carries the **loaders and the ordering**, and a copy of openg2p-data taken when it
+is built (a registry's loader can read a pack's sample files or the sample photos
+from it). It carries no sample loader, no bulk generator and no country content of
+its own.
 
 | In the platform image | What it is |
 |---|---|
@@ -214,7 +275,7 @@ platform chart itself).
 | Switch | Platform default | What it does |
 |---|---|---|
 | `enabled` | `true` | Run the db-seed Job at all. Meta-data SQL is applied unconditionally when on |
-| `loadSampleData` | `false` | Load the demo people |
+| `loadSampleData` | `false` | Load the registry's sample data: its sample records, the sample approval policies and the demo staff users |
 | `loadImages` | `false` | Sample profile photos — requires `loadSampleData` |
 
 {% hint style="info" %}
@@ -321,6 +382,11 @@ not demo data. Keep `geoSeed.load.codelists: true` (and any `geoSeed.domains` yo
 registries need) in production — only `geoSeed.load.samples` is demo data.
 {% endhint %}
 
+On **commons-services**, turn **Load Sample People** off, and **Install Mock
+Identity System?** off once eSignet uses the real national ID system. Change the
+`admin` user's password at first login. Every switch:
+[Configuration or sample](#configuration-or-sample-every-switch).
+
 `sanity.enabled: true` is safe in production: with `runE2e: false` the suite is
 smoke-only — it checks that the Partner API is live and the DCI route is served,
 and creates nothing. It is `runE2e: true` that seeds fixtures, and those are
@@ -363,10 +429,21 @@ The chart runs db-seed as a `post-install,post-upgrade` hook Job:
 | # | Step | Controlled by |
 |---|---|---|
 | 1 | **meta-data SQL** → registry DB — register definitions, UI metadata | *always, when `enabled`* |
-| 2 | **sample data** → `g2p_register_*` | `loadSampleData` |
+| 2 | **sample data**: the demo staff users → Keycloak, then the sample records → `g2p_register_*` | `loadSampleData` |
 | 3 | **images** → object store | `loadImages` |
 | 4 | **templates** → object store | *always; skipped when the image ships none* |
-| 5 | **AWE seed** → AWE DB | `aweDbSeed` |
+| 5 | **AWE seed** → AWE DB: the callback secret; the sample approval policies | callback secret *always, when AWE is on*; policies `loadSampleData` |
+
+### Approval policies and demo staff
+
+Who approves is decided by each country, so neither ships as configuration:
+
+* **Always seeded:** the binding of the registry's intake forms and change requests to AWE policy keys (e.g. `registry.change_request.farmer`, in the registry's `awe-integration` meta-data), and the AWE callback secret.
+* **Only with Load Sample Data:** the registry's approval policies (`awe_meta_data/*.sql`: policies, stages and approver rules) and the demo staff users they name (`alex.carter`, `nina.patel` and others, `dbSeed.sampleStaffUsers`). The demo users get the initial password **AWE Approver User Password**, changed at first login.
+* **In production:** set the policies up in AWE's admin portal under the same policy keys, with the country's stages and approvers, preferably by role. Create staff users in Keycloak. The seed never changes an existing policy or user.
+* **Before the policies exist,** a new submission or change request is refused with AWE's error `No active policy for '<policy key>'`, and nothing is saved.
+
+Registry Platform versions up to `0.0.0-develop.847` loaded the policies on every install and created the demo users through keycloak-init; a change request whose policy was missing was saved without reaching an approver.
 
 Datasets and geo dropdowns are not steps here: the registry does not load them.
 MDS's own seed Job loads them from the pack, so — like the geography — they must be in MDS **before**

@@ -45,8 +45,8 @@ shows the first four in the **Country Pack** group.
 |---|---|---|
 | `geoSeed.countryPack` | Country Pack | The pack's folder name in [`openg2p-data`](https://github.com/OpenG2P/openg2p-data), e.g. `ETH`, or `XKM` (fictitious). MDS chart default `XKM`; `commons-services` default `ETH` |
 | `geoSeed.domains` | Dataset Themes | Themes to load besides the core datasets, as a list or comma-separated. Default `agriculture`. A theme the pack lacks is skipped with a warning |
-| `geoSeed.load.codelists` | Load Datasets | On by default |
-| `geoSeed.load.samples` | Load Sample People | On by default. **Turn it off in production** |
+| `geoSeed.load.codelists` | Load Datasets | On by default. Configuration: keep it on in production |
+| `geoSeed.load.samples` | Load Sample People | On by default. Sample data: the registries' sample records and the mock identity system's test identities are made from these people. **Turn it off in production** |
 | `geoSeed.load.geo` | Load Geography (MDS chart form only) | On by default |
 | `geoSeed.publishInitial` | — | On by default: a dataset's first load is published at once. Off: left as a draft for approval |
 | `geoSeed.autoPublish` | — | Off by default. On: later loads are published at once, without approval. **Development and test only** |
@@ -64,6 +64,14 @@ shows the first four in the **Country Pack** group.
 Each `geoSeed` setting also has a loader command-line flag and environment
 variable (see the chart's `values.yaml`). How loads work:
 [Country Packs](country-packs.md#loading-and-upgrading-in-mds).
+
+{% hint style="info" %}
+**Configuration or sample.** The geography and the datasets are configuration:
+registries read them live, in production too. The sample people are for demos and
+tests only. Which data each install loads, from commons-services to the
+registries, and which switch controls it:
+[Country data & seeding: every switch](../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#configuration-or-sample-every-switch).
+{% endhint %}
 
 A few API settings have no chart value of their own. Set them as environment
 variables under `masterDataAPI.envVars`:

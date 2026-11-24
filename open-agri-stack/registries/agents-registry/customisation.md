@@ -87,7 +87,7 @@ Commit both. A new **field** also needs a column on the model (`register_domain/
 
 ## Approvals
 
-Registrations and changes are approved in AWE under the policy keys `registry.intake_form.agent` and `registry.change_request.agent`. The shipped policies (`awe_meta_data/`) have two stages with the platform chart's demo approvers, `alex.carter` and `nina.patel`. Replace them with the country's approvers, for example by role and location: the district office, then the regional office.
+Registrations and changes are approved in AWE under the policy keys `registry.intake_form.agent` and `registry.change_request.agent`. The shipped policies (`awe_meta_data/`) are sample data: two stages with the demo approvers `alex.carter` and `nina.patel`, loaded only with **Load Sample Data**. In production, set the policies up in AWE's admin portal under those keys, with the country's approvers, for example by role and location: the district office, then the regional office ([Approval policies and demo staff](../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
 
 ## Trainings
 

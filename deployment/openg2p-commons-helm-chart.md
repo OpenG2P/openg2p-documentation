@@ -88,6 +88,11 @@ The `keycloak-init` job creates:
 * **`master` realm** - with `openg2p-admin` login and admin themes
 * **`staff` realm** - with `staff-portal` login and admin themes, containing OIDC clients (each chart owns its own — base creates `openg2p-kafka`, `openg2p-minio`; services creates `openg2p-superset`, `openg2p-odk`, `staff-portal`):
   * `openg2p-kafka`, `openg2p-minio`, `openg2p-superset`, `openg2p-odk`, `staff-portal`
+* **the staff user `admin`** (commons-base), with the password `admin`, to be changed at first login. It is configuration, created in production too; each registry gives it its administrator roles. Demo staff users come only with a registry's sample data.
+
+### Sample data
+
+commons-services loads Master Data from the country pack. The geography and the datasets (**Load Datasets**, **Dataset Themes**) are configuration: keep them on in production. **Load Sample People** (on by default) is sample data, and so are the mock identity system's test identities (**Install Mock Identity System?**, on by default), copied from those people: turn both off in production. Every switch, from commons-services to the registries: [Country data & seeding](../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#configuration-or-sample-every-switch).
 
 ### Keycloak Themes
 

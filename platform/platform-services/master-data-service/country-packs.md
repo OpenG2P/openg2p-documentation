@@ -23,7 +23,7 @@ seeded with differs.
 | **Hierarchy** | The administrative levels and every unit, with its P-code. The number and names of levels belong to the country (for example _country → region → zone → woreda_) | Yes |
 | **Boundaries** | The map shape of every unit, one GeoJSON file per level | Yes |
 | **Datasets** | The country's own entries: gender, education level, water source and so on. **Themes** add sector datasets, such as crops under `agriculture` | No |
-| **Sample people** | A few dozen individuals and households that belong to the country, for demos and tests | No |
+| **Samples** | A few dozen individuals and households that belong to the country, and sample agents, for demos and tests | No |
 | **Address format** | How an address is written below the lowest level | No |
 
 A pack with only geography is valid for MDS. But a registry on it has **empty
@@ -41,16 +41,21 @@ Two packs ship today:
 
 | Pack | Country | Levels | Units | Datasets | Samples | Licence |
 |---|---|---|---|---|---|---|
-| `XKM` | Kamuntu (**fictitious**) | country → region → district → ward → village | 884 | none | none | CC0-1.0 |
-| `ETH` | Ethiopia | country → region → zone → woreda | 1,271 | core + `agriculture` theme | yes | CC BY-IGO (attribution required) |
+| `XKM` | Kamuntu (**fictitious**) | country → region → district → ward → village | 884 | core + `agriculture` theme | none | CC0-1.0 |
+| `ETH` | Ethiopia | country → region → zone → woreda | 1,271 | core + `agriculture` theme | 21 individuals, 6 households, 24 agents | CC BY-IGO (attribution required) |
 
 {% hint style="warning" %}
 `XKM` is the MDS chart default on purpose (the defaults are on
 [Deployment](deployment.md#settings-at-install)): an unconfigured install shows a country
-that does not exist, so invented figures are never attached to a real place. But
-it is **geography only**. For a registry you can fill in, use a pack with
-datasets (today, `ETH`).
+that does not exist, so invented figures are never attached to a real place. It
+has geography and datasets, so a registry on it can be filled in, but **no
+samples**: a registry installed on it with **Load Sample Data** stops at db-seed.
+For a demo with sample records, use `ETH`.
 {% endhint %}
+
+The samples are demo data, never configuration: what uses them and how to load or
+skip them is in
+[Country data & seeding: every switch](../../../products/registry/registry/deployment-and-extension/country-data-and-seeding.md#configuration-or-sample-every-switch).
 
 ### P-codes
 
@@ -121,7 +126,8 @@ Use the role vocabulary where an entry has a role.
 | `codelists/<attribute>.json` | Core datasets |
 | `domains/<theme>/*.json` | Theme datasets, for example `domains/agriculture/` |
 | `address.json` | The address parts below the lowest level |
-| `samples/individuals.json`, `samples/households.json` | Sample people and their households |
+| `samples/individuals.json`, `samples/households.json` | Sample people and their households, loaded into MDS |
+| `samples/agents.json` | Sample extension agents. Not loaded into MDS: the Agents Registry reads the file at install |
 | `changes.json` | Optional: real geography change events for the next load (see [Later loads](#later-loads-drafts-not-overwrites)) |
 
 Next to the packs, `openg2p-data` holds `packs/roles.json` (the role vocabulary)

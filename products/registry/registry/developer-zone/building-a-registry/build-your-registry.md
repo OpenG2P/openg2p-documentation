@@ -95,7 +95,7 @@ In `src/openg2p_registry_<domain>_extension/`:
 5. **`meta_data/register-metadata/`** — the seed SQL, in this order: register definitions → sections → schemas → UI tabs → tab-sections → intake equivalents.
 6. **Dropdowns** — bind each coded field to its Master Data list in the section JSON (`widget-data-source` with an `attribute_id`). The extension ships **no dataset SQL**; the options come from Master Data live. See [Contracts that fail silently §9](contracts-that-fail-silently.md#id-9.-datasets-and-enums-must-agree).
 7. **`templates/`** — your DCI templates.
-8. **`awe_meta_data/`** — your approval policy and stages.
+8. **`awe_meta_data/`** — your sample approval policy, stages and approvers. Sample data: db-seed applies it only with **Load Sample Data**; in production the country sets its policies up in AWE ([Approval policies and demo staff](../../deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
 
 Reference: [Extensions contract](concepts/registry-extensions/extensions-contract.md) for class names, [Base models](concepts/base-models.md) for inherited fields, [Register metadata](concepts/registry-and-register-metadata/) for each metadata table.
 
@@ -166,7 +166,7 @@ docker build -f docker/staff-api/Dockerfile -t <domain>/staff-api:dev .
 ```
 {% endhint %}
 
-**db-seed also needs your own loaders.** The base image's `load_sample_data.py` and `upload_images.py` are written against the reference registry's tables and will crash-loop against yours; the entrypoint hard-fails if `LOAD_SAMPLE_DATA=true` and no variant loader is present.
+**db-seed also needs your own loaders.** The base image has no sample loader and no image uploader: sample data writes your registry's own tables. With `LOAD_SAMPLE_DATA=true` and no `/seed/load_sample_data.py`, the entrypoint fails; with `LOAD_IMAGES=true` and no `/seed/upload_images.py`, it skips the photos with a warning.
 
 ```dockerfile
 COPY docker/db-seed/load_sample_data.py /seed/load_sample_data.py
@@ -177,26 +177,19 @@ Inherited unchanged because they are genuinely domain-agnostic: `entrypoint.sh`,
 
 #### Where sample people come from
 
-This is the decision that most often gets made wrong, because both sources work and only one is country-coherent.
-
-| Source                          | Table / file                                                            | Use it                                                                                                                                 |
-| ------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Master Data country samples** | MDS `/samples` API (via `mds_client.py`)                                 | **Always, when present.** Master Data is where the country is declared, so its people match the pack's geography, names and datasets |
-| Shared demography CSV           | `/openg2p-data/demography/individuals.csv`                              | Fallback only                                                                                                                          |
-
-**Read Master Data first and fall back to the CSV**, exactly as the reference registries do. Your loader's job is to add _your_ fields to the country's people, not to invent a second population.
+Master Data's sample people: read them through the MDS `/samples` API (with `mds_client.py`). Master Data is where the country is declared, so its people match the pack's geography, names and datasets. Your loader's job is to add _your_ fields to the country's people, not to invent a second population.
 
 {% hint style="danger" %}
-**The CSV describes one fixture country.** Its five fixed level names (country/region/district/ward/village) are that country's shape. Load it into a deployment configured for another country and you get people with the wrong names sitting in administrative units that do not exist there — and it does not error, because there is nothing to error against. Say so in the log when you fall back, or nobody will notice.
+**No fallback.** If Master Data is not reachable, or holds no geography or no sample people, stop with the reason (a clear message, non-zero exit) rather than load other people. People from another country's files sit in administrative units that do not exist here, and nothing errors, so nobody notices. The Farmer, Crop Sown and Agents Registries' loaders do this; the operator then loads the samples or turns **Load Sample Data** off.
 {% endhint %}
 
-Two things the Master Data path gives you for free:
+Two things Master Data's samples give you for free:
 
-* **Geography by p-code.** A sample row carries `geo_pcode` — the unit's own id. Walk its ancestry through `parent_level_value_id` and write the chain directly. No name matching, and no chance of the slug-path mismatch the CSV path has to guard against. Read the **depth and the level names** from MDS (`/catalogue/get_geo_levels`, or `mds_client.py levels`) rather than assuming five: Ethiopia has four and calls the middle ones zone and woreda.
+* **Geography by p-code.** A sample row carries `geo_pcode` — the unit's own id. Walk its ancestry through `parent_level_value_id` and write the chain directly. No name matching. A sample whose P-code Master Data does not know is an error, not a record to skip silently. Read the **depth and the level names** from MDS (`/catalogue/get_geo_levels`, or `mds_client.py levels`) rather than assuming five: Ethiopia has four and calls the middle ones zone and woreda.
 * **The country's own attributes.** `disability_status`, `employment_status`, `relationship_to_head` and friends are on the sample row. If a pack marks who it considers disabled, or employed, prefer that over any selection rule of your own — the country has already decided.
 
 {% hint style="warning" %}
-**Sizing.** A pack's sample set is a curated fixture — tens of people, not thousands. Applying a prevalence rate to it ("register 16% of them") yields two or three records and a demo with nothing in it. Take a share of the CSV's population-shaped set if you must, but take a pack's samples whole, or select them on an attribute the pack actually carries.
+**Sizing.** A pack's sample set is a curated fixture — tens of people, not thousands. Applying a prevalence rate to it ("register 16% of them") yields two or three records and a demo with nothing in it. Take a pack's samples whole, or select them on an attribute the pack actually carries.
 {% endhint %}
 
 {% hint style="info" %}

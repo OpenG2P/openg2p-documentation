@@ -309,6 +309,23 @@ events (startup, shutdown, errors, DLQ). It does not log the audit payloads
 themselves — those would duplicate the audit store into the regular log
 pipeline, which is exactly what we're trying to avoid.
 
+**Does an event say which service made the call?** `source` names the
+service that *received* the call and wrote the event (e.g.
+`/openg2p/master-data-api`), not the one that made it. The caller is
+recorded as the user (`actor.id`, `name`, `roles`, `session_id`) and an IP
+(`actor.ip`). Inside the cluster that IP is the calling pod's, which changes
+when the pod restarts. For example, a Master Data read made through the
+Agents Registry's staff portal shows the staff user and the portal pod's IP.
+The calling application is not recorded today, though the token carries it
+(the Keycloak `azp` claim, e.g. `ar-staff-portal`). A call without a token is
+recorded as `anonymous`, with its IP only.
+
+**Where else are API calls logged?** Every service also writes an access
+log line per request (endpoint, status, caller IP) to its console:
+`kubectl -n <ns> logs deploy/<service>`. That log is kept only as long as
+the pod's logs are; it is not in Audit Manager or in the service's
+database.
+
 **How do I find when a user logged in, or how often?** Audit Manager
 doesn't see login events directly — login happens at Keycloak, *before*
 any API call reaches the service whose middleware emits audits. The audit

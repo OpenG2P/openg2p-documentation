@@ -1,89 +1,66 @@
 ---
-description: How variant-specific configuration and sample data are seeded into the registry database after deployment.
+description: How a registry's configuration and its sample data are seeded into the registry database after deployment.
 ---
 
 # Meta Data Seeding
 
 ## Overview
 
-Every OpenG2P Registry deployment requires a set of **meta data** to be loaded into the database before the registry is operational. This meta data includes register definitions, UI tab and section layouts, lookup attributes, data-model definitions, verifiable-credential configurations, and message templates.
+Every OpenG2P Registry deployment needs a set of **meta data** in its database before it can be used: register definitions, UI tab and section layouts, data-model definitions, verifiable-credential configurations and message templates. Without it, the registry has empty tables and no registers.
 
-Meta data seeding runs **after** the application pods have started and created the database tables. Without it, the registry has an empty schema with no register definitions, no intake forms, and no lookup values — effectively unusable.
+Seeding runs **after** the application pods have started and created the tables, as the db-seed Job.
 
 ## What gets seeded
 
-The seed data is split into two categories:
+| Kind | Source in the registry's extension package | Applied |
+| --- | --- | --- |
+| **Configuration** | `meta_data/` (registers, screens, the binding of forms and change requests to AWE policy keys), `templates/` (Jinja templates, uploaded to the object store), the AWE callback secret (`awe_meta_data/40_callback_secret.sql.tpl`) | On every install and upgrade |
+| **Sample data** | The sample approval policies (`awe_meta_data/*.sql`), the demo staff users they name, the variant's sample records (its `docker/db-seed/load_sample_data.py`) and sample photos | Only with **Load Sample Data** (`dbSeed.loadSampleData`); photos with **Load Sample Images** |
 
-| Category | Folder | Required | Description |
-| --- | --- | --- | --- |
-| **Configuration** | `configurations/` | Yes | Register definitions, UI layouts, VC configs, message templates. These are essential for the registry to function. |
-| **Sample data** | `sample_data/` | No | Demo registrants, households, land records, etc. Useful for testing and training but should typically be skipped in production. |
+Datasets and geography are not seeded: registries read them live from Master Data, which loads them from the country pack ([Country data & seeding](../deployment-and-extension/country-data-and-seeding.md#datasets)). Which switch controls what, from commons-services to the registry: [every switch](../deployment-and-extension/country-data-and-seeding.md#configuration-or-sample-every-switch).
 
 {% hint style="warning" %}
-Configuration meta data (the `configurations/` folder) is **mandatory**. The registry will not work correctly without it. Sample data is optional and is disabled by default.
+Configuration is **mandatory**: keep **Enable DB Seed** on in production. Sample data is off by default and stays off in production.
 {% endhint %}
 
-## Source: the registry's extension package
+## Source: the registry's own repository
 
-The SQL scripts live in each registry's **own repository**, inside its extension package — for example [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) in the Farmer Registry and [`nsr-extension`](https://github.com/OpenG2P/national-social-registry/tree/develop/nsr-extension) in the National Social Registry:
+The SQL lives in each registry's extension package, for example [`farmer-extension`](https://github.com/OpenG2P/farmer-registry/tree/develop/farmer-extension) in the Farmer Registry; the loaders live in its `docker/db-seed/`:
 
 ```
-farmer-registry/                      ← the registry's own repo
-└── farmer-extension/
-    └── src/openg2p_registry_farmer_extension/
-│       ├── configurations/          ← mandatory meta data
-│       │   ├── data-models/
-│       │   ├── register-metadata/
-│       │   ├── registry-configurations/
-│       │   ├── registry-inbound-message-rules/
-│       │   └── registry-outbound-messages-templates/
-│       └── sample_data/             ← optional demo data
-│           └── register-data/
-│
-├── openg2p-registry-family-extension/
-│   └── src/openg2p_registry_family_extension/
-│       ├── configurations/
-│       └── sample_data/
+farmer-registry/
+├── farmer-extension/src/openg2p_registry_farmer_extension/
+│   ├── meta_data/          ← configuration SQL
+│   ├── awe_meta_data/      ← sample approval policies; the callback secret template
+│   └── templates/          ← Jinja templates
+└── docker/db-seed/
+    ├── load_sample_data.py ← the variant's sample loader
+    └── seed-data/          ← the variant's own sample fields
 ```
-
-Each variant defines its own set of registers, UI sections, and sample records. Datasets are not among them: registries read them live from Master Data, which loads them from the country pack — see [Country data & seeding](../deployment-and-extension/country-data-and-seeding.md#datasets). When adding a new variant, create a new extension folder following the same structure.
 
 ## Docker image
 
-A lightweight Docker image is automatically built from the extensions repository for each variant. The image is based on `postgres:16-alpine` (which provides the `psql` client) and contains only the SQL scripts and an entrypoint shell script.
+The platform publishes `openg2p/openg2p-registry-db-seed`: the entrypoint, the ordering and the shared machinery (Master Data client, template upload, demo staff users, reporting-view generator), with no registry content. Each registry builds its own image `FROM` it, at the platform version it is built on, and copies in its `meta_data/`, `awe_meta_data/`, `templates/` and loaders (for example `openg2p/openg2p-farmer-registry-db-seed`).
 
-**Image naming convention:**
-
-| Variant | Image |
-| --- | --- |
-| Farmer | `openg2p/openg2p-farmer-registry-db-seed:<branch>` |
-| Family | `openg2p/openg2p-family-registry-db-seed:<branch>` |
-
-The CI workflow (`.github/workflows/docker-build-db-seed.yml`) triggers on any push that changes SQL scripts, the Dockerfile, or the entrypoint. It builds all variant images in parallel using a matrix strategy. The image tag matches the Git branch name (`main`/`master` maps to `develop`).
-
-**Entrypoint behaviour:**
-
-1. Executes all `.sql` files under `/seed/configurations/` in alphabetical order (by full path).
-2. If the environment variable `LOAD_SAMPLE_DATA` is set to `true`, also executes all `.sql` files under `/seed/sample_data/`.
-3. Uses `ON_ERROR_STOP=0` so that individual statement failures (e.g. duplicate key on re-run) do not abort the entire seed process.
+The entrypoint applies the SQL with `ON_ERROR_STOP=0`, so one failed statement does not abort the seed, and every statement must be idempotent ([Contracts that fail silently](../developer-zone/building-a-registry/contracts-that-fail-silently.md)). The steps and their order: [What runs, in what order](../deployment-and-extension/country-data-and-seeding.md#what-runs-in-what-order).
 
 ## Helm chart integration
 
-The [Registry Helm Chart 4.x](../_archive/deployment/helm-chart-4.x.md) runs the seed image as a **post-install / post-upgrade** hook Job. The Job waits for all application pods to be healthy before executing, ensuring that database tables have been created by the API services.
+The platform chart `openg2p-registry` runs the image as a **post-install / post-upgrade** hook Job. It waits for the APIs, AWE and Master Data's geography before seeding.
 
 ```yaml
 dbSeed:
-  enabled: true
-  loadSampleData: false
+  enabled: true          # configuration: keep on
+  loadSampleData: false  # sample records, sample approval policies, demo staff users
+  loadImages: false      # sample photos; needs loadSampleData
   image:
     repository: openg2p/openg2p-farmer-registry-db-seed
-    tag: develop
 ```
 
-Set `dbSeed.loadSampleData: true` to include sample data during installation. For a different variant, override `dbSeed.image.repository` with the appropriate seed image.
+In a registry's own chart these sit under `registry.dbSeed`.
 
 {% hint style="info" %}
-Because the seed scripts are packaged into a Docker image, updating meta data only requires publishing a new image from the extensions repository. No Helm chart rebuild is needed.
+Because the seed content is packaged into a Docker image, changing it only needs a new image from the registry's repository, not a chart rebuild.
 {% endhint %}
 
 ## Versions

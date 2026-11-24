@@ -64,17 +64,16 @@ Every generated record must point at a real administrative unit.
 
 **Without datasets in MDS, every coded dropdown is empty.** A list under a pack's
 `domains/` (for example `agriculture`) is loaded only when that domain is named in
-`domains` — a Farmer Registry needs `[agriculture]` — and naming a domain the pack
-lacks fails the Master Data seed Job.
+`domains` — a Farmer Registry needs `[agriculture]`. A domain the pack lacks is
+skipped, with a warning in the Master Data seed Job's log.
 
-**Pick a pack that carries datasets.** The chart's default, the fictitious `XKM`,
-is geography only — no datasets and no sample people — so a registry sandboxed
-on it cannot fill in a single coded field. `ETH` carries both; it is real
-geography under CC BY-IGO, so attribute it wherever its boundaries are shown.
+**Pick a pack with samples for a demo.** The MDS chart's default, the fictitious
+`XKM`, has geography and datasets but **no sample people**. `ETH` has both; it is
+real geography under CC BY-IGO, so attribute it wherever its boundaries are shown.
 
-**Without samples in MDS**, the sample loader falls back to a demography CSV baked
-into the image. That CSV describes one fixed country, so you get people whose
-addresses do not match your pack.
+**Without samples in MDS**, a registry's sample loader stops db-seed with the
+reason. There is no fallback: either load the samples or keep the registry's
+**Load Sample Data** off.
 {% endhint %}
 
 Concepts: [Country Packs](../../../../../platform/platform-services/master-data-service/country-packs.md)
@@ -104,15 +103,15 @@ registries can share a namespace.
 
 ## 4. Turn on the demo data
 
-Three **independent** kinds of data, for three different purposes. This is the
-part most often misunderstood:
+Three kinds of data, for three different purposes. This is the part most often
+misunderstood:
 
 <table>
   <thead><tr><th width="130">Kind</th><th>What it is</th><th width="230">Switch</th></tr></thead>
   <tbody>
     <tr>
       <td><strong>Sample</strong></td>
-      <td>A few dozen realistic records a human reads in the portal. Comes from the country pack's sample people, augmented with your domain fields.</td>
+      <td>A few dozen realistic records a human reads in the portal. Comes from the country pack's sample people, augmented with your domain fields. Also loads your sample approval policies and the demo staff users they name.</td>
       <td><code>registry.dbSeed.loadSampleData</code><br><code>registry.dbSeed.loadImages</code></td>
     </tr>
     <tr>
@@ -122,7 +121,7 @@ part most often misunderstood:
     </tr>
     <tr>
       <td><strong>Sanity</strong></td>
-      <td>A handful of fixtures the e2e suite creates to test itself. Off by default.</td>
+      <td>A handful of fixtures the e2e suite creates to test itself. Off by default. Needs sample data: its test user joins the sample approval policies.</td>
       <td><code>registry.sanity.runE2e</code></td>
     </tr>
   </tbody>
@@ -146,7 +145,8 @@ the generated Rancher form unless you declared it in `questions.own.yaml`. Set i
 in the YAML editor alongside the form.
 {% endhint %}
 
-Details: [Country data & seeding](../../deployment-and-extension/country-data-and-seeding.md)
+Details, with every switch from commons-services to the registry:
+[Country data & seeding](../../deployment-and-extension/country-data-and-seeding.md#configuration-or-sample-every-switch)
 
 ## 5. Turn on reporting
 
@@ -201,7 +201,7 @@ Work down this list; each failure points somewhere specific.
 |---|---|
 | All jobs completed: `kubectl -n <ns> get jobs` | Jobs are ordered — the **first** failure blocks the rest. Fix that one |
 | `<release>.<domain>` shows the Keycloak login | Ingress / hostname |
-| You can sign in with a `keycloak-init` demo user | Change the temporary password when prompted |
+| You can sign in as `admin` (password `admin`, from commons-base) or, with sample data, as a demo staff user (**AWE Approver User Password**) | Change the temporary password when prompted |
 | Your registers appear, with their tabs and sections | `meta_data/register-metadata` — most likely a section/ORM field-name mismatch |
 | A sample record opens and shows data | Sample data did not load, or the fields disagree |
 | Dashboards show numbers | Reporting views, or bulk data missing |

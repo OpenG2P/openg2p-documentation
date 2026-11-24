@@ -47,7 +47,7 @@ The defaults suit a production-like install. Change only these.
 | **Base Domain** | Your environment's domain | Every hostname derives from it. Default `<namespace>.openg2p.org`; the staff portal is then at `<release>.<Base Domain>` |
 | **Load Sample Data** | On for a demo only | Loads the country pack's sample agents. See [Sample data](#sample-data) |
 | **Load sample trainings** | On for a demo only | Shown when Load Sample Data is on. See [Sample data](#sample-data) |
-| **AWE Approver User Password** | Your own | The initial password of the demo approvers `alex.carter` and `nina.patel` |
+| **AWE Approver User Password** | Your own | The initial password of the demo staff users, among them the approvers `alex.carter` and `nina.patel`. Only with Load Sample Data |
 
 **Leave as they are:**
 
@@ -76,7 +76,7 @@ The card design is `files/pdf-templates/agent-card.svg` in the chart, and its ti
 ### Production
 
 * Keep **Load Sample Data** and **Load sample trainings** off.
-* Replace the demo approvers with the country's ([Customisation](../customisation.md#approvals)).
+* Set up the approval policies in AWE's admin portal, with the country's approvers: without sample data none are loaded, and a new agent is refused until they exist ([Customisation](../customisation.md#approvals)).
 
 {% hint style="danger" %}
 **Never promote a demo namespace to production.** Sample agents and trainings are recorded as real records and cannot be separated cleanly afterwards. Install fresh.
@@ -91,7 +91,7 @@ Sample data is off by default. For a demo, turn on both switches:
 | **Load Sample Data** | The country pack's sample agents (`packs/<country>/samples/agents.json` in [openg2p-data](https://github.com/OpenG2P/openg2p-data)), as approved Agent records with their specializations and qualifications | Master Data, for the areas' geography |
 | **Load sample trainings** | Trainings and certifications for the sample agents | The sample agents |
 
-* **Which pack:** db-seed picks the pack whose sample agents' areas Master Data knows, so the samples match the country Master Data was installed with. A pack without `samples/agents.json` loads none.
+* **Which pack:** db-seed picks the pack whose sample agents' areas Master Data knows, so the samples match the country Master Data was installed with. There is no fallback: if no pack's sample agents are in areas Master Data knows (e.g. Master Data holds `XKM`, which has no samples), or Master Data is not reachable, db-seed stops with the reason and the release fails. Then keep **Load Sample Data** off.
 * **What a pack's samples hold:** agents of every position, posted in the areas of the pack's sample farmers, with one on leave, one suspended and one retired.
 * **Agent IDs** are fixed, so a reinstall gives the same records: the code of the agent's area and a sequence.
 * **Trainings:** every sample agent has a course in the topic of their primary specialization; every second one also an online course on digital tools; every third one a certification. One training is corrected.
@@ -143,8 +143,20 @@ Then open the staff portal at `https://<Registry Hostname>`:
 The install onboards the registry on IAM and Keycloak itself. There is no manual step.
 
 * **IAM:** the `iam-register` Job registers the application `<release>-staff-portal` (the tile **Agents Registry**, with the staff portal and its API's URL), its roles, and the permissions each role grants (the catalogue `files/iam-registration/payload.json` in the platform chart). A user's Keycloak roles are few; what they can do in the portal is the permissions IAM maps to those roles.
-* **Keycloak:** the keycloak-init Job creates the client `<release>-staff-portal` in the `staff` realm with the registry's roles (Intake Officer, Data Editor, … Technical Administrator). It gives `admin` the Operations Administrator and Technical Administrator roles, and the demo staff users theirs.
+* **Keycloak:** the keycloak-init Job creates the client `<release>-staff-portal` in the `staff` realm with the registry's roles (Intake Officer, Data Editor, … Technical Administrator). It gives `admin` the Operations Administrator and Technical Administrator roles. The demo staff users (`alex.carter`, `nina.patel`, …) are created by db-seed, only with **Load Sample Data**.
 * **A new staff user:** in Keycloak, realm `staff` → **Users** → the user → **Role mapping**, assign roles of the client `<release>-staff-portal`.
+
+## Adding an agent and approving it
+
+An agent is not added from the **Agent** register's list. It is added through intake:
+
+1. On the staff portal's home page, open **Form Submissions** and choose **Agent**.
+2. **Add New** (top right) → **New agent**, fill in the form and submit. The button shows to users whose roles grant `intakeSubmission:edit`: Intake Officer, Operations Administrator, Technical Administrator.
+3. The submission goes to AWE for approval. With sample data, db-seed sets up two policies, **Agent Intake Form** (new agents) and **Agent Change Request** (changes to an agent's record). Each has two stages, approved in order: stage 1 by `alex.carter`, stage 2 by `nina.patel`. Both must approve.
+4. Each approver signs in to the staff portal (password: **AWE Approver User Password** from the install) and approves under **Tasks**.
+5. On the second approval AWE calls the staff API back (`/awe/webhooks/decision`), the agent is created, and the Agent ID is generated.
+
+A change to an existing agent (from its record) raises a change request that follows the same two stages. The demo approvers and their policies exist only with sample data; a production install sets its own up in AWE ([Customisation](../customisation.md#approvals)).
 
 ## Uninstall
 

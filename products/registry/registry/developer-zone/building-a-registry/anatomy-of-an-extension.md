@@ -137,6 +137,13 @@ rather than the registry's:
 40_callback_secret.sql.tpl  per-release HMAC secret (templated at seed time)
 ```
 
+The callback secret is applied on every install. The policy, stages and approver
+rules are **sample data**: db-seed applies them only with **Load Sample Data**,
+and they name the platform's demo staff users. In production the country sets its
+policies up in AWE, under the policy keys your `meta_data/` binds the forms and
+change requests to
+([Approval policies and demo staff](../../deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
+
 Background: [AWE integration](../../design/awe-integration.md).
 
 ### `templates/` — message rendering

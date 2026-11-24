@@ -167,31 +167,26 @@ across registries. See [Concepts → Database scripts](concepts/README.md#databa
 
 ## 8. Geography must be resolved, not computed
 
-The shared demography set carries geography as **names**
-(country / region / district / …). The registry stores an id, plus the resolved
-hierarchy in `geo_code_hierarchy_json` — and the reporting views unpack that
-JSONB **positionally** into `geo_1..geo_5`, which is what every map and every
+A sample person from Master Data carries geography as its unit's **P-code**
+(`geo_pcode`). The registry stores an id, plus the resolved hierarchy in
+`geo_code_hierarchy_json`, and the reporting views unpack that JSONB
+**positionally** into `geo_1..geo_5`, which is what every map and every
 geo-grouped chart groups by.
 
 Two traps, both silent:
 
 * the `@validates` hook that normally builds the hierarchy is **ORM-only** and
   does not fire for raw SQL;
-* a slug-path computed from the names matches nothing when Master Data was seeded
-  from a country pack, whose ids are **P-codes**.
+* an id computed from unit names (a slug path) matches nothing: Master Data's ids
+  are **P-codes**.
 
 **Symptom:** the names still read correctly on the record, so the data looks
 fine. The only symptom is that every map and every geo chart is empty.
 
-**Fix:** resolve the name chain against Master Data's geo units (through the MDS
-API, never its database) by walking parent links (a village name repeats under different wards), and write
-both `geo_lowest_level_value_id` and `geo_code_hierarchy_json` explicitly.
-
-{% hint style="info" %}
-The demography CSV is **not uniformly JSON in its JSON columns** —
-`phone_numbers` holds a serialised list of objects, `emails` holds a bare
-address. A `json.loads` over both raises and takes the whole load down.
-{% endhint %}
+**Fix:** take the P-code from the sample, walk its parent links through the MDS
+API (never its database), and write both `geo_lowest_level_value_id` and
+`geo_code_hierarchy_json` explicitly. A P-code Master Data does not know is an
+error: stop with the reason rather than write a record that points nowhere.
 
 ## 9. Datasets and enums must agree
 

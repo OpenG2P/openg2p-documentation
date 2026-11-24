@@ -60,7 +60,7 @@ Plus common AWE + IAM env under `generated/awe/` and `generated/iam/`.
 
 ### Sample data
 
-SQL under `farmer-extension/.../sample_data/`:
+Loaded by the db-seed loader (`docker/db-seed/load_sample_data.py`), not by SQL: Master Data's sample people with the registry's farmer fields. It needs a Master Data holding the country's geography and sample people, and stops with the reason otherwise ([Data seeding](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data)).
 
 ```bash
 LOAD_SAMPLE_DATA=true make farmer-registry-seed

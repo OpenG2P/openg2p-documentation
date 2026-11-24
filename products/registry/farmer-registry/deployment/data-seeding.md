@@ -8,7 +8,7 @@ description: >-
 
 This page lists the steps and choices. What each kind of data is: [Data the registry can create](../README.md#data-the-registry-can-create) and, for all registries, [Country data & seeding](../../registry/deployment-and-extension/country-data-and-seeding.md). What the reporting views and dashboards are: [Reporting and dashboards](../README.md#reporting-and-dashboards).
 
-The registry's own configuration (registers, screens, DCI templates, approval policies) is always seeded by the db-seed Job. Everything below is optional.
+The registry's own configuration (registers, screens, DCI templates, the binding of change requests to AWE policy keys) is always seeded by the db-seed Job. Everything below is optional, and off by default. Which data is configuration and which is sample, across Master Data and the registries: [every switch](../../registry/deployment-and-extension/country-data-and-seeding.md#configuration-or-sample-every-switch).
 
 ## Before you install
 
@@ -25,8 +25,13 @@ The Farmer Registry's Jobs read Master Data through its API, with the `<release>
 2. Install or upgrade.
 3. Check: the staff portal lists farmers numbered like the sample people, e.g. `FR-0007`, with lands `LAND-0007-1`.
 
+**Load Sample Data** loads:
+
+* **Sample farmers:** every one of Master Data's sample people, with the farmer fields of the registry's own overlay (lands, livestock, farm inputs, household members, memberships, scores).
+* **The sample approval policies** for change requests, and the **demo staff users** they name (`alex.carter`, `nina.patel`…), with the initial password **AWE Approver User Password** ([Approval policies and demo staff](../../registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
+
 {% hint style="warning" %}
-If Master Data holds no sample people, the loader falls back to a CSV baked into the image and says so in its log. Those people's addresses do not match your country pack. Turn on **Load Sample People** on commons-services and upgrade both.
+**The sample farmers are Master Data's sample people, with no fallback.** If Master Data is not reachable, or holds no geography or no sample people (**Load Sample People** off on commons-services, or a pack without samples such as `XKM`), db-seed stops with the reason in its log and the release fails. Turn on **Load Sample People** and upgrade commons-services, or turn **Load Sample Data** off.
 {% endhint %}
 
 ## Bulk data
@@ -40,7 +45,7 @@ Bulk generation needs Master Data's geography; the Job fails if it is not there.
 
 ## Sanity data
 
-Sanity data is created only with **Sanity - Run Full E2E** on. Its fixtures are never deleted, so use it only on a test environment. Steps: [Sanity testing](sanity-testing.md).
+Sanity data is created only with **Sanity - Run Full E2E** on. It needs **Load Sample Data**: its test user is added as an approver to the sample approval policies. Its fixtures are never deleted, so use it only on a test environment. Steps: [Sanity testing](sanity-testing.md).
 
 ## Reporting views
 

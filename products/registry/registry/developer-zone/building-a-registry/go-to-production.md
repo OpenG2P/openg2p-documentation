@@ -140,14 +140,18 @@ Then verify **emptiness as well as function**:
 | Registers, tabs and sections render | Metadata seeded |
 | Record search returns **nothing** | No demo data — this is the point |
 | No `SANITY-*` record exists | Sanity fixtures never ran |
-| Staff sign-in works, demo passwords rotated | Keycloak |
+| Staff sign-in works; `admin`'s password changed; no demo staff users (`alex.carter`…) | Keycloak. Demo users come only with sample data |
 | Dashboards render (empty until real data) | Reporting views exist |
 | A DCI search without consent (and none held by the Consent Manager) is **rejected** | Enforcement gates on |
 
 ## 7. Before you hand over
 
-* [ ] **Rotate every default credential** — `keycloak-init` demo users, Superset
-      service account, any generated secret you did not supply.
+* [ ] **Rotate every default credential** — the staff user `admin` (created by
+      commons-base with password `admin`), the Superset service account, any
+      generated secret you did not supply.
+* [ ] **Set up the approval policies in AWE** under your registry's policy keys,
+      with the country's approvers: production loads none
+      ([Approval policies and demo staff](../../deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
 * [ ] **Back-ups configured and a restore rehearsed** —
       [Backups](https://docs.openg2p.org/operations/deployment/backups/README.md).
       An untested restore is not a back-up.
