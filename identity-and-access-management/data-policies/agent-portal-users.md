@@ -1,6 +1,5 @@
 # Agent Portal Users
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 4: agency and agent data policies -->
+<figure><img src="../../.gitbook/assets/Data-Policy-Agent-001 (1).png" alt=""><figcaption><p>IAM - Data policies on Agencies and Agents</p></figcaption></figure>
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 5: agent data policies, how are they enforced -->
-
+<figure><img src="../../.gitbook/assets/Data-Policy-Agent-002 (1).png" alt=""><figcaption><p>IAM - Data policies - enforcement on Agents</p></figcaption></figure>
