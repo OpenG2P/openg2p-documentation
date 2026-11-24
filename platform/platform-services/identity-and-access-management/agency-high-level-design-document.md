@@ -1,4 +1,4 @@
-# Agency API Design
+# Agent API Design
 
 <figure><img src="../../../.gitbook/assets/Agency-Solution-Architecture.png" alt=""><figcaption></figcaption></figure>
 
@@ -181,7 +181,7 @@ Each agency is a Keycloak group in realm `agent`, named by its `agency_id`, and 
 
 1. **Role:** what the actor may call.
 2. **API surface:** agents cannot call Verification, Approval or other AWE operations because those endpoints do not exist in the agency APIs.
-3. **Data policy:** which records the actor may touch ([Agency/Agents RBAC](../../../identity-and-access-management/agency-agents-rbac.md)).
+3. **Data policy:** which records the actor may touch ([Agency/Agents RBAC](/broken/pages/ODbcRLVk3ZohVqAJhyQs)).
 4. **Agency state:** for a disabled agency, fresh logins and fresh data ingestion are rejected regardless of token validity (section 6.8).
 
 ### 6.6 Table ownership
@@ -272,7 +272,7 @@ Reasons:
 
 ## 8. Data policies
 
-Data policies apply at two levels: `AGC_` roles on the agency (mandatory, created by staff) and `AGT_` roles on the agent (optional, created by agency administrators). The effective policy is their intersection, computed at read time by the `iam-core` agency middleware, with deny by default. The model, the within-agency rule, enforcement, policy changes and reuse are documented in [Agency/Agents RBAC](../../../identity-and-access-management/agency-agents-rbac.md).
+Data policies apply at two levels: `AGC_` roles on the agency (mandatory, created by staff) and `AGT_` roles on the agent (optional, created by agency administrators). The effective policy is their intersection, computed at read time by the `iam-core` agency middleware, with deny by default. The model, the within-agency rule, enforcement, policy changes and reuse are documented in [Agency/Agents RBAC](/broken/pages/ODbcRLVk3ZohVqAJhyQs).
 
 ## 9. Agent Android application
 
