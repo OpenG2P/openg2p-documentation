@@ -337,20 +337,21 @@ Confirm your own pool is present and its name matches your `G2PIdGeneratorServic
 
 You do **not** write a `questions.yaml`. CI generates it from the pinned platform chart so your Rancher form matches the platform's. If your chart owns keys the platform has no concept of, put questions for those in `questions.own.yaml` and CI appends them. Gitignore the generated `questions.yaml` — it rots against the pin.
 
-**The chart owns no&#x20;**_**service**_**&#x20;templates — but it does own analytics.** The reporting views and dashboards are written against _your_ schema, so they cannot come from the subchart. Expect to copy roughly five templates from a reference registry and rename them:
+**The chart owns no&#x20;**_**service**_**&#x20;templates — but it does own analytics.** The reporting views and dashboards are written against _your_ schema, so they cannot come from the subchart. Expect to copy these templates from the Farmer Registry and rename them:
 
 | Template                                            | Purpose                                        |
 | --------------------------------------------------- | ---------------------------------------------- |
-| `analytics-jobs.yaml`                               | reporting-views and dashboard-import hook Jobs |
+| `analytics-jobs.yaml`                               | reporting-views hook Jobs                      |
 | `reporting-views-refresh.yaml`                      | CronJob refreshing the materialized views      |
-| `dashboard-bundle-configmap.yaml`                   | ships the Superset bundle into the cluster     |
+| `dashboard-bundle-configmap.yaml`                   | hands the Superset bundle to the platform's dashboards Job |
 | `maps-content-configmap.yaml` + `_maps-content.tpl` | maps content for G2P Insights                  |
-| `superset-service-account-secret.yaml`              | the Superset service account                   |
 
 A registry that ships none of these installs cleanly and has **no reporting at all**, with nothing to indicate anything is missing. Hook weights matter: the analytics chain sits above the sanity suite (25) so that rebuilding the views cannot change what the sanity tests asserted against.
 
 {% hint style="info" %}
-The Superset bundle is produced by `docker/dashboards/build_bundle.py`, which reads the reporting views' real column list — so the views must exist when you build it. Consider building it as a release step and gitignoring the ZIP rather than committing a binary nobody can diff, and defaulting `analytics.dashboards.enabled` to `false` when you ship no bundle.
+The Superset bundle is produced by `docker/dashboards/build_bundle.py`, which reads the reporting views' real column list — so the views must exist when you build it. Consider building it as a release step and gitignoring the ZIP rather than committing a binary nobody can diff.
+
+The platform chart imports it: its `<release>-dashboards` Job (weight 50) mounts the ConfigMap `<release>-dashboard-bundle`, key `dashboards.zip`, and imports the bundle under the release's names, so several installs can share one Superset ([Several installs in one Superset](../../../../../platform/platform-services/reporting-and-analytics/dashboards.md#several-installs-in-one-superset)). Your ConfigMap must be a hook with a lower weight (49), and you turn the Job on with `registry.dashboards.enabled: true`. It is off in the platform, so a registry that ships no bundle needs nothing.
 {% endhint %}
 
 **Done when:**

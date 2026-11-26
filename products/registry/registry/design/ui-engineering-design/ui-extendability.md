@@ -1,5 +1,5 @@
 ---
-description: Extend Staff Portal in Farmer Registry by pinning a registry-platform version and applying file-level overrides.
+description: Extend the Staff Portal and Agent Portal UIs in a domain registry by pinning a registry-platform version and applying file-level overrides.
 ---
 
 # UI Extendability
@@ -9,6 +9,20 @@ description: Extend Staff Portal in Farmer Registry by pinning a registry-platfo
 The extension wrapper is located at `farmer-registry/ui/staff-ui`.
 
 > **Note:** This approach is not limited to Farmer Registry. Any domain registry built on `registry-platform`, such as a social registry or vehicle registry, can extend Staff Portal using the same mechanism.
+
+### Which registries and UIs
+
+Each registry builds and ships its own portal UI images; the platform's own images (`openg2p-registry-staff-ui`, `openg2p-registry-agent-ui`) are for the reference registry.
+
+| Registry | Wrappers | Images |
+| --- | --- | --- |
+| Farmer Registry | `ui/staff-ui`, `ui/agent-ui` | `openg2p-farmer-registry-staff-ui`, `openg2p-farmer-registry-agent-ui` |
+| Crop Sown Registry | `ui/staff-ui` | `openg2p-crop-sown-registry-staff-ui` |
+| Agents Registry | `ui/staff-ui`, `ui/agent-ui` | `openg2p-agents-registry-staff-ui`, `openg2p-agents-registry-agent-ui` |
+
+The Agent Portal wrapper (`ui/agent-ui`) works exactly like the Staff Portal one described below; it pins `registry-platform/ui/agent-ui` instead, and its script is `scripts/materialize-agent-ui.sh`. A registry with no overrides still builds its own image, so a customisation later needs no chart or CI change.
+
+The registry's chart points the platform chart at these images (`registry.staffUi.image` and `registry.agentPortalUi.image`), and the registry's CI builds them with its other images and rewrites their tags in lockstep.
 
 **Key concepts:**
 - **Override:** A file under `overrides/` that replaces the corresponding Staff Portal file at the same path.
@@ -35,7 +49,7 @@ Clone the Farmer Registry repository and start the Staff Portal application:
 ```bash
 git clone https://github.com/OpenG2P/farmer-registry.git
 cd farmer-registry
-git checkout 1.2
+git checkout develop   # or a release branch, such as 1.2
 cd ui/staff-ui
 
 npm install
@@ -96,12 +110,12 @@ The wrapper separates dependency configuration, customizations, and generated ap
 
 ### Example `deps.json`
 
-Farmer Registry uses the following configuration to pin Staff Portal to the `1.2` branch:
+On `develop`, every registry pins the platform's `develop` branch; a release branch pins the matching platform release branch (for example `1.2`):
 
 ```json
 {
   "repo": "https://github.com/OpenG2P/registry-platform.git",
-  "ref": "1.2",
+  "ref": "develop",
   "path": "ui/staff-ui"
 }
 ```
@@ -159,8 +173,10 @@ docker build \
   -t openg2p/openg2p-farmer-registry-staff-ui:local .
 ```
 
+The Agent Portal image is built the same way from `docker/agent-ui/Dockerfile`. In the Crop Sown and Agents registries, replace `farmer-registry` in the image name with `crop-sown-registry` or `agents-registry`.
+
 ## Reference Implementation
 
-See the [OpenG2P Farmer Registry repository, branch `1.2`](https://github.com/OpenG2P/farmer-registry/tree/1.2), under `ui/staff-ui/`, for the working implementation of `deps.json`, `overrides/`, and the wrapper scripts.
+See the [OpenG2P Farmer Registry repository](https://github.com/OpenG2P/farmer-registry/tree/develop), under `ui/staff-ui/` and `ui/agent-ui/`, for the working implementation of `deps.json`, `overrides/`, and the wrapper scripts.
 
 This approach allows domain registries to reuse Staff Portal while maintaining their own custom behavior, minimizing duplicated code and keeping platform upgrades manageable.

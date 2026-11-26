@@ -59,9 +59,11 @@ The dashboards are imported into the environment's Superset at install. To load 
 
 1. Install Superset with commons-services (**Install Superset?**).
 2. Install or upgrade the Farmer Registry.
-3. Check the `<release>-fr-dashboards` Job's log says the dashboards were imported.
+3. Check the `<release>-dashboards` Job's log says the dashboards were imported.
 
-If Superset was not reachable, the Job skips the import and says so. Upgrade the registry once Superset is up. To fail the install instead, set `analytics.dashboards.superset.required: true` in YAML.
+In Superset, the dashboards are titled `<release> · <title>` (e.g. `fr · Land & Tenure`), on a connection named after the release. So several Farmer Registries can share the namespace's Superset, each with its own copy: [Several installs in one Superset](../../../../platform/platform-services/reporting-and-analytics/dashboards.md#several-installs-in-one-superset).
+
+If Superset was not reachable, the Job skips the import and says so. Upgrade the registry once Superset is up. To fail the install instead, set `registry.dashboards.superset.required: true` in YAML.
 
 Bringing reporting up for a country: [Setting up reporting](../../../../platform/platform-services/reporting-and-analytics/setting-up-reporting.md).
 
@@ -80,7 +82,7 @@ The install Jobs run as Helm post-install and post-upgrade hooks, in hook-weight
 | 25 | `<release>-sanity` | Runs the sanity suite | **Run Sanity Tests** (on) |
 | 40 | `<release>-fr-bulk-sample` | Generates the bulk farmers | **Generate bulk demo data** |
 | 45 | `<release>-fr-reporting-views` | Builds the reporting views | **Build reporting views** (on) |
-| 50 | `<release>-fr-dashboards` | Imports the dashboards into Superset | `analytics.dashboards.enabled` (on) |
+| 50 | `<release>-dashboards` | Imports the dashboards into Superset, named after the release | `registry.dashboards.enabled` (on) |
 
 Two dependencies are on other releases, which Helm cannot order:
 

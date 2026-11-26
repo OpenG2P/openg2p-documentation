@@ -27,7 +27,9 @@ All images are published to Docker Hub under `openg2p/`, built and versioned tog
 | `openg2p-registry-staff-ui`     | Next.js Staff Portal UI                                                              |
 | `openg2p-registry-sanity-tests` | the sanity/e2e suite (see [Testing](testing-and-sanity-suite.md))                    |
 
-Dockerfiles are in `registry-platform/docker/*` (and `ui/staff-ui/Dockerfile`). The API/celery images install the platform packages from **this repo's own working tree** — this repo _is_ the platform — so there is no `REGISTRY_PLATFORM_REF`; only the external `openg2p-fastapi-common` / `iam-service` libraries are pulled by git ref.
+Dockerfiles are in `registry-platform/docker/*` (and `ui/staff-ui/Dockerfile`, `ui/agent-ui/Dockerfile`). The two UI images serve the reference registry: each domain registry builds its own Staff Portal and Agent Portal UI images from this source plus its overrides (see [UI Extendability](../design/ui-engineering-design/ui-extendability.md)).
+
+The API/celery images install the platform packages from **this repo's own working tree** — this repo _is_ the platform — so there is no `REGISTRY_PLATFORM_REF`; only the external `openg2p-fastapi-common` / `iam-service` libraries are pulled by git ref.
 
 ## The single Helm chart
 
