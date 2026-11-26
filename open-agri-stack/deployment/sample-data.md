@@ -19,13 +19,13 @@ Every sample comes from the country pack in [openg2p-data](https://github.com/Op
 | --- | --- | --- | --- |
 | Commons Services (each namespace) | **Load Sample People** (on by default) | Master Data's sample people: 21 individuals in 6 households | The pack's `individuals.json`, `households.json` |
 | Commons Services | **Install Mock Identity System?** (on by default) | Test identities for the national ID login, so a sample farmer can log in to the partner portal | Master Data's sample people |
-| Farmer Registry | **Load Sample Data** | A farmer for every sample person, with lands, livestock, farm inputs and households; the sample approval policies and the demo staff users they name | Master Data's sample people, and the registry's own farmer fields |
+| Farmer Registry | **Load Sample Data** | A farmer for every sample person, with lands, livestock herds, farm inputs and households; the sample approval policies and the demo staff users they name | Master Data's sample people, the registry's own farmer fields, and the pack's `animals.json` for the herds |
 | Farmer Registry | **Load Sample Images** | The sample farmers' photos | openg2p-data, in the db-seed image |
 | Crop Sown Registry | **Load Sample Data** | Two clusters, in Ethiopian districts; the sample approval policies and the demo staff users | Fixed in the registry's loader |
 | Crop Sown Registry | **Load sample crop seasons** | Crop seasons for every adult sample person | Master Data's sample people |
 | Agents Registry, where installed | **Load Sample Data** | 24 extension agents, in the sample farmers' areas; the sample approval policies and the demo staff users | The pack's `agents.json`, taken from openg2p-data when the image is built |
 | Agents Registry | **Load sample trainings** | Trainings and certifications for the sample agents | The sample agents |
-| Livestock Registry, where installed | **Load Sample Data** | Six vets in the sample farmers' woredas, and one to three animals for every adult sample person; the sample approval policies and the demo staff users | The pack's `veterinarians.json`, taken from openg2p-data when the image is built, and Master Data's sample people |
+| Livestock Registry, where installed | **Load Sample Data** | Six vets in the sample farmers' woredas, and one to three animals for every adult sample person; the sample approval policies and the demo staff users | The pack's `veterinarians.json` and `animals.json`, taken from openg2p-data when the image is built, and Master Data's sample people |
 | Livestock Registry | **Load sample events** | Births, vaccinations, treatments, a sale and a death for the sample animals | The sample animals and vets |
 
 The demo staff users (`alex.carter`, `nina.patel`…) get the password set in each registry's **AWE Approver User Password**, changed at first login. The staff user `admin` is not sample data: commons-base creates it in every namespace.
@@ -44,9 +44,9 @@ The registries' samples describe the same people:
 * The Crop Sown Registry's crop seasons are for the same farmers and plots, so a `loan-profile` query returns both for the same farmer. The test queries this farmer ([`test_install.yaml`](https://github.com/openg2p/agri-stack/blob/develop/scripts/test_install.yaml)).
 * The mock identity system holds the same people, so a sample farmer can log in with their national ID in the partner portal.
 * The sample agents are posted in the areas of the sample farmers.
-* The Livestock Registry's sample animals belong to the same farmers (`FR-0007`, with the person's national ID), and its sample vets serve their woredas.
+* The Livestock Registry's sample animals belong to the same farmers (`FR-0007`, with the person's national ID), and its sample vets serve their woredas. They are the pack's `animals.json`, which the Farmer Registry reads too: its herds count the same animals (farmer `FR-0007`'s herd of 2 local sheep is the Livestock Registry's two sheep of `FR-0007`), with the same Master Data codes.
 
-They match only by convention (`FR-<n>`, `LAND-<n>-<k>`): neither registry reads the other, and a change to either registry's sample IDs must be made in both. Details: [Farmer Registry](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data), [Agents Registry](../registries/agents-registry/deployment/rancher.md#sample-data), [Livestock Registry](../registries/livestock-registry/deployment/rancher.md#sample-data).
+They match by convention (`FR-<n>`, `LAND-<n>-<k>`) and, for livestock, by reading the same file: neither registry reads the other, and a change to either registry's sample IDs must be made in both. Details: [Farmer Registry](../../products/registry/farmer-registry/deployment/data-seeding.md#sample-data), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#sample-data), [Agents Registry](../registries/agents-registry/deployment/rancher.md#sample-data), [Livestock Registry](../registries/livestock-registry/deployment/rancher.md#sample-data).
 
 ## When samples cannot be loaded
 

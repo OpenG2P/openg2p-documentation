@@ -79,16 +79,16 @@ Sample data is off by default. For a demo, turn on both switches:
 
 | Switch | Loads | Needs |
 | --- | --- | --- |
-| **Load Sample Data** | The country pack's sample vets (`packs/<country>/samples/veterinarians.json` in [openg2p-data](https://github.com/OpenG2P/openg2p-data)), and animals for Master Data's sample people, as approved records | Master Data, for the geography and the sample people |
+| **Load Sample Data** | The country pack's sample vets and animals (`packs/<country>/samples/veterinarians.json` and `animals.json` in [openg2p-data](https://github.com/OpenG2P/openg2p-data)), the animals owned by Master Data's sample people, as approved records | Master Data, for the geography and the sample people |
 | **Load sample events** | Births, vaccinations, treatments, a sale and a death for the sample animals | The sample animals and vets |
 
-* **Which pack:** db-seed picks the pack whose sample vets' areas Master Data knows, so the samples match the country Master Data was installed with. There is no fallback: if no pack's sample vets are in areas Master Data knows (e.g. Master Data holds `XKM`, which has no samples), Master Data has no sample people, or it is not reachable, db-seed stops with the reason and the release fails. Then keep **Load Sample Data** off.
+* **Which pack:** db-seed picks the pack whose sample vets' areas Master Data knows, so the samples match the country Master Data was installed with. There is no fallback: if no pack's sample vets are in areas Master Data knows (e.g. Master Data holds `XKM`, which has no samples), the pack has no `animals.json`, an animal's owner is not one of Master Data's sample people, Master Data has no sample people, or it is not reachable, db-seed stops with the reason and the release fails. Then keep **Load Sample Data** off.
 * **The sample vets:** two per sample woreda, of every cadre (veterinarian, technician, assistant, CAHW).
-* **The sample animals:** every adult sample person has one to three, kept in the person's woreda: cattle, goats, sheep, chickens, donkeys. Sample person `ETH-IND-0007` is farmer `FR-0007`, with the person's national ID, as in the Farmer and Crop Sown Registries. Animal IDs are fixed, so a reinstall gives the same records: `9`, the person's number in seven digits and a sequence (`9000000701`). A person's last animal, when they have more than one, is a young one born in the herd, its mother the first.
+* **The sample animals:** the pack's `animals.json`: every adult sample person has one to three, kept in the person's woreda: cattle, goats, sheep, chickens, donkeys. The Farmer Registry reads the same file for its sample herds, so a farmer's herd there counts the animals here. Sample person `ETH-IND-0007` is farmer `FR-0007`, with the person's national ID, as in the Farmer and Crop Sown Registries. Animal IDs are fixed, so a reinstall gives the same records: `9`, the person's number in seven digits and a sequence (`9000000701`). A person's last animal, when they have more than one, is a young one born in the herd, its mother the first.
 * **The sample events:** each young animal's birth; every animal vaccinated against its species' main disease by a vet of its woreda (every fifth by a vet known only to another system), most verified; every second head of cattle also against anthrax; every third animal dewormed; one animal sold to another sample farmer (its change of owner is left to a change request, for a demo) and one dead. One vaccination is corrected.
 
 {% hint style="info" %}
-The db-seed image fetches openg2p-data when it is built, so it carries the sample vets of that day's openg2p-data. Sample vets added to a pack later reach an install with the next registry build.
+The db-seed image fetches openg2p-data when it is built, so it carries the sample vets and animals of that day's openg2p-data. Samples added to a pack later reach an install with the next registry build.
 {% endhint %}
 
 {% hint style="warning" %}

@@ -173,12 +173,13 @@ The sample use case, [`composite/use-cases/loan-profile.yaml`](https://github.co
 
 ```yaml
 use_case: loan-profile
-version: 1.0.0
+version: 1.1.0
 status: published
 title: Farmer loan profile
 description: >-
   Identity, location, land and declared crops from the Farmer Registry, and crop
-  seasons and season summaries from the Crop Sown Registry, for a loan decision.
+  seasons and season summaries from the Crop Sown Registry, and the farmer's
+  animals from the Livestock Registry, for a loan decision.
   Pass crop_year and season to get one season (the total area sown is then that
   season's); without them, all of the farmer's seasons come back, newest first.
 
@@ -282,6 +283,34 @@ sources:
     timeout_ms: 10000
     retries: 0
 
+  - id: livestock
+    controller: livestock-registry
+    requirement: optional
+    depends_on: [farmer]
+    # A few of each animal's fields, for demonstration: the Livestock Registry
+    # knows an animal's owner by Farmer ID, read from the farmer source (or the
+    # subject itself when the partner sends a FARMER_ID).
+    scopes: [livestock-registry.owner_reference, livestock-registry.animals]
+    dci:
+      reg_type: Animal
+      reg_record_type: spdci-extensions-agri:Animal
+      query_template: |
+        {%- set ns = namespace(fid=none) -%}
+        {%- if subject.type == 'FARMER_ID' -%}{%- set ns.fid = subject.value -%}{%- endif -%}
+        {%- for rec in sources.farmer.records -%}
+          {%- for ident in rec.farmer_personal_details.member_identifier or [] -%}
+            {%- if ns.fid is none and ident.identifier_type == 'FARMER_ID' and ident.identifier_value -%}
+              {%- set ns.fid = ident.identifier_value -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+        {"query_type": "expression",
+         "query": {"type": "expression",
+                   "value": {"expression": {"query": {"owner_farmer_id": {"$eq": {{ ns.fid | tojson }} } } } } },
+         "pagination": {"page_size": 50, "page_number": 1} }
+    timeout_ms: 10000
+    retries: 0
+
 response:
   # JSONPath over {subject, parameters, sources: {<id>: {status, records: [...]}}}.
   mapping:
@@ -294,12 +323,14 @@ response:
     land.parcels:       "$.sources.farmer.records[0].farm_details"
     crops.seasons:      "$.sources.crop_seasons.records"
     crops.season_summaries: "$.sources.season_summaries.records"
+    livestock.animals:  "$.sources.livestock.records"
   # Functions: sum, count, min, max, first, round. The output so far is at $.data.
   derived:
     land.parcel_count: "count($.sources.farmer.records[0].farm_details)"
     # Sum of each parcel's land_size, in the parcels' unit (farm_details[].measurement).
     land.total_size:   "round(sum($.sources.farmer.records[0].farm_details[*].land_size), 4)"
     crops.total_area_sown_ha: "round(sum($.sources.crop_seasons.records[*].measures.area_sown_ha), 4)"
+    livestock.animal_count: "count($.sources.livestock.records)"
   source_status: true
 
 execution:
@@ -310,8 +341,9 @@ limits:
   rate_per_partner: 60/min
 ```
 
-* **Sources:** `farmer` (mandatory) first; then `season_summaries` and `crop_seasons` (optional) in parallel. A source ID is only the use case's name for that search. What it returns is the registry's: `season_summaries` asks the Crop Sown Registry for its stored aggregate `FARMER_SEASON_SUMMARY`, which the registry computes per farmer, crop year and season across all the farmer's plots and crops ([season summary](../../products/registry/crop-sown-registry/README.md)); `crop_seasons` reads each crop season's current state. The Crop Sown Registry knows the farmer by farmer ID, so both crop sources depend on `farmer` and read `FARMER_ID` from its record (or use the subject itself when the partner sends a `FARMER_ID`). The request fails only when the Farmer Registry fails or denies; the crop data is best effort.
+* **Sources:** `farmer` (mandatory) first; then `season_summaries`, `crop_seasons` and `livestock` (optional) in parallel. A source ID is only the use case's name for that search. What it returns is the registry's: `season_summaries` asks the Crop Sown Registry for its stored aggregate `FARMER_SEASON_SUMMARY`, which the registry computes per farmer, crop year and season across all the farmer's plots and crops ([season summary](../../products/registry/crop-sown-registry/README.md)); `crop_seasons` reads each crop season's current state. The Crop Sown Registry knows the farmer by farmer ID, so both crop sources depend on `farmer` and read `FARMER_ID` from its record (or use the subject itself when the partner sends a `FARMER_ID`). `livestock` reads the farmer's animals from the [Livestock Registry](../registries/livestock-registry/README.md), by the owner's farmer ID in the same way, with a few fields only (species, breed, sex, date of birth: the `animals` scope). The request fails only when the Farmer Registry fails or denies; the crop and livestock data are best effort.
 * **Timeouts:** each source `timeout_ms: 10000` with `retries: 0` (a slow registry search is not retried: a retry only doubles the wait); `overall_timeout_ms: 25000` covers the two levels.
 * **Scopes:** one consent, with a grant per registry naming its [data scopes](../../products/registry/registry/design/data-scopes.md); the describe endpoint gives them per registry as `consent_scopes`. `farmer-registry.farmer_identifiers` is required, since the crop sources query by the farmer ID read from it. The install test script grants every listed scope:
   * `farmer-registry`: `farmer_identifiers`, `personal_details`, `land`, `main_crops` (required); `household_location`, `land_location` (optional);
-  * `crop-sown-registry`: `farmer_reference`, `crop_season`, `measures` (required); `location` (optional).
+  * `crop-sown-registry`: `farmer_reference`, `crop_season`, `measures` (required); `location` (optional);
+  * `livestock-registry`: `owner_reference`, `animals` (required).

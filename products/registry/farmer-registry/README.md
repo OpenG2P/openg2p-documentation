@@ -87,7 +87,7 @@ The platform defines three kinds of data an install can create: sample, bulk and
 
 | | What it is |
 | --- | --- |
-| **Sample data** | Master Data's sample people from the country pack, each given farmer fields from the registry's own overlay (`docker/db-seed/seed-data/*.json`: farmers, lands, livestock, farm inputs, household members, memberships, scores). A few dozen farmers, records a person reads |
+| **Sample data** | Master Data's sample people from the country pack, each given farmer fields from the registry's own overlay (`docker/db-seed/seed-data/*.json`: farmers, lands, farm inputs, household members, memberships, scores), and herds counting the pack's sample animals (`samples/animals.json`, the ones the Livestock Registry loads). A few dozen farmers, records a person reads |
 | **Bulk data** | 100,000 invented farmers by default, with land, main crops and livestock, so reports and dashboards have volume. Names are invented; every record still points at a real administrative unit read from Master Data |
 | **Sanity data** | The e2e test's own fixtures: the farmer `SANITY-FARMER-0001`, a Keycloak user and an approver rule. Never deleted |
 

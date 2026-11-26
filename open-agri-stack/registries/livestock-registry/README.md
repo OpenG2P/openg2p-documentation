@@ -192,7 +192,7 @@ Scope IDs are `livestock-registry.<name>`. Only these are offered: the registers
 
 The catalogue is `meta_data/data-scopes/10_livestock.json`. How scopes work: [Data Scopes](../../../products/registry/registry/design/data-scopes.md).
 
-The Livestock Registry is not yet a source of an Exchange use case. Adding it is configuration only: [Adding a Registry](../adding-a-registry.md), which uses it as its example.
+In the Exchange, `loan-profile` (from version 1.1.0) reads a farmer's animals from it, as an optional source: species, breed, sex and date of birth, found by the owner's Farmer ID ([the use case](../../composite/use-case-configuration.md#the-loan-profile-use-case)). It needs the registry's search URL in the Composite (`composite.registries.livestock-registry.url`), and in the department's Partner Management a scope policy for the Composite with `livestock-registry.owner_reference` and `livestock-registry.animals` ([Adding a Registry](../adding-a-registry.md)).
 
 ## Reports
 
@@ -221,7 +221,7 @@ They are titled `<release> · <title>` (e.g. `lsr · Livestock Overview`), on a 
 
 ## How it relates to other registries
 
-* **Farmer Registry.** The owner is the Farmer Registry's Farmer ID, never looked up. The Farmer Registry still has its own Livestock section, per herd (type, breed, head count, livestock system), not per animal ([domain models](../../../products/registry/farmer-registry/README.md#domain-models)). Where the Livestock Registry is installed, that section should be reduced to a declared summary or removed, so each fact has one authoritative registry; that is not done yet.
+* **Farmer Registry.** The owner is the Farmer Registry's Farmer ID, never looked up. The Farmer Registry still has its own Livestock section, per herd (type, breed, head count, livestock system), not per animal ([domain models](../../../products/registry/farmer-registry/README.md#domain-models)). Where the Livestock Registry is installed, that section should be reduced to a declared summary or removed, so each fact has one authoritative registry; that is not done yet. Their sample data agree: the Farmer Registry's sample herds count this registry's sample animals, both read from the country pack's `samples/animals.json`, with the same Master Data codes.
 * **Basic farmer details** (location, household size), to search and filter animals by them, would be a mirror of the Farmer Registry's data ([Registry Data Sync](../../roadmap/registry-data-sync.md#the-other-direction-mirrors-of-farmer-data)); not built.
 * **Agents Registry.** Animal health workers who are extension agents may also be in the [Agents Registry](../agents-registry/README.md); the Veterinarian register here is independent of it.
 

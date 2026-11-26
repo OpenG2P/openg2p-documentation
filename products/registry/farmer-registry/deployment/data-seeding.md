@@ -27,7 +27,8 @@ The Farmer Registry's Jobs read Master Data through its API, with the `<release>
 
 **Load Sample Data** loads:
 
-* **Sample farmers:** every one of Master Data's sample people, with the farmer fields of the registry's own overlay (lands, livestock, farm inputs, household members, memberships, scores).
+* **Sample farmers:** every one of Master Data's sample people, with the farmer fields of the registry's own overlay (lands, farm inputs, household members, memberships, scores).
+* **Livestock:** the country pack's sample animals (`packs/<country>/samples/animals.json` in [openg2p-data](https://github.com/OpenG2P/openg2p-data), taken when the image is built), as herds: per owner, one for each species, breed and livestock system, with the animals' count, on the owner's first land (`LIVESTOCK-0007-1` on `LAND-0007-1`). The Livestock Registry loads the same animals one by one, so the two agree on every sample farmer's livestock. The codes are Master Data's (`LSTK_CATTLE`, `BREED_LOCAL`). A pack without the file gives no herds. An install loaded before this change keeps its old sample herds (unrelated to the Livestock Registry's) until reinstalled.
 * **The sample approval policies** for change requests, and the **demo staff users** they name (`alex.carter`, `nina.patel`…), with the initial password **AWE Approver User Password** ([Approval policies and demo staff](../../registry/deployment-and-extension/country-data-and-seeding.md#approval-policies-and-demo-staff)).
 
 {% hint style="warning" %}

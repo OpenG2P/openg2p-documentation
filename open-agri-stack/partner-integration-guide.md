@@ -108,7 +108,7 @@ Example: `loan-profile`.
 {
   "use_case": "loan-profile@1",
   "name": "loan-profile",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "published",
   "title": "Farmer loan profile",
   "description": "Identity, location, land and declared crops from the Farmer Registry, and crop seasons …",
@@ -134,20 +134,25 @@ Example: `loan-profile`.
      "optional_scopes": ["crop-sown-registry.location"]},
     {"id": "crop_seasons", "controller": "crop-sown-registry", "requirement": "optional", "depends_on": ["farmer"],
      "scopes": ["crop-sown-registry.farmer_reference", "crop-sown-registry.crop_season", "crop-sown-registry.measures"],
-     "optional_scopes": ["crop-sown-registry.location"]}
+     "optional_scopes": ["crop-sown-registry.location"]},
+    {"id": "livestock", "controller": "livestock-registry", "requirement": "optional", "depends_on": ["farmer"],
+     "scopes": ["livestock-registry.owner_reference", "livestock-registry.animals"], "optional_scopes": []}
   ],
-  "consent_grants_needed": ["crop-sown-registry", "farmer-registry"],
+  "consent_grants_needed": ["crop-sown-registry", "farmer-registry", "livestock-registry"],
   "consent_scopes": {
     "crop-sown-registry": {"required": ["crop-sown-registry.crop_season", "crop-sown-registry.farmer_reference",
                                         "crop-sown-registry.measures"],
                            "optional": ["crop-sown-registry.location"]},
     "farmer-registry": {"required": ["farmer-registry.farmer_identifiers", "farmer-registry.land",
                                      "farmer-registry.main_crops", "farmer-registry.personal_details"],
-                        "optional": ["farmer-registry.household_location", "farmer-registry.land_location"]}
+                        "optional": ["farmer-registry.household_location", "farmer-registry.land_location"]},
+    "livestock-registry": {"required": ["livestock-registry.animals", "livestock-registry.owner_reference"],
+                           "optional": []}
   },
   "output_fields": ["crops.season_summaries", "crops.seasons", "crops.total_area_sown_ha", "farmer.birth_date",
                     "farmer.identifiers", "farmer.location", "farmer.main_crops", "farmer.name", "farmer.sex",
-                    "land.parcel_count", "land.parcels", "land.total_size"],
+                    "land.parcel_count", "land.parcels", "land.total_size", "livestock.animal_count",
+                    "livestock.animals"],
   "source_status": true,
   "partial_response": "allowed",
   "rate_per_partner": "60/min"
@@ -298,11 +303,11 @@ The response is an envelope signed by the Composite. Example (`loan-profile`):
   "header": {"version": "1.0.0", "message_id": "…", "message_ts": "…", "action": "on-query",
              "status": "succ", "sender_id": "agri-composite", "receiver_id": "bank-a",
              "meta": {"in_reply_to": "<your header.message_id>"}},
-  "message": {"use_case": "loan-profile@1", "version": "1.0.0", "request_id": "…",
+  "message": {"use_case": "loan-profile@1", "version": "1.1.0", "request_id": "…",
               "subject": {"type": "FAYDA_FAN", "value": "946053125409"},
               "consent_id": "c0a8012e-…",
               "sources": {"farmer": {"status": "ok"}, "season_summaries": {"status": "ok"},
-                          "crop_seasons": {"status": "ok"}},
+                          "crop_seasons": {"status": "ok"}, "livestock": {"status": "ok"}},
               "data": {"…": "…"}}
 }
 ```
@@ -373,10 +378,11 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
 ```json
 {
   "use_case": "loan-profile@1",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "request_id": "7d2e…",
   "subject": {"type": "FAYDA_FAN", "value": "946053125409"},
-  "sources": {"farmer": {"status": "ok"}, "season_summaries": {"status": "ok"}, "crop_seasons": {"status": "ok"}},
+  "sources": {"farmer": {"status": "ok"}, "season_summaries": {"status": "ok"}, "crop_seasons": {"status": "ok"},
+              "livestock": {"status": "ok"}},
   "data": {
     "farmer": {
       "name": "…", "sex": "…", "birth_date": "…",
@@ -390,11 +396,19 @@ Each use case sets a rate per partner (its `rate_per_partner`; `loan-profile` al
       "seasons": [{"crop_season": {"…": "…"}, "measures": {"area_sown_ha": 0.9, "…": "…"}, "location": {"…": "…"}, "farmer_reference": {"…": "…"}}],
       "season_summaries": [{"…": "…"}],
       "total_area_sown_ha": 1.3
+    },
+    "livestock": {
+      "animals": [{"@type": "spdci-extensions-agri:Animal",
+                   "animal": {"animal_id": "9000000701", "species": "LSTK_SHEEP", "breed": "BREED_LOCAL",
+                              "sex": "LSEX_FEMALE", "date_of_birth": "2019-05-02", "…": "…"},
+                   "owner_reference": {"farmer_id": "FR-0007", "national_id": "946053125409"}}],
+      "animal_count": 2
     }
   }
 }
 ```
 
+* `livestock.animals` are the farmer's animals in the Livestock Registry (species, breed, sex, date of birth), found by the farmer ID; `livestock.animal_count` counts them.
 * `land.total_size` is the sum of each parcel's `land_size`, in the parcels' unit (`farm_details[].measurement`).
 * `crops.total_area_sown_ha` sums `measures.area_sown_ha` over the crop seasons returned; with `crop_year` and `season` it is that season's.
 * Without `crop_year` and `season`, the farmer's seasons come back newest first, up to 100 crop seasons and 20 season summaries; a full page is marked "the first N records only".
