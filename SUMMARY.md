@@ -674,7 +674,7 @@
       * [Agent Portal Users](identity-and-access-management/data-policies/agent-portal-users.md)
     * [Product APIs](identity-and-access-management/product-apis/README.md)
       * [APIs Serving Staff Portal Users](identity-and-access-management/product-apis/apis-serving-staff-portal-users.md)
-      * [APIs Serving Agent Users and Agent Apps](identity-and-access-management/product-apis/apis-serving-agent-users-and-agent-apps.md)
+      * [APIs Serving Agents](identity-and-access-management/product-apis/apis-serving-agent-users-and-agent-apps.md)
       * [APIs Serving Bene Portal Users](identity-and-access-management/product-apis/apis-serving-bene-portal-users.md)
       * [APIs Serving Partner Systems](identity-and-access-management/product-apis/apis-serving-partner-systems.md)
     * [Agent API Design](platform/platform-services/identity-and-access-management/agency-high-level-design-document.md)

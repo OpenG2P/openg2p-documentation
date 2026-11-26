@@ -1,4 +1,3 @@
 # APIs Serving Partner Systems
 
-<!-- IMAGE PLACEHOLDER: Google Slides Product API Design, slide 4: Product Partner API -->
-
+<figure><img src="../../.gitbook/assets/Product-API-Design-Partner.png" alt=""><figcaption><p>Product APIs serving Partner Systems</p></figcaption></figure>

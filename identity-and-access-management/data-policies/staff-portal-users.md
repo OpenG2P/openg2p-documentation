@@ -1,6 +1,5 @@
 # Staff Portal Users
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 9: staff data policies, who writes what -->
+<figure><img src="../../.gitbook/assets/Data-Policy-Staff-001 (1).png" alt=""><figcaption><p>IAM - Data policies on Staff Users</p></figcaption></figure>
 
-<!-- IMAGE PLACEHOLDER: Google Slides IAM-Architecture, slide 10: staff data policies, how is it enforced -->
-
+<figure><img src="../../.gitbook/assets/Data-Policy-Staff-002 (1).png" alt=""><figcaption><p>IAM - Data policies - enforcement on Staff users</p></figcaption></figure>
