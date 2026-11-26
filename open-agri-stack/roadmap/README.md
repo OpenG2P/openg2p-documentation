@@ -6,7 +6,7 @@ description: What comes next, by phase.
 
 What is still to be built in Agri Stack, in phases. Each item says what is to be done and where its design stands: a design page, the approach already decided, or "not designed yet". Country data and registry settings are set by the system integrator for each rollout and are not listed here.
 
-The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Livestock Registry](livestock-registry.md), [Registry Data Sync](registry-data-sync.md) and [API Metering and Billing](api-metering.md).
+The longer designs are on their own pages: [Generic Exchange](generic-exchange.md), [Interoperability with OAN (Beckn)](oan-interoperability.md), [Registry Data Sync](registry-data-sync.md) and [API Metering and Billing](api-metering.md).
 
 ## Phase 1 — First production release
 
@@ -24,7 +24,7 @@ The longer designs are on their own pages: [Generic Exchange](generic-exchange.m
    2. "New use case": use cases stored in the Composite's database instead of the Helm ConfigMap, edited with live validation and a "try it" run for a sample farmer, published or retired from the UI, with who changed what and when (in the database and the Audit Manager);
 
    *Design:* decided as listed.
-9. **Livestock Registry** — an Animal register and a livestock events register. *Design:* [Livestock Registry](livestock-registry.md).
+9. **Livestock Registry** — built ([Livestock Registry](../registries/livestock-registry/README.md)): an Animal register, a Veterinarian register and a livestock events register, shared with consent. Still to do: add it as a source of an Exchange use case ([Adding a Registry](../registries/adding-a-registry.md)), reduce the Farmer Registry's per-herd Livestock section, and verify vaccinations from a vet's trusted system. *Design:* decided as listed.
 
 ### Needed before production
 

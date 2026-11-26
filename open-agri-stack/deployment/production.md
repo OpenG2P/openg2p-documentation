@@ -4,7 +4,7 @@ description: Preparing an install for production.
 
 # Production
 
-A demo install keeps the defaults; a production install changes the items below, during the [install steps](README.md#install-steps). The registries' own production settings are in their guides ([Farmer Registry](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#production), [Agents Registry](../registries/agents-registry/deployment/rancher.md#production)). A production install loads no sample data: [Sample Data: in production](sample-data.md#in-production).
+A demo install keeps the defaults; a production install changes the items below, during the [install steps](README.md#install-steps). The registries' own production settings are in their guides ([Farmer Registry](../../products/registry/farmer-registry/deployment/README.md#before-going-to-production), [Crop Sown Registry](../../products/registry/crop-sown-registry/deployment/rancher.md#production), [Agents Registry](../registries/agents-registry/deployment/rancher.md#production), [Livestock Registry](../registries/livestock-registry/deployment/rancher.md#production)). A production install loads no sample data: [Sample Data: in production](sample-data.md#in-production).
 
 ## Topology
 

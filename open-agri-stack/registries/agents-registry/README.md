@@ -171,7 +171,7 @@ A thin **extension** of the Registry Platform, like the other registries ([Packa
 
 * the `agents-extension` package: models, domain services (checks, record names, the training context and summary, sample trainings), seed metadata and the training register's configuration;
 * `scripts/agents_definitions.py`: the registers, sections, tabs, intake form, search, duplicate check, approval bindings, activity types and indicators in one file, from which `scripts/build_seed_sql.py` generates the seed SQL (CI checks the two match);
-* five images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed` and `agent-portal-api` (VC issuance). The staff portal and Agent Portal UIs are the platform's images;
+* five images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed` and `agent-portal-api` (VC issuance), and two UI images, `staff-ui` and `agent-ui`: the platform's staff portal and Agent Portal UIs built with this registry's overrides ([UI Extendability](../../../products/registry/registry/design/ui-engineering-design/ui-extendability.md));
 * the `openg2p-agents-registry` chart, a values overlay over the platform's `openg2p-registry` chart, plus the credential card design.
 
 ## Pages

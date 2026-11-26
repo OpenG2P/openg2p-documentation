@@ -32,7 +32,7 @@ The Farmer Registry inherits all the [features of the registry platform](../regi
 The Farmer Registry is a thin **extension** of the Registry Platform. The platform publishes the runnable images and the `openg2p-registry` Helm chart. The `farmer-registry` repository adds only the farmer domain:
 
 * the `farmer-extension` package (models, schemas, services, seed metadata, DCI templates, data scopes);
-* six images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed`, `sanity-tests`, `agent-portal-api`. The staff portal UI is the platform's image, used as is;
+* six images, each a `FROM` of the matching platform image plus the extension: `staff-api`, `partner-api`, `celery`, `db-seed`, `sanity-tests`, `agent-portal-api`, and two UI images, `staff-ui` and `agent-ui`: the platform's staff portal and Agent Portal UIs built with this registry's overrides ([UI Extendability](../registry/design/ui-engineering-design/ui-extendability.md));
 * the `openg2p-farmer-registry` chart, a wrapper over the platform chart. Beyond the platform it adds the [reporting and dashboards](#reporting-and-dashboards) templates, the map content and the [credential](#farmer-credentials) card designs.
 
 How domain registries are packaged in general: [Packaging & the reference registry](../registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts).

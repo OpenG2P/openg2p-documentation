@@ -38,7 +38,7 @@ The **registries** are the systems of record, each run by its own department. Re
 
 * **Farmer Registry:** who the farmers are, their households and holdings.
 * **Crop Sown Registry:** what each farmer grows, plot by plot and season by season.
-* **Livestock Registry:** animals and their life events.
+* **[Livestock Registry](registries/livestock-registry/README.md):** animals, their owners and the vets who serve them, and each animal's births, vaccinations, treatments, sales and deaths; shared with the farmer's consent.
 * **[Agents Registry](registries/agents-registry/README.md):** the agents who serve farmers (e.g. extension agents), their assignments and trainings; for managing agents, not shared with partners.
 * **Land Registry:** parcels, holdings and tenure.
 

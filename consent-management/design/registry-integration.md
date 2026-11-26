@@ -87,7 +87,7 @@ Scopes are the registry's **data scope IDs**, `<controller>.<name>` (e.g. `farme
 
 After a permit, the registry checks that the consent's subject — `subject_id` in CM's decision — is the person actually searched. A permit that names no subject is rejected.
 
-* **Entity registers** (e.g. Farmer Registry): every returned record's `foundational_id` or `functional_record_id` must equal the consent's subject.
+* **Entity registers** (e.g. Farmer Registry): every returned record's `foundational_id` or `functional_record_id` must equal the consent's subject. A register whose records belong to a person rather than being one (e.g. the Livestock Registry's animals, by their owner) names the columns that hold that person instead (`REGISTRY_PARTNER_API_DCI_CONSENT_SUBJECT_FIELDS`, e.g. `{"Animal": ["owner_national_id", "owner_farmer_id"]}`).
 * **Activity registers** (e.g. Crop Sown Registry): the searched subject must equal the consent's subject, or be linked to it by the register's own data through its `subject_id_fields` (e.g. a crop record holding the farmer ID and the farmer's Fayda FAN in `fayda_fan`). All raw activity results must belong to the searched subject.
 
 A mismatch fails the whole request (fail-closed, an error response with `SEARCH_CRITERIA_INVALID`), as a non-permit decision does. For an `idtype-value` search the registry also sends the identifier searched as `request_context.subject_id`, so the CM checks it against the consent's subject and identifiers of that type (`subject_mismatch`) or uses it for a lookup; the cross-identifier check needs the registry's own data, so it is done here.
@@ -125,6 +125,7 @@ When a switch is off the bypass is logged (`WARNING`) and **stamped into the res
 | `REGISTRY_PARTNER_API_CONSENT_MANAGER_URL`          | CM partner-api base URL (the `/validate` PDP)                                                          |
 | `REGISTRY_PARTNER_API_CONSENT_DATA_CONTROLLER`      | This registry's controller ID in CM, sent as `data_controller` on every `/validate`                    |
 | `REGISTRY_PARTNER_API_CONSENT_SUBJECT_ID_TYPES`     | JSON map from a search's identifier type to the consent's subject ID type, e.g. `{"UIN": "FAYDA_FAN"}` |
+| `REGISTRY_PARTNER_API_DCI_CONSENT_SUBJECT_FIELDS`   | JSON map from an entity register to the columns that name its records' consent subject; default `foundational_id`, `functional_record_id` |
 | `REGISTRY_PARTNER_API_SIGNATURE_VALIDATION_ENABLED` | gate the envelope signature check                                                                      |
 | `REGISTRY_PARTNER_API_CONSENT_ENFORCEMENT_ENABLED`  | gate consent enforcement + field filtering                                                             |
 

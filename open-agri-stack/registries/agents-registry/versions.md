@@ -18,7 +18,7 @@ The Agents Registry has **no frozen release yet**. Only moving `0.0.0-develop.N`
 
 | Line | What | Where to look |
 | --- | --- | --- |
-| **This registry** | The `openg2p-agents-registry` chart and its four images (`staff-api`, `partner-api`, `celery`, `db-seed`), always at the same version | The [Agents Registry changelog](https://openg2p.github.io/versions/agents-registry/CHANGELOG.html) |
+| **This registry** | The `openg2p-agents-registry` chart and its images (`staff-api`, `partner-api`, `celery`, `db-seed`, `agent-portal-api`, `staff-ui`, `agent-ui`), always at the same version | The [Agents Registry changelog](https://openg2p.github.io/versions/agents-registry/CHANGELOG.html) |
 | **Registry platform** | The `openg2p-registry` chart and images this registry extends (`0.0.0-develop.843` at the first build), pinned in the chart and the Dockerfiles together | The [Registry Platform changelog](https://openg2p.github.io/versions/registry-platform/CHANGELOG.html) |
 
 The platform version moves only when it is bumped, in both places at once, with `scripts/bump-rp-version.sh` ([Domain registry charts](../../../products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md#domain-registry-charts)). CI fails the build if the two drift.

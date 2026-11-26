@@ -6,8 +6,10 @@ description: Joining a registry to Agri Stack.
 
 A registry joins Agri Stack by becoming a [data source](../architecture/use-cases.md#what-a-use-case-is) of a use case. This needs **no code in the Composite**: the registry must speak DCI with consent, the department's PM and CM must accept the Composite, and the Composite gets a URL and a new `sources[]` entry. This guide uses a **Livestock Registry** (controller `livestock-registry`) added to `loan-profile` as an optional source.
 
+It connects a registry that is already built and installed in its department. To build one on the registry platform, see [Build Your Registry](../../products/registry/registry/developer-zone/building-a-registry/build-your-registry.md).
+
 {% hint style="info" %}
-The Livestock Registry is [planned](../roadmap/livestock-registry.md), not built. Its record type, scopes and query below are illustrative; use the real ones of the registry you add.
+The [Livestock Registry](livestock-registry/README.md) is built but not yet a source of `loan-profile`: this guide is how it is added. Its record type, scopes and query below are its own; use those of the registry you add.
 {% endhint %}
 
 ## Step 1 — Registry prerequisites
@@ -17,7 +19,7 @@ The registry must answer the Composite exactly as it answers a partner:
 * **DCI synchronous search** at `POST /dci/registry/sync/search` on its partner API, for the record type the use case needs. Every OpenG2P registry built on the [registry platform](../../products/registry/registry/README.md) has it ([Partner APIs](../../products/registry/registry/design/partner-apis.md)).
 * **Signature validation against PM** on (`global.partnerSignatureValidationEnabled`, the default), with the PM key backend (`global.registryCryptoBackend: partner-mgmt`) and `global.partnerManagementApiUrl` pointing at PM. It then accepts the Composite's signature (`PARTNER_AGRI_COMPOSITE`).
 * **Consent enforcement** on (`global.consentEnforcementEnabled`, the default), with `global.consentManagerUrl`, and **`global.consentDataController`** set to the registry's controller ID: here `livestock-registry` (it defaults to `global.registryVariant`). The registry sends it to CM `/validate`, so CM evaluates only this registry's grant. See [Consent-aware data sharing](../../products/registry/registry/features/consent-aware-data-sharing.md).
-* **Subject identifiers that pass the consent subject check.** The registry rejects a search whose subject is not the consent's subject. The consent's subject is the national ID the farmer logged in with, so the registry must hold it on its records, or link its own key to it (`subject_id_fields` for an activity register, e.g. the Farmer ID recorded with the farmer's national ID). If the registry is keyed on the Farmer ID only, the source must [depend on a source](#step-5-add-the-source-to-the-use-case) that returns that key, and the registry must be able to link it to the consent's subject.
+* **Subject identifiers that pass the consent subject check.** The registry rejects a search whose subject is not the consent's subject. The consent's subject is the national ID the farmer logged in with, so the registry must hold it on its records, or link its own key to it (`subject_id_fields` for an activity register, e.g. the Farmer ID recorded with the farmer's national ID). If the registry is keyed on the Farmer ID only, the source must [depend on a source](#step-5-add-the-source-to-the-use-case) that returns that key, and the registry must be able to link it to the consent's subject. An entity register whose records belong to a person rather than being one (the Livestock Registry's animals, by their owner) names the columns that hold that person, so that only the consent subject's records are returned (`REGISTRY_PARTNER_API_DCI_CONSENT_SUBJECT_FIELDS` on its partner API, e.g. `{"Animal": ["owner_national_id", "owner_farmer_id"]}`).
 * **A data scope catalogue.** Consents name the registry's [data scopes](../../products/registry/registry/design/data-scopes.md), `<controller>.<name>` (e.g. `livestock-registry.animals`, `livestock-registry.owner_reference`): by default one per register section, plus any named scopes the extension ships in `meta_data/data-scopes/`. The registry publishes them at `POST /partner/data_scopes` (signed) and filters each record to the consented fields before rendering it. If another source depends on a value from this registry's record, one scope must carry it.
 
 ## Step 2 — Identities in Partner Management
@@ -71,7 +73,7 @@ sources:
     optional_scopes: [livestock-registry.animal_location]                      # may grant; else their fields are null
     dci:
       reg_type: Livestock          # the registry's register
-      reg_record_type: spdci-extensions-agri:Animal   # the record type it serves (illustrative)
+      reg_record_type: spdci-extensions-agri:Animal   # the record type it serves
       query_template: |
         {%- set ns = namespace(fid=none) -%}
         {%- if subject.type == 'FARMER_ID' -%}{%- set ns.fid = subject.value -%}{%- endif -%}
@@ -84,7 +86,7 @@ sources:
         {%- endfor -%}
         {"query_type": "expression",
          "query": {"type": "expression",
-                   "value": {"expression": {"query": {"owner_id": {"$eq": {{ ns.fid | tojson }} } } } } },
+                   "value": {"expression": {"query": {"owner_farmer_id": {"$eq": {{ ns.fid | tojson }} } } } } },
          "pagination": {"page_size": 50, "page_number": 1} }
     timeout_ms: 10000
     retries: 0
@@ -98,7 +100,7 @@ response:
     herd.animal_count: "count($.sources.herd.records)"
 ```
 
-* **`depends_on`:** leave it out if the registry can be searched by the partner's subject directly (then it is called in the first level, in parallel with the farmer). Keep it if the query needs another source's result.
+* **`depends_on`:** leave it out if the registry can be searched by the partner's subject directly (then it is called in the first level, in parallel with the farmer). Keep it if the query needs another source's result. The Livestock Registry can be searched either way: by the owner's national ID directly (`idtype-value`, type `UIN`), or, as above, by the Farmer ID read from the farmer.
 * **`requirement`:** `optional` for data that is useful but not essential; `mandatory` only if the use case is meaningless without it (a failure or missing grant then fails the whole request).
 * **`scopes` and `optional_scopes`:** scope IDs from the registry's catalogue. The consent must grant every one of `scopes` (else a mandatory source fails the request, an optional one is reported `denied` and not called); `optional_scopes` it may leave out. They are listed per registry in the describe endpoint's `consent_scopes`, and in Exchange mode they are the `requested_scopes` the consent tokens are limited to. See [data scopes](../composite/use-case-configuration.md#data-scopes).
 * **Timeouts:** `timeout_ms` and `retries` per source; check that `execution.overall_timeout_ms` still covers the slowest path. In `loan-profile` it is 25000 ms, for two levels of 10000 ms; `herd` depends on the farmer, so it runs in the second level with the crop sources and adds no level.
@@ -123,6 +125,8 @@ A partner's consent must carry a **grant for the new controller**, naming scope 
 | --- | --- |
 | `optional` | It is reported `denied` (`detail: "the consent has no grant for livestock-registry"`) and **not called**; the rest of the response is unchanged |
 | `mandatory` | The request **fails** before any registry is called: `403 consent_grant_missing` |
+
+**Consents collected in the partner portal** come from the use case's [consent template](../architecture/consent.md#consent-templates), whose scopes are those the use case's sources name. Once the use case reloads with the new source, new consents carry the new grant on their own; consents already given do not, and the farmer gives a new one.
 
 So add a new source as `optional` unless every partner can be asked to update its consent first. The describe endpoint's `consent_grants_needed` lists the new controller once the use case reloads.
 

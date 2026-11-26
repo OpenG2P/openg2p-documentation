@@ -19,6 +19,7 @@ Each registry builds and ships its own portal UI images; the platform's own imag
 | Farmer Registry | `ui/staff-ui`, `ui/agent-ui` | `openg2p-farmer-registry-staff-ui`, `openg2p-farmer-registry-agent-ui` |
 | Crop Sown Registry | `ui/staff-ui` | `openg2p-crop-sown-registry-staff-ui` |
 | Agents Registry | `ui/staff-ui`, `ui/agent-ui` | `openg2p-agents-registry-staff-ui`, `openg2p-agents-registry-agent-ui` |
+| Livestock Registry | `ui/staff-ui` | `openg2p-livestock-registry-staff-ui` |
 
 The Agent Portal wrapper (`ui/agent-ui`) works exactly like the Staff Portal one described below; it pins `registry-platform/ui/agent-ui` instead, and its script is `scripts/materialize-agent-ui.sh`. A registry with no overrides still builds its own image, so a customisation later needs no chart or CI change.
 

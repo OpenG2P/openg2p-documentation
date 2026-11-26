@@ -39,7 +39,7 @@ A country pack has core datasets and **themes**; the agriculture theme holds the
 | **Geography** | Regions, zones and woredas with their P-codes and boundaries |
 | **Data sharing** | `CONSENT_PURPOSE`, `SUBJECT_ID_TYPE` (core datasets): the purposes and subject ID types a policy may name |
 
-The full lists are in the pack. The planned [Livestock Registry](../roadmap/livestock-registry.md) will need a vaccine (and treatment) dataset, not in the pack yet. A new dataset is a pack change, not a code change.
+The full lists are in the pack. The [Livestock Registry](../registries/livestock-registry/README.md) adds the livestock datasets: sex, acquisition, vaccines, diseases, treatments, buyers, causes of death, and vet cadres and employers. A new dataset is a pack change, not a code change.
 
 ## Who reads it
 

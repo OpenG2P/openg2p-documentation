@@ -209,7 +209,7 @@ The Crop Sown Registry is a thin extension of the Registry Platform. How domain 
   | `celery` | Celery worker and beat | The activity outbox (crop season status, season summaries), the ODK pull, the sample crop seasons |
   | `db-seed` | Install and upgrade Job | The seed SQL, DCI templates, Cluster approval policies and the sample cluster loader |
 
-  The staff portal UI and the sanity tests are the platform's images, used as is. The sanity tests run the platform's smoke tier only.
+  The staff portal UI is built here too (`staff-ui`): the platform's UI with this registry's overrides ([UI Extendability](../registry/design/ui-engineering-design/ui-extendability.md)). The sanity tests are the platform's image, used as is, and run its smoke tier only.
 * **The chart** `openg2p-crop-sown-registry` has no templates of its own. It is a values overlay that sets the registry variant (`crop-sown-registry`, also the consent data controller), the four images, the ID generator with one pool (`cluster`), IAM registration as a regular Job, and the ODK pull and sample crop seasons switches (both off). Its own questions (**Crop Sown Registry** group) are in `questions.own.yaml`.
 * **No dashboards yet.** The reporting views are plain SQL views created by db-seed; they need no refresh Job.
 * **Extra CI checks**, without Docker: the generated seed SQL matches `scripts/activity_definitions.py`, and every list and code the activity definitions use is in the shipped country pack (ETH).

@@ -45,7 +45,9 @@ The registry partner-api then:
    which the CM reads), and returns a decision, the **effective data scopes** (grant ∩ policy) and
    the consent's subject.
 3. **Checks the subject** — the consent's subject must be the person searched. In an
-   entity register every returned record's foundational or functional ID must equal it;
+   entity register every returned record's foundational or functional ID must equal it
+   (or, for a register whose records belong to a person, such as animals, the columns
+   the register names for its owner: `REGISTRY_PARTNER_API_DCI_CONSENT_SUBJECT_FIELDS`);
    in an activity register the searched subject must equal it or be linked to it by the
    register's own data (e.g. a crop record holding the farmer's Fayda FAN); see
    [Activity Register](activity-register.md#sharing-with-partners).
