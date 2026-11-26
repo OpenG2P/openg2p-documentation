@@ -20,7 +20,7 @@ A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the 
 
 | Scenario | Status | How the farmer confirms |
 | --- | --- | --- |
-| **0 · Assisted, operator-confirmed** | **Built** (the SMS: Phase 2) | National-ID login on the bank's device, then one tick, "I agree to share all of the above", in the partner portal; active at once, no form, no approval step; the weakest proof, allowed only where the partner's use-case policy allows it. Phase 2: an SMS to the phone registered with the national ID gives a link to revoke or report "I did not give this" |
+| **0 · Assisted, operator-confirmed** | **Built** (the SMS: Phase 2) | National-ID login on the bank's device, then one tick, "I agree to share all of the above", in the partner portal, and the signed form uploaded; active at once, no approval step (nobody checks the form); the weakest proof, allowed only where the partner's use-case policy allows it. Phase 2: an SMS to the phone registered with the national ID gives a link to revoke or report "I did not give this" |
 | **1 · In person, with a form** | **Built** | National-ID login (eSignet) on the bank's device, a signed form, and a check by a Consent Approver |
 | **2 · In person, digital** | Planned | National-ID login, then the farmer approves the request on the CM's own screen; active at once, no form, no approval step; an SMS to the registered phone lets them revoke |
 | **3 · Self-service** | Planned | National-ID login in their own portal or app, where they approve or decline, and can revoke any consent |

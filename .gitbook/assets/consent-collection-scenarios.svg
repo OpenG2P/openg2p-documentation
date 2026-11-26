@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1190" viewBox="0 0 1400 1190" role="img" aria-label="Four ways a farmer gives a bank consent, each with a national-ID login. 0, assisted, operator-confirmed (built; the SMS planned): staff raise the request in the partner portal, the farmer logs in with the national ID, then ticks one box agreeing to all the template's data; the consent is active at once; in Phase 2 an SMS through Novu to the phone registered with the national ID carries a link and a reference, and the farmer can revoke or report that they did not give it. 1, in person with a form (built): staff raise the request in the partner portal from a consent template, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record. 2, in person, digital (planned): after the national-ID login the farmer approves the request on the Consent Manager's screen; the consent is active at once and the farmer gets an SMS with a way to revoke. 3, self-service (planned): the farmer logs in to a portal or app, approves or declines, and can revoke later; the bank queries and the consent is looked up.">
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1190" viewBox="0 0 1400 1190" role="img" aria-label="Four ways a farmer gives a bank consent, each with a national-ID login. 0, assisted, operator-confirmed (built; the SMS planned): staff raise the request in the partner portal, the farmer logs in with the national ID, then ticks one box agreeing to all the template's data, and staff upload the signed form, which nobody checks; the consent is active at once; in Phase 2 an SMS through Novu to the phone registered with the national ID carries a link and a reference, and the farmer can revoke or report that they did not give it. 1, in person with a form (built): staff raise the request in the partner portal from a consent template, the farmer logs in with the national ID and signs a form that staff upload, Consent Manager staff check it and the Farmer ID in the Farmer Registry, the bank queries and the Exchange finds the consent (no consent ID needed), and its admin downloads the consent record. 2, in person, digital (planned): after the national-ID login the farmer approves the request on the Consent Manager's screen; the consent is active at once and the farmer gets an SMS with a way to revoke. 3, self-service (planned): the farmer logs in to a portal or app, approves or declines, and can revoke later; the bank queries and the consent is looked up.">
 <style>
 text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 .h1{font-size:22px;font-weight:700} .sub{font-size:13px;fill:#56625B}
@@ -29,7 +29,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <!-- ═══ Scenario 0 ═══ -->
 <rect class="lane0" x="20" y="405" width="1360" height="245" rx="14"/>
 <text class="lt" x="40" y="435">0 · Assisted, operator-confirmed</text>
-<text class="ls" x="318" y="435">with the bank; national-ID login, then one "I agree" tick in the partner portal — no form, no staff step; the weakest proof</text>
+<text class="ls" x="318" y="435">with the bank; national-ID login, one "I agree" tick and the signed form uploaded — no staff check; the weakest proof</text>
 <rect x="1240" y="419" width="120" height="24" rx="12" fill="#1F7A45"/><text class="tag" x="1300" y="435" text-anchor="middle" fill="#FFFFFF">BUILT</text>
 <g>
   <rect class="panel" x="40" y="455" width="250" height="180" rx="10"/>
@@ -59,8 +59,9 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
     <text x="8" y="53" font-size="8.5" fill="#3B4640">• crop seasons (Crop Sown)</text>
     <rect x="8" y="60" width="9" height="9" rx="2" fill="#1F7A45"/><path d="M10,64.5 L12,66.5 L15.5,62" fill="none" stroke="#FFFFFF" stroke-width="1.6"/><text x="22" y="68" font-size="8" font-weight="700" fill="#3B4640">I agree to share all of the above</text></g>
   <text class="pt" x="598" y="568">Farmer agrees: one tick</text>
-  <text class="pc" x="598" y="588">All the template's scopes; validity</text>
-  <text class="pc" x="598" y="604">from the backend's defaults.</text>
+  <text class="pc" x="598" y="588">Staff upload the signed form;</text>
+  <text class="pc" x="598" y="604">nobody checks it. All scopes,</text>
+  <text class="pc" x="598" y="620">validity from the defaults.</text>
   <rect class="panel" x="856" y="455" width="250" height="180" rx="10"/>
   <circle cx="876" cy="475" r="11" fill="#1B231F"/><text class="num" x="876" y="479" text-anchor="middle">4</text>
   <svg x="878" y="490" width="34" height="42" viewBox="0 0 44 52" overflow="visible"><path d="M22,2 L42,10 L42,26 C42,38 33,46 22,50 C11,46 2,38 2,26 L2,10 Z" fill="#3C7C88"/><path d="M12,26 L19,33 L33,18" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><svg x="914" y="494" width="18" height="18" viewBox="0 0 20 20" overflow="visible"><circle cx="10" cy="10" r="9" fill="#1F7A45"/><path d="M5,10 L9,14 L15,6" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
