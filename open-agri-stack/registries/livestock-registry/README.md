@@ -207,7 +207,17 @@ Reporting views for Superset or Insights. Geography levels are read by position 
 
 The events register also carries indicators: animals with events, by status, vaccinated, by last vaccine, vaccinations, treatments, deaths by cause.
 
-Not built yet: dashboards.
+### Dashboards
+
+Three sample Superset dashboards on these views, imported into the namespace's Superset at install (on by default; skipped when there is no Superset). Each has the filters **Region** and **Species**.
+
+| Dashboard | Shows |
+| --- | --- |
+| **Livestock Overview** | Living animals, owners, the share vaccinated in the last 12 months, animals overdue; animals by species, status, region and sex; the herd by region |
+| **Vaccination and Animal Health** | Vaccinations and treatments in the last 12 months, the share of vaccinations verified; vaccinations by vaccine, month and vet cadre; coverage by region, species and vaccine; treatments by disease |
+| **Sales and Deaths** | Sales and deaths in the last 12 months; deaths by cause and month; sales by buyer; sales and average price by species |
+
+They are titled `<release> · <title>` (e.g. `lsr · Livestock Overview`), on a connection named after the release, so several installs can share one Superset ([Several installs in one Superset](../../../platform/platform-services/reporting-and-analytics/dashboards.md#several-installs-in-one-superset)). Changing them: [Customisation](customisation.md#dashboards).
 
 ## How it relates to other registries
 
@@ -222,7 +232,7 @@ A thin **extension** of the Registry Platform, like the other registries ([Packa
 * the `livestock-extension` package: models, domain services (checks, record names, the event context, checks and current state, sample events), seed metadata, the events register's configuration, the data scope catalogue and the DCI templates;
 * `scripts/livestock_definitions.py`: the registers, sections, tabs, intake forms, search, duplicate checks, approval bindings, event types and indicators in one file, from which `scripts/build_seed_sql.py` generates the seed SQL (CI checks the two match);
 * five images: `staff-api`, `partner-api`, `celery` and `db-seed`, each a `FROM` of the matching platform image plus the extension, and `staff-ui`, the platform's staff portal UI built with this registry's overrides ([UI Extendability](../../../products/registry/registry/design/ui-engineering-design/ui-extendability.md));
-* the `openg2p-livestock-registry` chart, a values overlay over the platform's `openg2p-registry` chart.
+* the `openg2p-livestock-registry` chart, a values overlay over the platform's `openg2p-registry` chart, and the Superset dashboard bundle (`files/lsr-dashboards.zip`, built by `scripts/build_dashboards.py`), which the platform chart's dashboards Job imports.
 
 ## Pages
 

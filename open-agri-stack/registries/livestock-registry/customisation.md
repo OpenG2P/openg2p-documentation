@@ -114,6 +114,17 @@ The registry's name, logo and theme are in `meta_data/registry-configurations/`.
 
 **Staff portal UI.** The registry builds its own staff portal image from the platform's UI and its `ui/staff-ui/overrides/`, empty today ([UI Extendability](../../../products/registry/registry/design/ui-engineering-design/ui-extendability.md)).
 
+## Dashboards
+
+The dashboards are defined in `scripts/build_dashboards.py`, which writes the bundle `helm/openg2p-livestock-registry/files/lsr-dashboards.zip`. They read only the reporting views; a chart is a view, a grouping and its metrics. To change one, edit the script and rebuild the bundle against a database that has the current views (it reads their columns):
+
+```bash
+PGHOST=<host> PGPORT=5432 PGUSER=<user> PGPASSWORD=<password> LSR_DB=<database> \
+  python3 scripts/build_dashboards.py
+```
+
+The bundle is deterministic: the same script and views give the same file. Upgrade the release to import it; an upgrade updates the release's own copy in Superset. Use only the chart types the bundle already uses (big number, pie, bar, table): others need a Superset plugin some installs lack. A view that changes needs the bundle rebuilt; `test/integration/test_dashboards.py` fails until it is. To turn the import off, set `registry.dashboards.enabled: false`.
+
 ## Testing a change
 
 From a checkout of the repository, with [openg2p-data](https://github.com/OpenG2P/openg2p-data) beside it:

@@ -20,6 +20,7 @@ This page lists the steps and choices. What the registry is: [Livestock Registry
    | **AWE** | Animal and vet registrations and changes | **Install AWE?** on |
    | **Partner Management** | Signature checks on the partner API, and partners' scope policies | On (the default) |
    | **Consent Manager** | Partners' searches, with the farmer's consent | On (the default) |
+   | **Superset** | The [dashboards](../README.md#dashboards). Optional: without it the import is skipped | **Install Superset?** on, if dashboards are wanted |
 
 3. The OpenG2P catalogue added in Rancher (**Apps → Repositories**).
 
@@ -110,6 +111,7 @@ kubectl -n <ns> logs job/<release>-db-seed
 | `<release>-activity-samples` | Complete, with counts. Only when sample events are on |
 | `<release>-sanity` | Complete: the partner API is up |
 | iam-register | Complete |
+| `<release>-dashboards` | Complete. Its log says the dashboards were imported, or that Superset was not reachable and the import was skipped (upgrade the release once Superset is up) |
 
 The release serves these hostnames, named the way every registry's are ([Hostnames](../../../../products/registry/registry/deployment-and-extension/packaging-and-reference-registry.md#hostnames)). With the release `lsr` and Base Domain `trial.openg2p.org`:
 
@@ -125,6 +127,7 @@ Then open the staff portal at `https://<Registry Hostname>`:
 * **Animals** lists the animals (the sample animals, if loaded). An animal's record has the tabs Animal, Owner and location, and Documents; its dropdowns show the country's lists.
 * **Veterinarians** lists the vets.
 * The **Livestock events** register shows the five event types under **Record**, and with sample data the events, each animal's current state and the indicators.
+* In Superset, searching the dashboard list for the release name shows its three dashboards (`lsr · Livestock Overview`, …); with sample data they have figures.
 
 ## Staff access
 
@@ -155,4 +158,4 @@ A change to an existing animal (a new owner after a sale, for example) raises a 
 ./scripts/uninstall-registry.sh --namespace <ns> --release lsr
 ```
 
-It removes the release, leftover Jobs, labelled Secrets and ConfigMaps, the registry's database and role in `commons-postgresql`, its IAM rows, and its PVCs and PVs. Options: `--keep-iam`, `--keep-pvs`, `--force`, `--yes`. It leaves shared services alone: the Keycloak client, the approval policies in the shared AWE database, and Master Data.
+It first removes the release's dashboards, charts, datasets and connection from Superset (they live in commons-services, so `helm uninstall` leaves them), then the release, leftover Jobs, labelled Secrets and ConfigMaps, the registry's database and role in `commons-postgresql`, its IAM rows, and its PVCs and PVs. Options: `--keep-iam`, `--keep-dashboards`, `--keep-pvs`, `--force`, `--yes`; `--superset-release` and `--superset-namespace` when Superset is not `commons-services` in the same namespace. It leaves shared services alone: the Keycloak client, the approval policies in the shared AWE database, and Master Data.

@@ -39,7 +39,7 @@ Two consequences worth knowing:
   has no dashboards after an install, look at the *earlier* jobs first.
 
 Switched by `dashboards.enabled` in the platform chart, which is
-`registry.dashboards.enabled` in a registry's chart (on in the Farmer Registry).
+`registry.dashboards.enabled` in a registry's chart (on in the Farmer and Livestock Registries).
 The job waits for Superset rather than failing immediately, so a Superset that is
 merely restarting does not cost you the import. When Superset does not answer at
 all, the job skips the import and the install goes on; set
