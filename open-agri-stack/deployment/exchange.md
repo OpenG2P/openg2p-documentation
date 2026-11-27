@@ -63,7 +63,7 @@ partner-management:
 
 ## Composite
 
-Chart **Agri Stack Composite** (`openg2p-agri-composite`). Set or check these fields; keep every other field at its default. The registries need not be installed yet.
+Chart **Agri Stack Composite** (`openg2p-agri-composite`). Set or check these fields; keep every other field at its default. The registries are installed by now (step 1); if one is not, the Composite still installs, and that registry's source answers `unavailable` (or `error`, when the gateway answers 404 for its hostname) until it is.
 
 | Group | Field | Value | Notes |
 | --- | --- | --- | --- |
