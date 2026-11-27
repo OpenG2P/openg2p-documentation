@@ -15,7 +15,7 @@ The reference install runs three namespaces in one Kubernetes cluster. Each name
 | Namespace | Install | Charts |
 | --- | --- | --- |
 | `trial` | The **Farmer Registry** (Agriculture Department) | Commons Base, Commons Services, Farmer Registry |
-| `dept1` | The **Crop Sown Registry** (Crops Department) | Commons Base, Commons Services, Crop Sown Registry |
+| `dept1` | The **Crop Sown Registry** (Crops Department) and the **Livestock Registry** (Livestock Department) | Commons Base, Commons Services, Crop Sown Registry, Livestock Registry |
 | `agrix` | The **Exchange** | Commons Base, Commons Services, Composite |
 
 Each namespace has its own domain on the `internal` gateway (`*.trial.openg2p.org`, `*.dept1.openg2p.org`, `*.agrix.openg2p.org`), with DNS and TLS. The names are examples: any work. Departments on their own clusters: [Separate Clusters](separate-clusters.md).
@@ -46,7 +46,7 @@ Because each Partner Management reads the Composite's key when needed, the depar
 
 | # | Step | Page |
 | --- | --- | --- |
-| 1 | Install the registries: Farmer Registry in `trial`, Crop Sown Registry in `dept1` | [Farmer Registry](farmer-registry.md), [Crop Sown Registry](crop-sown-registry.md) |
+| 1 | Install the registries: Farmer Registry in `trial`; Crop Sown Registry and, optionally, Livestock Registry in `dept1` | [Farmer Registry](farmer-registry.md), [Crop Sown Registry](crop-sown-registry.md), [Livestock Registry](livestock-registry.md) |
 | 2 | Install the Exchange in `agrix`: Commons Base, Commons Services, the Composite | [Exchange](exchange.md) |
 | 3 | In each department's Partner Management, add the Composite's scope policy for its registry. Until then the registry releases nothing to the Composite | [Releasing Registry Data to the Composite](../administration/releasing-data-to-the-composite.md) |
 | 4 | Run the test | [Testing](testing.md) |
@@ -66,7 +66,7 @@ Each install is configured on its own, yet some values are used by more than one
 | Composite partner ID | `agri-composite` | The Composite; its Partner Management entry `PARTNER_AGRI_COMPOSITE` in every install; the token presenter at the Exchange CM and the trusted presenter at the department CMs |
 | Composite hostname | `agri-composite.<Exchange domain>` | The departments' Partner Management reads the Composite's keys there (**Composite JWKS URL** otherwise) |
 | Consent token issuer | `agri-stack-exchange-cm` | The Exchange CM (issuer); the department CMs (trusted issuer) |
-| Data controllers | `farmer-registry`, `crop-sown-registry` | Each registry; the Composite's registries; consents; Partner Management scope policies |
+| Data controllers | `farmer-registry`, `crop-sown-registry`, `livestock-registry` | Each registry; the Composite's registries; consents; Partner Management scope policies |
 | Subject ID types | `FAYDA_FAN`, `FARMER_ID` | Use cases, Partner Management policies (Master Data list `SUBJECT_ID_TYPE`), consents. The registries map the DCI type `UIN` to `FAYDA_FAN` |
 | Purposes | `credit-assessment` | Use cases, Partner Management policies (Master Data list `CONSENT_PURPOSE`), consents |
 | Exchange domain | `agrix.<parent domain>` | The department CMs read the Exchange CM's public keys there, and their Partner Management the Composite's |

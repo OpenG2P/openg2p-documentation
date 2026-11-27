@@ -75,7 +75,8 @@ Read by the Exchange Consent Manager, in the cluster only ([consent templates](.
   "code": "loan-profile@1", "title": "Loan profile", "description": "…",
   "purpose": "credit-assessment",
   "scopes": {"farmer-registry": {"required": ["…"], "optional": ["…"]},
-             "crop-sown-registry": {"required": ["…"], "optional": []}},
+             "crop-sown-registry": {"required": ["…"], "optional": []},
+             "livestock-registry": {"required": ["…"], "optional": []}},
   "limits": {"allowed_subject_id_types": ["FAYDA_FAN"], "max_validity_duration": "P1Y",
              "allow_partner_consents": false}}]}
 ```

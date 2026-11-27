@@ -47,9 +47,9 @@ Step by step: [replacing the demo key](../../consent-management/deployment/READM
 
 The Composite chart limits calls to its use-case API (`/composite/v1/use-cases`) at the Istio ingress gateway, for all partners together, before they reach a pod. Other paths of the Composite, and other installs, are not limited. What it is: [Rate Limiting](../composite/rate-limiting.md); the settings: [chart settings](composite-chart-settings.md#scaling-and-rate-limits).
 
-1. In Rancher, **Upgrade** the Composite release (e.g. `agri-composite`), group **Rate Limits**.
+1. In Rancher, **Upgrade** the Composite release (e.g. `composite`), group **Rate Limits**.
 2. Turn **Edge Rate Limit** on and set **Edge Limit (Requests)** and **Edge Limit Interval** above the expected peak of all partners together. The limit is counted per gateway pod: two pods allow up to twice the number.
-3. Upgrade. The chart creates the EnvoyFilter `<namespace>-<release>-edge-ratelimit` (e.g. `agrix-agri-composite-edge-ratelimit`) in `istio-system`, beside any EnvoyFilters already there:
+3. Upgrade. The chart creates the EnvoyFilter `<namespace>-<release>-edge-ratelimit` (e.g. `agrix-composite-edge-ratelimit`) in `istio-system`, beside any EnvoyFilters already there:
 
 ```bash
 kubectl -n istio-system get envoyfilter

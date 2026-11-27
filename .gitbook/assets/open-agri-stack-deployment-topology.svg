@@ -48,7 +48,7 @@ text{font-family:'Public Sans','Helvetica Neue',Arial,sans-serif;fill:#1B231F}
 <text class="cap" x="684" y="208">NAMESPACE agrix</text>
 <text class="s" x="684" y="226">The Exchange · no registry</text>
 <rect class="cmp" x="684" y="240" width="264" height="64" rx="8"/>
-<text class="t" x="816" y="266" text-anchor="middle">Composite</text><text class="s" x="816" y="285" text-anchor="middle">release agri-composite</text>
+<text class="t" x="816" y="266" text-anchor="middle">Composite</text><text class="s" x="816" y="285" text-anchor="middle">release composite</text>
 <rect class="dpi" x="684" y="320" width="264" height="96" rx="8"/>
 <text class="t" x="816" y="344" text-anchor="middle">Commons</text>
 <text class="s" x="816" y="364" text-anchor="middle">Partner Management, Consent Manager</text>

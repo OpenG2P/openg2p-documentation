@@ -17,12 +17,13 @@ Reference for the Composite chart (`openg2p-agri-composite`). Installing it: [De
 | `global.baseDomain` | `<namespace>.openg2p.org` | General: Base Domain |
 | `global.compositeHostname` | `agri-composite.<Base Domain>` | General: Composite Hostname |
 | `global.consoleHostname` | `agri-composite-console.<Base Domain>` | Console: Console Hostname |
+| `composite.image.tag` | The chart's own version (set by CI when the chart is built) | General: Image Tag. Empty keeps the chart's |
 | `global.namespace` | Empty: the install namespace | Values only; the `<namespace>` in every default hostname |
 | `composite.istio.virtualservice.gateway`, `console.ui.istio.virtualservice.gateway` | `internal` | Values only |
 
 Both the API and the console are served through the Istio `internal` gateway, like the registries' partner APIs. The API answers at `/composite/v1/…`, `/ping` and `/docs` (OpenAPI UI).
 
-**The internal API is not public.** `/composite/v1/internal/…` (the [consent templates](../composite/api.md#internal-consent-templates) the Exchange CM reads) is reached only at the in-cluster Service (`http://agri-composite-api`). Two guards keep it off the public host:
+**The internal API is not public.** `/composite/v1/internal/…` (the [consent templates](../composite/api.md#internal-consent-templates) the Exchange CM reads) is reached only at the in-cluster Service (`http://<release>-api`, e.g. `http://composite-api`). Two guards keep it off the public host:
 
 | Guard | How |
 | --- | --- |
@@ -49,12 +50,13 @@ The other mode, `passthrough`, sends the partner's consent to each registry unch
 | --- | --- | --- |
 | `composite.registries.farmer-registry.url` | Empty (required) | Integration: Farmer Registry Search URL |
 | `composite.registries.crop-sown-registry.url` | Empty (required) | Integration: Crop Sown Registry Search URL |
+| `composite.registries.livestock-registry.url` | Empty (optional: `loan-profile`'s `livestock` source is optional) | Integration: Livestock Registry Search URL |
 | `composite.registries.<controller>.partnerId` | Empty | Values only. The registry's PM partner ID: when set, the registry's response signature is verified against `PARTNER_<ID>` in the Exchange PM |
 | `composite.registries.<controller>.receiverId` | Empty: the controller ID | Values only. The `header.receiver_id` sent to it |
 | `global.compositePartnerId` | `agri-composite` | Integration: Composite Partner ID. The `sender_id` towards registries; partners send it as `receiver_id`. Its key must be in each department's PM |
 | `global.partnerManagementApiUrl` | `http://commons-services-pm-partner-api` | Integration: Partner Management URL. Partner keys and use-case policies, fetched as `PARTNER_<SENDER_ID>` |
 
-Each registry is a data controller ID mapped to its full DCI sync search URL. Partner Management holds no registry endpoints yet, so they are set here, and nothing about a registry is hard-coded. An empty URL makes that source fail (`error`); a use case whose sources name a controller not listed here does not load. The console reads each registry's data scope catalogue from the same host (`/partner/data_scopes`). A third registry is added under `composite.registries` in **Edit YAML** (the form shows the two that ship): [adding a registry](../registries/adding-a-registry.md#step-4-register-the-endpoint-in-the-composite). Changing a registry setting rolls the pods.
+Each registry is a data controller ID mapped to its full DCI sync search URL. Partner Management holds no registry endpoints yet, so they are set here, and nothing about a registry is hard-coded. An empty URL makes that source fail (`error`); a use case whose sources name a controller not listed here does not load. The console reads each registry's data scope catalogue from the same host (`/partner/data_scopes`). Another registry is added under `composite.registries` in **Edit YAML** (the form shows the three that ship): [adding a registry](../registries/adding-a-registry.md#step-4-register-the-endpoint-in-the-composite). Changing a registry setting rolls the pods.
 
 ## Use cases
 

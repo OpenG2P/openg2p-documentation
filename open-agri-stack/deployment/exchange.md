@@ -55,7 +55,7 @@ partner-management:
   staffPortalApi:
     catalogueSources:
       - kind: use_cases
-        url: http://agri-composite-api/composite/v1/use-cases
+        url: http://composite-api/composite/v1/use-cases
         label: Agri Stack Composite
 ```
 
@@ -63,14 +63,23 @@ partner-management:
 
 ## Composite
 
-Chart **Agri Stack Composite** (`openg2p-agri-composite`), release e.g. `agri-composite`. Set each registry's partner search URL, with its public hostname (never an in-cluster service name). The registries need not be installed yet:
+Chart **Agri Stack Composite** (`openg2p-agri-composite`). Set or check these fields; keep every other field at its default. The registries need not be installed yet.
 
-| Group | Field | Value |
-| --- | --- | --- |
-| Integration | Farmer Registry Search URL | `https://fr-partner-api.trial.openg2p.org/dci/registry/sync/search` ([Farmer Registry](farmer-registry.md#check)) |
-| Integration | Crop Sown Registry Search URL | `https://csr-partner-api.dept1.openg2p.org/dci/registry/sync/search` ([Crop Sown Registry](crop-sown-registry.md#check)) |
+| Group | Field | Value | Notes |
+| --- | --- | --- | --- |
+| — | Namespace | `agrix` | The Exchange's namespace |
+| — | Release name | `composite` | Keep it: the Exchange CM reads consent templates from `http://composite-api` (otherwise set `global.agriStackExchange.consentTemplateSourceUrl` in Commons Services, **Edit YAML**). The public hostnames and the partner ID stay `agri-composite` (below); only the in-cluster Services (`composite-api`, `composite-console`) take the release name |
+| General | Base Domain | Empty: `agrix.openg2p.org` | `<namespace>.openg2p.org` by default; set it if your domain differs |
+| General | Composite Hostname | Empty: `agri-composite.agrix.openg2p.org` | The departments' Partner Management read the Composite's keys here |
+| Integration | Composite Partner ID | `agri-composite` | The default. Must match in every install ([settings that must agree](README.md#settings-that-must-agree-across-installs)) |
+| Integration | Farmer Registry Search URL | `https://fr-partner-api.trial.openg2p.org/dci/registry/sync/search` | Required ([Farmer Registry](farmer-registry.md#check)) |
+| Integration | Crop Sown Registry Search URL | `https://csr-partner-api.dept1.openg2p.org/dci/registry/sync/search` | Required ([Crop Sown Registry](crop-sown-registry.md#check)) |
+| Integration | Livestock Registry Search URL | `https://lsr-partner-api.dept1.openg2p.org/dci/registry/sync/search` | Optional. Empty: `loan-profile` answers without the farmer's animals (its `livestock` source reports `error`) ([Livestock Registry](livestock-registry.md#check)) |
+| Agri Stack exchange | Consent Mode | `exchange` | The default |
+| Signing key | Generate Signing Key | On | The default: creates Secret `agri-composite-signing` once and keeps it |
+| Console | Enable Console | On | The default: the staff console at `agri-composite-console.agrix.openg2p.org` |
 
-Keep the rest at the defaults (**Generate Signing Key** on). The Exchange CM reads its consent templates from this Composite in the same namespace (`http://agri-composite-api`, CM field **Consent Template Source URL**, empty by default); keep the release name `agri-composite` or set that field. Production: [Production](production.md#composite). All options: [Composite chart settings](composite-chart-settings.md).
+Registry URLs are each registry's public partner API host, `<release>-partner-api.<department domain>`, never an in-cluster service name. Production: [Production](production.md#composite). Every option: [Composite Chart Settings](composite-chart-settings.md).
 
 ## Check
 

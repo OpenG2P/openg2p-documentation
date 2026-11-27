@@ -217,7 +217,7 @@ The choices for policy forms, one entry per configured
       "data_controller": null,
       "label": "Agri Stack Composite",
       "items": [],
-      "error": "cannot reach http://agri-composite-api/composite/v1/use-cases: ConnectError …"
+      "error": "cannot reach http://composite-api/composite/v1/use-cases: ConnectError …"
     },
     {
       "kind": "purposes",

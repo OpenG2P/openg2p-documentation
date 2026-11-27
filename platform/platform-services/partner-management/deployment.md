@@ -104,7 +104,7 @@ staffPortalApi:
       url: http://farmer-registry-partner-api/partner/data_scopes
       label: Farmer Registry
     - kind: use_cases
-      url: http://agri-composite-api/composite/v1/use-cases
+      url: http://composite-api/composite/v1/use-cases
       label: Agri Stack Composite
 ```
 

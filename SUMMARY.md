@@ -639,6 +639,7 @@
   * [Deployment](open-agri-stack/deployment/README.md)
     * [Farmer Registry](open-agri-stack/deployment/farmer-registry.md)
     * [Crop Sown Registry](open-agri-stack/deployment/crop-sown-registry.md)
+    * [Livestock Registry](open-agri-stack/deployment/livestock-registry.md)
     * [Exchange](open-agri-stack/deployment/exchange.md)
       * [Composite Chart Settings](open-agri-stack/deployment/composite-chart-settings.md)
     * [Separate Clusters](open-agri-stack/deployment/separate-clusters.md)

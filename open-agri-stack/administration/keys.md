@@ -22,7 +22,7 @@ The install generates it (Secret `agri-composite-signing`, kept on upgrades and 
 
 1. Delete the Secret: `kubectl -n <Exchange namespace> delete secret agri-composite-signing`.
 2. Upgrade the Composite release in Rancher with the same values: the chart generates a new key and `kid`.
-3. Restart the Composite: `kubectl -n <Exchange namespace> rollout restart deploy/agri-composite-api`.
+3. Restart the Composite: `kubectl -n <Exchange namespace> rollout restart deploy/composite-api`.
 4. **Check:** `curl -s https://agri-composite.<Exchange domain>/.well-known/jwks.json` shows the new `kid`.
 
 The Partner Managements pick the new key up within their cache time (5 minutes); until then a registry may refuse the Composite's calls. Rotate at a quiet time.
@@ -36,7 +36,7 @@ kubectl -n <Exchange namespace> delete secret agri-composite-signing --ignore-no
 kubectl -n <Exchange namespace> create secret generic agri-composite-signing \
   --from-file=composite.p12=./composite.p12 --from-literal=password='<p12 password>' \
   --from-literal=kid=<kid> --from-literal=algorithm=auto
-kubectl -n <Exchange namespace> rollout restart deploy/agri-composite-api
+kubectl -n <Exchange namespace> rollout restart deploy/composite-api
 ```
 
 The chart leaves a Secret it did not create alone, and a `.p12` is used before a generated key. To rotate it, repeat with the new `.p12` and a new `kid`. Before a first install, create the Secret first and the chart never generates one. Settings: [Composite chart settings: signing key](../deployment/composite-chart-settings.md#signing-key).

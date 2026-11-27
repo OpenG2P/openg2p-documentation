@@ -27,12 +27,12 @@ Each department is its own install, with its registry and its own services:
 
 | Component | Role |
 | --- | --- |
-| Registry ([Farmer Registry](../../products/registry/farmer-registry/README.md), [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md)) | The system of record; serves its partners through its partner API ([Registries](../registries/README.md)) |
+| Registry ([Farmer Registry](../../products/registry/farmer-registry/README.md), [Crop Sown Registry](../../products/registry/crop-sown-registry/README.md), [Livestock Registry](../registries/livestock-registry/README.md)) | The system of record; serves its partners through its partner API ([Registries](../registries/README.md)) |
 | Consent Manager | Checks each consent, including the Exchange's consent tokens |
 | Partner Management | The department's partners, and what it releases to the Composite (the Composite's scope policy) |
 | [Catalogue](catalogue.md), Audit Manager | The same codes as every install (one country pack); who accessed the department's data |
 
-Registries are joined on the farmer's Farmer ID; the national ID only authenticates the farmer. Other departments (Livestock, Land, …) follow the same pattern.
+Registries are joined on the farmer's Farmer ID; the national ID only authenticates the farmer. Other departments (Land, …) follow the same pattern, as the Livestock Registry does.
 
 ## Infrastructure
 

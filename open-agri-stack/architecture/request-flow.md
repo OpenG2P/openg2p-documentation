@@ -6,7 +6,7 @@ description: One request, end to end.
 
 The farmer has already given the bank consent, as in [consent](consent.md#how-a-farmer-gives-consent). This page follows what happens when the bank uses it.
 
-The worked example is path B ([architecture](README.md#data-sharing-paths)) in **Exchange mode**, the Composite's default: a bank asks for a farmer's `loan-profile@1`, with data from the Farmer Registry (Agriculture Department) and the Crop Sown Registry (Crops Department).
+The worked example is path B ([architecture](README.md#data-sharing-paths)) in **Exchange mode**, the Composite's default: a bank asks for a farmer's `loan-profile@1`, with data from the Farmer Registry (Agriculture Department), the Crop Sown Registry (Crops Department) and the Livestock Registry (Livestock Department; optional).
 
 Solid arrows are requests; dashed arrows are replies.
 
@@ -28,6 +28,8 @@ Solid arrows are requests; dashed arrows are replies.
    * intersects the token's scopes with the Composite's scope policy for this registry, in the department's Partner Management, and returns the result to the registry.
 6. **Farmer Registry → Composite.** The registry checks that the record belongs to the consent's subject: its national ID or Farmer ID must be the one the consent names ([subject enforcement](../../consent-management/design/registry-integration.md#subject-enforcement)). It then releases only the scopes from step 5 and returns the record, with the farmer's identifiers, including the Farmer ID (the use case always asks for `farmer-registry.farmer_identifiers`).
 7. **Composite → Crop Sown Registry.** Two DCI searches of the same registry, in parallel: the farmer's season summaries and their crop seasons, each with the Crop Sown Registry's consent token, through the Crops Department's ingress. Its CM checks the token as in step 5. The searches use the Farmer ID from the request or, if the bank sent the national ID, the one in the Farmer Registry's record from step 6. The Crop Sown Registry checks that this Farmer ID is linked to the consent's national ID in its own data. Today they always run after step 6 (`depends_on`); running them alongside the Farmer Registry search when the request already carries the Farmer ID is not built yet.
+
+   **Composite → Livestock Registry**, in parallel with these: one DCI search for the farmer's animals by their owner's Farmer ID (`owner_farmer_id`), with the Livestock Registry's consent token. Its CM checks the token as in step 5, and the registry returns only animals whose owner (national ID or Farmer ID) is the consent's subject. This source is optional: if the registry is not configured, down or denied, the bank still gets the rest.
 8. **Composite → Bank.** The Composite maps the results, signs the response and returns it, then keeps nothing. Each source has a status: `ok`, `no_record`, `denied`, `unavailable` or `error`. Fields from a failed source are `null`. Every hop emits audit events linked by the request ID.
 
 {% hint style="info" %}

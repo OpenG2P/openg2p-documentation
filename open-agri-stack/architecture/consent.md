@@ -6,7 +6,7 @@ description: Farmer consent in Agri Stack.
 
 A partner (e.g. a bank) needs the farmer's consent before Agri Stack shares the farmer's data with it. In Agri Stack:
 
-* **One consent for a purpose, covering every registry the use case reads.** The bank asks once, from a [consent template](#consent-templates) (e.g. a farmer's loan profile); the consent holds the purpose and a **grant per registry** (Farmer Registry, Crop Sown Registry, …). Any use case with that purpose can use it, within its grants, and the bank never deals with which registry holds what.
+* **One consent for a purpose, covering every registry the use case reads.** The bank asks once, from a [consent template](#consent-templates) (e.g. a farmer's loan profile); the consent holds the purpose and a **grant per registry** (Farmer Registry, Crop Sown Registry, Livestock Registry, …). Any use case with that purpose can use it, within its grants, and the bank never deals with which registry holds what.
 * **The Exchange's Consent Manager (CM) collects and keeps it,** not the bank. The farmer confirms it there and proves who they are with the national ID.
 * **Each registry decides for itself.** At query time the Exchange CM gives the Composite a short-lived **consent token** per registry, with only that registry's allowed scopes, and each registry checks its token at its **own** CM against the [Composite's scope policy](data-sharing-policies.md#two-policies) ([request flow](request-flow.md)). Why a token, rather than passing the consent on or simply trusting the Composite up to its scope policy: [why a consent token](../../consent-management/design/exchange-consent-tokens.md#why-a-consent-token).
 

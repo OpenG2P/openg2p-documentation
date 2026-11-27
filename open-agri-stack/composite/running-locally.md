@@ -19,10 +19,12 @@ export AGRI_COMPOSITE_USE_CASES_DIR=../use-cases
 export AGRI_COMPOSITE_SIGNING_KEY_PEM_PATH=/tmp/composite.pem AGRI_COMPOSITE_SIGNING_KID=composite-local
 export AGRI_COMPOSITE_PARTNER_MGMT_API_URL=http://localhost:9001          # a PM partner-api
 export AGRI_COMPOSITE_REGISTRIES='{"farmer-registry":{"url":"http://localhost:9002/dci/registry/sync/search"},
-                                  "crop-sown-registry":{"url":"http://localhost:9003/dci/registry/sync/search"}}'
+                                  "crop-sown-registry":{"url":"http://localhost:9003/dci/registry/sync/search"},
+                                  "livestock-registry":{"url":"http://localhost:9004/dci/registry/sync/search"}}'
 python -m openg2p_agri_composite.main run  # http://localhost:8000/docs
 ```
 
+* Every registry a use case names must be listed, or the use case does not load; a registry left with an empty `url` only makes its source fail (`error`), which `loan-profile` tolerates for its optional `livestock` source.
 * The ports are examples: point `PARTNER_MGMT_API_URL` and `REGISTRIES` at a PM partner API and the registries' partner APIs you can reach, e.g. through `kubectl port-forward`.
 * The partner's and the Composite's public keys must be in that PM (`PARTNER_BANK_A`, `PARTNER_AGRI_COMPOSITE`; the Composite's from `http://localhost:8000/.well-known/jwks.json`), and the partner needs a policy there for the use case (`loan-profile@1`).
 * With the console off (the default outside the chart) the service has no database; startup only loads the use cases. The chart turns the console on, which needs a database, IAM and Redis (see [Composite console](console.md)).

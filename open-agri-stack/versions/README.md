@@ -11,7 +11,7 @@ description: Versions and source code.
 **What it includes:**
 
 * The Exchange: the Composite, Partner Management, and the Consent Manager with its partner portal. Partners use it through use cases, with the farmer's consent.
-* Two reference registries: the Farmer Registry and the Crop Sown Registry.
+* Three reference registries: the Farmer Registry, the Crop Sown Registry and the Livestock Registry.
 * One use case: `loan-profile`.
 * Setup at install: the Composite's key, its onboarding in each department's Partner Management, and the partner portal realm.
 
@@ -29,6 +29,7 @@ What each module does: [Architecture](../architecture/README.md).
 | Commons | `openg2p-commons-base`, `openg2p-commons-services` | The Exchange and every department | [OpenG2P/commons](https://github.com/OpenG2P/commons) | [commons](https://openg2p.github.io/versions/commons/CHANGELOG.html) |
 | Farmer Registry | `openg2p-farmer-registry` | Agriculture Department (`trial`) | [OpenG2P/farmer-registry](https://github.com/OpenG2P/farmer-registry) | [farmer-registry](https://openg2p.github.io/versions/farmer-registry/CHANGELOG.html) |
 | Crop Sown Registry | `openg2p-crop-sown-registry` | Crops Department (`dept1`) | [OpenG2P/crop-sown-registry](https://github.com/OpenG2P/crop-sown-registry) | [crop-sown-registry](https://openg2p.github.io/versions/crop-sown-registry/CHANGELOG.html) |
+| Livestock Registry | `openg2p-livestock-registry` | Livestock Department (`dept1`) | [OpenG2P/live-stock-registry](https://github.com/OpenG2P/live-stock-registry) | [live-stock-registry](https://openg2p.github.io/versions/live-stock-registry/CHANGELOG.html) |
 
 ### Installed by Commons Services
 
