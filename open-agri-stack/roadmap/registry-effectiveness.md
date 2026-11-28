@@ -80,25 +80,60 @@ India's AgriStack has three foundational registries: the **Farmer Registry**, th
 
 Keeping parcels inside the Farmer Registry is simpler for a first deployment, but it ties a parcel to whoever registered it: a parcel owned by two farmers, or cultivated by a tenant, is recorded twice or not at all, and the land or survey department, which is the authority for boundaries, has no registry of its own. A separate Map Registry, kept by that department, gives every parcel one ID that the Farmer Registry (ownership, tenancy) and the Crop Sown Registry (crops) refer to. It is on the roadmap as **Map Registry**.
 
-## What Agri Stack can measure
+## How it applies to Agri Stack
 
-| Factor | What exists | What is missing |
+Each part of the index and its counterpart in Agri Stack. Status: **exists**, **partial** or **missing**.
+
+| In the index | In Agri Stack | Status |
 | --- | --- | --- |
-| Coverage | The registries' record counts by location, in their reporting views and Superset dashboards | The denominators come from outside: the eligible farmers (e.g. from the land records or a census) and the plots chosen for the crop survey. They would be loaded per location and season, e.g. as catalogue datasets |
-| Quality | Completeness of fields; change requests and their approval (AWE); verification of some activities (e.g. vaccinations in the Livestock Registry); last-updated dates | One verification model with who verified what, when and with what evidence ([Attestation on records](README.md#functional-in-order)); timelines per kind of change, to tell a current record from a stale one; links checked across registries (a crop record's parcel exists; with a Map Registry, the crop's location lies within it) |
-| Usage | The Exchange Consent Manager's access log: each use of a farmer's consent, by partner. The Composite's and registries' audit events record outcomes per request but, by design, no subject identifiers | Usage per record per period, from the consents used (or, under [sharing on a mandate](README.md#functional-in-order), from the mandate's audited uses); only successful answers counted. Services that do not go through the Exchange (a department using its own registry) would need their own outcome logs |
-| Trust | Nothing in the software: it is a field survey | Supporting features that earn trust: farmers seeing their records and consents, asking for corrections, following grievances with deadlines, and the SMS and recourse already planned for consent |
+| **Registries** | | |
+| Farmer Registry | [Farmer Registry](../deployment/farmer-registry.md) | Exists |
+| Crop Sown Registry | [Crop Sown Registry](../deployment/crop-sown-registry.md) | Exists |
+| Map Registry | None: parcels and their shapes are in the Farmer Registry | Missing (TODO 10) |
+| **Coverage (C)** | | |
+| Records counted by location and season | Each registry's reporting views and Superset dashboards | Exists |
+| Eligible farmers, plots chosen for the crop survey (the denominators) | Nothing: they come from outside the registries | Missing (TODO 1) |
+| **Quality (Q)** | | |
+| Complete, accurate records | Required fields and code lists from the catalogue; staff changes go through change requests approved in AWE | Exists |
+| Verified records | Verification on some activities (e.g. vaccinations in the Livestock Registry); no common model of who verified what, when, on what evidence | Partial (TODO 3) |
+| Updated within prescribed timelines | Last-updated dates on records; no timeline per kind of record, so a stale record is not flagged | Missing (TODO 2) |
+| Correctly linked | Each record holds the farmer's IDs; links between registries are not checked (a crop record's farmer or parcel need not exist) | Missing (TODO 4) |
+| Spatial accuracy fit for the use | Parcel shapes in the Farmer Registry, with no accuracy recorded | Missing (TODO 10) |
+| **Usage (U)** | | |
+| A pre-defined service | A Composite use case (e.g. `loan-profile`, a lender's check, as the article's Kisan Credit Card loans) | Exists |
+| An authorised intermediary | A partner in the Exchange's Partner Management with a policy for the use case | Exists |
+| Service outcome logs, not API hits | The Composite's audit events (outcome per request, no farmer IDs by design) and the Exchange Consent Manager's access log (each use of a farmer's consent); not joined, so "this farmer's records were used successfully" cannot be counted | Partial (TODO 5) |
+| Services outside the Exchange | A department using its own registry: no outcome log | Missing (country's choice) |
+| **Trust (T)** | | |
+| The survey itself | Outside the software: a field survey by the programme | Not software |
+| Transparency: farmers see what is recorded | Staff see records; farmers have no portal or app for their records | Missing (TODO 8) |
+| Privacy and agency | Consent through the Consent Manager, enforced at each registry with data scopes; partial consent and revoking one registry only are still to come | Partial |
+| Recourse: report an error, see it acted on | Staff can correct records by change requests; no farmer-facing grievance channel, deadlines or tracking. For consents, the SMS and "I did not give this consent" are planned | Missing (TODO 9) |
+| **Operating it** | | |
+| Breakdowns by gender, location, holding size, farmer category | Gender and location are on the Farmer Registry; holding size can be derived from the parcels; farmer category (owner, tenant, cultivator) is country data | Partial (TODO 6) |
+| Publishing the factors and the score | Superset dashboards per registry; nothing combines registries or shows the four factors | Missing (TODO 6) |
+| From the comments: land rights integrity | Land parcels on the Farmer Registry; no history of transfers or tenancy | Missing (TODO 12) |
+| From the comments: satellite checks of crops | None | Missing (TODO 11) |
+| From the comments: open aggregate data | The public catalogue (planned) | Missing (TODO 13) |
 
-The breakdowns (gender, location, holding size, farmer category) need those attributes on the records being counted; for figures that combine registries (e.g. crop records by the farmer's gender) this depends on the cross-registry figures planned under **Dashboards and cross-registry figures**.
+The trust survey, the eligible populations and the choice of services that count as usage are the programme's decisions in each country, not software.
 
-Out of scope for the software: running the trust survey, setting the eligible populations, and choosing the services that count as usage. These are the programme's decisions, made by each country.
+## TODO
 
-## Roadmap items
+| # | To do | Where | Depends on | Roadmap item |
+| --- | --- | --- | --- | --- |
+| 1 | Load the denominators per location and season: eligible farmers, and the plots chosen for the crop survey | Catalogue datasets (Master Data), read by the reporting views | — | Registry effectiveness figures |
+| 2 | Set a timeline per kind of record or change (e.g. ownership change within 30 days) and flag records past it in the reporting views | Registry platform (reporting views, registry settings) | — | Registry effectiveness figures |
+| 3 | One verification model for entity and activity records: who verified, when, with what evidence; reset on change | Registry platform | — | [Attestation on records](README.md#functional-in-order) |
+| 4 | Check links across registries: a crop record's farmer exists in the Farmer Registry (and, later, its parcel in the Map Registry) | Crop Sown Registry, calling the Farmer Registry | Sharing on a mandate | [Sharing on a mandate](README.md#functional-in-order) |
+| 5 | Count usage per farmer: join the Composite's successful answers with the consents used, by request ID, per use case and period | Composite, Exchange Consent Manager, Audit Manager | Request ID end to end | Registry effectiveness figures |
+| 6 | Effectiveness dashboards: C, Q, U per registry and season, the survey's T loaded per district, the product; broken down by gender, location, holding size (derived from parcels) and farmer category | Superset at the Exchange or an analytics layer | 1, 2, 3, 5; dashboards and cross-registry figures | Registry effectiveness figures |
+| 7 | Load the trust survey results (share trusting, per registry and district) so the dashboards can combine them | Dashboards (a simple upload or dataset) | 6 | Registry effectiveness figures |
+| 8 | Farmers see their records and consents (portal or app, and assisted at an office) | Registries' beneficiary APIs, Consent Manager | — | Farmer access to their own records |
+| 9 | Corrections and grievances raised by farmers, tracked with a timeline per kind: overdue cases, rejection reasons, farmer confirms resolution | Registries (change requests in AWE), the farmer channel | 8 | Corrections and grievances with service levels |
+| 10 | Map Registry: parcels with a unique ID, surveyed polygon and accuracy tier, kept by the land or survey department; the Farmer Registry and Crop Sown Registry refer to parcels by ID | A new registry on the registry platform (as the Livestock Registry) | — | Map Registry |
+| 11 | Crop records checked against the parcel (location within the polygon) and against a satellite crop map; disagreements listed for field checks | Crop Sown Registry | 10 | Crop records checked against the parcel and imagery |
+| 12 | Ownership and tenancy as dated events with evidence, on parcels | Map Registry or Farmer Registry (activity register) | 10 (preferably) | [Land ownership as events](README.md#functional-in-order) |
+| 13 | Publish the factors and other non-personal aggregates by district, crop and season | Public catalogue | 6; public catalogue on the internet | Open aggregate data |
 
-From this study, in [Phase 2](README.md#phase-2-farmers-partners-and-the-open-agri-network):
-
-1. **Corrections and grievances with service levels**
-2. **Registry effectiveness figures**
-3. **Map Registry**
-4. **Crop records checked against the parcel and imagery**
-5. **Open aggregate data**
+The roadmap items are in [Phase 2](README.md#phase-2-farmers-partners-and-the-open-agri-network) unless linked to Phase 1.
