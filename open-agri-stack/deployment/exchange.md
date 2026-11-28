@@ -79,7 +79,7 @@ Chart **Agri Stack Composite** (`openg2p-agri-composite`). Set or check these fi
 | Signing key | Generate Signing Key | On | The default: creates Secret `agri-composite-signing` once and keeps it |
 | Console | Enable Console | On | The default: the staff console at `agri-composite-console.agrix.openg2p.org` |
 
-Registry URLs are each registry's public partner API host, `<release>-partner-api.<department domain>`, never an in-cluster service name. Production: [Production](production.md#composite). Every option: [Composite Chart Settings](composite-chart-settings.md).
+Registry URLs are each registry's public partner API host, `<release>-partner-api.<department domain>`, never an in-cluster service name. Production: [Production](production.md#composite). Every option: [Composite Chart Settings](composite-chart-settings.md). To set or change a URL after the install: Rancher → **Apps → Installed Apps** → `composite` → **Upgrade**, the same fields (the [console](../composite/console.md) shows the registries but is read-only).
 
 ## Check
 
